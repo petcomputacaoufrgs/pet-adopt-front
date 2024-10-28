@@ -1,33 +1,56 @@
 import styled from "styled-components";
-import PetCard from "../components/PetCard";
+import PetCard from "../components/LinkText";
+import LinkText from "../components/LinkText";
+import ColoredCard from "../components/ColoredCard";
+import imagemGenerica from "../assets/imagem_generica.png";
+import imagemGenericaMobile from "../assets/imagem_generica_mobile.png";
 
-const doguinhos = [
-  { name: "Yoko", age: "9 anos" },
-  { name: "Jacob", age: "10 anos" },
-  { name: "Luli", age: "13 anos" },
-  { name: "Juna", age: "9 anos" },
-  { name: "Leia", age: "8 anos" },
-  { name: "Axel", age: "8 anos" },
-  { name: "Mia", age: "7 anos" },
-];
 
-const Container = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+const Cards = styled.div`
+  display: flex;
   gap: 1rem;
+  width: 80%;
+
+  @media (max-width: 1500px) {
+
+    flex-direction: column;
+  }
 `;
+
 
 const Example = () => {
   return (
     <div>
       Eu sou uma pagina
-      <Container>
-        {doguinhos.map((dog) => (
-          <PetCard name={dog.name} age={dog.age} />
-        ))}
-      </Container>
+
+
+        <LinkText to="/teste" link_type="primary">Ver mais</LinkText>
+        <LinkText to="../" link_type="secondary">Teste</LinkText>
+
+
+      <Cards>
+      <ColoredCard title="Adotar" background_color="#45E4FF" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
+       <p>Que tal adotar um novo amiguinho e ganhar um parceiro para a vida toda?</p>
+        <LinkText to="/teste" link_type="primary">Ver mais</LinkText>
+      </ColoredCard>
+
+      <ColoredCard title="Apadrinhar" background_color="#F3978B" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
+       <p>Que tal se tornar padrinho de um animalzinho?</p>
+        <LinkText to="/teste" link_type="primary">Ver mais</LinkText>
+      </ColoredCard>
+
+      <ColoredCard title="Lar Temporário" background_color="#FF9944" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
+       <p>Que tal acolher um animalzinho no seu lar por um tempo?</p>
+        <LinkText to="/teste" link_type="primary">Ver mais</LinkText>
+      </ColoredCard>
+
+      </Cards>
+
+
     </div>
   );
 };
 
 export default Example;
+
+
