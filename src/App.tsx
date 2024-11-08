@@ -1,6 +1,8 @@
 import "./App.css";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Example from "./pages/Example";
+import Actions from "./pages/Actions";
+
 
 function App() {
   return (
@@ -8,7 +10,7 @@ function App() {
       <HashRouter>
         <Routes>
           <Route path="/" element={<Example />} />
-          <Route path="/teste" element={<Example />} />
+          <Route path="/teste" element={<Actions />} />
         </Routes>
       </HashRouter>
     </div>
