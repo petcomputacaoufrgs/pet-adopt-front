@@ -1,7 +1,5 @@
-import "./App.css";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import Example from "./pages/Example";
-import Actions from "./pages/Actions";
+import Actions from "./views/HomePage/Actions/Actions";
 
 
 function App() {
@@ -9,8 +7,7 @@ function App() {
     <div className="App">
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Example />} />
-          <Route path="/teste" element={<Actions />} />
+          <Route path="/" element={<Actions />} />
         </Routes>
       </HashRouter>
     </div>

@@ -10,7 +10,6 @@ interface ILink {
 }
 
 
-
 const StyledLink = styled(Link)`
   font-family: 'Nunito Sans';
   font-style: normal;

@@ -1,10 +1,12 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 interface ICard {
   title: string;
   background_color: string;
   image_url: string;
   image_url_mobile: string;
+  to: string;
   children: React.ReactNode;
 }
 
@@ -31,9 +33,6 @@ const CardConteiner = styled.button<{ background_color: string }>`
     transform: scale(1.03); 
     cursor: pointer; 
   } 
-
-  
-
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -84,8 +83,17 @@ const Image = styled.img`
 `;
 
 
-const ColoredCard = ({ title, background_color, image_url, image_url_mobile, children }: ICard) => {
+const LinkWithoutDecoration = styled(Link)`
+  text-decoration: none;
+
+`
+
+
+const ColoredCard = ({ title, background_color, image_url, image_url_mobile, to, children }: ICard) => {
   return (
+    
+
+
     <CardConteiner background_color={background_color}>
       
       <Image src={image_url}/>
