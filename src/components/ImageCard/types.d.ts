@@ -4,6 +4,7 @@ export interface ICard {
     background_color?: string;
     background_image?: string;
     to: string;
-    width: Number;
-    height: Number;
+    width: string;
+    height_desktop: string;
+    height_mobile: string;
   }

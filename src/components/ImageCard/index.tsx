@@ -1,12 +1,12 @@
 import LinkText from "../LinkText/LinkText";
-import {CardContainer, Image, CardInfo, StyledLink, ButtonDiv} from "./styles";
+import {CardContainer, CardInfo, StyledLink} from "./styles";
 import {ICard} from "./types"
 
 
-const ImageCard = ({ title, text_color, background_color, background_image, to , width, height}: ICard) => {
+const ImageCard = ({ title, text_color, background_color, background_image, to , width, height_desktop, height_mobile}: ICard) => {
   return (
 <>
-    <StyledLink to={to} width={width} height={height}>
+    <StyledLink to={to} width={width} height_desktop={height_desktop} height_mobile={height_mobile}>
       <CardContainer background_color={background_color || "transparent"} background_image={background_image || "none"}>
 
         <CardInfo text_color={text_color}>

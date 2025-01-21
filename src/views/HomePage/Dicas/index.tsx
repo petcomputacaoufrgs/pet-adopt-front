@@ -6,6 +6,7 @@ import imagemGatoFundo from "../../../assets/gato.jpeg";
 import imagemCachorroFundo from "../../../assets/cachorro.jpeg";
 import imagemPreenchimento from "../../../assets/Camada_1.png";
 import ImageCard from "../../../components/ImageCard";
+import { Image } from "./styles";
 import { CardsContainer, HintsContainer, InfoDiv } from "./styles";
 
 
@@ -32,15 +33,15 @@ const Actions = () => {
         </InfoDiv>
 
         <CardsContainer>
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"} background_image={imagemGatoFundo} width={45} height={14.5} />
+          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"} background_image={imagemGatoFundo} width={"45vw"} height_desktop={"48%"} height_mobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"}  background_color="#FF9944" width={32} height={14.5} />
+          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"}  background_color="#FF9944" width={"32vw"} height_desktop={"48%"} height_mobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"}  background_color="#45E4FF" width={27} height={14.5} />
+          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"}  background_color="#45E4FF" width={"27vw"} height_desktop={"48%"} height_mobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"white"} background_image={imagemCachorroFundo} width={39} height={14.5} />
+          <ImageCard to="/" title="Expectativa e Realidade." text_color={"white"} background_image={imagemCachorroFundo} width={"39vw"} height_desktop={"48%"} height_mobile="25vh"/>
 
-          <img src={imagemPreenchimento}></img>
+          <Image src={imagemPreenchimento} width={12}></Image>
 
         </CardsContainer>
     </HintsContainer>

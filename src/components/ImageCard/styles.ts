@@ -15,8 +15,7 @@ export const CardContainer = styled.button<{ background_color: string, backgroun
       
   border-radius: 20px;
 
-
-   background-size: cover;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat; 
 
@@ -65,30 +64,45 @@ export const CardInfo = styled.div<{text_color: string}>`
     line-height: 1.5;
     color: ${(props) => `${props.text_color}`}
   }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+
+      p {
+        font-size: 16px;
+      }
+
+      h3 {
+        font-size: 18px;
+      }
+    }
+
 `;
 
 
-export const Image = styled.img`
-  width: 100%;
-  max-width: 150px; 
-  height: auto; 
-  margin-left: 16px;
 
 
-`;
 
-
-export const StyledLink = styled(Link)<{ width: Number, height: Number}>`
+export const StyledLink = styled(Link)<{ width: string, height_desktop: string, height_mobile: string}>`
   display: flex; 
   text-decoration: none;
-  width: ${(props) => `${props.width}vw`};
-  height: ${(props) => `${props.height}vw`};
+  width: ${(props) => `${props.width}`};
+  height: ${(props) => `${props.height_desktop}`};
   justify-content: center;
+
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: ${(props) => `${props.height_mobile}`};
+  }
 
 `
 
 export const ButtonDiv = styled.div`
     width: 50vw;
+
 
 `
 

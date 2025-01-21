@@ -29,7 +29,7 @@ const Actions = () => {
 
         <ColoredCard to="/teste" title="Lar Temporário" background_color="#FF9944" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
           <p>Que tal acolher um animalzinho no seu lar por um tempo?</p>
-          <LinkText to="/teste" link_type="primary" font_size={"18px"} text_color="#553525">Ver mais</LinkText>
+          <LinkText to="/teste\" link_type="primary" font_size={"18px"} text_color="#553525">Ver mais</LinkText>
         </ColoredCard>
 
       </CardsDiv>
