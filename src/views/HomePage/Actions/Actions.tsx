@@ -19,17 +19,17 @@ const Actions = () => {
 
         <ColoredCard to="/teste" title="Adotar" background_color="#45E4FF" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
           <p>Que tal adotar um novo amiguinho e ganhar um parceiro para a vida toda?</p>
-          <LinkText to="/" link_type="primary">Ver mais</LinkText>
+          <LinkText to="/teste" link_type="primary" font_size={"18px"} text_color="#553525">Ver mais</LinkText>
         </ColoredCard>
 
-        <ColoredCard to="/" title="Apadrinhar" background_color="#F3978B" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
+        <ColoredCard to="/teste" title="Apadrinhar" background_color="#F3978B" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
           <p>Que tal se tornar padrinho de um animalzinho?</p>
-          <LinkText to="/" link_type="primary">Ver mais</LinkText>
+          <LinkText to="/teste" link_type="primary" font_size={"18px"} text_color="#553525">Ver mais</LinkText>
         </ColoredCard>
 
         <ColoredCard to="/teste" title="Lar Temporário" background_color="#FF9944" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
           <p>Que tal acolher um animalzinho no seu lar por um tempo?</p>
-          <LinkText to="/" link_type="primary">Ver mais</LinkText>
+          <LinkText to="/teste" link_type="primary" font_size={"18px"} text_color="#553525">Ver mais</LinkText>
         </ColoredCard>
 
       </CardsDiv>
