@@ -3,7 +3,8 @@ import LinkText from "../../../components/LinkText/LinkText";
 import ColoredCard from "../../../components/ColoredCard";
 import imagemGenerica from "../../../assets/imagem_generica.png";
 import imagemGenericaMobile from "../../../assets/imagem_generica_mobile.png";
-
+import DogForCard from "../../../assets/DogForCard.png";
+import DogCard from "../../../components/DogCard";
 
 const Actions = () => {
   return (
@@ -33,6 +34,8 @@ const Actions = () => {
         </ColoredCard>
 
       </CardsDiv>
+
+      <DogCard image_url={DogForCard} sex="Fêmea" size="Porte Médio" name="Nome Animal" race="Raça do Animal" age="3" location="Rio Grande do Sul" to="/teste"/>
 
     </ActionsContainer>
 
