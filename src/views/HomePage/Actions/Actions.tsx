@@ -22,9 +22,13 @@ const Actions = () => {
   // Função para atualizar a quantidade de cards com base na largura da tela
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 1612) {
+      if (window.innerWidth <= 1260) {
         setVisiblePets(pets.slice(0, 4)); // Mostra apenas 4 cards
-      } else {
+      } 
+      else if(window.innerWidth <= 1612) {
+        setVisiblePets(pets.slice(0, 6)); // Mostra apenas 6 cards
+      }
+      else {
         setVisiblePets(pets); // Mostra todos os 8 cards
       }
     };

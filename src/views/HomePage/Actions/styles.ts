@@ -48,18 +48,23 @@ export const DogCardsContainer = styled.div`
   margin-bottom: 28px;
 
   @media (min-width: 1612px) {
-    grid-template-columns: repeat(4, 1fr); 
     grid-template-rows: repeat(2, auto); 
+    grid-template-columns: repeat(4, 1fr); 
   }
 
   @media (max-width: 1612px) {
-    grid-template-columns: repeat(2, 1fr); 
     grid-template-rows: repeat(2, auto); 
+    grid-template-columns: repeat(3, 1fr); 
+  }
+
+  @media (max-width: 1260px) {
+    grid-template-rows: repeat(2, auto); 
+    grid-template-columns: repeat(2, 1fr); 
   }
 
    @media (max-width: 788px) {
-    grid-template-columns: repeat(1, 1fr); 
     grid-template-rows: repeat(1, auto); 
+    grid-template-columns: repeat(1, 1fr); 
   }
 `;
 
@@ -97,5 +102,10 @@ export const OrangeButton = styled.button`
     padding-bottom: 10px;
     width: 255px;
     height: 15px;
+  }
+
+  &:hover {
+    transform: scale(1.03); 
+    cursor: pointer;
   }
 `;
