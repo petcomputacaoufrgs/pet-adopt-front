@@ -31,9 +31,7 @@ const DogCard = ({ image_url, sex, size, name, race, age, location, to }: ICard)
               <img id="loc" src={LocationPin} alt="Location Pin"/>
               <text>{location}</text>
             </PinText>
-          </AgeLocationContainer>
-
-          
+          </AgeLocationContainer> 
 
         </CardCenteredContainer>
 

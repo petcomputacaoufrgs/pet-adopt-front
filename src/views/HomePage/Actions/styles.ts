@@ -1,73 +1,101 @@
 import styled from "styled-components";
-import label from "../../../assets/Label.png";
-import label_mobile from "../../../assets/Label_mobile.png";
-
-export const InfoText = styled.p`
-    font-family: 'Nunito Sans';
-    font-weight: 800;
-    font-size: 3em;
-    color: #553525;
-    text-align: start;
-
-    @media (max-width: 768px) {
-      font-size: 2.2em;
-  }
-`
-
-export const LabelImage = styled.img`
-
-  /* Exibe a imagem padrão (desktop) por padrão */
-  content: url(${label});
-
-  /* Media Query para telas pequenas (máximo 768px) */
-  @media (max-width: 428px) {
-    content: url(${label_mobile});
-  }
-`;
-
-
 
 export const ActionsContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 100vw;
-    min-height: 100vh;
-    overflow: auto;
-    gap: 12vh;
-
-  overflow: auto;
-    @media (max-width: 1064px) {
-      gap: 2vh;
-  } 
-
+  dislay: flex;
+  flex-direction: column;
+  margin-top: 100px;
+  margin-bottom: 100px;
 `;
 
-export const CardsDiv = styled.div`
-    display: flex;
-    gap: 1rem;
-    width: 80%;
-    
-    justify-content: center;
+export const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60px;
+  font-weight: bold;
+  color: #553525
+`;
+
+export const TextTitle2 = styled.text`
+  font-family: 'Source Serif';
   
-    @media (max-width: 1500px) {
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-`
-
-export const InfoDiv = styled.div`
-    display : flex;
-    width: 80%;
-    align-items: center;
-    gap: 7vw;
-
-    @media (max-width: 1064px) {
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 1vh;
+  @media (min-width: 768px) {
+    font-size: 32px;
   }
-`
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  } 
+`;
+
+export const TextTitle = styled.text`
+  @media (min-width: 768px) {
+    font-size: 48px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 32px;
+  }
+`;
+
+export const DogContainter = styled.div`
+  display: flex;
+  justify-content: center;
+`;  
+
+export const DogCardsContainer = styled.div`
+  display: grid;
+  margin-bottom: 28px;
+
+  @media (min-width: 1612px) {
+    grid-template-columns: repeat(4, 1fr); 
+    grid-template-rows: repeat(2, auto); 
+  }
+
+  @media (max-width: 1612px) {
+    grid-template-columns: repeat(2, 1fr); 
+    grid-template-rows: repeat(2, auto); 
+  }
+
+   @media (max-width: 788px) {
+    grid-template-columns: repeat(1, 1fr); 
+    grid-template-rows: repeat(1, auto); 
+  }
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const OrangeButton = styled.button`
+  color: #553525;
+  background-color: #FF7F00;
+  font-weight: bold;
+  font-family: 'Nunito Sans';
+  border-radius: 30px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+    padding-right: 26px;
+    padding-left: 26px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 339px;
+    height: 48px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 255px;
+    height: 15px;
+  }
+`;

@@ -4,34 +4,56 @@ export const CardContainer = styled.div`
     font-family: 'Nunito Sans';
     display: flex;
     flex-direction: column;
-    align-items: center;
+    margin-right: 16px;
+    margin-left: 16px;
+    margin-bottom: 32px;
 `;
 
 export const Image = styled.img`
-    width: 362px;
-    height: 240px;
+    @media (min-width: 768px) {
+        width: 362px;
+        height: 240px;
+    }
+
+    @media (max-width: 768px) {
+        width: 375px;
+        height: 210px;
+    } 
 `;
 
 export const CardInfoContainer = styled.div`
     background-color: #FFFFFF;
     border: 1px solid #DEDEDE;
     border-radius: 20px;
-    width: 362px;
-    height: 292px;
     margin-top: -25px;
-
     display: flex;
     justify-content: center;
     align-items: center;
 
-    margin-bottom: 100px;
+    @media (min-width: 768px) {
+        width: 362px;
+        height: 292px;
+    }
+
+    @media (max-width: 768px) {
+        width: 375px;
+        height: 260px;
+    } 
 `;
 
 export const CardCenteredContainer = styled.div`
-    width: 282px;
-    height: 220px;
     display: flex;
     flex-direction: column;
+
+    @media (min-width: 768px) {
+        width: 282px;
+        height: 220px;
+    }
+
+    @media (max-width: 768px) {
+        width: 305px;
+        height: 196px;
+    }
 `;
 
 export const CardTagsContainer = styled.div`
@@ -42,19 +64,34 @@ export const CardTagsContainer = styled.div`
 export const AnimalName = styled.text`
     color: #553525;
     font-weight: bold;
-    font-size: 20px;
     margin-bottom: 14px;
+
+    @media (min-width: 768px) {
+        font-size: 20px;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }    
 `;
 
 export const AnimalRace = styled.text`
     color: #553525;
-    font-size: 18px;
     margin-bottom: 14px;
+
+    @media (min-width: 768px) {
+        font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 16px;
+    }
 `;
 
 export const AgeLocationContainer = styled.div` 
     color: #755B4D;
-    margin-bottom: 14px;
+    padding-bottom: 14px;
+    font-size: 14px;
 `;
 
 export const PinText = styled.div`
