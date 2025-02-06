@@ -1,9 +1,10 @@
-import {AboutContainer, AboutDiv} from "./styles";
+import {AboutContainer, AboutDiv, Image} from "./styles";
 import InfoComponent from "../../../components/Info";
 import BackgroundComponent from "../../../components/Background"
 import dog from "../../../assets/Cachorro2.png"
 import line1 from "../../../assets/line1.png"
 import line2 from "../../../assets/line2.png"
+import dogLines from "../../../assets/DogLines.png"
 
 
 const About = () => {
@@ -14,7 +15,7 @@ const About = () => {
       <AboutDiv background_color="#FFF6E8">
           
 
-        <InfoComponent subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" buttonTitle="Ver Nossos Animaizinhos" background_button="#FF9944" to = "/teste">
+        <InfoComponent subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" to = "/teste">
           
           <p>Temos como meta possibilitar o máximo de adoções responsáveis, visando impactar positivamente a vida dos animais errantes, proporcionando-lhes dignidade, e também ajudando a aliviar a superlotação de canis e ONGs.</p>
           
@@ -26,7 +27,7 @@ const About = () => {
 
       <AboutDiv background_color="#FF9944">
 
-        <BackgroundComponent image_url1={line1} image_url2={dog} image_url3={line2}/>
+        <Image src = {dogLines}/>
 
       </AboutDiv>
 

@@ -32,8 +32,8 @@ export const ActionsContainer = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 100vw;
-    min-height: 100vh;
+    width: 100%;
+    min-height: 100%;
     overflow: auto;
     gap: 12vh;
 

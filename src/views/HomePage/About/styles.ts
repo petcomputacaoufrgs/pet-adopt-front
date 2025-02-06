@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import label from "../../../assets/Label.png";
+import label_mobile from "../../../assets/Label_mobile.png";
 
 export const AboutContainer = styled.div`
     display: flex;
@@ -23,3 +25,7 @@ export const AboutDiv = styled.div<{ background_color: string }>`
   background: ${(props) => props.background_color};
 
 `
+export const Image = styled.img`
+  width: 100%;
+  height: 100%; 
+`;

@@ -1,8 +1,9 @@
-import {InfoContent, CardContainer, InfoContainer, StyledLink} from "./styles";
+import {InfoContent, InfoContainer} from "./styles";
+import ButtonComponent from "../button1";
 import {IInfo} from "./types"
 
 
-const InfoComponent = ({ subTitle, title, buttonTitle, background_button, to, children}: IInfo) => {
+const InfoComponent = ({ subTitle, title, to, children}: IInfo) => {
   return (    
 
     <InfoContainer>
@@ -13,17 +14,7 @@ const InfoComponent = ({ subTitle, title, buttonTitle, background_button, to, ch
         {children}
       </InfoContent>
 
-      <StyledLink to = {to}>
-
-        <CardContainer background_color ={background_button}>
-          
-          <InfoContent>
-            <h4>{buttonTitle}</h4>
-          </InfoContent>
-          
-        </CardContainer> 
-
-      </StyledLink>
+      <ButtonComponent title="Ver Nossos Animaizinhos" to={to} background="#FF9944"/>
 
     </InfoContainer>
     

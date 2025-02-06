@@ -1,5 +1,5 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
-import Actions from "./views/HomePage/About/About";
+import Actions from "./views/HomePage/HomePage";
 
 
 function App() {
