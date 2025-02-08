@@ -4,24 +4,22 @@ import { Link } from "react-router-dom";
 export const CardContainer = styled.button<{ background_color: string }>`
   display: flex;
   align-items: center;
+  justify-content: center;  
+  padding: 0.7em;
 
-  padding-left: 2.5em; 
-  padding-right: 2.5em;
-
-  width: 100%;
-  max-width: 267px; 
-  max-height: 48px; 
-  height: auto;
+  width: 5vh;
+  height: 5vh;
+  aspect-ratio: 1 / 1;
 
   background: ${(props) => props.background_color};
-  border-radius: 40px;
+  border-radius: 50%;
 
   border: none;
 
-  transition: transform 0.1s ease;
+  transition: transform 0.2s ease;
 
   &:hover {
-    transform: scale(1.04); 
+    transform: scale(1.2); 
     cursor: pointer; 
   } 
 `;
@@ -34,8 +32,6 @@ export const InfoContent = styled.div`
   text-align: center;
   gap: 24px;
   width: 100%;
-  padding-top: 2em; 
-  padding-bottom: 2em;
 
   h4 {
     margin: 2;
@@ -53,4 +49,12 @@ export const StyledLink = styled(Link)`
   text-decoration: none;
   color: inherit; 
   
+`
+
+export const Image = styled.img <{width: string}>`
+  
+  width: ${(props) => props.width};
+  height: auto;
+
+
 `

@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-export const InfoContent = styled.div`
+export const InfoContent = styled.div <{position:string}>`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: ${(props) => props.position};
   justify-content: center;
-  text-align: left;
+  text-align: ${(props) => props.position};
   gap: 24px;
   width: 100%;
   padding-top: 2em; 
@@ -17,7 +17,7 @@ export const InfoContent = styled.div`
     margin: 0;
     font-family: 'Inter', sans-serif;
     font-weight: 400;
-    font-size: 0.9em;
+    font-size: clamp(0.8rem, 1vw, 0.9em); /* Responsivo */
     line-height: 2;
     color: #553525;
 
@@ -27,7 +27,7 @@ export const InfoContent = styled.div`
     margin: 0;
     font-family: 'Nunito Sans';
     font-weight: 800;
-    font-size: 1.5em;
+    font-size: clamp(1.2rem, 3vw, 1.5em); /* Responsivo */
     line-height: 0;
     color: #553525;
   }
@@ -36,26 +36,29 @@ export const InfoContent = styled.div`
     margin: 0;
     font-family: 'Inter', sans-serif;
     font-weight: 800;
-    font-size: 2em;
+    font-size: clamp(1.5rem, 4vw, 2em); /* Responsivo */
     line-height: 1.5;
     color: #553525;
   }
     
 `;
 
-export const InfoContainer = styled.div`
+export const InfoContainer = styled.div <{position:string}>`
 
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: ${(props) => props.position};
   justify-content: center;
-  gap: 8px;
   width: 100%;
   max-width: 617px;
   max-height: 492px; 
-  padding: 5em; 
+  padding: 7em; 
 
-  @media (max-width: 500px) {
-    min-height: 750px;
+  @media (max-width: 800px) {
+    padding: 2em
+  } 
+  
+  @media (max-height: 700px) {
+    padding: 2em
   } 
 `;

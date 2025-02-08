@@ -15,7 +15,7 @@ const About = () => {
       <AboutDiv background_color="#FFF6E8">
           
 
-        <InfoComponent subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" to = "/teste">
+        <InfoComponent subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" buttonTitle= "Ver Nossos Animaizinhos" to = "/teste" position="flex-start">
           
           <p>Temos como meta possibilitar o máximo de adoções responsáveis, visando impactar positivamente a vida dos animais errantes, proporcionando-lhes dignidade, e também ajudando a aliviar a superlotação de canis e ONGs.</p>
           
