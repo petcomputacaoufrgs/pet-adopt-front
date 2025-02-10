@@ -35,7 +35,7 @@ export const InfoContent = styled.div`
 
   h4 {
     margin: 2;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: 1.1em;
     line-height: 1.5;

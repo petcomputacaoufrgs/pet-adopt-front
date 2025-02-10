@@ -15,7 +15,7 @@ export const InfoContent = styled.div <{position:string}>`
 
   p {
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans';
     font-weight: 400;
     font-size: clamp(0.8rem, 1vw, 0.9em); /* Responsivo */
     line-height: 2;
@@ -34,7 +34,7 @@ export const InfoContent = styled.div <{position:string}>`
 
   h3 {
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: clamp(1.5rem, 4vw, 2em); /* Responsivo */
     line-height: 1.5;
