@@ -11,7 +11,7 @@ const ImageCard = ({ title, text_color, background_color, background_image, to ,
 
         <CardInfo text_color={text_color}>
           <h3>{title}</h3>
-          <LinkText to="/" link_type="primary" font_size="1.4vw" text_color={text_color}>Ver mais</LinkText>
+          <LinkText to="/" link_type="primary" font_size="calc(10px + 1vw)" text_color={text_color}>Ver mais</LinkText>
         </CardInfo>
 
       </CardContainer>

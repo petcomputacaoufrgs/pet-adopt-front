@@ -10,12 +10,7 @@ import { Image } from "./styles";
 import { CardsContainer, HintsContainer, InfoDiv } from "./styles";
 
 
-const Actions = () => {
-  const fundoGatoProporcao = 879 / 280;
-  const fundoCachorroProporcao = 745 / 280;
-
-  const fundoGatoWidthPercentage = 50;
-  const fundoCachorroWidthPercentage = 50;
+const Dicas = () => {
 
   return (
     <HintsContainer>
@@ -50,6 +45,6 @@ const Actions = () => {
 };
 
 
-export default Actions;
+export default Dicas;
 
 
