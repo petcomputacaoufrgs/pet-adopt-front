@@ -9,10 +9,11 @@ const HomeView = () => {
   return (
     <>
     <Actions />
-    <Dicas />
     <About></About>
-    <Contact></Contact>
     <ListAnimals></ListAnimals>
+    <Dicas />
+    <Contact></Contact>
+   
     </>
 
   );
