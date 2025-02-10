@@ -1,5 +1,7 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
-import Actions from "./views/HomePage/Actions/Actions";
+import Actions from "./views/HomePage/Actions";
+import Dicas from "./views/HomePage/Dicas/index"
+import HomeView from "./views/HomePage";
 
 
 function App() {
@@ -7,8 +9,8 @@ function App() {
     <div className="App">
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Actions />} />
-          <Route path="/teste" element={<Actions />} />
+          <Route path="/" element={<HomeView />} />
+          <Route path="/teste" element={<Dicas />} />
         </Routes>
       </HashRouter>
     </div>

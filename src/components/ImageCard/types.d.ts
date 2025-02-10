@@ -1,11 +1,10 @@
 export interface ICard {
     title: string;
+    text_color: string;
     background_color?: string;
-    image_url?: string;
-    image_url_mobile?: string;
-
     background_image?: string;
     to: string;
-    children: React.ReactNode;
-
+    width: string;
+    height_desktop: string;
+    height_mobile: string;
   }

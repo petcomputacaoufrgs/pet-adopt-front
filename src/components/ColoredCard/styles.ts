@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-export const CardContainer = styled.button<{ background_color: string }>`
+
+
+export const CardContainer = styled.button<{ background_color: string, background_image: string }>`
   display: flex;
   align-items: center;
 
@@ -12,7 +14,11 @@ export const CardContainer = styled.button<{ background_color: string }>`
   max-width: 800px;
   height: auto;
 
-  background: ${(props) => props.background_color};
+  background: ${(props) =>
+    props.background_image
+      ? `url(${props.background_image}) ${props.background_color}`
+      : props.background_color};
+
   border-radius: 20px;
 
   border: none;
