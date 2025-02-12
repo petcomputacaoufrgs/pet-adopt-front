@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 
 
-export const CardContainer = styled.button<{ background_color: string, background_image: string }>`
+export const CardContainer = styled.button<{ background_color: string }>`
   display: flex;
   align-items: center;
 
@@ -12,12 +12,9 @@ export const CardContainer = styled.button<{ background_color: string, backgroun
 
   width: 100%;
   max-width: 800px;
-  height: auto;
+ 
 
-  background: ${(props) =>
-    props.background_image
-      ? `url(${props.background_image}) ${props.background_color}`
-      : props.background_color};
+  background: ${(props) => props.background_color};
 
   border-radius: 20px;
 
@@ -83,6 +80,7 @@ export const StyledLink = styled(Link)`
   display: flex; 
   text-decoration: none;
   width: 100%;
+  max-width: 800px;
   justify-content: center;
 
 `

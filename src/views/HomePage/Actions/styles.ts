@@ -37,8 +37,11 @@ export const ActionsContainer = styled.div`
     overflow: auto;
     gap: 12vh;
 
+    
     overflow: auto;
     @media (max-width: 1500px) {
+      padding-top: 20px;
+      padding-bottom: 20px;
       gap: 2vh;
   } 
 
@@ -52,7 +55,6 @@ export const CardsDiv = styled.div`
     justify-content: center;
   
     @media (max-width: 1500px) {
-      padding: 20px;
       flex-direction: column;
       justify-content: center;
       align-items: center;

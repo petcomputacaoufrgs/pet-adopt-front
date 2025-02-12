@@ -35,6 +35,11 @@ export const HintsContainer = styled.div`
     justify-content: center;
     background-color: #FFF6E8;
 
+    @media (max-width: 768px) {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
 `
 
 export const InfoDiv = styled.div`
