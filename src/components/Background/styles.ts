@@ -33,5 +33,7 @@ export const Image1 = styled.img <{top?: string; left?: string; width?: string; 
   height: ${props => props.height || "auto"}; 
   z-index: ${props => props.zIndex || 1};
   transform: translate(${props => props.translate || "0"}, ${props => props.translate || "0"});
-
-`
+  
+  object-fit: cover; 
+  object-position: center; 
+  `;

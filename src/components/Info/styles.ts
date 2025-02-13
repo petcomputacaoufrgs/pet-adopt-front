@@ -54,11 +54,11 @@ export const InfoContainer = styled.div <{position:string}>`
   max-height: 492px; 
   padding: 7em; 
 
-  @media (max-width: 800px) {
-    padding: 2em
+  @media (max-width: 1200px) {
+    padding: 3em
   } 
   
   @media (max-height: 700px) {
-    padding: 2em
+    padding: 3em
   } 
 `;

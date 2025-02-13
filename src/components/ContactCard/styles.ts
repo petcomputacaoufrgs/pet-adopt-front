@@ -24,7 +24,7 @@ export const CardContainer = styled.button<{ background_color: string }>`
   
   @media (max-height: 700px) {
     width: 60%;
-    height: 60vh;
+    min-height: 400px;
     border-radius: 30px;
   } 
 

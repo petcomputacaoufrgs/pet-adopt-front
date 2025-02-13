@@ -1,4 +1,4 @@
-import {AboutContainer, AboutDiv, Image} from "./styles";
+import {AboutContainer, AboutDiv, BackgroundDiv, Image} from "./styles";
 import InfoComponent from "../../../components/Info";
 import BackgroundComponent from "../../../components/Background"
 import dog from "../../../assets/Cachorro2.png"
@@ -25,11 +25,9 @@ const About = () => {
 
       </AboutDiv>
 
-      <AboutDiv background_color="#FF9944">
-
-        <Image src = {dogLines}/>
-
-      </AboutDiv>
+      <BackgroundDiv background_color="#FF9944" background_image={dogLines}>
+    
+      </BackgroundDiv>
 
     </AboutContainer>
 

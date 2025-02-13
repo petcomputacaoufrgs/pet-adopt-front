@@ -25,8 +25,8 @@ export const CardsContainer = styled.div`
 
 
 export const HintsContainer = styled.div`
-    width: 100vw;
-    min-height: 100vh;
+    width: 100%;
+    min-height: 790px;
     overflow: auto;
     display: flex;
     gap: 3vw;

@@ -39,6 +39,7 @@ const Dicas = () => {
           <Image src={imagemPreenchimento} width={12}></Image>
 
         </CardsContainer>
+        
     </HintsContainer>
 
   );
