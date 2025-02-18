@@ -7,8 +7,10 @@ export const CardContainer = styled.button<{ background_color: string }>`
   justify-content: center;  
   padding: 0.7em;
 
-  width: 5vh;
-  height: 5vh;
+  width: 40px;
+  height: 40px;
+  min-width: 20px;
+  min-height: 20px;
   aspect-ratio: 1 / 1;
 
   background: ${(props) => props.background_color};
@@ -55,6 +57,4 @@ export const Image = styled.img <{width: string}>`
   
   width: ${(props) => props.width};
   height: auto;
-
-
 `
