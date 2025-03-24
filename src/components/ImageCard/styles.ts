@@ -81,10 +81,6 @@ export const CardInfo = styled.div<{text_color: string}>`
 
 `;
 
-
-
-
-
 export const StyledLink = styled(Link)<{ width: string, height_desktop: string, height_mobile: string}>`
   display: flex; 
   text-decoration: none;

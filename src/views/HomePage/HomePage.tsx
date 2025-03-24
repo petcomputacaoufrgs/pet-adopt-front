@@ -1,7 +1,9 @@
+import Tags from "../../components/Tags";
 import About from "./About/About"
 import Actions from "./Actions/index"
 import Contact from "./Contact/Contact";
 import { HomepageContainer } from "./styles";
+
 
 const Homepage = () => {
     return (
@@ -9,7 +11,6 @@ const Homepage = () => {
         <HomepageContainer>
 
             {/* <Actions></Actions>   */}
-
             <About></About>
             <Contact></Contact>
 
