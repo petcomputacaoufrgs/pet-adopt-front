@@ -14,7 +14,7 @@ const InfoComponent = ({ subTitle, title, buttonTitle, to, position, children}: 
         {children}
       </InfoContent>
 
-      <ButtonComponent title={buttonTitle} to={to} background="#FF9944"/>
+      <ButtonComponent title={buttonTitle} to={to} background="#FF9944" border="none"/>
 
     </InfoContainer>
     

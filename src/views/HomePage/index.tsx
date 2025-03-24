@@ -1,3 +1,4 @@
+import Banner from "./Banner/Banner";
 import About from "./About/About";
 import Actions from "./Actions";
 import Contact from "./Contact/Contact";
@@ -9,8 +10,9 @@ const HomeView = () => {
 
   return (
     <>
+    <Banner id="banner"/>
     <Actions />
-    <About></About>
+    <About id="about"/>
     <ListAnimals></ListAnimals>
     <Dicas />
     <Contact></Contact>
