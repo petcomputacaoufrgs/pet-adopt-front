@@ -45,7 +45,7 @@ export const CardInfo = styled.div<{text_color: string}>`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-size: 1.5em;
     line-height: 1.5;
@@ -58,7 +58,7 @@ export const CardInfo = styled.div<{text_color: string}>`
   h3 {
     margin: 0;
     width: 50%;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 800;
     font-size: 2vw;
     line-height: 1.5;

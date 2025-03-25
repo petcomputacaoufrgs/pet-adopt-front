@@ -1,5 +1,5 @@
 import {InfoContent, InfoContainer} from "./styles";
-import ButtonComponent from "../button1";
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
 import {IInfo} from "./types"
 
 
@@ -14,7 +14,7 @@ const InfoComponent = ({ subTitle, title, buttonTitle, to, position, children}: 
         {children}
       </InfoContent>
 
-      <ButtonComponent title={buttonTitle} to={to} background="#FF9944"/>
+      <PrimarySecondaryButton width={"181px"} buttonType={"Primário"} isDisabled={true} content={"Botão X"} onClick={1}/>
 
     </InfoContainer>
     

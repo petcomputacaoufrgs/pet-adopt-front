@@ -5,7 +5,7 @@ import Insta from "../../../assets/insta.png"
 import Facebook from "../../../assets/facebook.png"
 import Youtube from "../../../assets/youtube.png"
 import Tiktok from "../../../assets/tiktok.png"
-import { StyledLink } from "../../../components/button1/styles";
+import { StyledLink } from "../../../components/ColoredCard/styles";
 
 
 const Footer = () => {

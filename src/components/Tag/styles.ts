@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const TextContainer = styled.div`
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: bold;
     font-size: 14px;
     color: #553525;

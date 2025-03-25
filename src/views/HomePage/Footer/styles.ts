@@ -14,7 +14,7 @@ export const GridContainer = styled.div`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-size: clamp(0.8rem, 1vw, 0.7rem); /* Responsivo */
     line-height: 2;
@@ -50,7 +50,7 @@ export const FooterDiv1 = styled.div`
   
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-size: clamp(0.8rem, 1vw, 0.7rem); /* Responsivo */
     line-height: 2;
@@ -79,7 +79,7 @@ export const FooterDiv2 = styled.div`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 800;
     font-size: clamp(0.8rem, 1vw, 0.7rem); 
     line-height: 2;
@@ -111,7 +111,7 @@ export const FooterDiv3 = styled.div`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 800;
     font-size: clamp(0.8rem, 1vw, 0.7rem); 
     line-height: 2;
@@ -144,7 +144,7 @@ export const FooterDiv4 = styled.div`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 800;
     font-size: clamp(0.8rem, 1vw, 0.7rem); /* Responsivo */
     line-height: 2;
@@ -191,7 +191,7 @@ export const Direitos = styled.div`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 500;
     font-size: clamp(0.7rem, 1vw, 0.7rem); 
     line-height: 2;

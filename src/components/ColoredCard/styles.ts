@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-
-
 export const CardContainer = styled.button<{ background_color: string }>`
   display: flex;
   align-items: center;
@@ -13,6 +11,7 @@ export const CardContainer = styled.button<{ background_color: string }>`
   width: 100%;
   max-width: 800px;
  
+  margin-bottom: 10px;
 
   background: ${(props) => props.background_color};
 
