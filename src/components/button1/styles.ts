@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-export const CardContainer = styled.button<{ background_color: string }>`
+export const CardContainer = styled.button<{ background_color: string, border: string}>`
   display: flex;
   align-items: center;
 
@@ -16,7 +16,7 @@ export const CardContainer = styled.button<{ background_color: string }>`
   background: ${(props) => props.background_color};
   border-radius: 40px;
 
-  border: none;
+  border: ${(props) => props.border};
 
   transition: transform 0.1s ease;
 

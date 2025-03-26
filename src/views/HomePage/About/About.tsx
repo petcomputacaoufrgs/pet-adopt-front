@@ -6,8 +6,11 @@ import line1 from "../../../assets/line1.png"
 import line2 from "../../../assets/line2.png"
 import dogLines from "../../../assets/DogLines.png"
 
+interface AboutProps {
+  id?: string; // Tornar o id opcional
+}
 
-const About = () => {
+const About: React.FC<AboutProps> = ({ id })=> {
   return (
 
     <AboutContainer>

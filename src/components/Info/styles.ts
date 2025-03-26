@@ -17,7 +17,7 @@ export const InfoContent = styled.div <{position:string}>`
     margin: 0;
     font-family: 'Nunito Sans';
     font-weight: 400;
-    font-size: clamp(0.8rem, 1vw, 0.9em); /* Responsivo */
+    font-size: clamp(0.8rem, 1vw, 1.1em); /* Responsivo */
     line-height: 2;
     color: #553525;
 
