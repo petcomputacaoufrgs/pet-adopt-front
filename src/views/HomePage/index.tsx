@@ -1,15 +1,16 @@
+import Banner from "./Banner/Banner";
 import About from "./About/About";
 import Actions from "./Actions";
 import Contact from "./Contact/Contact";
 import Footer from "./Footer/Footer";
 import Dicas from "./Dicas";
 import ListAnimals from "./ListAnimals";
-import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
 const HomeView = () => {
 
   return (
     <>
+      <Banner />
       <Actions />
       <About></About>
       <ListAnimals></ListAnimals>
@@ -17,7 +18,6 @@ const HomeView = () => {
       <Contact></Contact>
       <Footer></Footer>
     </>
-
   );
 };
 

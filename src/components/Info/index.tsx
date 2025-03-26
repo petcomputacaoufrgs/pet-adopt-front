@@ -14,7 +14,7 @@ const InfoComponent = ({ subTitle, title, buttonTitle, to, position, children}: 
         {children}
       </InfoContent>
 
-      <PrimarySecondaryButton width={"181px"} buttonType={"Primário"} isDisabled={true} content={"Botão X"} onClick={1}/>
+      <PrimarySecondaryButton width={"50px"} buttonType={"Primário"} isDisabled={false} content={buttonTitle} onClick={1} />
 
     </InfoContainer>
     
