@@ -3,7 +3,7 @@ import label from "../../../assets/Label.png";
 import label_mobile from "../../../assets/Label_mobile.png";
 
 export const InfoText = styled.p`
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: 3em;
     color: #553525;

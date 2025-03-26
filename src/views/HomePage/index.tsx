@@ -10,10 +10,6 @@ const HomeView = () => {
 
   return (
     <>
-      <PrimarySecondaryButton buttonType={"Primário"} isDisabled={true} content={"ajslkjslks"} onClick={() => {console.log("Teste")}}/> 
-      <PrimarySecondaryButton buttonType={"Primário"} isDisabled={false} content={"ajslkjslks"} onClick={() => {console.log("Teste")}}/> 
-      <PrimarySecondaryButton buttonType={"Secundário"} isDisabled={false} content={"ajslkjslks"} onClick={() => {}}/> 
-      <PrimarySecondaryButton buttonType={"Secundário"} isDisabled={true} content={"ajslkjslks"} onClick={() => {}}/> 
       <Actions />
       <About></About>
       <ListAnimals></ListAnimals>
