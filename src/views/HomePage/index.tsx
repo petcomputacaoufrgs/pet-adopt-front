@@ -10,16 +10,14 @@ const HomeView = () => {
 
   return (
     <>
-    <Banner id="banner"/>
-    <Actions />
-    <About id="about"/>
-    <ListAnimals></ListAnimals>
-    <Dicas />
-    <Contact></Contact>
-    <Footer></Footer>
-   
+      <Banner />
+      <Actions />
+      <About></About>
+      <ListAnimals></ListAnimals>
+      <Dicas />
+      <Contact></Contact>
+      <Footer></Footer>
     </>
-
   );
 };
 

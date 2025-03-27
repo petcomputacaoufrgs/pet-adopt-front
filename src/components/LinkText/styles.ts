@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const StyledLink = styled(Link)<{ font_size: string, text_color: string }>`
-  font-family: 'Nunito Sans';
+  font-family: 'Nunito Sans', sans-serif;
   font-style: normal;
   font-weight: 800; 
   text-decoration: none;
