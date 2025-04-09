@@ -1,6 +1,8 @@
 import {CardContainer, Image, CardDiv} from "./styles";
-import InfoComponent from "../Info";
+
 import {ICard} from "./types"
+
+import InfoComponent from "../Info";
 
 
 const ContactCard = ({ title, subtitle, buttonTitle, background_color, to, position, children }: ICard) => {

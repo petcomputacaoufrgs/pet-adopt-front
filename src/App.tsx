@@ -1,6 +1,6 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
-import Actions from "./views/HomePage/Actions";
-import Dicas from "./views/HomePage/Dicas/index"
+import Actions from "./views/HomePage/1Actions";
+import Dicas from "./views/HomePage/4Dicas/index"
 import HomeView from "./views/HomePage";
 
 

@@ -1,14 +1,10 @@
-import LinkText from "../../../components/LinkText/LinkText";
-import ColoredCard from "../../../components/ColoredCard";
-import imagemGenerica from "../../../assets/imagem_generica.png";
-import imagemGenericaMobile from "../../../assets/imagem_generica_mobile.png";
-import imagemGatoFundo from "../../../assets/gato.jpeg";
-import imagemCachorroFundo from "../../../assets/cachorro.jpeg";
-import imagemPreenchimento from "../../../assets/Camada_1.png";
-import ImageCard from "../../../components/ImageCard";
-import { Image } from "./styles";
-import { CardsContainer, HintsContainer, InfoDiv } from "./styles";
+import { CardsContainer, HintsContainer, InfoDiv, Image } from "./styles";
 
+import ImageCard from "../../../components/ImageCard";
+
+import imagemGatoFundo from "../../../assets/HomePageCat2.jpeg";
+import imagemCachorroFundo from "../../../assets/HomePageDog2.jpeg";
+import imagemPreenchimento from "../../../assets/HomePageLayer.png";
 
 const Dicas = () => {
 

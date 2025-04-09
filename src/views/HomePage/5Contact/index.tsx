@@ -1,7 +1,9 @@
 import {GridContainer, Image1Div, Image2Div, CardDiv, Image1, Image2} from "./styles"
+
 import ContactCard from "../../../components/ContactCard";
-import Gatinhos from "../../../assets/Contato.png"
-import Lines from "../../../assets/linesContact.png"
+
+import Gatinhos from "../../../assets/HomePageCat.png"
+import Lines from "../../../assets/HomePageLinesContact.png"
 
 
 const Contact = () => {

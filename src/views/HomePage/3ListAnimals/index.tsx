@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { ActionsContainer, TextContainer, TextTitle2, TextTitle, DogContainter, DogCardsContainer, ButtonContainer, OrangeButton } from "./styles";
-import DogForCard from "../../../assets/DogForCard.png";
+
+import {  ActionsContainer, 
+          TextContainer, 
+          TextTitle2, 
+          TextTitle, 
+          DogContainter, 
+          DogCardsContainer, 
+          ButtonContainer, 
+          OrangeButton } from "./styles";
+
 import DogCard from "../../../components/DogCard";
+
+import DogForCard from "../../../assets/HomePageCardDog.png";
 
 const Actions = () => {
   // Array com 8 objetos pet

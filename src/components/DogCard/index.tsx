@@ -1,6 +1,17 @@
+import {CardContainer, 
+        Image, 
+        CardInfoContainer, 
+        CardCenteredContainer, 
+        CardTagsContainer, 
+        AnimalName, 
+        AnimalRace, 
+        AgeLocationContainer, 
+        PinText } from "./styles";
+
 import {ICard} from "./types"
-import { CardContainer, Image, CardInfoContainer, CardCenteredContainer, CardTagsContainer, AnimalName, AnimalRace, AgeLocationContainer, PinText } from "./styles";
-import Tag from "../Tag";
+
+import Tag from "../Tags";
+
 import LocationPin from "../../assets/LocationPin.png";
 import PawPin from "../../assets/PawPin.png";
 
@@ -11,10 +22,10 @@ const DogCard = ({ image_url, sex, size, name, race, age, location, to }: ICard)
       
       <CardInfoContainer>
         <CardCenteredContainer>
-
+          
           <CardTagsContainer>
-            <Tag text={sex}/>
-            <Tag text={size}/>
+            <Tag text={sex} type={"light"} fontSize={"14px"}/>
+            <Tag text={size} type={"light"} fontSize={"14px"}/>
           </CardTagsContainer>
           
           <AnimalName>{name}</AnimalName>

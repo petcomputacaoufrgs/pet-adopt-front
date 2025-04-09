@@ -1,5 +1,6 @@
-import {IButton} from "./types"
 import { PrimaryButton, SecondaryButton } from "./styles";
+
+import {IButton} from "./types"
 
 const PrimarySecondaryButton = ({ width, buttonType, isDisabled, content, onClick}: IButton) => {
     return ( 
