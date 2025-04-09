@@ -1,10 +1,8 @@
-import {AboutContainer, AboutDiv, BackgroundDiv, Image} from "./styles";
+import {AboutContainer, AboutDiv, BackgroundDiv} from "./styles";
+
 import InfoComponent from "../../../components/Info";
-import BackgroundComponent from "../../../components/Background"
-import dog from "../../../assets/Cachorro2.png"
-import line1 from "../../../assets/line1.png"
-import line2 from "../../../assets/line2.png"
-import dogLines from "../../../assets/DogLines.png"
+
+import dogLines from "../../../assets/HomePageDogLines.png"
 
 interface AboutProps {
   id?: string; // Tornar o id opcional

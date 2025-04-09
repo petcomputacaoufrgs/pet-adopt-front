@@ -1,9 +1,17 @@
-import PrimarySecondaryButton from "../PrimarySecondaryButton";
-import { HeaderContainer, Image, TextButton, TextContainer, ButtonsContainer} from "./styles";
-import { IHeader } from "./types"
 import React, { useEffect } from "react";
 
-const HeaderComponent = ({color, user, Logo}: IHeader) => {
+import {HeaderContainer, 
+        Image, 
+        TextButton, 
+        TextContainer, 
+        ButtonsContainer} from "./styles";
+
+import { IHeader } from "./types"
+
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
+
+
+const Header = ({color, user, Logo}: IHeader) => {
     
     const handleScrollToSection = () => {
         const section = document.getElementById("about");
@@ -39,4 +47,4 @@ const HeaderComponent = ({color, user, Logo}: IHeader) => {
     );
 };
 
-export default HeaderComponent;
+export default Header;

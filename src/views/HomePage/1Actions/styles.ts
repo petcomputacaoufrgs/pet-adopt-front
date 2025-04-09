@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import label from "../../../assets/Label.png";
-import label_mobile from "../../../assets/Label_mobile.png";
+import label from "../../../assets/HomePageLabel.png";
+import label_mobile from "../../../assets/HomePageMobileLabel.png";
 
 export const InfoText = styled.p`
     font-family: 'Nunito Sans';

@@ -1,7 +1,9 @@
 import { BannerContainer } from "./styles";
+
 import HeaderComponent from "../../../components/Header";
 import InfoComponent from "../../../components/Info";
-import logo from "../../../assets/Logo Horizontal.png"
+
+import logo from "../../../assets/HorizontalLogo.png"
 
 interface AboutProps {
     id?: string; // Tornar o id opcional

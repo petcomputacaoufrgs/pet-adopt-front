@@ -1,6 +1,8 @@
-import LinkText from "../LinkText/LinkText";
 import {CardContainer, CardInfo, StyledLink} from "./styles";
+
 import {ICard} from "./types"
+
+import LinkText from "../LinkText/LinkText";
 
 
 const ImageCard = ({ title, text_color, background_color, background_image, to , width, height_desktop, height_mobile}: ICard) => {

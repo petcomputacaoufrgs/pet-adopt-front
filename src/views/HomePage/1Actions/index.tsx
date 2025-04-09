@@ -1,9 +1,10 @@
 import {LabelImage, InfoText, ActionsContainer, CardsDiv, InfoDiv} from "./styles";
+
 import LinkText from "../../../components/LinkText/LinkText";
 import ColoredCard from "../../../components/ColoredCard";
-import imagemGenerica from "../../../assets/imagem_generica.png";
-import imagemGenericaMobile from "../../../assets/imagem_generica_mobile.png";
 
+import imagemGenerica from "../../../assets/GenericImage.png";
+import imagemGenericaMobile from "../../../assets/MobileGenericImage.png";
 
 const Actions = () => {
   return (

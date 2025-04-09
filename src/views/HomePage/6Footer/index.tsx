@@ -1,12 +1,21 @@
-import {GridContainer, FooterGrid, FooterDiv1, FooterDiv2, FooterDiv3, FooterDiv4, SocialIconsDiv, Image3, Direitos} from "./styles"
-import SocialIcon from "../../../components/socialIcon";
-import Logo from "../../../assets/Logo Horizontal.png"
-import Insta from "../../../assets/insta.png"
-import Facebook from "../../../assets/facebook.png"
-import Youtube from "../../../assets/youtube.png"
-import Tiktok from "../../../assets/tiktok.png"
+import {GridContainer, 
+        FooterGrid, 
+        FooterDiv1, 
+        FooterDiv2, 
+        FooterDiv3, 
+        FooterDiv4, 
+        SocialIconsDiv, 
+        Image3, 
+        Direitos} from "./styles"
+
+import SocialIcon from "../../../components/SocialIcon";
 import { StyledLink } from "../../../components/ColoredCard/styles";
 
+import Logo from "../../../assets/HorizontalLogo.png"
+import Insta from "../../../assets/InstaIcon.png"
+import Facebook from "../../../assets/FacebookPin.png"
+import Youtube from "../../../assets/YoutubePin.png"
+import Tiktok from "../../../assets/TiktokIcon.png"
 
 const Footer = () => {
     

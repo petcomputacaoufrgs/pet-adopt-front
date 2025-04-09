@@ -1,4 +1,5 @@
 import {StyledLink} from "./styles";
+
 import {ILink} from "./types";
 
 const LinkText = ({ children, to , link_type, font_size, text_color}: ILink) => {

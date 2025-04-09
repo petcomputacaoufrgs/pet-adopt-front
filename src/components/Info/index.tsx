@@ -1,9 +1,10 @@
 import {InfoContent, InfoContainer} from "./styles";
-import PrimarySecondaryButton from "../PrimarySecondaryButton";
+
 import {IInfo} from "./types"
 
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
 
-const InfoComponent = ({ subTitle, title, buttonTitle, to, position, children}: IInfo) => {
+const Info = ({ subTitle, title, buttonTitle, to, position, children}: IInfo) => {
   return (    
 
     <InfoContainer position = {position}>
@@ -21,4 +22,4 @@ const InfoComponent = ({ subTitle, title, buttonTitle, to, position, children}: 
   );
 };
 
-export default InfoComponent;
+export default Info;
