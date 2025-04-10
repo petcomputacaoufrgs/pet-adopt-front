@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
-
-
 export const CardsContainer = styled.div`
+    font-family: 'Nunito Sans', sans-serif;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;

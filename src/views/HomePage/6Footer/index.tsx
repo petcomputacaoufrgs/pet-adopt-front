@@ -1,71 +1,81 @@
-import {GridContainer, 
-        FooterGrid, 
-        FooterDiv1, 
-        FooterDiv2, 
-        FooterDiv3, 
-        FooterDiv4, 
-        SocialIconsDiv, 
-        Image3, 
-        Direitos} from "./styles"
-
-import SocialIcon from "../../../components/SocialIcon";
-import { StyledLink } from "../../../components/ColoredCard/styles";
-
-import Logo from "../../../assets/HorizontalLogo.png"
-import Insta from "../../../assets/InstaIcon.png"
-import Facebook from "../../../assets/FacebookPin.png"
-import Youtube from "../../../assets/YoutubePin.png"
-import Tiktok from "../../../assets/TiktokIcon.png"
-
-const Footer = () => {
+import {
+    GridContainer,
+    FooterGrid,
+    FooterDiv,
+    FooterLinks,
+    FooterSection,
+    SocialIconsDiv,
+    Image3,
+    Rights,
+    Image
+  } from "./styles";
     
+  import Logo from "../../../assets/HorizontalLogo.png";
+  import Insta from "../../../assets/InstaPin.png";
+  import Facebook from "../../../assets/FacebookPin.png";
+  import Youtube from "../../../assets/YoutubePin.png";
+  import Tiktok from "../../../assets/TiktokPin.png";
+  
+  const Footer = () => {
+    const links1 = [
+      "Institucional",
+      "Sobre Nós",
+      "Animais Recém Adicionados",
+      "Dicas",
+      "Fale Conosco",
+      "Cadastrar ONG",
+      "Política de Privacidade"
+    ];
+  
+    const links2 = [
+      "Login",
+      "Sou Administrador",
+      "Sou uma ONG",
+      "Sou Membro de ONG"
+    ];
+  
     return (
-        
-        <GridContainer>
-
-            <FooterGrid>
+      <GridContainer>
+        <FooterGrid>
+          <FooterDiv>
+            <Image3 src={Logo} />
+            <p>
+              Nosso objetivo é <strong>Alcançar Finais Felizes</strong>, proporcionando lares amorosos e seguros para todos os animais.
+            </p>
+          </FooterDiv>
+  
+          <FooterLinks>
+            <FooterSection>
+              {links1.map((text, index) => (
+                <p key={index}>{text}</p>
+              ))}
+            </FooterSection>
+    
+            <FooterSection>
+              {links2.map((text, index) => (
+                <p key={index}>{text}</p>
+              ))}
+            </FooterSection>
+    
+            <FooterSection>
+              <p>Mídias Sociais</p>
+              <SocialIconsDiv>
+                <Image src={Insta}/>
+                <Image src={Facebook}/>
+                <Image src={Youtube}/>
+                <Image src={Tiktok}/>
+              </SocialIconsDiv>
+            </FooterSection>
+          </FooterLinks>
+        </FooterGrid>
             
-                <FooterDiv1>
-                    <Image3 src = {Logo}/>
-                    <p>Nosso objetivo é <span style={{fontWeight: 800}}>Alcançar Finais Felizes</span>, proporcionando lares amorosos e seguros para todos os animais. </p>
-                </FooterDiv1>
-
-                <FooterDiv2>
-                    <StyledLink to= "/teste"> <p>Institucional</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Sobre Nós</p> </StyledLink> 
-                    <StyledLink to= "/teste"> <p>Animais Recém Adicionados</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Dicas</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Fale Conosco</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Cadastrar ONG</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Politica de Privacidade</p> </StyledLink>
-                </FooterDiv2>
-
-                <FooterDiv3>
-                    <StyledLink to= "/teste"> <p>Login</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Sou Admnistrador</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Sou uma ONG</p> </StyledLink>
-                    <StyledLink to= "/teste"> <p>Sou Membro de ONG</p> </StyledLink>
-                </FooterDiv3>
-
-                <FooterDiv4>
-                    <p>Mídias Sociais</p>
-                    <SocialIconsDiv>
-                        <SocialIcon image={Insta} width="100%" to="/teste" background="#FF9944"/>
-                        <SocialIcon image={Facebook} width="75%" to="/teste" background="#FF9944"/>
-                        <SocialIcon image={Youtube} width="100%" to="/teste" background="#FF9944"/>
-                        <SocialIcon image={Tiktok} width="100%" to="/teste" background="#FF9944"/>
-                    </SocialIconsDiv>
-                </FooterDiv4>
-
-            </FooterGrid>
-            
-            <Direitos>
-                <p>© 2024 Pet Adopt. Todos os direitos reservados.</p>
-                <p>Desenvolvido por: Pet Computação</p>
-            </Direitos>
-        
-        </GridContainer>
+        <Rights>
+          <p>© 2024 Pet Adopt. Todos os direitos reservados.</p>
+          <p>Desenvolvido por: Pet Computação</p>
+        </Rights>
+      </GridContainer>
     );
-};
-
-export default Footer;
+  };
+  
+  export default Footer;
+  

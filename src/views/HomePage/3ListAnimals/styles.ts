@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-export const ActionsContainer = styled.div`
+export const ListContainer = styled.div`
+  font-family: 'Nunito Sans', sans-serif;
   dislay: flex;
   flex-direction: column;
   margin-top: 100px;
@@ -17,8 +18,8 @@ export const TextContainer = styled.div`
 `;
 
 export const TextTitle2 = styled.text`
-  font-family: 'Source Serif';
-  
+  font-family: 'Source Serif 4', serif;
+
   @media (min-width: 768px) {
     font-size: 32px;
   }
@@ -77,7 +78,6 @@ export const OrangeButton = styled.button`
   color: #553525;
   background-color: #FF7F00;
   font-weight: bold;
-  font-family: 'Nunito Sans';
   border-radius: 30px;
   border: none;
   display: flex;

@@ -3,6 +3,7 @@ import { TagProps } from "./types";
 
 
 export const TagContainer = styled.div<TagProps>`
+  font-family: "Nunito Sans", sans-serif;
   display: inline-block;
   align-items: center;
   border-radius: 999px;

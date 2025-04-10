@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import {  ActionsContainer, 
+import {  ListContainer, 
           TextContainer, 
           TextTitle2, 
           TextTitle, 
@@ -52,7 +52,7 @@ const Actions = () => {
   }, [pets]);
 
   return (
-    <ActionsContainer>
+    <ListContainer>
 
       <TextContainer>
         <TextTitle2>Não Perca os Animaizinhos</TextTitle2>
@@ -82,7 +82,7 @@ const Actions = () => {
         <OrangeButton>Ver Todos os Animais Disponíveis</OrangeButton>
       </ButtonContainer>
 
-    </ActionsContainer>
+    </ListContainer>
   );
 };
 

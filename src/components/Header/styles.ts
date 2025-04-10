@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const HeaderContainer = styled.div <{background_color:string}> `
+    font-family: 'Nunito Sans', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,7 +17,6 @@ export const HeaderContainer = styled.div <{background_color:string}> `
 export const TextContainer = styled.div`
     
     display: flex;
-    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: clamp(0.8rem, 1vw, 1.1em); /* Responsivo */
     line-height: 2;
@@ -39,7 +39,6 @@ export const TextButton = styled.button`
     border: none;
     background: rgb(0,0,0,0);
 
-    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: clamp(0.8rem, 1vw, 1.1em); /* Responsivo */
     line-height: 2;
