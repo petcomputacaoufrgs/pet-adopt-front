@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 
 export const CardContainer = styled.button<{ background_color: string, background_image: string}>`
+  font-family: 'Nunito Sans', sans-serif;
   display: flex;
   align-items: flex-end;
 
@@ -45,7 +46,6 @@ export const CardInfo = styled.div<{text_color: string}>`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-size: 1.5em;
     line-height: 1.5;
@@ -58,7 +58,6 @@ export const CardInfo = styled.div<{text_color: string}>`
   h3 {
     margin: 0;
     width: 50%;
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 800;
     font-size: 2vw;
     line-height: 1.5;
@@ -81,11 +80,8 @@ export const CardInfo = styled.div<{text_color: string}>`
 
 `;
 
-
-
-
-
 export const StyledLink = styled(Link)<{ width: string, height_desktop: string, height_mobile: string}>`
+  font-family: 'Nunito Sans', sans-serif;
   display: flex; 
   text-decoration: none;
   width: ${(props) => `${props.width}`};
@@ -102,7 +98,5 @@ export const StyledLink = styled(Link)<{ width: string, height_desktop: string, 
 
 export const ButtonDiv = styled.div`
     width: 50vw;
-
-
 `
 

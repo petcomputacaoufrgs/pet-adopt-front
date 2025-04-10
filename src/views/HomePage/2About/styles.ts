@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const AboutContainer = styled.div`
+    font-family: 'Nunito Sans', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;

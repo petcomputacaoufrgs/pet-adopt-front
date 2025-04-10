@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 
 export const GridContainer = styled.div`
+  font-family: 'Nunito Sans', sans-serif;
   display: grid;
   grid-template-areas:
     "header";

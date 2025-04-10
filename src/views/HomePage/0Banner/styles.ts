@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const BannerContainer = styled.div`
+    font-family: "Nunito Sans", sans-serif;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;

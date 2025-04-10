@@ -1,208 +1,129 @@
 import styled from "styled-components";
 
-
 export const GridContainer = styled.div`
-  
+  background-color: #FFF6E8;
+  margin: 0;
+
+  color: #553525;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 100vw;
-  min-height: 442px;
-  background-color: #FFF6E8;
-  gap: 0px;
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.8rem, 1vw, 0.7rem); /* Responsivo */
-    line-height: 2;
-    color: #553525;
   }
 `;
 
 export const FooterGrid = styled.div`
+  margin: 95px 200px 65px 200px;
+  width: 1435px;
+
+  font-size: 18px;
+
   display: flex;
-  justify-content: center;
-  grid-area: footer;
-  background-color: #FFF6E8;
-  gap:140px;
-  padding-top: 4em;
-  min-height: 340px;
-  width: 100%;
-  
-  @media (max-width: 1200px) {
-      flex-direction: column;
-      gap:30px;
-      margin-bottom:40px;
-    } 
+  justify-content: space-around;
 `;
 
-export const FooterDiv1 = styled.div`
-  background-color:  rgba(0, 0, 0, 0); 
+export const FooterDiv = styled.div`
+  width: 255px;
+  margin-right: 255px;
+
+  font-family: 'Nunito Sans';
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  gap: 30px;
-  width: 12vw;
-  
-  p {
-    margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.8rem, 1vw, 0.7rem); /* Responsivo */
-    line-height: 2;
-    color: #553525;
-  }
+`;
 
- @media (max-width: 1200px) {
-    justify-content: center;
-    align-items: center;
-    width:100%;
-    text-align: center;
-    p{
-      width:50%;
-    }
-  } 
+export const Image3 = styled.img`
+  width: 257px;
+  height: 105px;
+  margin-bottom: 45px;
+`;
+
+export const FooterLinks = styled.div`
+  width: 920px;
+
+  font-family: 'Source Serif 4';
+  font-weight: 800;
+  font-size: 18px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 
 `;
 
-export const FooterDiv2 = styled.div`
-  background-color:  rgba(0, 0, 0, 0);
+export const FooterSection = styled.div`
+  gap: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 20px;
 
   p {
-    margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 800;
-    font-size: clamp(0.8rem, 1vw, 0.7rem); 
-    line-height: 2;
     color: #553525;
-    transition: color 0.1s ease; 
+    transition: color 0.1s ease;
+
+    font-family: 'Source Serif 4', serif;
+    font-weight: 800;
+    font-size: clamp(0.8rem, 1vw, 0.7rem);
+    line-height: 2;
+
+    margin: 0;
 
     &:hover {
-    cursor: pointer;
-    color: #8b6a50; 
+      color: #8b6a50;
+      cursor: pointer;
     }
-  }
-
- @media (max-width: 1200px) {
-    justify-content: center;
-    align-items: center;
-    width:100%;
-    gap:10px;
-  } 
-
-`;
-
-export const FooterDiv3 = styled.div`
-  background-color:  rgba(0, 0, 0, 0); 
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 20px;
-
-  p {
-    margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 800;
-    font-size: clamp(0.8rem, 1vw, 0.7rem); 
-    line-height: 2;
-    color: #553525;
-  
-    transition: color 0.1s ease; 
-
-    &:hover {
-    cursor: pointer;
-    color: #8b6a50; 
-    }
-  }
-
- @media (max-width: 1200px) {
-    justify-content: center;
-    align-items: center;
-    width:100%;
-    gap:10px;
-  } 
-
-`;
-
-export const FooterDiv4 = styled.div`
-  background-color: rgba(0, 0, 0, 0); 
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 10px;
-
-  p {
-    margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 800;
-    font-size: clamp(0.8rem, 1vw, 0.7rem); /* Responsivo */
-    line-height: 2;
-    color: #553525;
   }
 
   @media (max-width: 1200px) {
-    justify-content: center;
     align-items: center;
-    width:100%;
-    gap:10px;
-  } 
- 
+    width: 100%;
+    gap: 10px;
+  }
 `;
 
 export const SocialIconsDiv = styled.div`
-  display: flex;
   gap: 15px;
-  width:100%;
-  
+  width: 100%;
+
+  display: flex;
+
   @media (max-width: 1200px) {
+    gap: 10px;
     justify-content: center;
-    align-items: center;
-    width:100%;
-    gap:10px;
-  } 
-`
-
-export const Image3 = styled.img`
-  width: auto;
-  height: 5vw;
-
-  @media (max-width: 1200px) {
-      height: 10vw;
-  } 
+  }
 `;
 
-export const Direitos = styled.div`
+export const Image = styled.img`
+  width: 40px;
+  height: 40px;
+`;
+
+export const Rights = styled.div`
+  border-top: 1px solid #D9D2CE;
+  width: 1515px;
+  margin-bottom: 15px;
+
+  font-weight: 400;
+  font-size: 14px;
+  font-family: 'Nunito Sans';
+
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid #c0a28d;
-  width: 80%;
-  padding-top: 10px;
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 500;
-    font-size: clamp(0.7rem, 1vw, 0.7rem); 
-    line-height: 2;
-    color: #553525;
+    line-height: 3;
   }
-    
+
   @media (max-width: 1200px) {
     flex-direction: column;
-    justify-content: center;
-    align-items: center; 
-    margin-bottom:20px; 
-  } 
-
+    align-items: center;
+    margin-bottom: 20px;
+  }
 `;

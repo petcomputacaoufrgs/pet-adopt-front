@@ -1,4 +1,4 @@
-import {CardContainer, Image, CardDiv} from "./styles";
+import {CardContainer, CardDiv} from "./styles";
 
 import {ICard} from "./types"
 

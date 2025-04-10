@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 export const PrimaryButton = styled.button<{width: string | undefined}>`
+  font-family: "Nunito Sans", sans-serif;
   background-color: #FF9944;
   border-radius: 100px;
   border: none;
   font-weight: 800;
-  font-family: 'Nunito Sans', sans-serif;
   font-size: 18px;
   color: #553525;
   padding: 14px 26px;
@@ -52,7 +52,6 @@ export const SecondaryButton = styled.button<{width: string | undefined}>`
   background-color: transparent;
   border-radius: 100px;
   font-weight: 800;
-  font-family: 'Nunito Sans', sans-serif;
   font-size: 18px;
   color: #553525;
   border: 1px solid #553525;

@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
 export const CardContainer = styled.button<{ background_color: string }>`
-  
+  font-family: 'Nunito Sans', sans-serif;
   display: flex;
   
   align-items: center;

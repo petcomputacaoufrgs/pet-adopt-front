@@ -3,7 +3,6 @@ import label from "../../../assets/HomePageLabel.png";
 import label_mobile from "../../../assets/HomePageMobileLabel.png";
 
 export const InfoText = styled.p`
-    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: 3em;
     color: #553525;
@@ -28,6 +27,7 @@ export const LabelImage = styled.img`
 
 
 export const ActionsContainer = styled.div`
+    font-family: "Nunito Sans", sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
