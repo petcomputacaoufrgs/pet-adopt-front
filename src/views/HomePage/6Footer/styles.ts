@@ -134,21 +134,12 @@ export const SocialIconsDiv = styled.div`
   width: 100%;
 
   display: flex;
-  flex-direction: row;
-
-  a{
-    width: 13%;
-    height: auto;
-  }
-
-  img{
-  
-  }
+  flex-direction: row;  
 `;
 
 export const Icon = styled.div<{ $orange: string; $brown: string }>`
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   background-image: url(${props => props.$orange});
   background-size: contain;
   background-repeat: no-repeat;
