@@ -43,8 +43,6 @@ const Actions = () => {
       }
     };
 
-    // Executa a função ao carregar a página e ao redimensionar a tela
-    handleResize();
     window.addEventListener("resize", handleResize);
 
     // Remove o listener ao desmontar o componente
