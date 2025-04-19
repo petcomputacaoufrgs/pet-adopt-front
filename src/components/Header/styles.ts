@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const HeaderContainer = styled.div <{background_color:string}> `
+export const HeaderContainer = styled.div <{$backgroundColor:string}> `
     font-family: 'Nunito Sans', sans-serif;
     display: flex;
     justify-content: center;
@@ -8,7 +8,7 @@ export const HeaderContainer = styled.div <{background_color:string}> `
     max-width: 100vw;
     min-height: 100px;
     gap: 9vw;
-    background-color: ${(props) => props.background_color};
+    background-color: ${(props) => props.$backgroundColor};
     padding-left: 3.5em;  
     padding-right: 3.5em;    
   

@@ -96,8 +96,8 @@ export const InfoDiv = styled.div`
 `
 
 
-export const Image = styled.img<{width: Number}>`
-  width: ${(props) => `${props.width}%`};;
+export const Image = styled.img<{$width: Number}>`
+  width: ${(props) => `${props.$width}%`};;
   height: auto; 
 
 @media (max-width: 768px) {

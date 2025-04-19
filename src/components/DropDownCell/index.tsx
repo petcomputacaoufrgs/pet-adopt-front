@@ -41,7 +41,7 @@ const DropDownCell = ({ options, onClick, width, fontSize }: IDropDown) => {
 
 
   return (
-    <DropDownContainer optionHeight={`${optionHeight}px`} width={width} maxHeight={`${maxHeight}px`} fontSize={fontSize}>
+    <DropDownContainer $optionHeight={`${optionHeight}px`} $width={width} $maxHeight={`${maxHeight}px`} $fontSize={fontSize}>
       {options.map((option, index) => (
         <div key={option + index}>
           <button style={{display: "flex", alignItems: "center"}} onClick={handleClick(index)}>

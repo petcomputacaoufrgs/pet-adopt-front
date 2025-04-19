@@ -32,7 +32,7 @@ const Dicas = () => {
 
           <ImageCard to="/" title="Expectativa e Realidade." text_color={"white"} background_image={imagemCachorroFundo} width={"39vw"} height_desktop={"48%"} height_mobile="25vh"/>
 
-          <Image src={imagemPreenchimento} width={12}></Image>
+          <Image src={imagemPreenchimento} $width={12}></Image>
 
         </CardsContainer>
         

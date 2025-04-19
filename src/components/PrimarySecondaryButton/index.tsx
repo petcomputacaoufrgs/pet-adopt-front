@@ -7,9 +7,9 @@ const PrimarySecondaryButton = ({ width, buttonType = "Primário", isDisabled = 
       <>
 
         {(buttonType === "Primário") ? (
-          <PrimaryButton width={width} onClick={onClick} disabled={isDisabled} highlighted={highlighted}>{content}</PrimaryButton>
+          <PrimaryButton $width={width} onClick={onClick} disabled={isDisabled} $highlighted={highlighted}>{content}</PrimaryButton>
         ) : (
-          <SecondaryButton width={width} onClick={onClick} disabled={isDisabled} highlighted={highlighted}>{content}</SecondaryButton>
+          <SecondaryButton $width={width} onClick={onClick} disabled={isDisabled} $highlighted={highlighted}>{content}</SecondaryButton>
         )}
         
       </>

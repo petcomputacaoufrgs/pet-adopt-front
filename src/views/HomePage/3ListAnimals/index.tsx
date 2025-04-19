@@ -26,21 +26,26 @@ const Actions = () => {
     { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Bob", race: "Rottweiler", age: "4", location: "Fortaleza, CE", to: "/pet8" }
   ];
 
+  const getPetsToShow = () => {
+    if (window.innerWidth <= 1260) 
+      return pets.slice(0, 4); // Mostra apenas 4 cards    
+    
+    if(window.innerWidth <= 1612) 
+      return pets.slice(0, 6); // Mostra apenas 6 cards
+
+    return pets; // Mostra todos os 8 cards
+    
+  };
+  
+
   // Estado para controlar quantos cards são exibidos
-  const [visiblePets, setVisiblePets] = useState(pets);
+  const [visiblePets, setVisiblePets] = useState(getPetsToShow());
+
 
   // Função para atualizar a quantidade de cards com base na largura da tela
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1260) {
-        setVisiblePets(pets.slice(0, 4)); // Mostra apenas 4 cards
-      } 
-      else if(window.innerWidth <= 1612) {
-        setVisiblePets(pets.slice(0, 6)); // Mostra apenas 6 cards
-      }
-      else {
-        setVisiblePets(pets); // Mostra todos os 8 cards
-      }
+      setVisiblePets(getPetsToShow());
     };
 
     window.addEventListener("resize", handleResize);

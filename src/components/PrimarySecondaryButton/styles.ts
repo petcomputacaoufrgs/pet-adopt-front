@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-export const PrimaryButton = styled.button<{width: string | undefined, highlighted: boolean}>`
+export const PrimaryButton = styled.button<{$width: string | undefined, $highlighted: boolean}>`
   font-family: "Nunito Sans", sans-serif;
-  background-color: ${({ highlighted }) => (highlighted ? "#553525" : "#FF9944")};
+  background-color: ${({ $highlighted }) => ($highlighted ? "#553525" : "#FF9944")};
   border-radius: 100px;
-  border: ${({ highlighted }) => (highlighted ? "1px solid #553525" : "none")};
+  border: ${({ $highlighted }) => ($highlighted ? "1px solid #553525" : "none")};
   font-weight: 800;
   font-size: 18px;
-  color: ${({ highlighted }) => (highlighted ? "white" : "#553525")};
+  color: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
   padding: 14px 26px;
 
   display: flex;
@@ -16,7 +16,7 @@ export const PrimaryButton = styled.button<{width: string | undefined, highlight
   
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 
-  width: ${(props) => (props.width)? props.width : "auto"};
+  width: ${(props) => (props.$width)? props.$width : "auto"};
 
   &:focus {
     border: 1px solid #553525;
@@ -48,12 +48,12 @@ export const PrimaryButton = styled.button<{width: string | undefined, highlight
   }
 `
 
-export const SecondaryButton = styled.button<{width: string | undefined, highlighted: boolean}>`
-  background-color: ${({ highlighted }) => (highlighted ? "#553525" : "transparent")};
+export const SecondaryButton = styled.button<{$width: string | undefined, $highlighted: boolean}>`
+  background-color: ${({ $highlighted }) => ($highlighted ? "#553525" : "transparent")};
   border-radius: 100px;
   font-weight: 800;
   font-size: 18px;
-  color: ${({ highlighted }) => (highlighted ? "white" : "#553525")};
+  color: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
   border: 1px solid #553525;
   padding: 12px 26px;
 
@@ -63,7 +63,7 @@ export const SecondaryButton = styled.button<{width: string | undefined, highlig
 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 
-  width: ${(props) => (props.width)? props.width : "auto"};
+  width: ${(props) => (props.$width)? props.$width : "auto"};
   
   &:focus {
     border: 1px solid #FF9944;

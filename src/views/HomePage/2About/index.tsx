@@ -13,7 +13,7 @@ const About: React.FC<AboutProps> = ({ id })=> {
 
     <AboutContainer>
 
-      <AboutDiv background_color="#FFF6E8">
+      <AboutDiv $backgroundColor="#FFF6E8">
           
 
         <Info subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" buttonTitle= "Ver Nossos Animaizinhos" to = "/teste" position="flex-start">
@@ -26,7 +26,7 @@ const About: React.FC<AboutProps> = ({ id })=> {
 
       </AboutDiv>
 
-      <BackgroundDiv background_color="#FF9944" background_image={dogLines}>
+      <BackgroundDiv $backgroundColor="#FF9944" $backgroundImage={dogLines}>
     
       </BackgroundDiv>
 

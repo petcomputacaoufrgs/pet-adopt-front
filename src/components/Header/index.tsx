@@ -25,7 +25,7 @@ const Header = ({color, user, Logo}: IHeader) => {
       }, []);
 
     return(
-        <HeaderContainer background_color = {color}>
+        <HeaderContainer $backgroundColor = {color}>
             
             <Image src = {Logo}/>
             

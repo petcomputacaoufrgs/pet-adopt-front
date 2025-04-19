@@ -7,9 +7,9 @@ import PrimarySecondaryButton from "../PrimarySecondaryButton";
 const Info = ({ subTitle, title, buttonTitle, to, position, children}: IInfo) => {
   return (    
 
-    <InfoContainer position = {position}>
+    <InfoContainer $position = {position}>
 
-      <InfoContent position = {position}>
+      <InfoContent $position = {position}>
         <h1>{subTitle}</h1>
         <h3>{title}</h3>
         {children}

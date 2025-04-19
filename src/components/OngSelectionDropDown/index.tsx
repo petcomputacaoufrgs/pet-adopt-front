@@ -33,7 +33,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
 
   const handleOptionClick = (event : any) => {
     const value = event.target.innerText
-    setQuery(value);           // preenche o input
+    setQuery(value);           
 
     setFilteredOptions(options.filter((opt) =>
       opt.toLowerCase().startsWith(value.toLowerCase())))
@@ -62,7 +62,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
 
 <>
 
-      <BasicInput  title='Países' required={true} width={width} fontSize={fontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} paddingRight='56px'>
+      <BasicInput  title='Países' required={true} $width={width} $fontSize={fontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
 
       <button
           onClick={toggleOptions}

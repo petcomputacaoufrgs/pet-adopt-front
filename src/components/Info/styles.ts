@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
-export const InfoContent = styled.div <{position:string}>`
+export const InfoContent = styled.div <{$position:string}>`
   display: flex;
   flex-direction: column;
-  align-items: ${(props) => props.position};
+  align-items: ${(props) => props.$position};
   justify-content: center;
-  text-align: ${(props) => props.position};
+  text-align: ${(props) => props.$position};
   gap: 24px;
   width: 100%;
   padding-top: 2em; 
@@ -39,11 +39,11 @@ export const InfoContent = styled.div <{position:string}>`
     
 `;
 
-export const InfoContainer = styled.div <{position:string}>`
+export const InfoContainer = styled.div <{$position:string}>`
   font-family: 'Nunito Sans', sans-serif;
   display: flex;
   flex-direction: column;
-  align-items: ${(props) => props.position};
+  align-items: ${(props) => props.$position};
   justify-content: center;
   width: 100%;
   max-width: 617px;

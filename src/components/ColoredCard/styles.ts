@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-export const CardContainer = styled.button<{ background_color: string }>`
+export const CardContainer = styled.button<{ $backgroundColor: string }>`
   font-family: 'Nunito Sans', sans-serif;
   display: flex;
   align-items: center;
@@ -14,7 +14,7 @@ export const CardContainer = styled.button<{ background_color: string }>`
  
   margin-bottom: 10px;
 
-  background: ${(props) => props.background_color};
+  background: ${(props) => props.$backgroundColor};
 
   border-radius: 20px;
 

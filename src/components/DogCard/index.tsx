@@ -24,8 +24,8 @@ const DogCard = ({ image_url, sex, size, name, race, age, location, to }: ICard)
         <CardCenteredContainer>
           
           <CardTagsContainer>
-            <Tag text={sex} type={"light"} fontSize={"14px"}/>
-            <Tag text={size} type={"light"} fontSize={"14px"}/>
+            <Tag $text={sex} type={"light"} fontSize={"14px"}/>
+            <Tag $text={size} type={"light"} fontSize={"14px"}/>
           </CardTagsContainer>
           
           <AnimalName>{name}</AnimalName>

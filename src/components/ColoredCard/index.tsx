@@ -27,7 +27,7 @@ const ColoredCard = ({ title, background_color, image_url, image_url_mobile, to,
 
   return (
     <StyledLink to={to}>
-      <CardContainer  background_color={background_color || "transparent"}>
+      <CardContainer  $backgroundColor={background_color || "transparent"}>
 
         {image? <Image src={image}/> : null}
 

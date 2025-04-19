@@ -5,7 +5,7 @@ import {ILink} from "./types";
 const LinkText = ({ children, to , link_type, font_size, text_color}: ILink) => {
   return (
  
-      <StyledLink to={to} font_size={font_size} text_color={text_color}> 
+      <StyledLink $fontSize={font_size} $textColor={text_color}> 
         {children}
 
         {(link_type === "primary"?

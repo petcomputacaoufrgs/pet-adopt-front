@@ -13,24 +13,24 @@ export const AboutContainer = styled.div`
     } 
 `;
 
-export const AboutDiv = styled.div<{ background_color: string }>`
+export const AboutDiv = styled.div<{ $backgroundColor: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 790px;
-  background: ${(props) => props.background_color};
+  background: ${(props) => props.$backgroundColor};
 
 `;
 
-export const BackgroundDiv = styled.div<{background_image: string, background_color: string}>`
+export const BackgroundDiv = styled.div<{$backgroundImage: string, $backgroundColor: string}>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 790px;
   
-  background: ${(props) => `url(${props.background_image}) ${props.background_color}`};
+  background: ${(props) => `url(${props.$backgroundImage}) ${props.$backgroundColor}`};
   
   background-size: cover;
   background-position: center;

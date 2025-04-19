@@ -17,7 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomeView />} />
           <Route path="/teste" element={<SearchBar title="Países" required={true} placeholder="Encontre o país" width="500px" fontSize="20px" options={["Brasil", "Burkina Faso", "EUA", "China", "Argentina", "Bolívia", "Brasil mas a segunda versão"]} />} />
-          <Route path="/teste-input" element={<BasicInput title="Países" required={true} placeholder="Encontre o país" width="500px" fontSize="20px" value={value} onChange={(e) => setValue(e.target.value)}/>}/>
+          <Route path="/teste-input" element={<BasicInput title="Países" required={true} placeholder="Encontre o país" $width="500px" $fontSize="20px" value={value} onChange={(e) => setValue(e.target.value)}/>}/>
         </Routes>
       </HashRouter>
     </div>

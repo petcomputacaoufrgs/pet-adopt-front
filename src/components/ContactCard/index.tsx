@@ -11,7 +11,7 @@ const ContactCard = ({ title, subtitle, buttonTitle, background_color, to, posit
 
     <CardDiv>
 
-      <CardContainer background_color={background_color}>
+      <CardContainer $backgroundColor={background_color}>
         <InfoComponent title={title} subTitle={subtitle} buttonTitle={buttonTitle} to={to} position={position}>
             {children}
         </InfoComponent>

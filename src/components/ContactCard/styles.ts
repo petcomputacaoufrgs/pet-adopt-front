@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const CardContainer = styled.button<{ background_color: string }>`
+export const CardContainer = styled.div<{ $backgroundColor: string }>`
   font-family: 'Nunito Sans', sans-serif;
   display: flex;
   
@@ -10,7 +10,7 @@ export const CardContainer = styled.button<{ background_color: string }>`
   width: 40%;
   height: 40vh;
 
-  background: ${(props) => props.background_color};
+  background: ${(props) => props.$backgroundColor};
   border-radius: 50px;
 
   border: none;
