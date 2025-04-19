@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-export const PrimaryButton = styled.button<{width: string | undefined}>`
+export const PrimaryButton = styled.button<{width: string | undefined, highlighted: boolean}>`
   font-family: "Nunito Sans", sans-serif;
-  background-color: #FF9944;
+  background-color: ${({ highlighted }) => (highlighted ? "#553525" : "#FF9944")};
   border-radius: 100px;
-  border: none;
+  border: ${({ highlighted }) => (highlighted ? "1px solid #553525" : "none")};
   font-weight: 800;
   font-size: 18px;
-  color: #553525;
+  color: ${({ highlighted }) => (highlighted ? "white" : "#553525")};
   padding: 14px 26px;
 
   display: flex;
@@ -48,12 +48,12 @@ export const PrimaryButton = styled.button<{width: string | undefined}>`
   }
 `
 
-export const SecondaryButton = styled.button<{width: string | undefined}>`
-  background-color: transparent;
+export const SecondaryButton = styled.button<{width: string | undefined, highlighted: boolean}>`
+  background-color: ${({ highlighted }) => (highlighted ? "#553525" : "transparent")};
   border-radius: 100px;
   font-weight: 800;
   font-size: 18px;
-  color: #553525;
+  color: ${({ highlighted }) => (highlighted ? "white" : "#553525")};
   border: 1px solid #553525;
   padding: 12px 26px;
 
