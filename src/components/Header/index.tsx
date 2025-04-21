@@ -1,9 +1,17 @@
-import ButtonComponent from "../button1";
-import { HeaderContainer, Image, TextButton, TextContainer, ButtonsContainer} from "./styles";
-import { IHeader } from "./types"
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
-const HeaderComponent = ({color, user, Logo}: IHeader) => {
+import {HeaderContainer, 
+        Image, 
+        TextButton, 
+        TextContainer, 
+        ButtonsContainer} from "./styles";
+
+import { IHeader } from "./types"
+
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
+
+
+const Header = ({color, user, Logo}: IHeader) => {
     
     const handleScrollToSection = () => {
         const section = document.getElementById("about");
@@ -17,7 +25,7 @@ const HeaderComponent = ({color, user, Logo}: IHeader) => {
       }, []);
 
     return(
-        <HeaderContainer background_color = {color}>
+        <HeaderContainer $backgroundColor = {color}>
             
             <Image src = {Logo}/>
             
@@ -31,12 +39,12 @@ const HeaderComponent = ({color, user, Logo}: IHeader) => {
             </TextContainer>
 
             <ButtonsContainer>
-                <ButtonComponent title="Cadastrar ONG ou Membro" to="/teste" background = "rgb(0,0,0,0)" border="2px solid #553525"/>            
-                <ButtonComponent title="Fazer Login" to="/teste" background = "#FF9944" border="none"/>            
+                <PrimarySecondaryButton width={"50px"} buttonType={"Primário"} isDisabled={false} content={"Cadastrar ONG ou Membro"} onClick={1} />
+                <PrimarySecondaryButton width={"50px"} buttonType={"Primário"} isDisabled={false} content={"Fazer Login"} onClick={1} />
             </ButtonsContainer>
 
         </HeaderContainer>
     );
 };
 
-export default HeaderComponent;
+export default Header;

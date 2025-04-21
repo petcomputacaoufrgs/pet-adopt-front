@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import {CardContainer, Image, CardInfo, StyledLink} from "./styles";
+
+import {CardContainer, 
+        Image,
+        CardInfo, 
+        StyledLink} from "./styles";
+
 import {ICard} from "./types"
 
 
 const ColoredCard = ({ title, background_color, image_url, image_url_mobile, to, children }: ICard) => {
 
   const [image, setImage] = useState(window.innerWidth > 768 ? image_url : image_url_mobile);
-
+  
   useEffect(() => {
     const handleResize = () => {
       setImage(window.innerWidth > 768 ? image_url : image_url_mobile);
@@ -22,19 +27,16 @@ const ColoredCard = ({ title, background_color, image_url, image_url_mobile, to,
 
   return (
     <StyledLink to={to}>
-      <CardContainer  background_color={background_color || "transparent"}>
+      <CardContainer  $backgroundColor={background_color || "transparent"}>
 
         {image? <Image src={image}/> : null}
 
         <CardInfo>
           <h3>{title}</h3>
           {children}
-        </CardInfo>
-        
+        </CardInfo>  
       </CardContainer>
     </StyledLink>
-    
-
   );
 };
 

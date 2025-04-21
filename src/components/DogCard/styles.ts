@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const CardContainer = styled.div`
-    font-family: 'Nunito Sans';
+    font-family: 'Nunito Sans', sans-serif;
     display: flex;
     flex-direction: column;
     margin-right: 16px;
@@ -58,6 +58,8 @@ export const CardCenteredContainer = styled.div`
 
 export const CardTagsContainer = styled.div`
     display: flex;
+    justify-content: space-between;
+    width: 210px;
     margin-bottom: 14px;
 `;
 

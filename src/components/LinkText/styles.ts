@@ -1,13 +1,12 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
-export const StyledLink = styled(Link)<{ font_size: string, text_color: string }>`
-  font-family: 'Nunito Sans';
+export const StyledLink = styled.p<{ $fontSize: string, $textColor: string }>`
+  font-family: 'Nunito Sans', sans-serif;
   font-style: normal;
   font-weight: 800; 
   text-decoration: none;
-  color: ${(props) => `${props.text_color}`};
-  font-size: ${(props) => `${props.font_size}`};
+  color: ${(props) => `${props.$textColor}`};
+  font-size: ${(props) => `${props.$fontSize}`};
   padding: 0px 0px;
   gap: 10px;
   line-height: 28px;

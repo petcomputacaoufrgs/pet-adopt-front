@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 
 
 
-export const CardContainer = styled.button<{ background_color: string, background_image: string}>`
+export const CardContainer = styled.button<{ $backgroundColor: string, $backgroundImage: string}>`
+  font-family: 'Nunito Sans', sans-serif;
   display: flex;
   align-items: flex-end;
 
@@ -11,7 +12,7 @@ export const CardContainer = styled.button<{ background_color: string, backgroun
   height: 100%;
 
   gap: 16px;
-  background: ${(props) => `url(${props.background_image}) ${props.background_color}`};
+  background: ${(props) => `url(${props.$backgroundImage}) ${props.$backgroundColor}`};
       
   border-radius: 20px;
 
@@ -31,7 +32,7 @@ export const CardContainer = styled.button<{ background_color: string, backgroun
 
 `;
 
-export const CardInfo = styled.div<{text_color: string}>`
+export const CardInfo = styled.div<{$textColor: string}>`
   display: flex;
 
   align-items: center;
@@ -45,11 +46,10 @@ export const CardInfo = styled.div<{text_color: string}>`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
     font-weight: 400;
     font-size: 1.5em;
     line-height: 1.5;
-    color: ${(props) => `${props.text_color}`}
+    color: ${(props) => `${props.$textColor}`}
     
 
 
@@ -58,11 +58,10 @@ export const CardInfo = styled.div<{text_color: string}>`
   h3 {
     margin: 0;
     width: 50%;
-    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: 2vw;
     line-height: 1.5;
-    color: ${(props) => `${props.text_color}`}
+    color: ${(props) => `${props.$textColor}`}
   }
 
     @media (max-width: 768px) {
@@ -81,28 +80,23 @@ export const CardInfo = styled.div<{text_color: string}>`
 
 `;
 
-
-
-
-
-export const StyledLink = styled(Link)<{ width: string, height_desktop: string, height_mobile: string}>`
+export const StyledLink = styled(Link)<{ $width: string, $heightDesktop: string, $heightMobile: string}>`
+  font-family: 'Nunito Sans', sans-serif;
   display: flex; 
   text-decoration: none;
-  width: ${(props) => `${props.width}`};
-  height: ${(props) => `${props.height_desktop}`};
+  width: ${(props) => `${props.$width}`};
+  height: ${(props) => `${props.$heightDesktop}`};
   justify-content: center;
 
 
   @media (max-width: 768px) {
     width: 100%;
-    height: ${(props) => `${props.height_mobile}`};
+    height: ${(props) => `${props.$heightMobile}`};
   }
 
 `
 
 export const ButtonDiv = styled.div`
     width: 50vw;
-
-
 `
 

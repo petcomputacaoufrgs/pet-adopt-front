@@ -1,24 +1,25 @@
 import {InfoContent, InfoContainer} from "./styles";
-import ButtonComponent from "../button1";
+
 import {IInfo} from "./types"
 
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
 
-const InfoComponent = ({ subTitle, title, buttonTitle, to, position, children}: IInfo) => {
+const Info = ({ subTitle, title, buttonTitle, to, position, children}: IInfo) => {
   return (    
 
-    <InfoContainer position = {position}>
+    <InfoContainer $position = {position}>
 
-      <InfoContent position = {position}>
+      <InfoContent $position = {position}>
         <h1>{subTitle}</h1>
         <h3>{title}</h3>
         {children}
       </InfoContent>
 
-      <ButtonComponent title={buttonTitle} to={to} background="#FF9944" border="none"/>
+      <PrimarySecondaryButton width={"50px"} buttonType={"Primário"} isDisabled={false} content={buttonTitle} onClick={1} />
 
     </InfoContainer>
     
   );
 };
 
-export default InfoComponent;
+export default Info;

@@ -1,6 +1,8 @@
-import {CardContainer, Image, CardDiv} from "./styles";
-import InfoComponent from "../Info";
+import {CardContainer, CardDiv} from "./styles";
+
 import {ICard} from "./types"
+
+import InfoComponent from "../Info";
 
 
 const ContactCard = ({ title, subtitle, buttonTitle, background_color, to, position, children }: ICard) => {
@@ -9,7 +11,7 @@ const ContactCard = ({ title, subtitle, buttonTitle, background_color, to, posit
 
     <CardDiv>
 
-      <CardContainer background_color={background_color}>
+      <CardContainer $backgroundColor={background_color}>
         <InfoComponent title={title} subTitle={subtitle} buttonTitle={buttonTitle} to={to} position={position}>
             {children}
         </InfoComponent>

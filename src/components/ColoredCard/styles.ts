@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-
-
-export const CardContainer = styled.button<{ background_color: string }>`
+export const CardContainer = styled.button<{ $backgroundColor: string }>`
+  font-family: 'Nunito Sans', sans-serif;
   display: flex;
   align-items: center;
 
@@ -13,8 +12,9 @@ export const CardContainer = styled.button<{ background_color: string }>`
   width: 100%;
   max-width: 800px;
  
+  margin-bottom: 10px;
 
-  background: ${(props) => props.background_color};
+  background: ${(props) => props.$backgroundColor};
 
   border-radius: 20px;
 
@@ -47,7 +47,6 @@ export const CardInfo = styled.div`
 
   p {
     margin: 0;
-    font-family: 'Nunito Sans';
     font-weight: 400;
     font-size: 1.5em;
     line-height: 1.5;
@@ -57,7 +56,6 @@ export const CardInfo = styled.div`
 
   h3 {
     margin: 0;
-    font-family: 'Nunito Sans';
     font-weight: 800;
     font-size: 2em;
     line-height: 1.5;
@@ -82,5 +80,4 @@ export const StyledLink = styled(Link)`
   width: 100%;
   max-width: 800px;
   justify-content: center;
-
 `

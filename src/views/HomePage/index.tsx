@@ -1,25 +1,23 @@
-import Banner from "./Banner/Banner";
-import About from "./About/About";
-import Actions from "./Actions";
-import Contact from "./Contact/Contact";
-import Footer from "./Footer/Footer";
-import Dicas from "./Dicas";
-import ListAnimals from "./ListAnimals";
+import Banner from "./0Banner";
+import Actions from "./1Actions";
+import About from "./2About";
+import ListAnimals from "./3ListAnimals";
+import Dicas from "./4Dicas";
+import Contact from "./5Contact";
+import Footer from "./6Footer";
 
 const HomeView = () => {
 
   return (
     <>
-    <Banner id="banner"/>
-    <Actions />
-    <About id="about"/>
-    <ListAnimals></ListAnimals>
-    <Dicas />
-    <Contact></Contact>
-    <Footer></Footer>
-   
+      <Banner />
+      <Actions />
+      <About></About>
+      <ListAnimals></ListAnimals>
+      <Dicas />
+      <Contact></Contact>
+      <Footer></Footer>
     </>
-
   );
 };
 
