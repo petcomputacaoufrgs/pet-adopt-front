@@ -3,6 +3,6 @@ export interface IButton {
     buttonType?: string;
     isDisabled?: boolean;
     highlighted?: boolean;
-    content: string;
+    content: React.ReactNode;
     onClick: any;
 }

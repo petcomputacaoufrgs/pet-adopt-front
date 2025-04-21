@@ -3,36 +3,44 @@ import DropDownCell from "../DropDownCell";
 import { PrimaryButton } from "../PrimarySecondaryButton/styles";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
 
-interface IDropdownButtonProps {
-  label: string;
-  options: string[];
-  onClick: any;
-  buttonWidth?: string;
-  dropDownWidth?: string;
-  fontSize?: string;
-  buttonType?: string;
-}
+import { IDropdownButtonProps } from "./types";
+
 
 const DropdownButton = ({
-  label,
-  options,
-  onClick,
-  buttonWidth = "150px",
-  dropDownWidth = "200px",
-  fontSize = "16px",
-  buttonType = "Primário"
-}: IDropdownButtonProps) => {
+  label, // Texto no botão
+  options, // Lista de strings indicando as opções possíveis
+  onClick, // Ou uma única função que toma o evento de clique ou uma lista de funções que tomam o evento de clique. Se for uma função única, cada opção do dropDown, ao ser clicada, executará essa função. Se for uma lista de funções, faz um mapeamento por índice das opções para a função. A lista de funções deve ter o mesmo comprimento da lista de opções
+  indicator, // Indicador de que o dropDown está abaixado ou não. É uma função que recebe um valor booleano e retorna um nodo React. O valor booleano é o estado que indica se o DropDown está abaixado, e o nodo retornado é colocado ao lado da label no botão
+  showOptionsOnHover = false, // Se for false (padrão), o DropDown será mostrado com clique no botão. Se for true, ele será mostrado com hover
+  buttonWidth = "150px", // Tamanho do botão
+  dropDownWidth = "200px",  // Tamanho do DropDown
+  fontSize = "16px", // Tamanho da fonte no botão e no DropDown
+  buttonType = "Primário" // Tipo do botão (Primário = "Primário", Secundário = qualquer outra string)
+}: IDropdownButtonProps) => { 
+
+
+  
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const toggleDropdown = !showOptionsOnHover? () => setShowDropdown(!showDropdown) : () => {};
 
+  // Funções para hover
+  const handleMouseEnter = showOptionsOnHover? () => setShowDropdown(true) : () => {};
+  const handleMouseLeave = showOptionsOnHover? () => setShowDropdown(false) : () => {};
+
+  const content = (
+    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+      {label}
+      {indicator ? indicator(showDropdown) : null}
+    </span>
+  );
 
   return (
-    <div style={{marginLeft: "100px", position: "relative", width: buttonWidth}}>
-      <PrimarySecondaryButton width={buttonWidth} onClick={toggleDropdown} highlighted={showDropdown} isDisabled={false} content={label} buttonType={buttonType} />
+    <div style={{marginLeft: "100px", position: "relative", width: buttonWidth}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <PrimarySecondaryButton width={buttonWidth} onClick={toggleDropdown} highlighted={showDropdown} isDisabled={false} content={content} buttonType={buttonType} />
 
       {showDropdown && (
-        <div style={{ position: "absolute", top: "120%", left:"50%", transform: "translateX(-50%)", zIndex: 10 }}>
+        <div style={{ position: "absolute", top: "100%", paddingTop:"10px", left:"50%", transform: "translateX(-50%)", zIndex: 10 }}>
           <DropDownCell
             options={options}
             onClick={Array.isArray(onClick)
