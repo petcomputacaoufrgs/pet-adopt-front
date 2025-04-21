@@ -11,9 +11,11 @@ interface ISeaarchBar{
     placeholder: string;
     title: string;
     required: boolean;
+    error?: boolean; // eventualmente vamos ter que ver como será feita a validação deste erro. Por enquanto o erro tá só sendo propagado entre componentes e está estático.
+    errorMessage?: string;
 }
 
-export default function SearchBar({ options, width, fontSize, placeholder, title, required } : ISeaarchBar) {
+export default function SearchBar({ options, width, fontSize, placeholder, title, required, error = false, errorMessage } : ISeaarchBar) {
   const [query, setQuery] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [showOptions, setShowOptions] = useState<boolean>(false);
@@ -62,7 +64,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
 
 <>
 
-      <BasicInput  title='Países' required={true} $width={width} $fontSize={fontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
+      <BasicInput error={error} errorMessage={errorMessage} title={title} required={required} $width={width} $fontSize={fontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
 
       <button
           onClick={toggleOptions}
