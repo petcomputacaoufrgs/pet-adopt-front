@@ -5,25 +5,28 @@ import BasicInput from '../BasicInput';
 
 
 interface ISeaarchBar{
-    options : string[];
-    width: string;
-    fontSize: string;
-    placeholder: string;
-    title: string;
-    required: boolean;
+    options : string[]; // Opções que aparecerão no DropDown
+    width: string; // Comprimento tanto do input quanto do DropDown
+    fontSize: string; // Tamanho da fonte tanto no input quanto nas opções do DropDown
+    placeholder: string; // Placeholder do input
+    title: string; // Título que vai antes do input
+    required: boolean; // Se o input é obrigatório. Se for, coloca um asterisco "*" no título
     error?: boolean; // eventualmente vamos ter que ver como será feita a validação deste erro. Por enquanto o erro tá só sendo propagado entre componentes e está estático.
     errorMessage?: string;
 }
 
 export default function SearchBar({ options, width, fontSize, placeholder, title, required, error = false, errorMessage } : ISeaarchBar) {
-  const [query, setQuery] = useState('');
-  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
-  const [showOptions, setShowOptions] = useState<boolean>(false);
-  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+  const [query, setQuery] = useState(''); // valor atual do input
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]); // opções filtradas a partir do valor do input: todas as opções que começam com o valor atual do input
+  const [showOptions, setShowOptions] = useState<boolean>(false); // se deve mostrar as opções ou não
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); // Qual das opções está selecionada no momento (seleção usando as setas do teclado). -1 indica que nenhuma está
 
-  const arrowSize = parseFloat(fontSize) + 6;
+
+  const arrowSize = parseFloat(fontSize) + 6; // Tamahno da flechinha que aponta pra cima quando as opções estão aparecendo e pra baixo quando não estão. É sempre 6px maior que a fonte
   const numOptionsShowed = 5;
 
+
+  // Seleção de opções a partir do teclado (setas pra cima e pra baixo e enter)
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
@@ -50,6 +53,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
   };
 
 
+  // Mudança no input (digitando)
   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
@@ -63,6 +67,10 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     setShowOptions(true);
   };
 
+
+  // Eventos ligados a clique do mouse
+
+  // Clique numa opção
   const handleOptionClick = (value : string) => {
     setQuery(value);           
 
@@ -73,7 +81,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     setShowOptions(false);
   };
 
-
+  // Clique na setinha para mostrar/esconder opções
   const toggleOptions = () => {
     if(!showOptions && query == '')
       setFilteredOptions(options);
@@ -82,6 +90,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     setShowOptions(!showOptions);
   };
 
+  // Clique no input vazio (deve mostrar todas as opções)
   const handleClickOnEmptyInput = () => {
     if (query == '') {
       setFilteredOptions(options);
@@ -89,9 +98,8 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     }
   }
 
-
+  // Clique em qualquer lugar fora do container (deve esconder as opções)
   const containerRef = useRef<HTMLDivElement>(null);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -101,7 +109,6 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
       }
     }
 
-  
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
