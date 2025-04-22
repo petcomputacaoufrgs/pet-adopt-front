@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import DropDownCell from '../DropDownCell';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import BasicInput from '../BasicInput';
@@ -19,8 +19,36 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
   const [query, setQuery] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
   const arrowSize = parseFloat(fontSize) + 6;
+  const numOptionsShowed = 5;
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setHighlightedIndex((prevIndex) =>
+        prevIndex < Math.min(filteredOptions.length - 1, numOptionsShowed - 1) ? prevIndex + 1 : 0
+      );
+    }
+  
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setHighlightedIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : Math.min(filteredOptions.length - 1, numOptionsShowed - 1)
+      );
+    }
+  
+    if (event.key === 'Enter' && highlightedIndex >= 0) {
+      const selected = filteredOptions[highlightedIndex];
+      setQuery(selected);
+      setShowOptions(false);
+      setFilteredOptions(options.filter((opt) =>
+        opt.toLowerCase().startsWith(selected.toLowerCase())))
+      setHighlightedIndex(-1);
+    }
+  };
+
 
   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -29,17 +57,19 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     const matches = options.filter((opt) =>
       opt.toLowerCase().startsWith(value.toLowerCase()) && opt != value
     );
+
+    setHighlightedIndex(-1);
     setFilteredOptions(matches);
     setShowOptions(true);
   };
 
-  const handleOptionClick = (event : any) => {
-    const value = event.target.innerText
+  const handleOptionClick = (value : string) => {
     setQuery(value);           
 
     setFilteredOptions(options.filter((opt) =>
       opt.toLowerCase().startsWith(value.toLowerCase())))
 
+    setHighlightedIndex(-1);
     setShowOptions(false);
   };
 
@@ -48,6 +78,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     if(!showOptions && query == '')
       setFilteredOptions(options);
 
+    setHighlightedIndex(-1);
     setShowOptions(!showOptions);
   };
 
@@ -58,13 +89,32 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     }
   }
 
-  console.log(filteredOptions);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setShowOptions(false);
+        setHighlightedIndex(-1);
+      }
+    }
+
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
+
+
 
   return (
 
-<>
+<div ref={containerRef} style={{width:width}}>
 
-      <BasicInput error={error} errorMessage={errorMessage} title={title} required={required} $width={width} $fontSize={fontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
+      <BasicInput onKeyDown={handleKeyDown} error={error} errorMessage={errorMessage} title={title} required={required} $width={width} $fontSize={fontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
 
       <button
           onClick={toggleOptions}
@@ -95,17 +145,19 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
       {showOptions && filteredOptions.length > 0 && (
         <div style={{ position: "absolute", top: "10px", left:"50%", transform: "translateX(-50%)", zIndex: 10 }}>
           <DropDownCell
+            highlight={highlightedIndex}
             options={filteredOptions}
-            onClick={handleOptionClick}
+            onSelect={handleOptionClick}
             width={width}
             fontSize={fontSize}
+            numCellsShowed={numOptionsShowed}
           />
         </div>
       )}
 
     </div>
 
-    </>
+    </div>
   );
 }
 

@@ -9,6 +9,7 @@ interface BasicInputProps {
   value: string; // Estado que vai guardar o valor atual do input
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Função que controla o que vai acontecer quando ocorrer uma mudança no input. É obrigatória
   onClick?: () => void; // Função que controla o que vai acontecer quando o input for clicado. Não é obrigatória
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
   $paddingRight?: string; // Espaço vazio à direita deixado pelo inpuit. O padrão é o mesmo que o espaço deixado à esquerda (24px). Pode ser ajustado caso se adicione algo à direita (um botão de revelar senha, por exemplo)
   $readOnly?: boolean; // Indica se o input é apenas para leitura. Se for true, o usuário não pode digitar nada nele
   $inputType?: string; // Indica o tipo do input. Atualmente tem dois tipos: "Primário" - o input com fundo mais laranja, e qualquer outra string indica o tipo secundário, com fundo branco
@@ -27,6 +28,7 @@ export default function BasicInput({
   value,
   onChange,
   onClick,
+  onKeyDown,
   $paddingRight = "24px",
   $readOnly = false,
   $inputType = "Primário",
@@ -68,6 +70,7 @@ export default function BasicInput({
           placeholder={placeholder}
           $fontSize={$fontSize}
           onClick={onClick}
+          onKeyDown={onKeyDown}
           $paddingRight={$paddingRight}
           $inputType={$inputType}
           $error={error}
