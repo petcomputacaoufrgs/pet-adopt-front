@@ -1,15 +1,22 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import HomeView from "./views/HomePage";
-import SearchBar from "./components/OngSelectionDropDown";
+import SearchBar from "./components/SearchBar";
+import RadioButton from "./components/RadioButton";
+import { useState } from "react";
+import RadioGroup from "./components/RadioGroup";
 
 function App() {  
+  const [value, setValue] = useState<string>("");
+
+  const options = [{label: "Cachorro", value: "Cachorro"}, {label: "Gato", value: "Gato"}, {label: "Outros", value: "Outros"}];
+
 
   return (
     <div className="App">
       <HashRouter>
         <Routes>
           <Route path="/" element={<HomeView />} />
-          <Route path="/teste" element={<SearchBar errorMessage="Senha fraca" error={true} title="Países" required={true} placeholder="Encontre o país" width="500px" fontSize="20px" options={["Brasil", "Burkina Faso", "EUA", "China", "Argentina", "Bolívia", "Brasil mas a segunda versão"]} />} />
+          <Route path="/radio" element={<RadioGroup  fontSize="18px" title="Espécie" required={true} options={options} selectedValue={value} name={"Animais"} onChange={setValue}/>}/>
         </Routes>
       </HashRouter>
     </div>
