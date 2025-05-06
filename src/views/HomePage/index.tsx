@@ -14,6 +14,7 @@ const HomeView = () => {
 
   return (
     <>
+      
       <Banner />
       <Actions />
       <About></About>
