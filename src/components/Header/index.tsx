@@ -26,6 +26,9 @@ const Header = ({color, user, Logo}: IHeader) => {
         navigate("/login");
       };
     
+    const handleSignupClick = () => {
+        navigate("/signup");
+    };
 
     useEffect(() => {
         // A rolagem pode ser feita com base no ID diretamente no click, sem problemas com renderização
@@ -46,7 +49,7 @@ const Header = ({color, user, Logo}: IHeader) => {
             </TextContainer>
 
             <ButtonsContainer>
-                <PrimarySecondaryButton width={"auto"} buttonType={"Primário"} isDisabled={false} content={"Cadastrar ONG ou Membro"} onClick={1} />
+                <PrimarySecondaryButton width={"auto"} buttonType={"Primário"} isDisabled={false} content={"Cadastrar ONG ou Membro"} onClick={handleSignupClick} />
                 <PrimarySecondaryButton width={"auto"} buttonType={"Primário"} isDisabled={false} content={"Fazer Login"} onClick={handleLoginClick} />
             </ButtonsContainer>
 
