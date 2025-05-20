@@ -30,6 +30,8 @@ export const ButtonsContainer = styled.div`
     
     display: flex;    
     gap:0.9vw;
+    align-items: center;
+    justify-content: center;
     
 }`
 

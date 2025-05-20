@@ -7,7 +7,7 @@ import { IDropdownButtonProps } from "./types";
 
 
 const DropdownButton = ({
-  label, // Texto no botão
+  content, // Conteúdo do botão. Pode ser um texto (string) ou um nodo React completo
   options, // Lista de strings indicando as opções possíveis
   onClick, 
   indicator, // Indicador de que o dropDown está abaixado ou não. É uma função que recebe um valor booleano e retorna um nodo React. O valor booleano é o estado que indica se o DropDown está abaixado, e o nodo retornado é colocado ao lado da label no botão
@@ -50,16 +50,16 @@ const DropdownButton = ({
   });
 
 
-  const content = (
+  const styledContent = (
     <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-      {label}
+      {content}
       {indicator ? indicator(showDropdown) : null}
     </span>
   );
 
   return (
-    <div ref={containerRef} style={{marginLeft: "100px", position: "relative", width: buttonWidth}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <PrimarySecondaryButton  width={buttonWidth} onClick={toggleDropdown} highlighted={showDropdown} isDisabled={false} content={content} buttonType={buttonType} />
+    <div ref={containerRef} style={{position: "relative", width: buttonWidth}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <PrimarySecondaryButton  width={buttonWidth} onClick={toggleDropdown} highlighted={showDropdown} isDisabled={false} content={styledContent} buttonType={buttonType} />
 
       {showDropdown && (
         <div style={{ position: "absolute", top: "100%", paddingTop:"10px", left:"50%", transform: "translateX(-50%)", zIndex: 10 }}>

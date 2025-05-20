@@ -8,7 +8,7 @@ export const PrimaryButton = styled.button<{$width: string | undefined, $highlig
   font-weight: 800;
   font-size: 18px;
   color: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
-  padding: 14px 26px;
+  padding: 10px 26px;
 
   display: flex;
   justify-content: center; 
@@ -18,9 +18,7 @@ export const PrimaryButton = styled.button<{$width: string | undefined, $highlig
 
   width: ${(props) => (props.$width)? props.$width : "auto"};
 
-  &:focus {
-    border: 1px solid #553525;
-  }
+ 
 
   &:disabled {
     background-color: #DEDEDE;
@@ -41,7 +39,19 @@ export const PrimaryButton = styled.button<{$width: string | undefined, $highlig
     color: white;
     transform: scale(1.05);
     cursor: pointer;
+
+    path {
+      fill: white;
+      stroke: white;
+    }
+
   }
+
+  path {
+    fill: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
+    stroke: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
+  }
+
 
   @media (max-width: 430px) {
     font-size: 16px;
@@ -65,9 +75,7 @@ export const SecondaryButton = styled.button<{$width: string | undefined, $highl
 
   width: ${(props) => (props.$width)? props.$width : "auto"};
   
-  &:focus {
-    border: 1px solid #FF9944;
-  }
+
 
   &:disabled {
     border-color: #DEDEDE;
@@ -87,6 +95,17 @@ export const SecondaryButton = styled.button<{$width: string | undefined, $highl
     color: white;
     transform: scale(1.05);
     cursor: pointer;
+
+    path {
+      fill: #553525;
+      stroke: #553525;
+    }
+
+  }
+
+  path {
+    fill: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
+    stroke: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
   }
 
   @media (max-width: 430px) {

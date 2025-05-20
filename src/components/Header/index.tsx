@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {HeaderContainer, 
@@ -10,6 +10,7 @@ import {HeaderContainer,
 import { IHeader } from "./types"
 
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
+import DropdownButton from "../DropDownButton";
 
 
 const Header = ({color, user, Logo}: IHeader) => {
@@ -34,6 +35,27 @@ const Header = ({color, user, Logo}: IHeader) => {
         // A rolagem pode ser feita com base no ID diretamente no click, sem problemas com renderização
       }, []);
 
+    
+
+  
+  const isWideEnoughForStandardButtons = () => window.innerWidth >= 1260;
+
+  // Estado para controlar os botões exibidos
+  const [showStandardButtons, setShowStandardButtons] = useState(isWideEnoughForStandardButtons());
+
+
+  // Função para atualizar os botões exibidos com base na largura da tela
+  useEffect(() => {
+    const handleResize = () => {
+      setShowStandardButtons(isWideEnoughForStandardButtons());
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  })
+
+
     return(
         <HeaderContainer $backgroundColor = {color}>
             
@@ -49,8 +71,21 @@ const Header = ({color, user, Logo}: IHeader) => {
             </TextContainer>
 
             <ButtonsContainer>
-                <PrimarySecondaryButton width={"auto"} buttonType={"Primário"} isDisabled={false} content={"Cadastrar ONG ou Membro"} onClick={handleSignupClick} />
-                <PrimarySecondaryButton width={"auto"} buttonType={"Primário"} isDisabled={false} content={"Fazer Login"} onClick={handleLoginClick} />
+            {(showStandardButtons)? 
+
+            <>
+                <PrimarySecondaryButton width={"284px"} buttonType={"Primário"} isDisabled={false} content={"Cadastrar ONG ou Membro"} onClick={handleSignupClick} />
+                <PrimarySecondaryButton width={"151px"} buttonType={"Primário"} isDisabled={false} content={"Fazer Login"} onClick={handleLoginClick} />
+            </>
+    
+            :
+
+            <DropdownButton content={<svg width="17" height="24" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 13.5H15H2ZM2 7.5H15H2ZM2 1.5H15H2Z"/>
+                <path d="M2 13.5H15M2 7.5H15M2 1.5H15" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>} onClick={() => {}} options={["Cadastrar ONG ou Membro", "Fazer Login"]} dropDownWidth="250px"/>
+            }
+
             </ButtonsContainer>
 
         </HeaderContainer>

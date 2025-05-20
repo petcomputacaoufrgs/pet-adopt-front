@@ -12,6 +12,7 @@ import {  ListContainer,
 import DogCard from "../../../components/DogCard";
 
 import DogForCard from "../../../assets/HomePageCardDog.png";
+import PrimarySecondaryButton from "../../../components/PrimarySecondaryButton";
 
 const Actions = () => {
   // Array com 8 objetos pet
@@ -82,7 +83,7 @@ const Actions = () => {
       </DogContainter>
       
       <ButtonContainer>
-        <OrangeButton>Ver Todos os Animais Disponíveis</OrangeButton>
+        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={1}></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>
