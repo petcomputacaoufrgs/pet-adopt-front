@@ -1,5 +1,5 @@
 export interface IDropdownButtonProps {
-    label: string; // Texto no botão
+    content: string | ReactNode; // Conteúdo do botão. Pode ser um texto (string) ou um nodo React completo
     options: string[]; // Lista de strings indicando as opções possíveis
     
     onClick: (selected: string) => void; // Uma única função que recebe a opção selecionada e diz o que tem de ser feito

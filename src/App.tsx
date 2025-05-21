@@ -1,14 +1,13 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import HomeView from "./views/HomePage";
-import SearchBar from "./components/SearchBar";
-import RadioButton from "./components/RadioButton";
-import { useState } from "react";
-import RadioGroup from "./components/RadioGroup";
+import LoginView from "./views/Login";
+import SignupView from "./views/SignUp"
+
+// import AnimalFilter from "./views/FindAnimals/AnimalFilter";
+
 
 function App() {  
-  const [value, setValue] = useState<string>("");
 
-  const options = [{label: "Cachorro", value: "Cachorro"}, {label: "Gato", value: "Gato"}, {label: "Outros", value: "Outros"}];
 
 
   return (
@@ -16,7 +15,10 @@ function App() {
       <HashRouter>
         <Routes>
           <Route path="/" element={<HomeView />} />
-          <Route path="/radio" element={<RadioGroup  fontSize="18px" title="Espécie" required={true} options={options} selectedValue={value} name={"Animais"} onChange={setValue}/>}/>
+          <Route path="/login" element={<LoginView />} />
+          <Route path="/signup" element={<SignupView />} />
+          <Route path="/login" element={<LoginView />} /> {/* Add this route */}
+          {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
         </Routes>
       </HashRouter>
     </div>

@@ -6,7 +6,7 @@ export const AboutContainer = styled.div`
     justify-content: center;
     align-items: center;
     max-width: 100vw;
-    min-height: 790px;
+    min-height: 100vh;
 
     @media (max-width: 1200px) {
       flex-direction: column;
@@ -18,7 +18,7 @@ export const AboutDiv = styled.div<{ $backgroundColor: string }>`
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 790px;
+  height: 100vh;
   background: ${(props) => props.$backgroundColor};
 
 `;
@@ -28,7 +28,7 @@ export const BackgroundDiv = styled.div<{$backgroundImage: string, $backgroundCo
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 790px;
+  height: 100vh;
   
   background: ${(props) => `url(${props.$backgroundImage}) ${props.$backgroundColor}`};
   
