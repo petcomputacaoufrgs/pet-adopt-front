@@ -17,8 +17,6 @@ function App() {
           <Route path="/" element={<HomeView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/signup" element={<SignupView />} />
-          <Route path="/login" element={<LoginView />} /> {/* Add this route */}
-          {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
         </Routes>
       </HashRouter>
     </div>

@@ -2,6 +2,7 @@ import { BannerContainer } from "./styles";
 
 import Header from "../../../components/Header";
 import Info from "../../../components/Info";
+import OngInfoCard from "../../../components/OngInfoCard";
 
 import logo from "../../../assets/HorizontalLogo.png"
 
@@ -12,6 +13,9 @@ interface AboutProps {
 const Banner: React.FC<AboutProps> = ({ id }) => {
   return (
     <BannerContainer>
+        <OngInfoCard/>
+
+
       <Header color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
 
       <Info

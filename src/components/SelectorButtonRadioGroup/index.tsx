@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SelectorButton from "../SelectorButton";
+import { Container } from "./styles";
 
 interface Option {
   label: string;
@@ -11,21 +12,16 @@ interface Option {
 
 interface SelectorRadioGroupProps {
   options: Option[];
- // selectedValues: boolean[];  ESSES DOIS VALORES AQUI TERÃO QUE SER DEFINIDOS NO COMPONENTE PAI. POR ENQUANTO ESTÃO SENDO DEFINIDOS AQUI
- // setSelectedValues: (selectedValues: boolean[]) => void;
   width: string;
   height: string;
   overlayImageWidth?: string;
   overlayImageHeight?: string;
   overlayImageTop?: string;
   overlayImageLeft?: string;
-  
 }
 
-export default function SelectorRadioGroup({
+function SelectorRadioGroup({
   options,
- // selectedValues,
- // setSelectedValues,
   width,
   height,
   overlayImageWidth = "0px",
@@ -37,20 +33,17 @@ export default function SelectorRadioGroup({
   const [selectedValues, setSelectedValues] = useState<boolean[]>(options.map(() => true));
 
   const handleSelect = (index: number) => {
-    if(selectedValues.reduce((acc, value) => value && acc, true) || !selectedValues[index]){
-        setClickedValue(index);
-        setSelectedValues(selectedValues.map((_, i) => i === index));
-    }
-    
-    else{
-        setClickedValue(-1);
-        setSelectedValues(selectedValues.map(() => true));
-
+    if (selectedValues.reduce((acc, value) => value && acc, true) || !selectedValues[index]) {
+      setClickedValue(index);
+      setSelectedValues(selectedValues.map((_, i) => i === index));
+    } else {
+      setClickedValue(-1);
+      setSelectedValues(selectedValues.map(() => true));
     }
   };
 
   return (
-    <div style={{ display: "flex", gap: "10px" }}>
+    <Container>
       {options.map((option, index) => (
         <SelectorButton
           key={option.value}
@@ -62,7 +55,6 @@ export default function SelectorRadioGroup({
           height={height}
           backgroundImage={option.backgroundImage}
           backgroundColor={option.backgroundColor}
-
           overlayImage={option.overlayImage}
           overlayImageHeight={overlayImageHeight}
           overlayImageWidth={overlayImageWidth}
@@ -70,6 +62,8 @@ export default function SelectorRadioGroup({
           overlayImageTop={overlayImageTop}
         />
       ))}
-    </div>
+    </Container>
   );
 }
+
+export default SelectorRadioGroup;

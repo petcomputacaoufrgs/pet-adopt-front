@@ -198,7 +198,7 @@ function PasswordInputField({
   );
 }
 
-export default function PasswordInput()
+function PasswordInput()
 {
   const [senha, setSenha] = React.useState(''); 
   const [error, setError] = React.useState(false);
@@ -229,3 +229,4 @@ export default function PasswordInput()
     />);
 }
 
+export default PasswordInput;
