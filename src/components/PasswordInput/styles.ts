@@ -7,7 +7,7 @@ export const StyledInput = styled.input<{ $width: string, $fontSize: string, $pa
   justify-content: space-between; /* Para colocar os itens nas extremidades */
   position: relative; /* Para permitir posicionamento absoluto de elementos internos */
 
-f ont-family: 'Nunito Sans', sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
   width: ${({ $width }) => $width};
   font-size: ${({ $fontSize }) => $fontSize};
   box-sizing: border-box;

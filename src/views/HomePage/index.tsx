@@ -14,22 +14,10 @@ import PasswordInput from "../../components/PasswordInput";
 
 const HomeView = () => {
 
-  const [nome, setNome] = useState(''); 
+  const [senha, setSenha] = useState(''); 
 
   return (
     <>
-      <PasswordInput 
-        title="nome" 
-        required = {true} 
-        $fontSize="10px" 
-        placeholder="Digite seu nome" 
-        $width="735px" 
-        value={nome}
-        onChange={(e) => setNome(e.target.value)} />
-
-      <p>{nome}</p>
-
-
       <Banner />
       <Actions />
       <About></About>

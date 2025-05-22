@@ -1,10 +1,15 @@
+import React from "react";
 import { StyledInput } from "./styles"
-import { Eye } from "lucide-react";
+import { Eye, EyeOff, CircleAlert} from "lucide-react";
+import { error } from "console";
+import { on } from "events";
 
 
 interface PasswordInputProps {
   title: string; // Título do input
   required: boolean; // Se é um atributo obrigatório. Se for true, coloca um asterisco no título indicando a obrigatoriedade
+  visible: boolean; // Se for true, a senha vai ser mostrada. Se for false, a senha vai ser escondida
+  isDisabled: boolean; // Se for true, o input vai ser desabilitado. Se for false, o input vai estar habilitado
   $fontSize: string; // Tamanho da fonte do input
   placeholder: string; // Placeholder do input
   $width: string; // Comprimento do input
@@ -21,7 +26,7 @@ interface PasswordInputProps {
   // Pra colocar qualquer coisa ao lado do input. Um botão para abaixar/subir o dropdown, um botão para revelar/esconder senha, por exemplo
 }
 
-export default function PasswordInput({
+function PasswordInputField({
   title,
   required,
   $fontSize,
@@ -37,10 +42,82 @@ export default function PasswordInput({
   error = false,
   errorMessage,
   children,
+  isDisabled,
 }: PasswordInputProps) {
+
+  const [visible, setVisible] = React.useState(false);
+
+  function switch_visibility() {
+   setVisible(!visible);
+  }
+
   return (
+    isDisabled ? ( // Se o input estiver desabilitado, renderiza o input disabled
     <>
       {title && (
+        <label
+          style={{
+            fontFamily: 'Nunito Sans, sans-serif',
+            fontSize: $fontSize,
+            fontWeight: 700,
+            color: '#553525',
+            marginBottom: '6px', 
+            opacity: 0.3
+          }}
+        >
+          {title}
+          {required && <span style={{ color: '#F17D6E' }}> *</span>}
+        </label>
+      )}
+
+      <div
+        style={{
+          width: $width,
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+
+        <StyledInput
+          disabled = {true}
+          $readOnly={false}
+          $width={$width}
+          type={void 0}
+          value={void 0}
+          onChange={void 0}
+          placeholder={placeholder}
+          $fontSize={$fontSize}
+          onClick={void 0}
+          onKeyDown={void 0}
+          $paddingRight={$paddingRight}
+          $inputType={$inputType}
+          $error={error}
+          style={{ opacity: 0.3, cursor: 'not-allowed' }} // Adiciona opacidade e cursor de não permitido
+        />
+
+        <div style={{
+          position: 'absolute',
+          right: '20px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          cursor: 'pointer',
+          opacity: 0.3
+        }}>
+            <Eye color="#A39289" size={20}/>
+        </div>
+
+
+        {children}
+      </div>
+    </>) 
+    
+    : // Se o input não estiver desabilitado, renderiza o input normalmente
+    
+    (
+
+      <>
+       {title && (
         <label
           style={{
             fontFamily: 'Nunito Sans, sans-serif',
@@ -63,10 +140,11 @@ export default function PasswordInput({
           alignItems: 'center',
         }}
       >
+
         <StyledInput
           $readOnly={$readOnly}
           $width={$width}
-          type="text"
+          type={visible ? 'text' : 'password'}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
@@ -85,7 +163,12 @@ export default function PasswordInput({
           transform: 'translateY(-50%)',
           cursor: 'pointer',
         }}>
-          <Eye size={20}/> 
+
+          {visible ? (
+            <EyeOff color="#A39289" size={20} onClick={switch_visibility}/>
+          ) : (
+            <Eye color="#A39289" size={20} onClick={switch_visibility}/>
+          )}         
 
         </div>
 
@@ -93,17 +176,14 @@ export default function PasswordInput({
         {children}
       </div>
 
-
       {error && errorMessage && (
         <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "8px"}}>
           
-          <svg width={`${parseFloat($fontSize) - 6}px`} height={`${parseFloat($fontSize) - 5}px`} viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6.63159 3C6.96159 3 7.23159 3.27 7.23159 3.6V6C7.23159 6.33 6.96159 6.6 6.63159 6.6C6.30159 6.6 6.03159 6.33 6.03159 6V3.6C6.03159 3.27 6.30159 3 6.63159 3ZM6.62559 0C3.31359 0 0.631592 2.688 0.631592 6C0.631592 9.312 3.31359 12 6.62559 12C9.94359 12 12.6316 9.312 12.6316 6C12.6316 2.688 9.94359 0 6.62559 0ZM6.63159 10.8C3.97959 10.8 1.83159 8.652 1.83159 6C1.83159 3.348 3.97959 1.2 6.63159 1.2C9.28359 1.2 11.4316 3.348 11.4316 6C11.4316 8.652 9.28359 10.8 6.63159 10.8ZM7.23159 9H6.03159V7.8H7.23159V9Z" fill="#FF3B30"/>
-          </svg>
+          <CircleAlert color="#FF3B30" size={`calc(${$fontSize} - 2px)`} />
           
           <span style={{
             color: '#FF3B30',
-            fontSize: `calc(${$fontSize} - 6px)`,
+            fontSize: `calc(${$fontSize} - 2px)`,
             fontWeight: 500,
             fontFamily: 'Nunito Sans, sans-serif'
           }}>
@@ -112,7 +192,40 @@ export default function PasswordInput({
           
           </div>
         )}
+      </>
 
-    </>
+    )
   );
 }
+
+export default function PasswordInput()
+{
+  const [senha, setSenha] = React.useState(''); 
+  const [error, setError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  function verificarSenhaFraca(senha: string) {
+    if(senha.trim() === '') return setError(false), setErrorMessage;
+    if (senha.length < 6) return setError(true), setErrorMessage("A senha deve ter pelo menos 6 caracteres");
+    if (!/[A-Z]/.test(senha)) return setError(true), setErrorMessage("A senha deve ter pelo menos uma letra maiúscula");
+    if (!/[0-9]/.test(senha)) return setError(true), setErrorMessage("A senha deve ter pelo menos um número");
+    if (!/[!@#$%^&*]/.test(senha)) return setError (true), setErrorMessage("A senha deve ter pelo menos um caractere especial");
+    return setError(false), setErrorMessage("");
+  }
+
+  return(
+    <PasswordInputField
+        title="Lorem ipsum" 
+        required = {true} 
+        visible = {false}
+        isDisabled = {false}
+        $fontSize="16px" 
+        placeholder="Insira sua senha aqui" 
+        $width="735px" 
+        value={senha}
+        onChange={(e) => {setSenha(e.target.value); verificarSenhaFraca(e.target.value)}}
+        error={error}
+        errorMessage={errorMessage} 
+    />);
+}
+
