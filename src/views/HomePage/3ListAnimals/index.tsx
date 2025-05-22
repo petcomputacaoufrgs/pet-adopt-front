@@ -6,8 +6,7 @@ import {  ListContainer,
           TextTitle, 
           DogContainter, 
           DogCardsContainer, 
-          ButtonContainer, 
-          OrangeButton } from "./styles";
+          ButtonContainer } from "./styles";
 
 import DogCard from "../../../components/DogCard";
 
@@ -38,10 +37,8 @@ const Actions = () => {
     
   };
   
-
   // Estado para controlar quantos cards são exibidos
   const [visiblePets, setVisiblePets] = useState(getPetsToShow());
-
 
   // Função para atualizar a quantidade de cards com base na largura da tela
   useEffect(() => {

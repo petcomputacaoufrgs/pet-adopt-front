@@ -11,7 +11,7 @@ interface RadioOption {
 }
 
 
-export default function RadioButton({ label, value, groupName, checked, onChange, fontSize, required=true }: RadioOption) {
+function RadioButton({ label, value, groupName, checked, onChange, fontSize, required=true }: RadioOption) {
   const undoSelectionOnClick = required? () => {} : () => {if (checked) onChange(""); }; // Implementando um toggle ao invés de um radio, basicamente
 
   return (
@@ -28,3 +28,5 @@ export default function RadioButton({ label, value, groupName, checked, onChange
         </label>
   );
 }
+
+export default RadioButton;
