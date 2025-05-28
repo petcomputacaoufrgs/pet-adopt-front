@@ -22,10 +22,8 @@ const Login: React.FC = () => {
       setSuccessMessage("Login realizado com sucesso!");
     } catch (err) {
       console.error(err);
-      setSuccessMessage("Login falhou. Verifique suas credenciais.");
+      setErrorMessage("Login falhou. Verifique suas credenciais.");
     }
-    console.log("Email:", email);
-    console.log("Senha:", password);
   };
 
   return (
