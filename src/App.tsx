@@ -3,6 +3,7 @@ import HomeView from "./views/HomePage";
 import LoginView from "./views/Login";
 import SignupView from "./views/SignUp"
 import ManageNgoView from "./views/ManageNgo";
+import ManageAnimalsView from "./views/ManageAnimals"
 
 // import AnimalFilter from "./views/FindAnimals/AnimalFilter";
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/login" element={<LoginView />} />
           <Route path="/signup" element={<SignupView />} />
           <Route path="/manageNgo" element={<ManageNgoView/>} />
+          <Route path="/manageAnimals" element={<ManageAnimalsView/>} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -23,6 +23,9 @@ const Header = ({color, user, Logo}: IHeader) => {
         }
     };
 
+    const handleManageAnimalsClick = () => {
+        navigate("/manageAnimals");
+      };
     const handleLoginClick = () => {
         navigate("/login");
       };
@@ -64,7 +67,7 @@ const Header = ({color, user, Logo}: IHeader) => {
             <TextContainer>
 
                 <TextButton onClick={handleScrollToSection}>Sobre Nós</TextButton>
-                <TextButton>Animais Recém Adicionados</TextButton>
+                <TextButton onClick={handleManageAnimalsClick}>Animais Recém Adicionados</TextButton>
                 <TextButton>Dicas</TextButton>
                 <TextButton>Fale Conosco</TextButton>
 
