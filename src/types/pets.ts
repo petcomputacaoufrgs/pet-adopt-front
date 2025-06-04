@@ -1,4 +1,4 @@
-export interface Animal {
+export interface Pet {
   name: string;
   age: number;
   sex: string;

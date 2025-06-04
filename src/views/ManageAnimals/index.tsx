@@ -1,14 +1,11 @@
-import { LoginContainer, LoginForm, Input, Button } from "./styles";
 
 import axios from 'axios';
 
-import Header from "../../components/Header";
-import logo from "../../assets/HorizontalLogo.png";
-import { Animal } from "../../types/pets";
+import { Pet } from "../../types/pets";
 import { useState, useEffect } from "react";
 
 const ManagePets: React.FC = () => {
-  const [pets, setPets] = useState<Animal[]>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
