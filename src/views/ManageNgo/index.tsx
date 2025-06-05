@@ -1,8 +1,4 @@
-import { LoginContainer, LoginForm, Input, Button } from "./styles";
 import axios from 'axios';
-
-import Header from "../../components/Header";
-import logo from "../../assets/HorizontalLogo.png";
 import { Ngo } from "../../types/ngo";
 import { useState, useEffect } from "react";
 

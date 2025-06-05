@@ -103,7 +103,7 @@ const Footer = () => {
 
       <Rights>
         <p>© 2024 Pet Adopt. Todos os direitos reservados.</p>
-        <p>Desenvolvido por: Pet Computação</p>
+        <p>Desenvolvido por: PET Computação</p>
       </Rights>
     </GridContainer>
   );
