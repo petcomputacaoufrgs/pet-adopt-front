@@ -11,6 +11,10 @@ import { ContentContainer, DogCardsContainer } from "./styles";
 
 import DogCard from "../../components/DogCard";
 import DogForCard from "../../assets/HomePageCardDog.png";
+import EditButton from "../../components/EditButton";
+
+import DeleteIcon from "../../assets/DeleteIcon.svg"
+import PencilIcon from "../../assets/PencilIcon.svg";
 
 
 const ManageAnimals = () => {
@@ -71,6 +75,7 @@ const ManageAnimals = () => {
 
         {pets.map((pet, index) => {
           return (
+            <div style={{position: "relative"}}>
             <DogCard 
               key = {index}
               image_url = {pets[index].image_url}
@@ -82,6 +87,13 @@ const ManageAnimals = () => {
               location = {pets[index].location}
               to = {pets[index].to}
               />
+
+              <div style={{position: "absolute", top: "24px", left: "310px"}}>
+                  <EditButton width="34px" height="34px" options = {[{label: "Editar", onClick: () => {}, iconSrc: PencilIcon}, {label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon}]}/> 
+              </div>
+              
+              
+            </div>
           )
         })}
 
@@ -90,6 +102,7 @@ const ManageAnimals = () => {
 
     </ContentContainer>
 
+    
     <Footer />
     </>
   );
