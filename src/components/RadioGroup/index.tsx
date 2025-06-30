@@ -1,4 +1,5 @@
 import RadioButton from '../RadioButton';
+import { Container, Label, Required } from './styles';
 
 interface Option {
   label: string;
@@ -15,38 +16,38 @@ interface RadioGroupProps {
   onChange: (value: string) => void;
 }
 
-export default function RadioGroup({ title, required, fontSize, name, options, selectedValue, onChange }: RadioGroupProps) {
+function RadioGroup({
+  title,
+  required,
+  fontSize,
+  name,
+  options,
+  selectedValue,
+  onChange
+}: RadioGroupProps) {
   return (
-    <div style={{gap: "16px", display: "flex", flexDirection: "column"}}>
-
-    {title && (
-        <label
-          style={{
-            fontFamily: 'Nunito Sans, sans-serif',
-            fontSize: fontSize,
-            fontWeight: 700,
-            color: '#553525',
-          }}
-        >
+    <Container>
+      {title && (
+        <Label fontSize={fontSize}>
           {title}
-          {required && <span style={{ color: '#F17D6E' }}> *</span>}
-        </label>
+          {required && <Required> *</Required>}
+        </Label>
       )}
 
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      {options.map((opt) => (
+      {options.map(({ label, value }) => (
         <RadioButton
-          key={opt.value}
-          label={opt.label}
-          value={opt.value}
+          key={value}
+          label={label}
+          value={value}
           groupName={name}
-          checked={selectedValue === opt.value}
+          checked={selectedValue === value}
           onChange={onChange}
           fontSize={fontSize}
           required={required}
         />
       ))}
-    </div>
-    </div>
+    </Container>
   );
 }
+
+export default RadioGroup;

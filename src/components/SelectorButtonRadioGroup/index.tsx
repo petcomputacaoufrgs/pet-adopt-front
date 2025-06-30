@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SelectorButton from "../SelectorButton";
+import { Container } from "./styles";
 
 interface Option {
   label: string;
@@ -19,10 +20,9 @@ interface SelectorRadioGroupProps {
   overlayImageHeight?: string;
   overlayImageTop?: string;
   overlayImageLeft?: string;
-  
 }
 
-export default function SelectorRadioGroup({
+function SelectorRadioGroup({
   options,
   selectedValue,
   setSelectedValue,
@@ -46,7 +46,7 @@ export default function SelectorRadioGroup({
   };
 
   return (
-    <div style={{ display: "flex", gap: "10px" }}>
+    <Container>
       {options.map((option, index) => (
         <SelectorButton
           key={option.value}
@@ -58,7 +58,6 @@ export default function SelectorRadioGroup({
           height={height}
           backgroundImage={option.backgroundImage}
           backgroundColor={option.backgroundColor}
-
           overlayImage={option.overlayImage}
           overlayImageHeight={overlayImageHeight}
           overlayImageWidth={overlayImageWidth}
@@ -66,6 +65,8 @@ export default function SelectorRadioGroup({
           overlayImageTop={overlayImageTop}
         />
       ))}
-    </div>
+    </Container>
   );
 }
+
+export default SelectorRadioGroup;

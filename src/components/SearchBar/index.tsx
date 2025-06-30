@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import DropDownCell from '../DropDownCell';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import DropDownCell from '../DropDownCell';
 import BasicInput from '../BasicInput';
+import { Container, ToggleButton, DropDownWrapper } from './styles';
 
 
 interface ISeaarchBar{
@@ -24,58 +25,52 @@ interface ISeaarchBar{
 
 export default function SearchBar({ options, width, fontSize, titleFontSize=fontSize, placeholder, title, required, query, setQuery, inputType="Primário", error = false, errorMessage, readOnly = false, resetOption, numOptionsShowed = 5 } : ISeaarchBar) {
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]); // opções filtradas a partir do valor do input: todas as opções que começam com o valor atual do input
-  const [showOptions, setShowOptions] = useState<boolean>(false); // se deve mostrar as opções ou não
-  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); // Qual das opções está selecionada no momento (seleção usando as setas do teclado). -1 indica que nenhuma está
-
+  const [showOptions, setShowOptions] = useState(false); // se deve mostrar as opções ou não
+  const [highlightedIndex, setHighlightedIndex] = useState(-1); // Qual das opções está selecionada no momento (seleção usando as setas do teclado). -1 indica que nenhuma está
 
   const arrowSize = parseFloat(fontSize) + 6; // Tamahno da flechinha que aponta pra cima quando as opções estão aparecendo e pra baixo quando não estão. É sempre 6px maior que a fonte
 
+  const containerRef = useRef<HTMLDivElement>(null); // Referência ao container para verificar clique fora dele
+
+  // Função utilitária para filtrar opções que começam com o valor atual do input, mas que não sejam idênticas ao input
+  const filterOptions = (value: string) =>
+    options.filter(opt => opt.toLowerCase().startsWith(value.toLowerCase()) && opt !== value);
 
   // Seleção de opções a partir do teclado (setas pra cima e pra baixo e enter)
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      setHighlightedIndex((prevIndex) =>
-        prevIndex < Math.min(filteredOptions.length - 1, numOptionsShowed - 1) ? prevIndex + 1 : 0
-      );
-    }
-  
-    if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      setHighlightedIndex((prevIndex) =>
-        prevIndex > 0 ? prevIndex - 1 : Math.min(filteredOptions.length - 1, numOptionsShowed - 1)
-      );
-    }
-  
-    if (event.key === 'Enter' && highlightedIndex >= 0) {
-      let selected = filteredOptions[highlightedIndex];
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!filteredOptions.length) return;
 
-      if (resetOption && selected === resetOption)
-        selected = '';
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const change = e.key === 'ArrowDown' ? 1 : -1;
+      setHighlightedIndex(prev => {
+        // O índice destacado cicla entre as opções visíveis
+        const newIndex = (prev + change + Math.min(filteredOptions.length, numOptionsShowed)) % Math.min(filteredOptions.length, numOptionsShowed);
+        return newIndex;
+      });
+    }
 
-      setQuery(selected);
-      setShowOptions(false);
-      setFilteredOptions(options.filter((opt) =>
-        opt.toLowerCase().startsWith(selected.toLowerCase())))
-      setHighlightedIndex(-1);
+    if (e.key === 'Enter' && highlightedIndex >= 0) {
+      // Enter seleciona a opção destacada
+      selectOption(filteredOptions[highlightedIndex]);
     }
   };
 
-
   // Mudança no input (digitando)
-  const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
 
-    const matches = options.filter((opt) =>
-      opt.toLowerCase().startsWith(value.toLowerCase()) && opt != value
-    );
-
-    setHighlightedIndex(-1);
+    const matches = filterOptions(value);
     setFilteredOptions(matches);
     setShowOptions(true);
+    setHighlightedIndex(-1);
   };
 
+  // Seleção de uma opção, seja por clique ou por teclado
+  const selectOption = (value: string) => {
+    setQuery(value);
+  }
 
   // Eventos ligados a clique do mouse
 
@@ -100,11 +95,12 @@ export default function SearchBar({ options, width, fontSize, titleFontSize=font
 
   // Clique na setinha para mostrar/esconder opções
   const toggleOptions = () => {
-    if(!showOptions && query == '')
+    if (!showOptions && !query) {
+      // Se estiver vazio, mostrar todas as opções
       setFilteredOptions(options);
-
+    }
+    setShowOptions(prev => !prev);
     setHighlightedIndex(-1);
-    setShowOptions(!showOptions);
   };
 
   // Clique no input vazio (deve mostrar as opções se não estiverem aparecendo, ou esconder se estiverem. Considera o caso readOnly como se o input estivesse sempre vazio)
@@ -113,61 +109,46 @@ export default function SearchBar({ options, width, fontSize, titleFontSize=font
       setShowOptions(!showOptions);
       setFilteredOptions(options);
     }
-  }
+  };
 
   // Clique em qualquer lugar fora do container (deve esconder as opções)
-  const containerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setShowOptions(false);
         setHighlightedIndex(-1);
       }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
-
-
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
-
-<div ref={containerRef} style={{width:width}}>
-
-      <BasicInput $readOnly={readOnly} onKeyDown={handleKeyDown} error={error} errorMessage={errorMessage} title={title} required={required} $inputType={inputType} $width={"100%"} $fontSize={fontSize} $titleFontSize={titleFontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
-
-      <button
-          onClick={toggleOptions}
-          style={{
-            position: 'absolute',
-            right: '0px',
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            color: '#553525',
-            paddingTop: "8px",
-            paddingBottom: "8px",
-            paddingRight: "24px",
-            paddingLeft: "12px",
-            display: "flex",
-            alignContent: "center",
-            alignItems: "center"
-
-          }}
-        >
-          {showOptions ? <ChevronDown size={arrowSize} color='#A39289' />  : <ChevronUp size={arrowSize} color='#A39289'/>}
-        </button>
-      
+    <Container ref={containerRef} width={"100%"}>
+      <BasicInput
+        $readOnly={readOnly} 
+        onKeyDown={handleKeyDown} 
+        error={error} 
+        errorMessage={errorMessage} 
+        title={title} 
+        required={required} 
+        $inputType={inputType} 
+        $width={"100%"} 
+        $fontSize={fontSize} 
+        $titleFontSize={titleFontSize} 
+        placeholder={placeholder} 
+        value={query} 
+        onChange={handleChange} 
+        onClick={handleClickOnEmptyInput} 
+        $paddingRight='56px'
+      >
+        <ToggleButton onClick={toggleOptions}>
+          {showOptions ? <ChevronDown size={arrowSize} color='#A39289' /> : <ChevronUp size={arrowSize} color='#A39289' />}
+        </ToggleButton>
       </BasicInput>
 
-      <div style={{position: "relative", width: "100%"}}>
-
       {showOptions && filteredOptions.length > 0 && (
-        <div style={{ position: "absolute", top: "10px", left:"50%", transform: "translateX(-50%)", zIndex: 10, width: "100%" }}>
+        <DropDownWrapper width={width}>
           <DropDownCell
             highlight={highlightedIndex}
             options={filteredOptions}
@@ -176,12 +157,8 @@ export default function SearchBar({ options, width, fontSize, titleFontSize=font
             fontSize={fontSize}
             numCellsShowed={numOptionsShowed}
           />
-        </div>
+        </DropDownWrapper>
       )}
-
-    </div>
-
-    </div>
+    </Container>
   );
 }
-

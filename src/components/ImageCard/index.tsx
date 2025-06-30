@@ -25,10 +25,6 @@ const ImageCard = ({ title, text_color, background_color, background_image, to ,
       </CardContainer>
 
     </StyledLink>
-
-
-    
-
 </>
   );
 };

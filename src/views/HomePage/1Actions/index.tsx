@@ -17,7 +17,7 @@ const Actions = () => {
 
     
     <ActionsContainer>
-
+      
        <InfoDiv>
         <LabelImage />
         <InfoText>Faça a diferença na <span style={{color: "#F17D6E"}}>vida de um animalzinho</span> e leve amor para o seu coração.</InfoText>
