@@ -1,21 +1,23 @@
 import styled from "styled-components";
 
-export const StyledLink = styled.p<{ $fontSize: string, $textColor: string }>`
+export const TextWithAction = styled.button<{ $width: string, $fontSize: string, $textColor: string, $underlineOnHover: boolean }>`
+  width: ${(props) => `${props.$width}`};
   font-family: 'Nunito Sans', sans-serif;
   font-style: normal;
   font-weight: 800; 
-  text-decoration: none;
   color: ${(props) => `${props.$textColor}`};
   font-size: ${(props) => `${props.$fontSize}`};
   padding: 0px 0px;
   gap: 10px;
-  line-height: 28px;
   display: flex; 
   align-items: center; 
   justify-content: center;
-  order: 2;
-  flex-grow: 0;
+  background: none;
+  border: none;
   
-  height: 40px;
 
+  &:hover {
+  cursor: pointer;
+  text-decoration: ${(props) => (props.$underlineOnHover ? "underline" : "none")};
+  }
 }`;

@@ -11,8 +11,8 @@ interface Option {
 
 interface SelectorRadioGroupProps {
   options: Option[];
- // selectedValues: boolean[];  ESSES DOIS VALORES AQUI TERÃO QUE SER DEFINIDOS NO COMPONENTE PAI. POR ENQUANTO ESTÃO SENDO DEFINIDOS AQUI
- // setSelectedValues: (selectedValues: boolean[]) => void;
+  selectedValue: number;
+  setSelectedValue: (selectedValues: number) => void;
   width: string;
   height: string;
   overlayImageWidth?: string;
@@ -24,8 +24,8 @@ interface SelectorRadioGroupProps {
 
 export default function SelectorRadioGroup({
   options,
- // selectedValues,
- // setSelectedValues,
+  selectedValue,
+  setSelectedValue,
   width,
   height,
   overlayImageWidth = "0px",
@@ -33,18 +33,14 @@ export default function SelectorRadioGroup({
   overlayImageTop = "0px",
   overlayImageLeft = "0px",
 }: SelectorRadioGroupProps) {
-  const [clickedValue, setClickedValue] = useState<number>(-1);
-  const [selectedValues, setSelectedValues] = useState<boolean[]>(options.map(() => true));
 
   const handleSelect = (index: number) => {
-    if(selectedValues.reduce((acc, value) => value && acc, true) || !selectedValues[index]){
-        setClickedValue(index);
-        setSelectedValues(selectedValues.map((_, i) => i === index));
+    if(selectedValue == -1 || selectedValue !== index){
+        setSelectedValue(index);
     }
     
     else{
-        setClickedValue(-1);
-        setSelectedValues(selectedValues.map(() => true));
+        setSelectedValue(-1);
 
     }
   };
@@ -55,8 +51,8 @@ export default function SelectorRadioGroup({
         <SelectorButton
           key={option.value}
           label={option.label}
-          active={selectedValues[index]}
-          clicked={clickedValue === index}
+          active={selectedValue === -1 || selectedValue === index}
+          clicked={selectedValue === index}
           setActive={() => handleSelect(index)}
           width={width}
           height={height}

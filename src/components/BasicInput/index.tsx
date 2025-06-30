@@ -4,6 +4,7 @@ interface BasicInputProps {
   title: string; // Título do input
   required: boolean; // Se é um atributo obrigatório. Se for true, coloca um asterisco no título indicando a obrigatoriedade
   $fontSize: string; // Tamanho da fonte do input
+  $titleFontSize?: string; // Tamanho da fonte do título do input. Se não for definido, o padrão é o mesmo que o tamanho da fonte do input
   placeholder: string; // Placeholder do input
   $width: string; // Comprimento do input
   value: string; // Estado que vai guardar o valor atual do input
@@ -23,6 +24,7 @@ export default function BasicInput({
   title,
   required,
   $fontSize,
+  $titleFontSize = $fontSize,
   placeholder,
   $width,
   value,
@@ -37,15 +39,15 @@ export default function BasicInput({
   children,
 }: BasicInputProps) {
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px'}}>
       {title && (
         <label
+          htmlFor={title}
           style={{
             fontFamily: 'Nunito Sans, sans-serif',
-            fontSize: $fontSize,
+            fontSize: $titleFontSize,
             fontWeight: 700,
             color: '#553525',
-            marginBottom: '6px',
           }}
         >
           {title}
@@ -62,8 +64,10 @@ export default function BasicInput({
         }}
       >
         <StyledInput
+          id={title}
+          readOnly={$readOnly}
           $readOnly={$readOnly}
-          $width={$width}
+          $width={"100%"}
           type="text"
           value={value}
           onChange={onChange}
@@ -99,6 +103,6 @@ export default function BasicInput({
           </div>
         )}
 
-    </>
+    </div>
   );
 }

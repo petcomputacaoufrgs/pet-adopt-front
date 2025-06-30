@@ -8,22 +8,27 @@ interface ISeaarchBar{
     options : string[]; // Opções que aparecerão no DropDown
     width: string; // Comprimento tanto do input quanto do DropDown
     fontSize: string; // Tamanho da fonte tanto no input quanto nas opções do DropDown
+    titleFontSize?: string; // Tamanho da fonte do título do input. Se não for definido, o padrão é o mesmo que o tamanho da fonte do input
     placeholder: string; // Placeholder do input
     title: string; // Título que vai antes do input
     required: boolean; // Se o input é obrigatório. Se for, coloca um asterisco "*" no título
+    query: string;
+    setQuery: (query: string) => void;
+    inputType?: string; // Tipo do input. Atualmete são dois: "Primário", com fundo mais laranja, e qualquer outra string indica o tipo secundário, com fundo branco
     error?: boolean; // eventualmente vamos ter que ver como será feita a validação deste erro. Por enquanto o erro tá só sendo propagado entre componentes e está estático.
     errorMessage?: string;
+    readOnly?: boolean; // Se o input é apenas para leitura. Se for true, o usuário não pode digitar nada dele
+    resetOption?: string; // Se definida, o usuário pode clicar na opção com o valor passado para limpar o input
+    numOptionsShowed?: number; // Quantas opções devem ser mostradas no DropDown. Se não for definido, o padrão é 5
 }
 
-export default function SearchBar({ options, width, fontSize, placeholder, title, required, error = false, errorMessage } : ISeaarchBar) {
-  const [query, setQuery] = useState(''); // valor atual do input
+export default function SearchBar({ options, width, fontSize, titleFontSize=fontSize, placeholder, title, required, query, setQuery, inputType="Primário", error = false, errorMessage, readOnly = false, resetOption, numOptionsShowed = 5 } : ISeaarchBar) {
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]); // opções filtradas a partir do valor do input: todas as opções que começam com o valor atual do input
   const [showOptions, setShowOptions] = useState<boolean>(false); // se deve mostrar as opções ou não
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); // Qual das opções está selecionada no momento (seleção usando as setas do teclado). -1 indica que nenhuma está
 
 
   const arrowSize = parseFloat(fontSize) + 6; // Tamahno da flechinha que aponta pra cima quando as opções estão aparecendo e pra baixo quando não estão. É sempre 6px maior que a fonte
-  const numOptionsShowed = 5;
 
 
   // Seleção de opções a partir do teclado (setas pra cima e pra baixo e enter)
@@ -43,7 +48,11 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     }
   
     if (event.key === 'Enter' && highlightedIndex >= 0) {
-      const selected = filteredOptions[highlightedIndex];
+      let selected = filteredOptions[highlightedIndex];
+
+      if (resetOption && selected === resetOption)
+        selected = '';
+
       setQuery(selected);
       setShowOptions(false);
       setFilteredOptions(options.filter((opt) =>
@@ -72,13 +81,21 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
 
   // Clique numa opção
   const handleOptionClick = (value : string) => {
-    setQuery(value);           
+    let newValue = value;
+
+    if(resetOption && value === resetOption)
+      newValue = '';
+
+    setQuery(newValue);
+    setShowOptions(false);
+
+    if (readOnly) return;
+    
 
     setFilteredOptions(options.filter((opt) =>
       opt.toLowerCase().startsWith(value.toLowerCase())))
 
     setHighlightedIndex(-1);
-    setShowOptions(false);
   };
 
   // Clique na setinha para mostrar/esconder opções
@@ -90,11 +107,11 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
     setShowOptions(!showOptions);
   };
 
-  // Clique no input vazio (deve mostrar todas as opções)
+  // Clique no input vazio (deve mostrar as opções se não estiverem aparecendo, ou esconder se estiverem. Considera o caso readOnly como se o input estivesse sempre vazio)
   const handleClickOnEmptyInput = () => {
-    if (query == '') {
+    if (query == '' || readOnly) {
+      setShowOptions(!showOptions);
       setFilteredOptions(options);
-      setShowOptions(true);
     }
   }
 
@@ -121,7 +138,7 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
 
 <div ref={containerRef} style={{width:width}}>
 
-      <BasicInput onKeyDown={handleKeyDown} error={error} errorMessage={errorMessage} title={title} required={required} $width={width} $fontSize={fontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
+      <BasicInput $readOnly={readOnly} onKeyDown={handleKeyDown} error={error} errorMessage={errorMessage} title={title} required={required} $inputType={inputType} $width={"100%"} $fontSize={fontSize} $titleFontSize={titleFontSize} placeholder={placeholder} value={query} onChange={handleChange} onClick={handleClickOnEmptyInput} $paddingRight='56px'>
 
       <button
           onClick={toggleOptions}
@@ -147,15 +164,15 @@ export default function SearchBar({ options, width, fontSize, placeholder, title
       
       </BasicInput>
 
-      <div style={{position: "relative", width: width}}>
+      <div style={{position: "relative", width: "100%"}}>
 
       {showOptions && filteredOptions.length > 0 && (
-        <div style={{ position: "absolute", top: "10px", left:"50%", transform: "translateX(-50%)", zIndex: 10 }}>
+        <div style={{ position: "absolute", top: "10px", left:"50%", transform: "translateX(-50%)", zIndex: 10, width: "100%" }}>
           <DropDownCell
             highlight={highlightedIndex}
             options={filteredOptions}
             onSelect={handleOptionClick}
-            width={width}
+            width={"100%"}
             fontSize={fontSize}
             numCellsShowed={numOptionsShowed}
           />

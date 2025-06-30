@@ -31,12 +31,7 @@ const Header = ({color, user, Logo}: IHeader) => {
         navigate("/signup");
     };
 
-    useEffect(() => {
-        // A rolagem pode ser feita com base no ID diretamente no click, sem problemas com renderização
-      }, []);
-
-    
-
+  
   
   const isWideEnoughForStandardButtons = () => window.innerWidth >= 1260;
 
@@ -82,7 +77,7 @@ const Header = ({color, user, Logo}: IHeader) => {
 
             <DropdownButton content={<svg width="17" height="24" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 13.5H15H2ZM2 7.5H15H2ZM2 1.5H15H2Z"/>
-                <path d="M2 13.5H15M2 7.5H15M2 1.5H15" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 13.5H15M2 7.5H15M2 1.5H15" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>} onClick={() => {}} options={["Cadastrar ONG ou Membro", "Fazer Login"]} dropDownWidth="250px"/>
             }
 
