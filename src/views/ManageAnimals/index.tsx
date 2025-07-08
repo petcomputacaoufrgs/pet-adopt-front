@@ -4,9 +4,9 @@ import BannerComponent from "../../components/BannerComponent";
 
 import dog from "../../assets/ManageAnimalsDog.png";
 import logo from "../../assets/HorizontalLogo.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../HomePage/6Footer";
-import { ContentContainer, DogCardsContainer } from "./styles";
+import { CloseButton, ContentContainer, DogCardsContainer, FixedFilterButton, Overlay } from "./styles";
 
 
 import DogCard from "../../components/DogCard";
@@ -15,6 +15,9 @@ import EditButton from "../../components/EditButton";
 
 import DeleteIcon from "../../assets/DeleteIcon.svg"
 import PencilIcon from "../../assets/PencilIcon.svg";
+import PaginationButtons from "../../components/PaginationButtons";
+import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
+import Breadcrumb from "../../components/BreadCrumb";
 
 
 const ManageAnimals = () => {
@@ -42,15 +45,61 @@ const ManageAnimals = () => {
   ];
 
 
+  const [hideAnimalFilter, setHideAnimalFilter] = useState(window.innerWidth < 1240);
+  const [showAnimalFilterFullScreen, setShowAnimalFilterFullScreen] = useState(false);
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isWindowSmall = window.innerWidth < 1240
+      setHideAnimalFilter(isWindowSmall);
+
+      if(!isWindowSmall && showAnimalFilterFullScreen)
+        setShowAnimalFilterFullScreen(false);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  })
+
+
+  useEffect(() => {
+  if (showAnimalFilterFullScreen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+}, [showAnimalFilterFullScreen]);
+
+
+
 
   return (
     <>
+
     <Header color="#FFF6E8" user="not in" Logo={logo} />
     <BannerComponent color="#F5ABA2" title="Encontre seu novo melhor amigo!" subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!" image_url={dog}  />
     
-    <ContentContainer>
     
-      <AnimalFilter 
+    <div style={{display: "flex", alignItems: "center", justifyContent: "center", height: "160px"}}>
+      <div style={{display: "flex", width: "80%"}}>
+    {hideAnimalFilter && <PrimarySecondaryButton onClick={() => setShowAnimalFilterFullScreen(true)} content={"Filtros"}></PrimarySecondaryButton>}
+    <Breadcrumb items={[{label: "Home", to:"/"}, {label: "Gerenciar Animais"}]}></Breadcrumb>
+
+      </div>
+    </div>
+
+        {showAnimalFilterFullScreen && 
+    
+        <Overlay>
+
+        <CloseButton onClick={() => setShowAnimalFilterFullScreen(false)}>x</CloseButton>
+
+
+        <AnimalFilter 
         selectedSpecie={selectedSpecie}
         setSelectedSpecie={setSelectedSpecie}
         selectedState={selectedState}
@@ -71,6 +120,36 @@ const ManageAnimals = () => {
         setSelectedSex={setSelectedSex}
       />
 
+      </Overlay>
+    
+    }
+
+
+    <ContentContainer>
+    
+      {!hideAnimalFilter  && 
+      <AnimalFilter 
+        selectedSpecie={selectedSpecie}
+        setSelectedSpecie={setSelectedSpecie}
+        selectedState={selectedState}
+        setSelectedState={setSelectedState}
+        selectedAge={selectedAge}
+        setSelectedAge={setSelectedAge}
+        selectedSize={selectedSize}
+        setSelectedSize={setSelectedSize}
+        selectedSituation={selectedSituation}
+        setSelectedSituation={setSelectedSituation}
+        city={city}
+        setCity={setCity}
+        name={name}
+        setName={setName}
+        breed={breed}
+        setBreed={setBreed}
+        selectedSex={selectedSex}
+        setSelectedSex={setSelectedSex}
+      />
+      }
+
       <DogCardsContainer>
 
         {pets.map((pet, index) => {
@@ -88,7 +167,7 @@ const ManageAnimals = () => {
               to = {pets[index].to}
               />
 
-              <div style={{position: "absolute", top: "24px", left: "310px"}}>
+              <div style={{position: "absolute", top: "24px", left: "40px"}}> {/* ORIGINAL COM LEFT 310px */}
                   <EditButton width="34px" height="34px" options = {[{label: "Editar", onClick: () => {}, iconSrc: PencilIcon}, {label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon}]}/> 
               </div>
               
@@ -102,9 +181,13 @@ const ManageAnimals = () => {
 
     </ContentContainer>
 
+
+      <PaginationButtons buttonHeight="30px" buttonWidth="30px" containerHeight="160px"/>
     
     <Footer />
+
     </>
+
   );
 };
 

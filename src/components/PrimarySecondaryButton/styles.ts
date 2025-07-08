@@ -23,7 +23,7 @@ export const PrimaryButton = styled.button<{$width: string | undefined, $highlig
   &:disabled {
     background-color: #DEDEDE;
     border: none;
-    color: #A6A6A6
+    color: #A6A6A6;
   }
 
   &:disabled:hover, &:disabled:active {

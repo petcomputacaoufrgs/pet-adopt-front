@@ -2,7 +2,7 @@ import {TextWithAction} from "./styles";
 
 import {ILink} from "./types";
 
-const ActionText = ({ children, onClick, width="100%", has_arrow_svg = false, underline_on_hover=false, font_size, text_color}: ILink) => {
+const ActionText = ({ children, onClick, width="", has_arrow_svg = false, underline_on_hover=false, font_size, text_color}: ILink) => {
   return (
  
       <TextWithAction onClick={onClick} $width={width} $fontSize={font_size} $textColor={text_color} $underlineOnHover={underline_on_hover}> 

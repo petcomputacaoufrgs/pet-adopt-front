@@ -19,7 +19,7 @@ const ImageCard = ({ title, text_color, background_color, background_image, to ,
 
         <CardInfo $textColor={text_color}>
           <h3>{title}</h3>
-          <ActionText onClick={(e) => navigateTo("/")} has_arrow_svg={true} font_size="calc(10px + 1vw)" text_color={text_color}>Ver mais</ActionText>
+          <ActionText onClick={() => {}} has_arrow_svg={true} font_size="calc(10px + 1vw)" text_color={text_color}>Ver mais</ActionText>
         </CardInfo>
 
       </CardContainer>
