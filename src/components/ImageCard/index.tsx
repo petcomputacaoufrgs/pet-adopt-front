@@ -2,7 +2,6 @@ import {CardContainer, CardInfo, StyledLink} from "./styles";
 
 import {ICard} from "./types"
 
-import LinkText from "../ActionText";
 import ActionText from "../ActionText";
 import { useNavigate } from "react-router-dom";
 

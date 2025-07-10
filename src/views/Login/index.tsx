@@ -28,9 +28,16 @@ const Login: React.FC = () => {
     console.log("Senha:", password);
   };
 
+
+  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
+  const handleHeaderAction = (selected: string) => {
+  };
+
+
+
   return (
     <LoginContainer>
-      <Header color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
+      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
       <LoginForm onSubmit={handleLogin}>
         <h2>Login</h2>
         {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}

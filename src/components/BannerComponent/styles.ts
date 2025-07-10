@@ -1,12 +1,17 @@
 import styled from "styled-components";
 
 
-export const BannerContainer = styled.div <{$backgroundColor: string}>`
+export const BannerContainer = styled.div <{$backgroundColor: string; $limitWidthForImage: string}>`
   font-family: 'Nunito Sans', sans-serif;
   display: flex;
   justify-content: center;
   width: 100%; 
   background-color: ${props => props.$backgroundColor};
+
+  
+  @media (max-width: ${(props) => props.$limitWidthForImage}) {
+      padding: 25px 0 25px 0;
+    }
 
 `
 
@@ -32,6 +37,9 @@ export const BannerTextContainer = styled.div `
     font-weight: 800;
     color: #553525;
 
+    @media (max-width: 980px) {
+      font-size: 40px;
+    }
   }
 
   h2 {

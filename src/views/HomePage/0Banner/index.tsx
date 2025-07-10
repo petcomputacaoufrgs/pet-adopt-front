@@ -11,12 +11,18 @@ interface AboutProps {
 }
 
 const Banner: React.FC<AboutProps> = ({ id }) => {
+  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
+
+
+  const handleHeaderAction = (selected: string) => {
+  } 
+
+
   return (
     <BannerContainer>
         <OngInfoCard/>
 
-
-      <Header color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
+      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
 
       <Info
         subTitle="Lorem ipsum dolor sit amet"

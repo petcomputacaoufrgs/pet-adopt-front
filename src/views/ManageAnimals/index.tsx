@@ -51,7 +51,9 @@ const ManageAnimals = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const isWindowSmall = window.innerWidth < 1240
+
+      const isWindowSmall = window.innerWidth < 1240; 
+      
       setHideAnimalFilter(isWindowSmall);
 
       if(!isWindowSmall && showAnimalFilterFullScreen)
@@ -76,16 +78,23 @@ const ManageAnimals = () => {
 
 
 
+  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
+
+
+  const handleHeaderAction = (selected: string) => {
+  } 
+
+
 
   return (
     <>
 
-    <Header color="#FFF6E8" user="not in" Logo={logo} />
-    <BannerComponent color="#F5ABA2" title="Encontre seu novo melhor amigo!" subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!" image_url={dog}  />
+    <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" user="not in" Logo={logo} />
+    <BannerComponent limitWidthForImage="850px" color="#F5ABA2" title="Encontre seu novo melhor amigo!" subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!" image_url={dog}  />
     
     
     <div style={{display: "flex", alignItems: "center", justifyContent: "center", height: "160px"}}>
-      <div style={{display: "flex", width: "80%"}}>
+      <div style={{display: "flex", width: "80%", gap: "20px", alignItems: "center", justifyContent: "center"}}>
     {hideAnimalFilter && <PrimarySecondaryButton onClick={() => setShowAnimalFilterFullScreen(true)} content={"Filtros"}></PrimarySecondaryButton>}
     <Breadcrumb items={[{label: "Home", to:"/"}, {label: "Gerenciar Animais"}]}></Breadcrumb>
 

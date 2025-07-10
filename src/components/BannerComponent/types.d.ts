@@ -3,4 +3,5 @@ export interface IBanner {
     image_url: string;
     title: string;
     subTitle: string;
+    limitWidthForImage?: string;
 }
