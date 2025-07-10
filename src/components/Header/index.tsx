@@ -76,6 +76,8 @@ const Header = ({color, user, Logo, options, optionsToAction}: IHeader) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
+  const currentUserOptions = user? user.userOptions : ["Cadastrar ONG ou Membro", "Fazer Login"];
+  const currentUserActions = user? user.userOptionsToActions : () => {};
 
 
   useEffect(() => {
@@ -127,11 +129,18 @@ const Header = ({color, user, Logo, options, optionsToAction}: IHeader) => {
             <ButtonsContainer>
             {(responsiveMode == "full")? 
 
+            (!user)?
+
             <>
                 <PrimarySecondaryButton width={"284px"} buttonType={"Primário"} isDisabled={false} content={"Cadastrar ONG ou Membro"} onClick={handleSignupClick} />
                 <PrimarySecondaryButton width={"151px"} buttonType={"Primário"} isDisabled={false} content={"Fazer Login"} onClick={handleLoginClick} />
             </>
-    
+
+            :
+
+            <DropdownButton content={`Olá, ${user.name}`} options={user.userOptions} onClick={user.userOptionsToActions} />
+            
+  
             :
 
             (responsiveMode == "partial")?
@@ -139,7 +148,7 @@ const Header = ({color, user, Logo, options, optionsToAction}: IHeader) => {
             <DropdownButton content={<svg width="17" height="24" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 13.5H15H2ZM2 7.5H15H2ZM2 1.5H15H2Z"/>
                 <path d="M2 13.5H15M2 7.5H15M2 1.5H15" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>} onClick={() => {}} options={["Cadastrar ONG ou Membro", "Fazer Login"]} dropDownWidth="250px"/>
+                </svg>} onClick={currentUserActions} options={currentUserOptions} dropDownWidth="250px"/>
 
               :
 
@@ -161,6 +170,19 @@ const Header = ({color, user, Logo, options, optionsToAction}: IHeader) => {
 
           {showCompactMenu &&
           <>
+
+          { user?
+
+          <div style={{display: "flex", flexDirection: "column", gap: "24px", width: "100%", alignItems: "center"}}>
+          {currentUserOptions.map((option) => (
+            <TextButton key={option} onClick={() => currentUserActions(option)}>
+              {option}
+            </TextButton>
+          ))}
+          </div>
+
+          :
+
           <div style={{ display: "flex", gap: "8px", justifyContent: "center", width: "100%" }}>
             <PrimarySecondaryButton
               width="45%"
@@ -177,6 +199,7 @@ const Header = ({color, user, Logo, options, optionsToAction}: IHeader) => {
               onClick={handleLoginClick}
             />
           </div>
+          }
 
           <div style={{display: "flex", flexDirection: "column", gap: "24px", width: "100%", alignItems: "center"}}>
           {options.map((option) => (

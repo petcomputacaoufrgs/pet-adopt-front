@@ -65,7 +65,7 @@ const SignUp: React.FC = () => {
 
     return (
         <SignUpContainer>
-            <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
+            <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" Logo={logo} />
             <SignUpForm onSubmit={handleSignUp}>
                 <FormTitle>Cadastro</FormTitle>
                 {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}

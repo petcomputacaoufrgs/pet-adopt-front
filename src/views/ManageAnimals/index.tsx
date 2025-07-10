@@ -89,7 +89,7 @@ const ManageAnimals = () => {
   return (
     <>
 
-    <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" user="not in" Logo={logo} />
+    <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo} />
     <BannerComponent limitWidthForImage="850px" color="#F5ABA2" title="Encontre seu novo melhor amigo!" subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!" image_url={dog}  />
     
     

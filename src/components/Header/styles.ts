@@ -7,7 +7,7 @@ export const HeaderContainer = styled.div <{$backgroundColor:string}> `
     align-items: center;
     width: 80%;
     min-height: 100px;
-    gap: 9vw;
+    gap: min(128px, 9vw);
     background-color: ${(props) => props.$backgroundColor};
 
     @media (max-width: 900px){
@@ -17,13 +17,8 @@ export const HeaderContainer = styled.div <{$backgroundColor:string}> `
 `;
 
 export const TextContainer = styled.div`
-    
     display: flex;
-    font-weight: 800;
-    font-size: clamp(0.8rem, 1vw, 1.1em); /* Responsivo */
-    line-height: 2;
-    color: #553525;
-        
+    align-items: center;        
     gap:3vw;
     
 }`
@@ -38,14 +33,13 @@ export const ButtonsContainer = styled.div`
 }`
 
 export const TextButton = styled.button`
-
     display: flex;
     justify-content: center;
     border: none;
     background: rgb(0,0,0,0);
-    width: 100%;
-    font-weight: 900;
-    font-size: clamp(0.8rem, 1vw, 1.1em); /* Responsivo */
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(16px, 1vw, 1.1em); /* Responsivo */
     line-height: 2;
     color: #553525;
 

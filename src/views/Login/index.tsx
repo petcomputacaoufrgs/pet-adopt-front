@@ -37,7 +37,7 @@ const Login: React.FC = () => {
 
   return (
     <LoginContainer>
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
+      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" Logo={logo} />
       <LoginForm onSubmit={handleLogin}>
         <h2>Login</h2>
         {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}

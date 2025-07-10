@@ -22,7 +22,7 @@ const Banner: React.FC<AboutProps> = ({ id }) => {
     <BannerContainer>
         <OngInfoCard/>
 
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" user="not in" Logo={logo} />
+      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" Logo={logo} />
 
       <Info
         subTitle="Lorem ipsum dolor sit amet"
