@@ -19,7 +19,7 @@ const BannerComponent = ({color, image_url, title, subTitle, limitWidthForImage}
         return () => {
           window.removeEventListener("resize", handleResize)
         }
-      })
+      }, [])
 
     return(
         <BannerContainer $backgroundColor={color} $limitWidthForImage={limitWidthForImage || ""}>

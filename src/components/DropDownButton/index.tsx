@@ -57,7 +57,7 @@ const DropdownButton = ({
   return (
     <Container
       ref={containerRef}
-      buttonWidth={buttonWidth}
+      $buttonWidth={buttonWidth}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -70,7 +70,7 @@ const DropdownButton = ({
         buttonType={buttonType}
       />
       {showDropdown && (
-        <DropdownWrapper dropDownWidth={dropDownWidth}>
+        <DropdownWrapper $dropDownWidth={dropDownWidth}>
           <DropDownCell
             options={options}
             onSelect={handleClick}

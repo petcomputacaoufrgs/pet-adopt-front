@@ -1,5 +1,17 @@
 import styled from "styled-components";
 
+
+export const HeaderWrapper = styled.div<{$showCompactMenu: boolean; $color: string;}>`
+  background-color: ${({ $showCompactMenu, $color }) => $showCompactMenu ? "white" : $color};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+`;
+
+
+
 export const HeaderContainer = styled.div <{$backgroundColor:string}> `
     font-family: 'Nunito Sans', sans-serif;
     display: flex;
@@ -54,15 +66,19 @@ export const Image = styled.img`
   } 
 `;
 
-export const CompactedMenuButton = styled.button` 
+export const CompactedMenuButton = styled.button<{$highlighted: boolean}>` 
   min-width: 60px;
   min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #FF9944;
+  background-color: ${(props) => props.$highlighted? "#553525" : "#FF9944"};
   border: none;
   border-radius: 20px;
+
+  svg {
+    stroke: ${(props) => props.$highlighted? "white" : "#553525"};
+  }
 
   &:hover {
     cursor: pointer;
@@ -73,9 +89,7 @@ export const CompactedMenuButton = styled.button`
     }
 
   }
-  svg {
-    stroke: #553525;
-  }
+
 
 `
 
@@ -122,5 +136,29 @@ export const Icon = styled.div<{ $orange: string; $brown: string }>`
   &:hover {
     background-image: url(${props => props.$brown});
   }
+`;
+
+
+export const CompactUserOptionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  align-items: center;
+`;
+
+export const CompactLoginSignupButtonsContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+`;
+
+export const CompactGeneralOptionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  align-items: center;
 `;
 

@@ -24,25 +24,17 @@ interface IPaginationButtons {
   buttonWidth: string;
   buttonHeight: string;
   containerHeight: string;
+  itemsLength: number;
+  itemsPerPage: number;
+  currentPage: number;
+  setCurrentPage: (newPage: number) => void;
+
 }
 
-const PaginationButtons = ({buttonWidth, buttonHeight, containerHeight} : IPaginationButtons) => {
+const PaginationButtons = ({buttonWidth, buttonHeight, containerHeight, itemsLength, itemsPerPage, currentPage, setCurrentPage} : IPaginationButtons) => {
 
-    const [pets, setPets] = useState<Pet[]>([
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Mel", race: "Vira-lata", age: "2", location: "São Paulo, SP", to: "/pet1" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Rex", race: "Pastor Alemão", age: "4", location: "Rio de Janeiro, RJ", to: "/pet2" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Pequeno", name: "Luna", race: "Poodle", age: "1", location: "Belo Horizonte, MG", to: "/pet3" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Médio", name: "Thor", race: "Bulldog", age: "3", location: "Curitiba, PR", to: "/pet4" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Grande", name: "Bela", race: "Labrador", age: "5", location: "Porto Alegre, RS", to: "/pet5" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Pequeno", name: "Max", race: "Chihuahua", age: "2", location: "Salvador, BA", to: "/pet6" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Nina", race: "Golden Retriever", age: "3", location: "Recife, PE", to: "/pet7" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Bob", race: "Rottweiler", age: "4", location: "Fortaleza, CE", to: "/pet8" }
-  ]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const petsPerPage = 9;
-    const [totalPages, setTotalPages] = useState(Math.ceil(pets.length / petsPerPage));
-    
-
+    const totalPages = Math.ceil(itemsLength / itemsPerPage);
+    console.log(totalPages);
 
     const getVisiblePages = (currentPage: number, totalPages: number) => {
         const visiblePages = [];
@@ -73,7 +65,7 @@ const PaginationButtons = ({buttonWidth, buttonHeight, containerHeight} : IPagin
     const handlePageChange = (newPage: number) => {
         if (newPage < 1) return;
         setCurrentPage(newPage);
-        window.scrollTo({top: 0});
+        window.scrollTo({top: 100});
     }
 
 

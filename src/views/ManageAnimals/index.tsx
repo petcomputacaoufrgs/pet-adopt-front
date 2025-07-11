@@ -6,7 +6,7 @@ import dog from "../../assets/ManageAnimalsDog.png";
 import logo from "../../assets/HorizontalLogo.png";
 import { useEffect, useState } from "react";
 import Footer from "../HomePage/6Footer";
-import { CloseButton, ContentContainer, DogCardsContainer, FixedFilterButton, Overlay } from "./styles";
+import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, FixedFilterButton, Overlay, PetCardWrapper, TopBarContainer, TopBarContent } from "./styles";
 
 
 import DogCard from "../../components/DogCard";
@@ -21,6 +21,11 @@ import Breadcrumb from "../../components/BreadCrumb";
 
 
 const ManageAnimals = () => {
+
+  /**
+   * Estados que representam os filtros aplicados aos animais.
+   * Cada um armazena uma característica diferente usada para filtrar os pets.
+   */
   const [selectedSpecie, setSelectedSpecie] = useState<number>(-1);
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedAge, setSelectedAge] = useState<string>("");
@@ -31,8 +36,10 @@ const ManageAnimals = () => {
   const [breed, setBreed] = useState<string>("");
   const [selectedSex, setSelectedSex] = useState<string>("");
 
-
-    // Array com 8 objetos pet
+  /**
+   * Dados temporários dos animais a serem exibidos na tela.
+   * Idealmente, no futuro devem ser carregados do backend conforme a página atual.
+   */
   const pets = [
     { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Mel", race: "Vira-lata", age: "2", location: "São Paulo, SP", to: "/pet1" },
     { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Rex", race: "Pastor Alemão", age: "4", location: "Rio de Janeiro, RJ", to: "/pet2" },
@@ -45,70 +52,130 @@ const ManageAnimals = () => {
   ];
 
 
+  // Controla a exibição do filtro. Se for `true`, o filtro será ocultado (versões menores da tela) e o botão "filtros" deve ser apertado para mostrá-lo no lado da tela.
+  // Se for false ele aparecerá na tela mesmo.
   const [hideAnimalFilter, setHideAnimalFilter] = useState(window.innerWidth < 1240);
-  const [showAnimalFilterFullScreen, setShowAnimalFilterFullScreen] = useState(false);
 
 
+  // Define quando o filtro deve se mostrado no lado da tela (modo mobile ao clicar no botão "filtros").
+  const [showAnimalFilterOnSide, setShowAnimalFilterOnSide] = useState(false);
+
+  /**
+   * Retorna a quantidade de pets que devem ser mostrados por página, de acordo com a largura atual da janela.
+   */
+  const getPetsPerPage = () => {
+    if (window.innerWidth >= 1612) return 9;
+    else if (window.innerWidth >= 800) return 6;
+    else return 5;
+  };
+
+  const [petsPerPage, setPetsPerPage] = useState<number>(getPetsPerPage());
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Define os pets que serão mostrados com base na página atual
+  const startIndexShowedPets = petsPerPage * (currentPage - 1);
+  const showedPets = pets.slice(startIndexShowedPets, startIndexShowedPets + petsPerPage);
+
+  /**
+   * Atualiza o estado do layout e quantidade de pets por página ao redimensionar a tela.
+   */
   useEffect(() => {
     const handleResize = () => {
+      const isWindowSmall = window.innerWidth < 1240;
+      const newPetsPerPage = getPetsPerPage();
 
-      const isWindowSmall = window.innerWidth < 1240; 
-      
+      setPetsPerPage(newPetsPerPage);
       setHideAnimalFilter(isWindowSmall);
 
-      if(!isWindowSmall && showAnimalFilterFullScreen)
-        setShowAnimalFilterFullScreen(false);
-    }
+      // Corrige página atual se necessário
+      if (newPetsPerPage * currentPage > pets.length) {
+        setCurrentPage(Math.ceil(pets.length / newPetsPerPage));
+      }
+
+      // Fecha o filtro no lado da tela se a janela for redimensionada para modo desktop
+      if (!isWindowSmall && showAnimalFilterOnSide) {
+        setShowAnimalFilterOnSide(false);
+      }
+    };
 
     window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  })
-
-
+  /**
+   * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda.
+   */
   useEffect(() => {
-  if (showAnimalFilterFullScreen) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "";
-  }
-}, [showAnimalFilterFullScreen]);
+    document.body.style.overflow = showAnimalFilterOnSide ? "hidden" : "";
+  }, [showAnimalFilterOnSide]);
 
+  /**
+   * Opções exibidas no header da aplicação.
+   */
+  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
 
-
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
-
-
+  /**
+   * Manipula ações do header com base na opção clicada.
+   * @param selected Opção clicada pelo usuário
+   */
   const handleHeaderAction = (selected: string) => {
-  } 
-
+    switch (selected) {
+      case headerOptions[0]:
+        console.log("Sobre nós");
+        return;
+      case headerOptions[1]:
+        console.log("Animais Recém Adicionados");
+        return;
+      case headerOptions[2]:
+        console.log("Dicas");
+        return;
+      case headerOptions[3]:
+        console.log("Fale Conosco");
+        return;
+    }
+  };
 
 
   return (
-    <>
+<>
+  <Header
+    options={headerOptions}
+    optionsToAction={handleHeaderAction}
+    color="#FFF6E8"
+    Logo={logo}
+  />
 
-    <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo} />
-    <BannerComponent limitWidthForImage="850px" color="#F5ABA2" title="Encontre seu novo melhor amigo!" subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!" image_url={dog}  />
-    
-    
-    <div style={{display: "flex", alignItems: "center", justifyContent: "center", height: "160px"}}>
-      <div style={{display: "flex", width: "80%", gap: "20px", alignItems: "center", justifyContent: "center"}}>
-    {hideAnimalFilter && <PrimarySecondaryButton onClick={() => setShowAnimalFilterFullScreen(true)} content={"Filtros"}></PrimarySecondaryButton>}
-    <Breadcrumb items={[{label: "Home", to:"/"}, {label: "Gerenciar Animais"}]}></Breadcrumb>
+  <BannerComponent
+    limitWidthForImage="850px"
+    color="#F5ABA2"
+    title="Encontre seu novo melhor amigo!"
+    subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!"
+    image_url={dog}
+  />
 
-      </div>
-    </div>
+  <TopBarContainer>
+    <TopBarContent>
+      {hideAnimalFilter && (
+        <PrimarySecondaryButton
+          onClick={() => setShowAnimalFilterOnSide(true)}
+          content="Filtros"
+        />
+      )}
 
-        {showAnimalFilterFullScreen && 
-    
-        <Overlay>
+      <Breadcrumb
+        items={[
+          { label: "Home", to: "/" },
+          { label: "Gerenciar Animais" },
+        ]}
+      />
+    </TopBarContent>
+  </TopBarContainer>
 
-        <CloseButton onClick={() => setShowAnimalFilterFullScreen(false)}>x</CloseButton>
+  {showAnimalFilterOnSide && (
+    <Overlay>
+      <CloseButton onClick={() => setShowAnimalFilterOnSide(false)}>x</CloseButton>
 
-
-        <AnimalFilter 
+      <AnimalFilter
         selectedSpecie={selectedSpecie}
         setSelectedSpecie={setSelectedSpecie}
         selectedState={selectedState}
@@ -128,16 +195,12 @@ const ManageAnimals = () => {
         selectedSex={selectedSex}
         setSelectedSex={setSelectedSex}
       />
+    </Overlay>
+  )}
 
-      </Overlay>
-    
-    }
-
-
-    <ContentContainer>
-    
-      {!hideAnimalFilter  && 
-      <AnimalFilter 
+  <ContentContainer>
+    {!hideAnimalFilter && (
+      <AnimalFilter
         selectedSpecie={selectedSpecie}
         setSelectedSpecie={setSelectedSpecie}
         selectedState={selectedState}
@@ -157,47 +220,50 @@ const ManageAnimals = () => {
         selectedSex={selectedSex}
         setSelectedSex={setSelectedSex}
       />
-      }
+    )}
 
-      <DogCardsContainer>
+    <DogCardsContainer>
+      {showedPets.map((pet, index) => (
+        <PetCardWrapper key={index}>
+          <DogCard
+            image_url={pet.image_url}
+            sex={pet.sex}
+            size={pet.size}
+            name={pet.name}
+            race={pet.race}
+            age={pet.age}
+            location={pet.location}
+            to={pet.to}
+          />
 
-        {pets.map((pet, index) => {
-          return (
-            <div style={{position: "relative"}}>
-            <DogCard 
-              key = {index}
-              image_url = {pets[index].image_url}
-              sex = {pets[index].sex}
-              size = {pets[index].size}
-              name = {pets[index].name}
-              race = {pets[index].race}
-              age = {pets[index].age}
-              location = {pets[index].location}
-              to = {pets[index].to}
-              />
+          <EditButtonWrapper>
+            <EditButton
+              width="34px"
+              height="34px"
+              options={[
+                { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
+                { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
+              ]}
+            />
+          </EditButtonWrapper>
+        </PetCardWrapper>
+      ))}
+    </DogCardsContainer>
+  </ContentContainer>
 
-              <div style={{position: "absolute", top: "24px", left: "40px"}}> {/* ORIGINAL COM LEFT 310px */}
-                  <EditButton width="34px" height="34px" options = {[{label: "Editar", onClick: () => {}, iconSrc: PencilIcon}, {label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon}]}/> 
-              </div>
-              
-              
-            </div>
-          )
-        })}
+  <PaginationButtons
+    currentPage={currentPage}
+    setCurrentPage={setCurrentPage}
+    itemsLength={pets.length}
+    itemsPerPage={petsPerPage}
+    buttonHeight="30px"
+    buttonWidth="30px"
+    containerHeight="160px"
+  />
 
-      </DogCardsContainer>
-      
-
-    </ContentContainer>
-
-
-      <PaginationButtons buttonHeight="30px" buttonWidth="30px" containerHeight="160px"/>
-    
-    <Footer />
-
-    </>
-
-  );
+  <Footer />
+</>
+  )
 };
 
 
