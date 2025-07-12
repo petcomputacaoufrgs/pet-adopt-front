@@ -276,7 +276,7 @@ export default function AnimalFilter({
     titleFontSize     = {titleFontSize}
     placeholder       = "Selecione a idade"
     title             = "Idade"
-    numOptionsShowed  = {ages.options.length}
+    numOptionsShowed  = {ages.options.length + 1}
     required          = {false}
     readOnly          = {true}
     inputType= "Secundário"

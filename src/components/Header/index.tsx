@@ -198,6 +198,7 @@ const renderCompactMenu = () => {
           <>
           {currentUserOptions.map((option : string, index) => (
             <PrimarySecondaryButton
+              key={option}
               width= {standardUserOptionsButtonWidth[index]}
               buttonType="Primário"
               isDisabled={false}

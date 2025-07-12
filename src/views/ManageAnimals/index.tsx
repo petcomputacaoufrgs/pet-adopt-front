@@ -92,6 +92,7 @@ const ManageAnimals = () => {
         setCurrentPage(Math.ceil(pets.length / newPetsPerPage));
       }
 
+
       // Fecha o filtro no lado da tela se a janela for redimensionada para modo desktop
       if (!isWindowSmall && showAnimalFilterOnSide) {
         setShowAnimalFilterOnSide(false);
@@ -100,7 +101,7 @@ const ManageAnimals = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [showAnimalFilterOnSide]);
 
   /**
    * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda.
