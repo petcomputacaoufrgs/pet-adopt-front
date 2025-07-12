@@ -1,6 +1,21 @@
+// Não sei se esse formato do tipo User vai se manter com o back. E é possível que tenhamos que colocar esse tipo num escopo maior do que apenas aqui no Header
+// Mas pra uma primeira tentativa de integração deve servir
 type User = {
+  /**
+   * Nome do usuário
+   */
   name: string;
+
+  /**
+   * Cada uma das labels de opções que o usuário tem. Ex: ["Gerenciar Animais", "Gerenciar Perfil"]. 
+   */
   userOptions: string[];
+
+  /**
+   * Função que associa cada opção que o usuário tem com a ação que ela realiza quando selecionada. Recebe a opção selecionada no momento
+   * @param selected Opção selecionada no momento
+   * @returns 
+   */
   userOptionsToActions: (selected: string) => void;
 };
 
