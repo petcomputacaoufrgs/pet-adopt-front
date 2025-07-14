@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div<{$width: string; $hasBorder: boolean}>`
     display: flex;
     width: ${(props) => props.$width};
-    max-height: 1024px;
+    max-height: 420px;
     flex-direction: column;
     gap: 24px;
     padding: 48px 32px;

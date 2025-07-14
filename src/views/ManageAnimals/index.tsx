@@ -100,7 +100,7 @@ const ManageAnimals = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [showAnimalFilterOnSide]);
 
   /**
    * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda.
@@ -194,6 +194,8 @@ const ManageAnimals = () => {
         setBreed={setBreed}
         selectedSex={selectedSex}
         setSelectedSex={setSelectedSex}
+
+        hasBorder={false}
       />
     </Overlay>
   )}
@@ -219,6 +221,7 @@ const ManageAnimals = () => {
         setBreed={setBreed}
         selectedSex={selectedSex}
         setSelectedSex={setSelectedSex}
+
       />
     )}
 
