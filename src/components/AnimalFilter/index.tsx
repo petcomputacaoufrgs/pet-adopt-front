@@ -33,6 +33,8 @@ interface IAnimalFilter {
   setBreed: (value: string) => void;
   selectedSex: string;
   setSelectedSex: (value: string) => void;
+  
+  hasBorder?: boolean;
 }
 
 export default function AnimalFilter({
@@ -53,7 +55,10 @@ export default function AnimalFilter({
   breed,
   setBreed,
   selectedSex,
-  setSelectedSex
+  setSelectedSex,
+
+  hasBorder = true
+
 }: IAnimalFilter) {
 
 
@@ -177,7 +182,7 @@ export default function AnimalFilter({
 
     return (
     
-  <Container $width={containerWidth}>
+  <Container $width={containerWidth} $hasBorder={hasBorder}>
 
   <ContainerTitle>Filtros</ContainerTitle>
 

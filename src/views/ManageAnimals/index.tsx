@@ -195,6 +195,8 @@ const ManageAnimals = () => {
         setBreed={setBreed}
         selectedSex={selectedSex}
         setSelectedSex={setSelectedSex}
+
+        hasBorder={false}
       />
     </Overlay>
   )}
@@ -220,6 +222,7 @@ const ManageAnimals = () => {
         setBreed={setBreed}
         selectedSex={selectedSex}
         setSelectedSex={setSelectedSex}
+
       />
     )}
 

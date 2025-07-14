@@ -13,8 +13,7 @@ export const DropDownContainer = styled.div<{ $width: string, $optionHeight: str
   
   max-height: ${({ $maxHeight }) => $maxHeight};
 
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 
   
   button {
