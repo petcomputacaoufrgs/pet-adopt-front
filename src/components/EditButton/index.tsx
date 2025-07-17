@@ -12,11 +12,11 @@ import { IEditButtonProps } from "./types";
 
 import editIcon from "../../assets/SystemIcon.svg"; // Assuming 'SystemIcon.svg' is the generic edit icon
 
-type Option = {
+/*type Option = {
   label: string;
   onClick: () => void;
   iconSrc?: string;
-};
+};*/
 
 const EditButton = ({ options, width, height }: IEditButtonProps) => {
   const [showOptions, setShowOptions] = useState(false);

@@ -6,7 +6,7 @@ import dog from "../../assets/ManageAnimalsDog.png";
 import logo from "../../assets/HorizontalLogo.png";
 import { useEffect, useState } from "react";
 import Footer from "../HomePage/6Footer";
-import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, FixedFilterButton, Overlay, PetCardWrapper, TopBarContainer, TopBarContent } from "./styles";
+import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, Overlay, PetCardWrapper, TopBarContainer, TopBarContent } from "./styles";
 
 
 import DogCard from "../../components/DogCard";

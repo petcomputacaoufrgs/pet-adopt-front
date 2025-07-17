@@ -2,7 +2,7 @@
 import React from 'react'; // React é importado para usar o JSX
 
 import { Container } from './styles';
-import { Option, SelectorRadioGroupProps } from './types'; // Assumindo que Option e SelectorRadioGroupProps estão em types.ts
+import { SelectorRadioGroupProps } from './types'; // Assumindo que Option e SelectorRadioGroupProps estão em types.ts
 
 import SelectorButton from '../SelectorButton';
 

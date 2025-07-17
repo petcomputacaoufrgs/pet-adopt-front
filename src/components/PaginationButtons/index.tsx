@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import {
   PaginationContainer,
   PassPageButton,
@@ -16,7 +14,7 @@ import RightArrowIcon from "../../assets/RightArrow.svg";
 // A interface Pet foi mantida aqui apenas para referência,
 // mas o ideal é movê-la para um arquivo de tipos global (ex: src/types/common.d.ts)
 // e importá-la apenas onde for realmente utilizada.
-type Pet = {
+/*type Pet = {
   imageUrl: string;
   sex: string;
   size: string;
@@ -26,7 +24,7 @@ type Pet = {
   location: string;
   heightMobile?: string;
   to: string;
-};
+};*/
 
 const PaginationButtons = ({
   buttonWidth,

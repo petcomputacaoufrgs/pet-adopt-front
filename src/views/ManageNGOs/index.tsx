@@ -1,21 +1,29 @@
-import Header from "../../components/Header";
-import BannerComponent from "../../components/BannerComponent";
-
-import cat from "../../assets/ManageNGOsCat.png";
-import logo from "../../assets/HorizontalLogo.png";
 import { useEffect, useState } from "react";
-import Footer from "../HomePage/6Footer";
-import { CloseButton, ContentContainer, EditButtonWrapper, NGOCardsContainer, NGOCardWrapper, Overlay, TopBarContainer, TopBarContent } from "./styles";
 
+import {
+  CloseButton,
+  ContentContainer,
+  EditButtonWrapper,
+  NGOCardsContainer,
+  NGOCardWrapper,
+  Overlay,
+  TopBarContainer,
+  TopBarContent,
+} from "./styles";
+
+import BannerComponent from "../../components/BannerComponent";
+import Breadcrumb from "../../components/BreadCrumb";
 import EditButton from "../../components/EditButton";
-
-import DeleteIcon from "../../assets/DeleteIcon.svg"
-import PencilIcon from "../../assets/PencilIcon.svg";
+import Header from "../../components/Header";
+import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import Breadcrumb from "../../components/BreadCrumb";
-import NGOsFilter from "../../components/NGOsFilter";
+import Footer from "../HomePage/6Footer";
 
+import DeleteIcon from "../../assets/DeleteIcon.svg";
+import HorizontalLogo from "../../assets/HorizontalLogo.png";
+import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
+import PencilIcon from "../../assets/PencilIcon.svg";
 
 const ManageNGOs = () => {
 
@@ -123,7 +131,7 @@ const ManageNGOs = () => {
     options={headerOptions}
     optionsToAction={handleHeaderAction}
     color="#FFF6E8"
-    Logo={logo}
+    Logo={HorizontalLogo}
   />
 
   <BannerComponent
@@ -131,7 +139,7 @@ const ManageNGOs = () => {
     color="#FFC99C"
     title="Descubra as ONGs desse projeto incrível!"
     subTitle="Venha conhecer as ONGs que fazem parte deste projeto inspirador e transformador!"
-    imageUrl={cat}
+    imageUrl={ManageNGOsCat}
   />
 
   <TopBarContainer>

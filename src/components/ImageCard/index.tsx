@@ -1,6 +1,3 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
 import { CardContainer, CardInfo, StyledLink } from "./styles";
 import { ICard } from "./types";
 
@@ -16,8 +13,7 @@ const ImageCard = ({
   heightDesktop,
   heightMobile,
 }: ICard) => {
-  const navigateTo = useNavigate(); // navigateTo is declared but not used in the return statement
-
+  
   return (
     <>
       <StyledLink
