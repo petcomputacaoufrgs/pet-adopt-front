@@ -1,31 +1,45 @@
-import { StyledRadioButton } from "./styles";
+// RadioButton/index.tsx
+import { StyledRadioButton } from './styles';
+import { RadioOption } from './types';
 
-interface RadioOption {
-  label: string;
-  value: string;
-  groupName: string;
-  checked: boolean;
-  onChange: (value : string) => void;
-  fontSize: string;
-  required?: boolean
-}
-
-
-function RadioButton({ label, value, groupName, checked, onChange, fontSize, required=true }: RadioOption) {
-  const undoSelectionOnClick = required? () => {} : () => {if (checked) onChange(""); }; // Implementando um toggle ao invés de um radio, basicamente
+function RadioButton({
+  label,
+  value,
+  groupName,
+  checked,
+  onChange,
+  fontSize,
+  required = true,
+}: RadioOption) {
+  // Implementa um toggle para desmarcar se 'required' for falso
+  const handleToggleSelection = () => {
+    if (!required && checked) {
+      onChange(''); // Desseleciona o radio button
+    } else {
+      onChange(value); // Seleciona o radio button
+    }
+  };
 
   return (
-        <label key={value} style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: fontSize, color: "#553525" }}>
-          <StyledRadioButton
-            type="radio"
-            name={groupName}
-            value={value}
-            onChange={() => onChange(value)}
-            onClick={undoSelectionOnClick}
-            checked={checked}
-          />
-          {label}
-        </label>
+    <label
+      key={value}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75em', // 12px / 16px (base font size) = 0.75em
+        fontSize: fontSize,
+        color: '#553525',
+      }}
+    >
+      <StyledRadioButton
+        type="radio"
+        name={groupName}
+        value={value}
+        onChange={handleToggleSelection} // Usa a nova função de toggle
+        checked={checked}
+      />
+      {label}
+    </label>
   );
 }
 

@@ -1,53 +1,52 @@
-import {CardContainer, 
-        Image, 
-        CardInfoContainer, 
-        CardCenteredContainer, 
-        CardTagsContainer, 
-        AnimalName, 
-        AnimalRace, 
-        AgeLocationContainer, 
-        PinText } from "./styles";
+import React from "react";
 
-import {ICard} from "./types"
+import {
+  AgeLocationContainer,
+  AnimalName,
+  AnimalRace,
+  CardCenteredContainer,
+  CardContainer,
+  CardInfoContainer,
+  CardTagsContainer,
+  Image,
+  PinText,
+} from "./styles";
+import { ICard } from "./types";
 
 import Tag from "../Tags";
 
-import LocationPin from "../../assets/LocationPin.png";
-import PawPin from "../../assets/PawPin.png";
+import LocationPin from "../../assets/LocationPin.png"; // Assuming LocationPin is generic
+import PawPin from "../../assets/PawPin.png"; // Assuming PawPin is generic
 
-const DogCard = ({ image_url, sex, size, name, race, age, location, to }: ICard) => {
+const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
   return (
     <CardContainer>
-      <Image src={image_url}/>
-      
+      <Image src={imageUrl} />
+
       <CardInfoContainer>
         <CardCenteredContainer>
-          
           <CardTagsContainer>
-            <Tag $text={sex} type={"light"} fontSize={"14px"}/>
-            <Tag $text={size} type={"light"} fontSize={"14px"}/>
+            <Tag $text={sex} type={"light"} fontSize={"14px"} />
+            <Tag $text={size} type={"light"} fontSize={"14px"} />
           </CardTagsContainer>
-          
+
           <AnimalName>{name}</AnimalName>
 
           <AnimalRace>{race}</AnimalRace>
 
           <AgeLocationContainer>
-            <PinText style={{marginBottom: "5px"}}>
-              <img id="paw" src={PawPin} alt="Paw Pin"/>
+            <PinText style={{ marginBottom: "5px" }}>
+              <img id="paw" src={PawPin} alt="Paw Pin" />
               <text>{age} Anos de idade</text>
             </PinText>
 
             <PinText>
-              <img id="loc" src={LocationPin} alt="Location Pin"/>
+              <img id="loc" src={LocationPin} alt="Location Pin" />
               <text>{location}</text>
             </PinText>
-          </AgeLocationContainer> 
-
+          </AgeLocationContainer>
         </CardCenteredContainer>
-
       </CardInfoContainer>
-
     </CardContainer>
   );
 };

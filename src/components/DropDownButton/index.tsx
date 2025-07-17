@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+
+import { Container, ContentWrapper, DropdownWrapper } from "./styles";
+import { IDropdownButtonProps } from "./types";
+
 import DropDownCell from "../DropDownCell";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
-
-import { IDropdownButtonProps } from "./types";
-import { Container, DropdownWrapper, ContentWrapper } from "./styles";
 
 const DropdownButton = ({
   content,
@@ -14,8 +15,8 @@ const DropdownButton = ({
   buttonWidth = "150px",
   dropDownWidth = "200px",
   fontSize = "16px",
-  buttonType = "Primário"
-}: IDropdownButtonProps) => { 
+  buttonType = "Primário",
+}: IDropdownButtonProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const toggleDropdown = !showOptionsOnHover ? () => setShowDropdown(!showDropdown) : () => {};

@@ -1,10 +1,8 @@
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { BreadcrumbContainer, BreadcrumbLink, Current, Separator } from "./styled";
+import { BreadcrumbContainer, BreadcrumbLink, Current, Separator } from "./styles"; 
 
 type BreadcrumbItem = {
   label: string;
-  to?: string; // se não tiver, é o item atual
+  to?: string; 
 };
 
 type BreadcrumbProps = {

@@ -151,7 +151,7 @@ const ManageAnimals = () => {
     color="#F5ABA2"
     title="Encontre seu novo melhor amigo!"
     subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!"
-    image_url={dog}
+    imageUrl={dog}
   />
 
   <TopBarContainer>
@@ -230,7 +230,7 @@ const ManageAnimals = () => {
       {showedPets.map((pet, index) => (
         <PetCardWrapper key={index}>
           <DogCard
-            image_url={pet.image_url}
+            imageUrl={pet.image_url}
             sex={pet.sex}
             size={pet.size}
             name={pet.name}

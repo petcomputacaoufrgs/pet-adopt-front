@@ -1,10 +1,10 @@
 export interface ICard {
     title: string;
-    text_color: string;
-    background_color?: string;
-    background_image?: string;
+    textColor: string;
+    backgroundColor?: string;
+    backgroundImage?: string;
     to: string;
     width: string;
-    height_desktop: string;
-    height_mobile: string;
+    heightDesktop: string;
+    heightMobile: string;
   }

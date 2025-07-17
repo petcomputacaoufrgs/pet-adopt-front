@@ -1,30 +1,46 @@
-import {CardContainer, CardInfo, StyledLink} from "./styles";
-
-import {ICard} from "./types"
-
-import ActionText from "../ActionText";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { CardContainer, CardInfo, StyledLink } from "./styles";
+import { ICard } from "./types";
 
-const ImageCard = ({ title, text_color, background_color, background_image, to , width, height_desktop, height_mobile}: ICard) => {
+import ActionText from "../ActionText";
 
-  const navigateTo = useNavigate();
-
+const ImageCard = ({
+  title,
+  textColor,
+  backgroundColor,
+  backgroundImage,
+  to,
+  width,
+  heightDesktop,
+  heightMobile,
+}: ICard) => {
+  const navigateTo = useNavigate(); // navigateTo is declared but not used in the return statement
 
   return (
-<>
-    <StyledLink to={to} $width={width} $heightDesktop={height_desktop} $heightMobile={height_mobile}>
-      <CardContainer $backgroundColor={background_color || "transparent"} $backgroundImage={background_image || "none"}>
-
-        <CardInfo $textColor={text_color}>
-          <h3>{title}</h3>
-          <ActionText onClick={() => {}} has_arrow_svg={true} font_size="calc(10px + 1vw)" text_color={text_color}>Ver mais</ActionText>
-        </CardInfo>
-
-      </CardContainer>
-
-    </StyledLink>
-</>
+    <>
+      <StyledLink
+        to={to}
+        $width={width}
+        $heightDesktop={heightDesktop}
+        $heightMobile={heightMobile}
+      >
+        <CardContainer $backgroundColor={backgroundColor || "transparent"} $backgroundImage={backgroundImage || "none"}>
+          <CardInfo $textColor={textColor}>
+            <h3>{title}</h3>
+            <ActionText
+              onClick={() => {}}
+              hasArrowSvg={true}
+              fontSize="calc(10px + 1vw)"
+              textColor={textColor}
+            >
+              Ver mais
+            </ActionText>
+          </CardInfo>
+        </CardContainer>
+      </StyledLink>
+    </>
   );
 };
 

@@ -66,7 +66,7 @@ const Actions = () => {
           {visiblePets.map((pet, index) => (
             <DogCard
               key={index}
-              image_url={pet.image_url}
+              imageUrl={pet.image_url}
               sex={pet.sex}
               size={pet.size}
               name={pet.name}

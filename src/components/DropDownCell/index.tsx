@@ -1,13 +1,7 @@
-import { DropDownContainer } from "./styles";
+import React from "react";
 
-interface IDropDown {
-  options: string[];
-  onSelect: (selected: string) => void;
-  width: string;
-  fontSize: string;
-  highlight?: number;
-  numCellsShowed: number;
-}
+import { DropDownContainer } from "./styles";
+import { IDropDown } from "./types";
 
 const DropDownCell = ({
   options,
@@ -22,9 +16,9 @@ const DropDownCell = ({
   const NUM_OPTIONS_SHOWED = numCellsShowed < 0 ? 5 : numCellsShowed;
 
   const optionHeight = parseFloat(fontSize) + 2 * OPTION_VERTICAL_PADDING;
-  const maxHeight = optionHeight * NUM_OPTIONS_SHOWED + (NUM_OPTIONS_SHOWED - SEPARATOR_HEIGHT);
+  const maxHeight = optionHeight * NUM_OPTIONS_SHOWED + (NUM_OPTIONS_SHOWED - 1) * SEPARATOR_HEIGHT; // Adjusted to reflect separator count
 
-  // Função de clique para selecionar a opção
+  // Click handler function to select an option
   const handleClick = (index: number) => () => {
     onSelect(options[index]);
   };

@@ -1,6 +1,5 @@
 import {LabelImage, InfoText, ActionsContainer, CardsDiv, InfoDiv} from "./styles";
 
-import LinkText from "../../../components/ActionText";
 import ColoredCard from "../../../components/ColoredCard";
 
 import imagemGenerica from "../../../assets/GenericImage.png";
@@ -25,19 +24,19 @@ const Actions = () => {
 
       <CardsDiv>
 
-        <ColoredCard to="/teste" title="Adotar" background_color="#45E4FF" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
+        <ColoredCard to="/teste" title="Adotar" backgroundColor="#45E4FF" imageUrl={imagemGenerica} imageUrlMobile={imagemGenericaMobile}>
           <p>Que tal adotar um novo amiguinho e ganhar um parceiro para a vida toda?</p>
-          <ActionText onClick={(e) => navigateTo("/teste")} has_arrow_svg={true} font_size={"18px"} text_color="#553525">Ver mais</ActionText>
+          <ActionText onClick={(e) => navigateTo("/teste")} hasArrowSvg={true} fontSize={"18px"} textColor="#553525">Ver mais</ActionText>
         </ColoredCard>
 
-        <ColoredCard to="/teste" title="Apadrinhar" background_color="#F3978B" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
+        <ColoredCard to="/teste" title="Apadrinhar" backgroundColor="#F3978B" imageUrl={imagemGenerica} imageUrlMobile={imagemGenericaMobile}>
           <p>Que tal se tornar padrinho de um animalzinho?</p>
-          <ActionText onClick={(e) => navigateTo("/teste")} has_arrow_svg={true} font_size={"18px"} text_color="#553525">Ver mais</ActionText>
+          <ActionText onClick={(e) => navigateTo("/teste")} hasArrowSvg={true} fontSize={"18px"} textColor="#553525">Ver mais</ActionText>
         </ColoredCard>
 
-        <ColoredCard to="/teste" title="Lar Temporário" background_color="#FF9944" image_url={imagemGenerica} image_url_mobile={imagemGenericaMobile}>
+        <ColoredCard to="/teste" title="Lar Temporário" backgroundColor="#FF9944" imageUrl={imagemGenerica} imageUrlMobile={imagemGenericaMobile}>
           <p>Que tal acolher um animalzinho no seu lar por um tempo?</p>
-          <ActionText onClick={(e) => navigateTo("/teste")} has_arrow_svg={true} font_size={"18px"} text_color="#553525">Ver mais</ActionText>
+            <ActionText onClick={(e) => navigateTo("/teste")} hasArrowSvg={true} fontSize={"18px"} textColor="#553525">Ver mais</ActionText>
         </ColoredCard>
 
       </CardsDiv>

@@ -1,4 +1,3 @@
-import AnimalFilter from "../../components/AnimalFilter";
 import Header from "../../components/Header";
 import BannerComponent from "../../components/BannerComponent";
 
@@ -132,7 +131,7 @@ const ManageNGOs = () => {
     color="#FFC99C"
     title="Descubra as ONGs desse projeto incrível!"
     subTitle="Venha conhecer as ONGs que fazem parte deste projeto inspirador e transformador!"
-    image_url={cat}
+    imageUrl={cat}
   />
 
   <TopBarContainer>

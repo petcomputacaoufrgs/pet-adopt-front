@@ -1,26 +1,10 @@
-import React, { useState } from "react";
-import SelectorButton from "../SelectorButton";
-import { Container } from "./styles";
+// SelectorRadioGroup/index.tsx
+import React from 'react'; // React é importado para usar o JSX
 
-interface Option {
-  label: string;
-  value: string;
-  backgroundImage: string;
-  overlayImage?: string;
-  backgroundColor: string;
-}
+import { Container } from './styles';
+import { Option, SelectorRadioGroupProps } from './types'; // Assumindo que Option e SelectorRadioGroupProps estão em types.ts
 
-interface SelectorRadioGroupProps {
-  options: Option[];
-  selectedValue: number;
-  setSelectedValue: (selectedValues: number) => void;
-  width: string;
-  height: string;
-  overlayImageWidth?: string;
-  overlayImageHeight?: string;
-  overlayImageTop?: string;
-  overlayImageLeft?: string;
-}
+import SelectorButton from '../SelectorButton';
 
 function SelectorRadioGroup({
   options,
@@ -28,20 +12,17 @@ function SelectorRadioGroup({
   setSelectedValue,
   width,
   height,
-  overlayImageWidth = "0px",
-  overlayImageHeight = "0px",
-  overlayImageTop = "0px",
-  overlayImageLeft = "0px",
+  overlayImageWidth = '0px',
+  overlayImageHeight = '0px',
+  overlayImageTop = '0px',
+  overlayImageLeft = '0px',
 }: SelectorRadioGroupProps) {
-
+  // Lida com a seleção de um botão, permitindo desmarcar se já estiver selecionado
   const handleSelect = (index: number) => {
-    if(selectedValue == -1 || selectedValue !== index){
-        setSelectedValue(index);
-    }
-    
-    else{
-        setSelectedValue(-1);
-
+    if (selectedValue === -1 || selectedValue !== index) {
+      setSelectedValue(index);
+    } else {
+      setSelectedValue(-1); // Desmarca o botão se ele já estiver selecionado
     }
   };
 
@@ -51,9 +32,9 @@ function SelectorRadioGroup({
         <SelectorButton
           key={option.value}
           label={option.label}
-          active={selectedValue === -1 || selectedValue === index}
-          clicked={selectedValue === index}
-          setActive={() => handleSelect(index)}
+          active={selectedValue === -1 || selectedValue === index} // Ativo se nenhum selecionado ou se for o selecionado
+          clicked={selectedValue === index} // Apenas "clicado" se for o selecionado
+          setActive={() => handleSelect(index)} // Função para lidar com o clique
           width={width}
           height={height}
           backgroundImage={option.backgroundImage}

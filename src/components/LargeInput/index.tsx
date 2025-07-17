@@ -1,93 +1,68 @@
 import React from "react";
-import { StyledInput, Label, Container, InfoText, ErrorContainer, ErrorMessage } from "./styles";
-import { CircleAlert } from "lucide-react";
+import { CircleAlert } from "lucide-react"; // Assumindo que CircleAlert é importado corretamente de lucide-react
 
-interface LargeInputProps {
-  title: string; // Título do input
-  required: boolean; // Se é obrigatório (mostra asterisco)
-  visible: boolean; // Se a senha vai ser mostrada (não usado aqui, mas mantido)
-  isDisabled: boolean; // Se o input vai estar desabilitado
-  $fontSize: string; // Tamanho da fonte do input
-  placeholder: string; // Placeholder do input
-  $width: string; // Largura do input
-  value: string; // Valor atual do input
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; // Função para mudança do valor
-  onClick?: () => void; // Função para clique (opcional)
-  onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void; // Função para tecla pressionada (opcional)
-  $paddingRight?: string; // Espaço à direita do input (padrão 24px)
-  $readOnly?: boolean; // Se é somente leitura
-  $inputType?: string; // Tipo do input ("Primário" ou outro)
-  error?: boolean; // Indica erro
-  errorMessage?: string; // Mensagem de erro
-  children?: React.ReactNode; // Elementos extras ao lado do input
-}
+import { Container, ErrorContainer, ErrorMessage, InfoText, Label, StyledInput } from "./styles";
+import { LargeInputProps } from "./types"; // Importando LargeInputProps de um arquivo types separado, conforme indicado
 
-function LargeInputField({
+const LargeInputField: React.FC<LargeInputProps> = ({
   title,
   required,
-  $fontSize,
+  $fontSize: fontSize, // Renomeado para camelCase e mantido o prefixo $ para styled-components
   placeholder,
-  $width,
+  $width: inputWidth, // Renomeado para camelCase
   value,
   onChange,
   onClick,
   onKeyDown,
-  $paddingRight = "24px",
-  $readOnly = false,
-  $inputType = "Primário",
-  error = false,
-  errorMessage,
+  $paddingRight: paddingRight = "24px", // Renomeado para camelCase e mantido o prefixo $ para styled-components
+  $readOnly: readOnly = false, // Renomeado para camelCase e mantido o prefixo $ para styled-components
+  $inputType: inputType = "Primário", // Renomeado para camelCase e mantido o prefixo $ para styled-components
+  error: hasError = false, // Renomeado para camelCase
+  errorMessage: errorText, // Renomeado para camelCase
   children,
   isDisabled,
-}: LargeInputProps) {
-  
+}) => {
   // Renderiza o label, com asterisco se obrigatório
-  const renderLabel = () => (
+  const renderLabel = () =>
     title && (
-      <Label
-        $fontSize={$fontSize}
-        isDisabled={isDisabled}
-      >
+      <Label $fontSize={fontSize} isDisabled={isDisabled}>
         {title}
         {required && <span style={{ color: "#F17D6E" }}> *</span>}
       </Label>
-    )
-  );
+    );
 
   return (
     <>
       {renderLabel()}
-      <Container $width={$width} isDisabled={isDisabled}>
+      <Container $width={inputWidth} isDisabled={isDisabled}>
         <StyledInput
           disabled={isDisabled}
-          $readOnly={$readOnly}
-          $width={$width}
+          $readOnly={readOnly}
+          $width={inputWidth}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          $fontSize={$fontSize}
+          $fontSize={fontSize}
           onClick={onClick}
           onKeyDown={onKeyDown}
-          $paddingRight={$paddingRight}
-          $inputType={$inputType}
-          $error={error}
+          $paddingRight={paddingRight}
+          $inputType={inputType}
+          $error={hasError}
           maxLength={272}
         />
         {children}
-        <InfoText $fontSize={$fontSize}>Máximo de 272 caracteres.</InfoText>
+        <InfoText $fontSize={fontSize}>Máximo de 272 caracteres.</InfoText>
       </Container>
 
       {/* Exibe mensagem de erro se houver */}
-      {error && errorMessage && (
+      {hasError && errorText && (
         <ErrorContainer>
-          <CircleAlert color="#FF3B30" size={`calc(${$fontSize} - 2px)`} />
-          <ErrorMessage $fontSize={$fontSize}>
-            {errorMessage}
-          </ErrorMessage>
+          <CircleAlert color="#FF3B30" size={`calc(${fontSize} - 2px)`} />
+          <ErrorMessage $fontSize={fontSize}>{errorText}</ErrorMessage>
         </ErrorContainer>
       )}
     </>
   );
-}
+};
 
 export default LargeInputField;

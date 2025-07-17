@@ -1,20 +1,14 @@
+// RadioGroup/index.tsx
 import RadioButton from '../RadioButton';
+
 import { Container, Label, Required } from './styles';
+import { RadioGroupProps } from './types';
 
-interface Option {
-  label: string;
-  value: string;
-}
-
-interface RadioGroupProps {
-  title: string;
-  required: boolean;
-  fontSize: string;
-  name: string;
-  options: Option[];
-  selectedValue: string;
-  onChange: (value: string) => void;
-}
+// A interface Option pode ser removida se já estiver definida em types.ts
+// interface Option {
+//   label: string;
+//   value: string;
+// }
 
 function RadioGroup({
   title,
@@ -23,7 +17,7 @@ function RadioGroup({
   name,
   options,
   selectedValue,
-  onChange
+  onChange,
 }: RadioGroupProps) {
   return (
     <Container>

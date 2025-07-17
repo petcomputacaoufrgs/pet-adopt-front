@@ -136,7 +136,7 @@ export default function NGOsFilter({
 
   <ButtonsContainer $width={inputsWidth}>
     <PrimarySecondaryButton width="100%" content= "Buscar" onClick={() => {}} />
-    <ActionText width="100%" font_size="18px" onClick={onCleanFilters} text_color="#553525" underline_on_hover={true}>Limpar Filtros</ActionText>
+    <ActionText width="100%" fontSize="18px" onClick={onCleanFilters} textColor="#553525" underlineOnHover={true}>Limpar Filtros</ActionText>
   </ButtonsContainer>
   
   </Container>

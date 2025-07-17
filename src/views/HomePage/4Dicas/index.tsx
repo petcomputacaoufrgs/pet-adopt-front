@@ -24,13 +24,13 @@ const Dicas = () => {
         </InfoDiv>
 
         <CardsContainer>
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"} background_image={imagemGatoFundo} width={"45vw"} height_desktop={"48%"} height_mobile="25vh"/>
+          <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"} backgroundImage={imagemGatoFundo} width={"45vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"}  background_color="#FF9944" width={"32vw"} height_desktop={"48%"} height_mobile="25vh"/>
+          <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"}  backgroundImage="#FF9944" width={"32vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"#553525"}  background_color="#45E4FF" width={"27vw"} height_desktop={"48%"} height_mobile="25vh"/>
+          <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"}  backgroundImage="#45E4FF" width={"27vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." text_color={"white"} background_image={imagemCachorroFundo} width={"39vw"} height_desktop={"48%"} height_mobile="25vh"/>
+          <ImageCard to="/" title="Expectativa e Realidade." textColor={"white"} backgroundImage={imagemCachorroFundo} width={"39vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
           <Image src={imagemPreenchimento} $width={12}></Image>
 

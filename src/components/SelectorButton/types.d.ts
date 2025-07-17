@@ -1,4 +1,4 @@
-interface SelectorButtonProps {
+export interface SelectorButtonProps {
   label: string;
   active: boolean;
   clicked: boolean;
