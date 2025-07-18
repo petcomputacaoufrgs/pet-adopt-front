@@ -2,7 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 
 import { 
-  LoginContainer, 
+  Container,
+  LoginContainer,
+  Image, 
   LoginForm, 
   Input, 
   Button 
@@ -11,6 +13,7 @@ import {
 import Header from "../../components/Header";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
+import LoginDog from "../../assets/LoginDog.png";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -44,48 +47,52 @@ const Login: React.FC = () => {
   };
 
   return (
-    <LoginContainer>
+    <Container>
       <Header 
         options={headerOptions} 
         optionsToAction={handleHeaderAction} 
         color="rgba(0, 0, 0, 0)" 
         Logo={loginPageLogo} 
-      />
+      />      
 
-      <LoginForm onSubmit={handleLogin}>
-        <h2>Login</h2>
+      <LoginContainer>
+        <Image src={LoginDog} alt="Imagem De Login"/>
 
-        {errorMessage && (
-          <div style={{ color: "red", margin: "10px 0" }}>
-            {errorMessage}
-          </div>
-        )}
+        <LoginForm onSubmit={handleLogin}>
+          <h2>Login</h2>
 
-        {successMessage && (
-          <div style={{ color: "green", margin: "10px 0" }}>
-            {successMessage}
-          </div>
-        )}
+          {errorMessage && (
+            <div style={{ color: "red", margin: "10px 0" }}>
+              {errorMessage}
+            </div>
+          )}
 
-        <Input
-          type="email"
-          placeholder="Digite seu email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+          {successMessage && (
+            <div style={{ color: "green", margin: "10px 0" }}>
+              {successMessage}
+            </div>
+          )}
 
-        <Input
-          type="password"
-          placeholder="Digite sua senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          <Input
+            type="email"
+            placeholder="Digite seu email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <Button type="submit">Entrar</Button>
-      </LoginForm>
-    </LoginContainer>
+          <Input
+            type="password"
+            placeholder="Digite sua senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <Button type="submit">Entrar</Button>
+        </LoginForm>
+      </LoginContainer>
+    </Container>
   );
 };
 

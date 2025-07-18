@@ -1,19 +1,24 @@
 import styled from "styled-components";
 
-export const LoginContainer = styled.div`
-  font-family: "Nunito Sans", sans-serif;
+export const Container = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  overflow: auto;
-  background-color: #fff6e8;
+  height: 100vh;
+  background-color: #FFF6E8
+  `;
+
+export const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  overflow: hidden;
+`;
+
+export const Image = styled.img` 
+  object-fit: cover;
 `;
 
 export const LoginForm = styled.form`
-  background: #ffffff;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
