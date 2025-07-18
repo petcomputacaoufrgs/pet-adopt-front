@@ -31,7 +31,7 @@ const Info = ({ subTitle, title, buttonTitle, to, position, children }: IInfo) =
 
       {/* Foi corrigido o onClick do PrimarySecondaryButton para receber uma função */}
       <PrimarySecondaryButton
-        width={"auto"}
+        width={"275px"}
         buttonType={"Primário"}
         isDisabled={false}
         content={buttonTitle}
