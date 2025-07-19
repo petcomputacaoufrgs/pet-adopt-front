@@ -35,6 +35,8 @@ function PasswordInputField({
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: $fontSize,
             fontWeight: 700,
+            paddingTop: '16px',
+            paddingBottom: '8px',
             color: '#553525',
             marginBottom: '0.375em', // 6px / 16px (base font size) = 0.375em
             opacity: isDisabled ? 0.3 : 1,
@@ -145,12 +147,12 @@ function PasswordInput() {
 
   return (
     <PasswordInputField
-      title="Lorem ipsum"
+      title="Senha"
       required={true}
       isDisabled={false}
-      $fontSize="1em" // Convertido de 16px para 1em
+      $fontSize="1rem" 
       placeholder="Insira sua senha aqui"
-      $width="38.28%" // 735px / 1920px = 0.3828125 ~ 38.28%
+      $width="100%"
       value={senha}
       onChange={(e) => {
         setSenha(e.target.value);
@@ -162,4 +164,4 @@ function PasswordInput() {
   );
 }
 
-export default PasswordInput;
+export default PasswordInputField;
