@@ -15,22 +15,27 @@ import {
 } from "./styles";
 
 import Header from "../../components/Header";
+import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
+import BasicInput from "../../components/BasicInput";
+import PasswordInput from "../../components/PasswordInput";
+import ActionText from "../../components/ActionText";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
-import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import BasicInput from "../../components/BasicInput";
-import PasswordInputField from "../../components/PasswordInput";
-import ActionText from "../../components/ActionText";
 
 const Login: React.FC = () => {
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('');
   const [ngo, setNgo] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [error, setError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -38,6 +43,12 @@ const Login: React.FC = () => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
+
+    if (!name || !email || !password || !confirmPassword) {
+      setError(true);
+      setErrorMessage('Preencha todos campos obrigatórios');
+      return;
+    }
 
     try {
       await axios.post('http://localhost:3002/api/v1/auth/signup', {
@@ -71,42 +82,50 @@ const Login: React.FC = () => {
   };
 
   const verifyPassword = (password: string) => {
-    if (password.trim() === '') {
-      setError(false);
-      setErrorMessage('');
+    if(password.trim() === '') {
+      setPasswordError(false);
+      setPasswordErrorMessage('');
       return;
     }
+
     if (password.length < 6) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos 6 caracteres');
+      setPasswordError(true);
+      setPasswordErrorMessage('A senha deve ter pelo menos 6 caracteres');
       return;
     }
     if (!/[A-Z]/.test(password)) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos uma letra maiúscula');
+      setPasswordError(true);
+      setPasswordErrorMessage('A senha deve ter pelo menos uma letra maiúscula');
       return;
     }
     if (!/[0-9]/.test(password)) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos um número');
+      setPasswordError(true);
+      setPasswordErrorMessage('A senha deve ter pelo menos um número');
       return;
     }
     if (!/[!@#$%^&*]/.test(password)) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos um caractere especial');
+      setPasswordError(true);
+      setPasswordErrorMessage('A senha deve ter pelo menos um caractere especial');
       return;
     }
-    setError(false);
-    setErrorMessage('');
+    setPasswordError(false);
+    setPasswordErrorMessage('');
   };
 
+  const isDisabled = passwordError || confirmPasswordError || !name || !email || !password || !confirmPassword;
+
   const verifyConfirmPassword = (confirmPassword: string) => {
+    if (confirmPassword.trim() === '') {
+      setConfirmPasswordError(false);
+      setConfirmPasswordErrorMessage('');
+      return;
+    }
     if (confirmPassword !== password) {
-      setError(true);
-      setErrorMessage('As senhas não coincidem');
+      setConfirmPasswordError(true);
+      setConfirmPasswordErrorMessage('As senhas não coincidem');
     } else {
-      setError(false);
-      setErrorMessage('');
+      setConfirmPasswordError(false);
+      setConfirmPasswordErrorMessage('');
     }
   };
 
@@ -138,11 +157,11 @@ const Login: React.FC = () => {
               <h1>Cadastro</h1>
             </LoginFormTextContainer>
 
-            {/* {errorMessage && (
+            {errorMessage && (
               <div style={{ color: "red", margin: "10px 0" }}>
                 {errorMessage}
               </div>
-            )} */}
+            )}
 
             {successMessage && (
               <div style={{ color: "green", margin: "10px 0" }}>
@@ -172,7 +191,7 @@ const Login: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
 
-              <PasswordInputField
+              <PasswordInput
                   title="Senha"
                   required={true}
                   isDisabled={false}
@@ -184,12 +203,12 @@ const Login: React.FC = () => {
                     setPassword(e.target.value);
                     verifyPassword(e.target.value);
                   } }
-                  error={error}
-                  errorMessage={errorMessage} 
+                  error={passwordError}
+                  errorMessage={passwordErrorMessage} 
                   visible={false}
               />
 
-              <PasswordInputField
+              <PasswordInput
                   title="Confirmar Senha"
                   required={true}
                   isDisabled={false}
@@ -201,15 +220,15 @@ const Login: React.FC = () => {
                     setConfirmPassword(e.target.value);
                     verifyConfirmPassword(e.target.value);
                   } }
-                  error={error}
-                  errorMessage={errorMessage} 
+                  error={confirmPasswordError}
+                  errorMessage={confirmPasswordErrorMessage} 
                   visible={false}
               />
               
             </LoginFormInputsContainer>
 
             <LoginFormLinksContainer>
-              <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp}/>
+              <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isDisabled}/>
               <ActionText
                 key={currentUserOptions[0]}
                 width="100%"
@@ -220,7 +239,7 @@ const Login: React.FC = () => {
                 <h3>Fazer Login</h3>
               </ActionText>
           
-          </LoginFormLinksContainer>
+            </LoginFormLinksContainer>
           </LoginForm>
         </LoginFormContainer>
       </LoginContainer>

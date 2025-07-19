@@ -50,7 +50,7 @@ export const LoginFormTextContainer = styled.div`
 export const LoginFormInputsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
   h3{
     margin-bottom: 12px;
   }

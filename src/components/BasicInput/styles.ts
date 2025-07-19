@@ -38,7 +38,6 @@ export const Label = styled.label<{ $fontSize: string }>`
   font-size: ${({ $fontSize }) => $fontSize};
   font-weight: 700;
   color: #553525;
-  margin-bottom: 6px;
   display: block;
 `;
 
