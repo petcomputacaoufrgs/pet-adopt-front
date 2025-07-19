@@ -1,12 +1,13 @@
 import {Container,
+        MiddleContainer,
+        Voltar,
         ProfileContainer,
         NgoCardContainer,
         NgoNameContainer,
         NgoInformationsContainer,
         NgoDescriptionContainer,
         NgoTextsContainer,
-        NgoFormsContainer,
-        Voltar
+        NgoFormsContainer
  } from "./styles";
 
 import logo from "../../assets/HorizontalLogo.png";
@@ -23,20 +24,21 @@ const ManageNgoProfile = () => {
        <Container>
             <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" Logo={logo} />
 
-            <Voltar/>
+            <MiddleContainer>
+                <Voltar>Voltar</Voltar>
 
-            <ProfileContainer>
-                <NgoCardContainer>
-                    <NgoNameContainer></NgoNameContainer>
-                    <NgoInformationsContainer></NgoInformationsContainer>
-                </NgoCardContainer>
+                <ProfileContainer>
+                    <NgoCardContainer>
+                        <NgoNameContainer>NgoNameContainer</NgoNameContainer>
+                        <NgoInformationsContainer>NgoInformationsContainer</NgoInformationsContainer>
+                    </NgoCardContainer>
 
-                <NgoDescriptionContainer>
-                    <NgoTextsContainer></NgoTextsContainer>
-                    <NgoFormsContainer></NgoFormsContainer>
-                </NgoDescriptionContainer>
-            </ProfileContainer>
-
+                    <NgoDescriptionContainer>
+                        <NgoTextsContainer>NgoTextsContainer</NgoTextsContainer>
+                        <NgoFormsContainer>NgoFormsContainer</NgoFormsContainer>
+                    </NgoDescriptionContainer>
+                </ProfileContainer>
+            </MiddleContainer>
             <Footer/>
        </Container> 
     )}
