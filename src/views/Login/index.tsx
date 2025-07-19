@@ -95,7 +95,6 @@ const Login: React.FC = () => {
                 $fontSize="1rem"
                 $width="100%"
                 onChange={(e) => setEmail(e.target.value)}
-                errorMessage={errorMessage}
               />
 
               <PasswordInputField
@@ -109,7 +108,6 @@ const Login: React.FC = () => {
                   onChange={(e) => {
                     setPassword(e.target.value);
                   } }
-                  errorMessage={errorMessage} 
                   visible={false} 
               />
               

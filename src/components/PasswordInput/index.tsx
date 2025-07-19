@@ -35,10 +35,7 @@ function PasswordInputField({
             fontFamily: 'Nunito Sans, sans-serif',
             fontSize: $fontSize,
             fontWeight: 700,
-            paddingTop: '16px',
-            paddingBottom: '8px',
             color: '#553525',
-            marginBottom: '0.375em', // 6px / 16px (base font size) = 0.375em
             opacity: isDisabled ? 0.3 : 1,
           }}
         >
