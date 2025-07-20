@@ -29,13 +29,23 @@ const ManageNgoProfile = () => {
 
                 <ProfileContainer>
                     <NgoCardContainer>
-                        <NgoNameContainer>NgoNameContainer</NgoNameContainer>
-                        <NgoInformationsContainer>NgoInformationsContainer</NgoInformationsContainer>
+                        <NgoNameContainer>
+                            NgoNameContainer
+                        </NgoNameContainer>
+
+                        <NgoInformationsContainer>
+                            NgoInformationsContainer
+                        </NgoInformationsContainer>
                     </NgoCardContainer>
 
                     <NgoDescriptionContainer>
-                        <NgoTextsContainer>NgoTextsContainer</NgoTextsContainer>
-                        <NgoFormsContainer>NgoFormsContainer</NgoFormsContainer>
+                        <NgoTextsContainer>
+                            NgoTextsContainer
+                        </NgoTextsContainer>
+
+                        <NgoFormsContainer>
+                            NgoFormsContainer
+                        </NgoFormsContainer>
                     </NgoDescriptionContainer>
                 </ProfileContainer>
             </MiddleContainer>
