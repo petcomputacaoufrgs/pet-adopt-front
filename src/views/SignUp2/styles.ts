@@ -35,7 +35,8 @@ export const LoginForm = styled.form`
   width: 645px;
   height: 500px;
   gap: 32px;
-
+  justify-content: center;
+  
   p,h1,h3{
     margin: 0;
   }

@@ -19,12 +19,23 @@ import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import BasicInput from "../../components/BasicInput";
 import PasswordInput from "../../components/PasswordInput";
 import ActionText from "../../components/ActionText";
+import SearchBar from "../../components/SearchBar";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 
 const Login: React.FC = () => {
-  
+  const options = ["Ong Cachorrada", 
+                   "Ong Adoção", 
+                   "Ong Ajuda Animal", 
+                   "Ong Pet Lovers", 
+                   "Ong Animais Felizes", 
+                   "Ong Vida Animal", 
+                   "Ong Amigos dos Animais", 
+                   "Ong Patinhas Solidárias", 
+                   "Ong Cão Feliz", 
+                   "Ong Gatos e Cães Unidos"];
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,9 +55,15 @@ const Login: React.FC = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !ngo) {
       setError(true);
       setErrorMessage('Preencha todos campos obrigatórios');
+      return;
+    }
+
+    if (passwordError || confirmPasswordError) {
+      setError(true);
+      setErrorMessage('Verifique os campos preenchidos');
       return;
     }
 
@@ -112,7 +129,7 @@ const Login: React.FC = () => {
     setPasswordErrorMessage('');
   };
 
-  const isDisabled = passwordError || confirmPasswordError || !name || !email || !password || !confirmPassword;
+  const isDisabled = passwordError || confirmPasswordError || !name || !email || !password || !confirmPassword || !ngo;
 
   const verifyConfirmPassword = (confirmPassword: string) => {
     if (confirmPassword.trim() === '') {
@@ -223,6 +240,19 @@ const Login: React.FC = () => {
                   error={confirmPasswordError}
                   errorMessage={confirmPasswordErrorMessage} 
                   visible={false}
+              />
+
+              <SearchBar 
+                options={options}
+                width="100%"
+                fontSize="1rem"
+                titleFontSize="1rem"
+                placeholder="Encontre ou selecione uma ONG"
+                title="Selecione sua ONG"
+                required={true}
+                query={ngo}
+                setQuery={setNgo}
+                readOnly={false}
               />
               
             </LoginFormInputsContainer>
