@@ -32,8 +32,9 @@ import PasswordInput from "../../components/PasswordInput";
 import ActionText from "../../components/ActionText";
 import SearchBar from "../../components/SearchBar";
 import SignUpToggle from "../../components/SignUpToggle";
+import LargeInputField from "../../components/LargeInput";
 
-// imagens
+// imagenss
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 
@@ -43,7 +44,7 @@ import LoginDog from "../../assets/LoginDog.png";
 const SignUp: React.FC = () => {
 
   // ESTADOS =================================================
-  const options = ["Ong Cachorrada", 
+  const ongOptions = ["Ong Cachorrada", 
                    "Ong Adoção", 
                    "Ong Ajuda Animal", 
                    "Ong Pet Lovers",
@@ -54,21 +55,37 @@ const SignUp: React.FC = () => {
                    "Ong Cão Feliz", 
                    "Ong Gatos e Cães Unidos"];
 
+  // Estados comum as duas roles (membro e ong)
+  const [role, setRole] = useState('membro');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('membro');
-  const [ngo, setNgo] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-  const [error, setError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState(false);
+
+  // Estados específico da role Membro
+  const [ngo, setNgo] = useState('');
+
+  // Estados específico da role Ong
+  const [document, setDocument] = useState('');
+  const [description, setDescription] = useState('');
+  const [contact, setContact] = useState('');
+  const [city, setCity] = useState('');
+  const [websiteLink, setWebsiteLink] = useState('');
+  const [instagramLink, setInstagramLink] = useState('');
+  const [facebookLink, setFacebookLink] = useState('');
+  const [adoptionFormLink, setAdoptionFormLink] = useState('');
+  const [sponsorshipFormLink, setSponsorshipFormLink] = useState('');
+  const [temporaryHomeFormLink, setTemporaryHomeFormLink] = useState('');
+  const [claimFormLink, setClaimFormLink] = useState('');
 
   // FUNÇÕES DE VALIDAÇÃO ===========================================
 
@@ -222,9 +239,9 @@ const SignUp: React.FC = () => {
       <SignUpContainer>
         <Image src={LoginDog} alt="Dog do Login"/>
 
-        <SignUpFormContainer>
+        <SignUpFormContainer role={role}>
                   
-          <SignUpForm onSubmit={handleSignUp}>
+          <SignUpForm onSubmit={handleSignUp} role={role}>
             
             <SignUpToggle
               selected={role}
@@ -250,7 +267,7 @@ const SignUp: React.FC = () => {
             <SignUpFormInputsContainer>
 
               <BasicInput
-                title="Nome"
+                title= {role === 'ong' ? 'Nome da ONG' : 'Nome'}
                 required = {true} 
                 placeholder="Insira seu nome aqui"
                 value={name}
@@ -273,6 +290,18 @@ const SignUp: React.FC = () => {
                 error={emailError}
                 errorMessage={emailErrorMessage} 
               />
+
+              {role === 'ong' && (
+                  <BasicInput
+                    title="CPF/CNPJ"
+                    required = {true}
+                    placeholder="Insira seu CPF/CNPJ aqui"
+                    value={document}
+                    $fontSize="1rem"
+                    $width="100%"
+                    onChange={(e) => setDocument(e.target.value)}
+                  />
+              )}
 
               <PasswordInput
                   title="Senha"
@@ -308,8 +337,24 @@ const SignUp: React.FC = () => {
                   visible={false}
               />
 
+              {role === 'ong' && (
+                
+                <LargeInputField
+                  title="Descrição (Opcional)"
+                  required={false}
+                  $fontSize="1rem"
+                  placeholder="Escreva uma breve descrição aqui"
+                  $width="100%"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  error={false}
+                  visible={false}
+                  isDisabled={false}
+                />
+              )}
+
               <SearchBar 
-                options={options}
+                options={ongOptions}
                 width="100%"
                 fontSize="1rem"
                 titleFontSize="1rem"
@@ -332,7 +377,14 @@ const SignUp: React.FC = () => {
                 textColor="#553525"
                 onClick={() => currentUserActions(currentUserOptions[0])}
               >
+                {role === 'ong' && (
+                <h3 style={{ marginBottom: '69px' }}>Fazer Login</h3>
+                )}
+
+                {role === 'membro' && (
                 <h3>Fazer Login</h3>
+                )}
+                
               </ActionText>
           
             </SignUpFormLinksContainer>

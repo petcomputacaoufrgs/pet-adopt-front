@@ -10,7 +10,6 @@ export const Label = styled.label<LabelProps>`
   font-size: ${({ $fontSize }) => $fontSize};
   font-weight: 700;
   color: #553525;
-  margin-bottom: 6px;
   opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
 `;
 

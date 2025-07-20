@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   font-family: 'Nunito Sans', sans-serif;
@@ -19,16 +19,27 @@ export const Image = styled.img`
   object-fit: cover;
 `;
 
-export const SignUpFormContainer = styled.div`
+export const SignUpFormContainer = styled.div  <{role: string}>`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-
   color: #563526;
+
+  ${props => 
+  props.role === 'ong' && 
+  css`
+    height: 100%;
+    align-items: flex-start;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+    display: none;
+    }
+  `}
 `;
 
-export const SignUpForm = styled.form`
+export const SignUpForm = styled.form <{role: string}>`
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -40,6 +51,13 @@ export const SignUpForm = styled.form`
   p,h1,h3{
     margin: 0;
   }
+
+  ${props => 
+  props.role === 'ong' && 
+  css`
+    justify-content: flex-start;
+    margin-top: 69px;
+  `}
 `;
 
 export const SignUpFormTextContainer = styled.div`
