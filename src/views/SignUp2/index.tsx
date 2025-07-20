@@ -1,34 +1,52 @@
+// IMPORTS ============================================================
+// Os imports seguem a seguinte ordem:
+// 1. Contextos
+// 2. Bibliotecas
+// 3. Estilos
+// 4. Componentes
+// 5. Imagens
+
+// bibliotecas
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// estilos
 import { 
   Container,
-  LoginContainer,
+  SignUpContainer,
   Image,
-  LoginFormContainer, 
-  LoginForm, 
-  LoginFormTextContainer,
-  LoginFormInputsContainer,
-  LoginFormLinksContainer,
+  SignUpFormContainer, 
+  SignUpForm, 
+  SignUpFormTextContainer,
+  SignUpFormInputsContainer,
+  SignUpFormLinksContainer,
   TextContainer 
 } from "./styles";
 
+// componentes
 import Header from "../../components/Header";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import BasicInput from "../../components/BasicInput";
 import PasswordInput from "../../components/PasswordInput";
 import ActionText from "../../components/ActionText";
 import SearchBar from "../../components/SearchBar";
+import SignUpToggle from "../../components/SignUpToggle";
 
+// imagens
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 
-const Login: React.FC = () => {
+// VIEW ==============================================================================
+// O componente SignUp é responsável por renderizar a página de cadastro de usuários
+
+const SignUp: React.FC = () => {
+
+  // ESTADOS =================================================
   const options = ["Ong Cachorrada", 
                    "Ong Adoção", 
                    "Ong Ajuda Animal", 
-                   "Ong Pet Lovers", 
+                   "Ong Pet Lovers",
                    "Ong Animais Felizes", 
                    "Ong Vida Animal", 
                    "Ong Amigos dos Animais", 
@@ -40,15 +58,19 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('membro');
   const [ngo, setNgo] = useState('');
+  const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [error, setError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  // FUNÇÕES DE VALIDAÇÃO ===========================================
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,17 +109,6 @@ const Login: React.FC = () => {
     }
   };
 
-  const headerOptions = [
-    "Sobre Nós", 
-    "Animais Recém Adicionados", 
-    "Dicas", 
-    "Fale Conosco"
-  ];
-
-  const handleHeaderAction = (selected: string) => {
-    // Ação a ser definida
-  };
-
   const verifyPassword = (password: string) => {
     if(password.trim() === '') {
       setPasswordError(false);
@@ -129,9 +140,8 @@ const Login: React.FC = () => {
     setPasswordErrorMessage('');
   };
 
-  const isDisabled = passwordError || confirmPasswordError || !name || !email || !password || !confirmPassword || !ngo;
-
   const verifyConfirmPassword = (confirmPassword: string) => {
+
     if (confirmPassword.trim() === '') {
       setConfirmPasswordError(false);
       setConfirmPasswordErrorMessage('');
@@ -144,6 +154,46 @@ const Login: React.FC = () => {
       setConfirmPasswordError(false);
       setConfirmPasswordErrorMessage('');
     }
+
+  };
+
+  const verifyEmail = (email: string) => {
+
+    if(email.trim() === '') {
+      setEmailError(false);
+      setEmailErrorMessage('');
+      return;
+    }
+    
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    
+    if(!emailRegex.test(email)){
+      setEmailError(true);
+      setEmailErrorMessage('Digite um endereço de e-mail válido');
+      return;
+    }
+
+    setEmailError(false);
+    setEmailErrorMessage('');
+
+  }
+
+  // Verifica se todos os campos obrigatórios estão preenchidos e se não há erros para habilitar o botão de cadastro. 
+  // Se houver erros, o botão de cadastro ficará desabilitado
+  const isDisabled = passwordError || confirmPasswordError || !name || !email || !password || !confirmPassword || !ngo;
+
+
+  const headerOptions = [
+    "Sobre Nós", 
+    "Animais Recém Adicionados", 
+    "Dicas", 
+    "Fale Conosco"
+  ];
+
+  // AÇÕES DE HEADER E NAVEGAÇÃO ============================================
+
+  const handleHeaderAction = (selected: string) => {
+    // Ação a ser definida
   };
 
   const navigate = useNavigate();
@@ -156,6 +206,10 @@ const Login: React.FC = () => {
 
   const currentUserActions = handleUserAction;
 
+  // RENDERIZAÇÃO ============================================================
+  // - Mensagens de erro teoricamente não estão sendo exibidas, pois implementei 
+  //   erros modulares para cada campo
+  
   return (
     <Container>
       <Header 
@@ -165,14 +219,21 @@ const Login: React.FC = () => {
         Logo={loginPageLogo} 
       />      
 
-      <LoginContainer>
+      <SignUpContainer>
         <Image src={LoginDog} alt="Dog do Login"/>
 
-        <LoginFormContainer>
-          <LoginForm onSubmit={handleSignUp}>
-            <LoginFormTextContainer>
-              <h1>Cadastro</h1>
-            </LoginFormTextContainer>
+        <SignUpFormContainer>
+                  
+          <SignUpForm onSubmit={handleSignUp}>
+            
+            <SignUpToggle
+              selected={role}
+              onSelect={setRole}
+            />
+
+            <SignUpFormTextContainer>
+              <h1>Cadastro de {role === 'membro' ? 'Membro' : 'ONG'} </h1>
+            </SignUpFormTextContainer>
 
             {errorMessage && (
               <div style={{ color: "red", margin: "10px 0" }}>
@@ -186,7 +247,7 @@ const Login: React.FC = () => {
               </div>
             )}
 
-            <LoginFormInputsContainer>
+            <SignUpFormInputsContainer>
 
               <BasicInput
                 title="Nome"
@@ -203,9 +264,14 @@ const Login: React.FC = () => {
                 required = {true} 
                 placeholder="Insira seu email aqui"
                 value={email}
+                      onChange={(e) => {
+                    setEmail(e.target.value);
+                    verifyEmail(e.target.value);
+                  } }
                 $fontSize="1rem"
                 $width="100%"
-                onChange={(e) => setEmail(e.target.value)}
+                error={emailError}
+                errorMessage={emailErrorMessage} 
               />
 
               <PasswordInput
@@ -255,9 +321,9 @@ const Login: React.FC = () => {
                 readOnly={false}
               />
               
-            </LoginFormInputsContainer>
-
-            <LoginFormLinksContainer>
+            </SignUpFormInputsContainer>
+                        
+            <SignUpFormLinksContainer>
               <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isDisabled}/>
               <ActionText
                 key={currentUserOptions[0]}
@@ -269,12 +335,12 @@ const Login: React.FC = () => {
                 <h3>Fazer Login</h3>
               </ActionText>
           
-            </LoginFormLinksContainer>
-          </LoginForm>
-        </LoginFormContainer>
-      </LoginContainer>
+            </SignUpFormLinksContainer>
+          </SignUpForm>
+        </SignUpFormContainer>
+      </SignUpContainer>
     </Container>
   );
 };
 
-export default Login;
+export default SignUp;

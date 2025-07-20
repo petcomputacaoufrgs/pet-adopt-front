@@ -56,17 +56,16 @@ export const ErrorMessageContainer = styled.div<{ $fontSize: string }>`
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 8px;
 
   & > span {
     color: #FF3B30;
-    font-size: calc(${({ $fontSize }) => $fontSize} - 6px);
+    font-size: calc(${({ $fontSize }) => $fontSize} - 0.125em);
     font-weight: 500;
     font-family: 'Nunito Sans', sans-serif;
   }
 
   svg {
-    width: calc(${({ $fontSize }) => $fontSize} - 6px);
-    height: calc(${({ $fontSize }) => $fontSize} - 5px);
+    width: calc(${({ $fontSize }) => $fontSize} - 0.125em);
+    height: calc(${({ $fontSize }) => $fontSize} - 0.125em);
   }
 `;

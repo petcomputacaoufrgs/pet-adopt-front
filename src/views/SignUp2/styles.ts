@@ -8,7 +8,7 @@ export const Container = styled.div`
   background-color: #FFF6E8
   `;
 
-export const LoginContainer = styled.div`
+export const SignUpContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -19,7 +19,7 @@ export const Image = styled.img`
   object-fit: cover;
 `;
 
-export const LoginFormContainer = styled.div`
+export const SignUpFormContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,7 +28,7 @@ export const LoginFormContainer = styled.div`
   color: #563526;
 `;
 
-export const LoginForm = styled.form`
+export const SignUpForm = styled.form`
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -36,19 +36,19 @@ export const LoginForm = styled.form`
   height: 500px;
   gap: 32px;
   justify-content: center;
-  
+
   p,h1,h3{
     margin: 0;
   }
 `;
 
-export const LoginFormTextContainer = styled.div`
+export const SignUpFormTextContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
 `;
 
-export const LoginFormInputsContainer = styled.div`
+export const SignUpFormInputsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -61,7 +61,7 @@ export const LoginFormInputsContainer = styled.div`
   }
 `;
 
-export const LoginFormLinksContainer = styled.div`
+export const SignUpFormLinksContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
