@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomeView from "./views/HomePage";
 import LoginView from "./views/Login";
-import SignupView from "./views/SignUp2"
+import SignupView from "./views/SignUp"
 import ManageAnimals from "./views/ManageAnimals";
 import ManageNGOs from "./views/ManageNGOs";
 
