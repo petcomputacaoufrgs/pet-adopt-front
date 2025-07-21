@@ -18,6 +18,7 @@ import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import SuccessToast from "../../components/SuccessToast";
+import { OngInfoCard } from "../../components/OngInfoCard";
 
 
 import Footer from "../HomePage/6Footer";
@@ -238,35 +239,15 @@ const ApproveNGOs = () => {
     )}
 
     <NGOCardsContainer>
-      {showedNGOs.map((pet, index) => (
-        <NGOCardWrapper key={index}>
-          <div style={{backgroundColor: "#dedede", width: "362px", height: "394px"}}>
-            <NGOApproveButtonWrapper>
-              <PrimarySecondaryButton buttonType="Secundário" content="Recusar" onClick={()=>setModalAction('recusar')}/>
-              <PrimarySecondaryButton buttonType="Primário" content="Aceitar" onClick={()=>setModalAction('aprovar')}/>
-
-              <ConfirmModal
-                isOpen={modalAction !== null}
-                title={
-                  modalAction === 'aprovar'
-                    ? 'Que bom que gostou! Deseja aprovar esta ONG?'
-                    : 'Tem certeza que deseja recusar esta ONG?'
-                }
-                message={
-                  modalAction === 'aprovar'
-                    ? 'Tem certeza de que deseja aprovar esta ONG? Caso mude de ideia, você poderá removê-la depois.'
-                    : 'Uma vez recusada, a ONG sairá da lista de avaliação.'
-                }
-                confirmLabel={modalAction === 'aprovar' ? 'Sim, Aprovar' : 'Sim, Recusar'}
-                cancelLabel="Cancelar"
-                onConfirm={handleConfirm}
-                onClose={() => setModalAction(null)}
-              />
-          </NGOApproveButtonWrapper>
-          </div>
-          
-        </NGOCardWrapper>
-      ))}
+     {showedNGOs.map((ngo, index) => (
+  <OngInfoCard
+    key={index}
+    modo="approve"
+    modalAction={modalAction}
+    setModalAction={setModalAction}
+    handleConfirm={handleConfirm}
+  />
+))}
     </NGOCardsContainer>
   </ContentContainer>
 

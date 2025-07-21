@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-export const PrimaryStyledLink = styled.a<{$disabled?: boolean;}>`
+export const PrimaryStyledLink = styled.a<{$disabled?: boolean, fontsize?: string}>`
   font-family: 'Nunito Sans', sans-serif;
   font-style: normal;
   font-weight: 800; 
   text-decoration: none;
   color: ${(props) => (props.$disabled ? '#DEDEDE' : '#553525') };
-  font-size: 28px !important;;
+  font-size: ${({ fontsize }) => fontsize || "16px"};
   padding: 0px 0px;
   gap: 10px;
   line-height: 28px;
@@ -52,12 +52,12 @@ export const PrimaryStyledLink = styled.a<{$disabled?: boolean;}>`
 
 }`;
 
-export const SecondaryStyledLink = styled.a<{$disabled?: boolean;}>`
+export const SecondaryStyledLink = styled.a<{$disabled?: boolean; fontsize?: string}>`
   font-family: 'Nunito Sans', sans-serif;
   font-style: normal;
   font-weight: 800; 
   text-decoration: none;
-  font-size: 18px !important;;
+  font-size: ${({ fontsize }) => fontsize || "16px"};
   gap: 10px;
   display: inline-flex; 
   align-items: center; 

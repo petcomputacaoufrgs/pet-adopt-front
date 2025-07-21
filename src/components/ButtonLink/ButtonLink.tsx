@@ -4,9 +4,9 @@ import {
 
 import {ILink} from "./types";
 
-const ButtonLink = ({ children, href , link_type, disabled = false}: ILink) => {
+const ButtonLink = ({ children, href , link_type, disabled = false, fontsize="24px"}: ILink) => {
   return link_type === "primary" ? (
-    <PrimaryStyledLink $disabled = {disabled}>
+    <PrimaryStyledLink $disabled = {disabled} fontsize={fontsize}>
       {children}
       {(
         <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,7 +15,7 @@ const ButtonLink = ({ children, href , link_type, disabled = false}: ILink) => {
       )}
     </PrimaryStyledLink>
   ) : (
-    <SecondaryStyledLink  $disabled = {disabled}>
+    <SecondaryStyledLink  $disabled = {disabled} fontsize={fontsize}>
       {children}
     </SecondaryStyledLink>
   );
