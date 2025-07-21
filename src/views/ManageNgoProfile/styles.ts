@@ -159,6 +159,8 @@ export const NgoTextsContainer = styled.div`
     p {
         margin: 0;
         font-size: 16px;
+        margin-top: 24px;
+        text-align: justify;
     }
 `;
 
@@ -193,10 +195,4 @@ export const FormsContainer = styled.div`
         justify-content: center;
         gap: 24px;
     }
-`;
-
-// -- Botões --
-export const Voltar = styled.button`
-    display: flex;
-    align-self: flex-start;  
 `;

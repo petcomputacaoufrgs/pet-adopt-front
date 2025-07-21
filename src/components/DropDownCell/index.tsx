@@ -16,9 +16,8 @@ const DropDownCell = ({
   const NUM_OPTIONS_SHOWED = numCellsShowed < 0 ? 5 : numCellsShowed;
 
   const optionHeight = parseFloat(fontSize) + 2 * OPTION_VERTICAL_PADDING;
-  const maxHeight = optionHeight * NUM_OPTIONS_SHOWED + (NUM_OPTIONS_SHOWED - 1) * SEPARATOR_HEIGHT; // Adjusted to reflect separator count
+  const maxHeight = optionHeight * NUM_OPTIONS_SHOWED + (NUM_OPTIONS_SHOWED - 1) * SEPARATOR_HEIGHT; 
 
-  // Click handler function to select an option
   const handleClick = (index: number) => () => {
     onSelect(options[index]);
   };

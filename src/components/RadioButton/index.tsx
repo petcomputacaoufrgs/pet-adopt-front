@@ -1,4 +1,3 @@
-// RadioButton/index.tsx
 import { StyledRadioButton } from './styles';
 import { RadioOption } from './types';
 
@@ -10,13 +9,11 @@ function RadioButton({
   onChange,
   fontSize,
   required = true,
-}: RadioOption) {
-  // Implementa um toggle para desmarcar se 'required' for falso
-  const handleToggleSelection = () => {
+}: RadioOption) { const handleToggleSelection = () => {
     if (!required && checked) {
-      onChange(''); // Desseleciona o radio button
+      onChange(''); 
     } else {
-      onChange(value); // Seleciona o radio button
+      onChange(value);
     }
   };
 
@@ -26,7 +23,7 @@ function RadioButton({
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '0.75em', // 12px / 16px (base font size) = 0.75em
+        gap: '0.75em', 
         fontSize: fontSize,
         color: '#553525',
       }}
@@ -35,7 +32,7 @@ function RadioButton({
         type="radio"
         name={groupName}
         value={value}
-        onChange={handleToggleSelection} // Usa a nova função de toggle
+        onChange={handleToggleSelection} 
         checked={checked}
       />
       {label}

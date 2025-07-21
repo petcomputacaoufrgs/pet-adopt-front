@@ -148,9 +148,9 @@ function PasswordInput() {
       title="Lorem ipsum"
       required={true}
       isDisabled={false}
-      $fontSize="1em" // Convertido de 16px para 1em
+      $fontSize="1em" 
       placeholder="Insira sua senha aqui"
-      $width="38.28%" // 735px / 1920px = 0.3828125 ~ 38.28%
+      $width="38.28%" 
       value={senha}
       onChange={(e) => {
         setSenha(e.target.value);

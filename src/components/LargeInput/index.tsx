@@ -7,23 +7,21 @@ import { LargeInputProps } from "./types"; // Importando LargeInputProps de um a
 const LargeInputField: React.FC<LargeInputProps> = ({
   title,
   required,
-  $fontSize: fontSize, // Renomeado para camelCase e mantido o prefixo $ para styled-components
+  $fontSize: fontSize, 
   placeholder,
-  $width: inputWidth, // Renomeado para camelCase
+  $width: inputWidth, 
   value,
   onChange,
   onClick,
   onKeyDown,
-  $paddingRight: paddingRight = "24px", // Renomeado para camelCase e mantido o prefixo $ para styled-components
-  $readOnly: readOnly = false, // Renomeado para camelCase e mantido o prefixo $ para styled-components
-  $inputType: inputType = "Primário", // Renomeado para camelCase e mantido o prefixo $ para styled-components
-  error: hasError = false, // Renomeado para camelCase
-  errorMessage: errorText, // Renomeado para camelCase
+  $paddingRight: paddingRight = "24px", 
+  $readOnly: readOnly = false, 
+  $inputType: inputType = "Primário", 
+  error: hasError = false, 
+  errorMessage: errorText, 
   children,
   isDisabled,
-}) => {
-  // Renderiza o label, com asterisco se obrigatório
-  const renderLabel = () =>
+}) => { const renderLabel = () =>
     title && (
       <Label $fontSize={fontSize} isDisabled={isDisabled}>
         {title}
@@ -54,7 +52,6 @@ const LargeInputField: React.FC<LargeInputProps> = ({
         <InfoText $fontSize={fontSize}>Máximo de 272 caracteres.</InfoText>
       </Container>
 
-      {/* Exibe mensagem de erro se houver */}
       {hasError && errorText && (
         <ErrorContainer>
           <CircleAlert color="#FF3B30" size={`calc(${fontSize} - 2px)`} />

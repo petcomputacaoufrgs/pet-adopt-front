@@ -24,7 +24,7 @@ function SelectorButton({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '0.5em', // Convertido de 8px para 0.5em (base 16px)
+        gap: '0.5em', 
       }}
     >
       <StyledButton
@@ -38,7 +38,7 @@ function SelectorButton({
         {active && clicked && overlayImage && (
           <img
             src={overlayImage}
-            alt="Overlay" // Adicionado alt text para acessibilidade
+            alt="Overlay"
             width={overlayImageWidth}
             height={overlayImageHeight}
             style={{
