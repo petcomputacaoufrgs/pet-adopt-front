@@ -1,14 +1,15 @@
 import styled from "styled-components";
 
-
+// -- Containers Principais --
 export const Container = styled.div`
-    font-family: 'Nunito Sans', sans-serif;
-    color: #553525;
-    display: flex;
-    flex-direction: column;
     width: 100%;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
     gap: 55px;
+
+    font-family: 'Nunito Sans', sans-serif;
+    color: #553525;
 `;
 
 export const MiddleContainer = styled.div`
@@ -18,93 +19,89 @@ export const MiddleContainer = styled.div`
     gap: 50px;
 `;
 
-export const Voltar = styled.button`
-    display: flex;
-    align-self: start;
-`;
-
 export const ProfileContainer = styled.div`
+    width: 100%;
+    height: 680px;
     display: flex;
     flex-direction: row;
-    width: 1520px;
-    height: 680px;
     gap: 50px;
-    width: 100%;
 `;
 
+// -- Componentes de Card da ONG --
 export const NgoCardContainer = styled.div`
+    width: 490px; 
+    height: 585px;
+    border: 1px solid #DEDEDE;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 32px;
-    width: 490px;
-    height: 585px;
-    border: 1px solid #DEDEDE;
-    border-radius: 20px;
 `;
 
 export const NgoNameContainer = styled.div`
+    width: 395px; 
+    height: 185px;
     display: flex;
     flex-direction: column;
     gap: 24px;
-    width: 395px;
-    height: 185px;
 `;
 
 export const TextsContainer = styled.div`
+    height: 110px;
     display: flex;
     flex-direction: column;
-    hegiht: 110px;
     gap: 2px;
 
-    p{
-        margin: 0;
-        font-size: 18px;
-    }
-
-    h1{
+    h1 {
         margin: 0;
         font-weight: 800;
         font-size: 32px;
     }
 
-    a{
-        text-decoration: none;
-        color:#553525;
-        font-weight: 800;
+    p {
         margin: 0;
         font-size: 18px;
+    }
+
+    a {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 800;
+        color: #553525;
+        text-decoration: none;
     }
 `;
 
 export const ButtonsContainer = styled.div`
+    height: 50px;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    height: 50px;
     gap: 8px;
 `;
 
 export const NgoInformationsContainer = styled.div`
+    width: 395px;
+    height: 275px;
+    background: #FFF6E8;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 32px;
-    width: 395px;
-    height: 275px;
-    background: #FFF6E8;
-    border-radius: 12px;
+
     font-size: 18px;
-    color: #755B4D
+    color: #755B4D;
 `;
 
 export const InformationsContainer = styled.div`
+    width: 345px; 
+    height: 150px;
     display: flex;
     flex-direction: column;
-    width: 345px;
-    height: 150px;
     gap: 12px;
 
     p {
@@ -113,86 +110,93 @@ export const InformationsContainer = styled.div`
 `;
 
 export const SocialIconsDiv = styled.div`
+    width: 345px; 
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
     gap: 24px;
-    width: 345px;
 `;
 
 export const Icon = styled.div<{ $orange: string; $brown: string }>`
-  width: 35px;
-  height: 35px;
-  background-image: url(${props => props.$orange});
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: background-image 0.3s ease-in-out;
+    width: 35px;
+    height: 35px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(${props => props.$orange});
+    transition: background-image 0.3s ease-in-out;
 
-  &:hover {
-    background-image: url(${props => props.$brown});
-  }
+    &:hover {
+        background-image: url(${props => props.$brown});
+    }
 `;
 
+// -- Componentes de Descrição da ONG --
 export const NgoDescriptionContainer = styled.div`
+    width: 1010px;
+    height: 670px;
+    border: 1px solid #DEDEDE;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 32px;
-    width: 1010px;
-    height: 670px;
-    border: 1px solid #DEDEDE;
-    border-radius: 20px;
 `;
 
 export const NgoTextsContainer = styled.div`
+    width: 910px;
+    height: 380px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    width: 910px;
-    height: 380px;
 
-    p{
+    h3 {
         margin: 0;
-        font-size: 16px;
+        font-weight: 800;
+        font-size: 18px;
     }
 
-    h3{
-        margin: 0;   
-        font-weight: 800;
-        font-size: 18px; 
+    p {
+        margin: 0;
+        font-size: 16px;
     }
 `;
 
 export const NgoFormsContainer = styled.div`
+    width: 910px; 
+    height: 170px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    width: 910px;
-    height: 170px;
+
     font-size: 18px;
     font-weight: 800;
 
     h3 {
         margin: 0;
     }
-
 `;
 
 export const FormsContainer = styled.div`
+    height: 126px;
     display: flex;
     flex-direction: row;
     gap: 12px;
-    height: 126px;
 
-    div{
+    div {
+        width: 218px;
+        border: 1px solid #DEDEDE;
+        border-radius: 12px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 24px;
-        width: 218px;
-        border: 1px solid #DEDEDE;
-        border-radius: 12px;
     }
+`;
+
+// -- Botões --
+export const Voltar = styled.button`
+    display: flex;
+    align-self: flex-start;  
 `;

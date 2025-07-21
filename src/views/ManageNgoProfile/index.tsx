@@ -1,69 +1,57 @@
-import {Container,
-        MiddleContainer,
-        Voltar,
-        ProfileContainer,
-        NgoCardContainer,
-        NgoNameContainer,
-        TextsContainer,
-        ButtonsContainer,
-        NgoInformationsContainer,
-        InformationsContainer,
-        SocialIconsDiv,
-        Icon,
-        NgoDescriptionContainer,
-        NgoTextsContainer,
-        FormsContainer,
-        NgoFormsContainer
- } from "./styles";
-
-import logo from "../../assets/HorizontalLogo.png";
-import Insta from "../../assets/OrangeInstagramPin.png";
-import Facebook from "../../assets/OrangeFacebookPin.png";
-import Youtube from "../../assets/OrangeYoutubePin.png";
-import Tiktok from "../../assets/OrangeTiktokPin.png";
-import InstaB from "../../assets/BrownInstagramPin.png";
-import FacebookB from "../../assets/BrownFacebookPin.png";
-import YoutubeB from "../../assets/BrownYoutubePin.png";
-import TiktokB from "../../assets/BrownTiktokPin.png";
+import {
+    Container,
+    MiddleContainer,
+    Voltar,
+    ProfileContainer,
+    NgoCardContainer,
+    NgoNameContainer,
+    TextsContainer,
+    ButtonsContainer,
+    NgoInformationsContainer,
+    InformationsContainer,
+    SocialIconsDiv,
+    Icon,
+    NgoDescriptionContainer,
+    NgoTextsContainer,
+    FormsContainer,
+    NgoFormsContainer
+} from "./styles";
 
 import Header from "../../components/Header";
-import Footer from "../HomePage/6Footer";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
+import Footer from "../HomePage/6Footer"; 
+import logo from "../../assets/HorizontalLogo.png";
+
+import FacebookIcon from "../../assets/OrangeFacebookPin.png"; 
+import FacebookBrownIcon from "../../assets/BrownFacebookPin.png"; 
+import InstagramPin from "../../assets/OrangeInstagramPin.png"; 
+import InstagramBrownPin from "../../assets/BrownInstagramPin.png"; 
+import TiktokIcon from "../../assets/OrangeTiktokPin.png"; 
+import TiktokBrownIcon from "../../assets/BrownTiktokPin.png"; 
+import YoutubePin from "../../assets/OrangeYoutubePin.png"; 
+import YoutubeBrownPin from "../../assets/BrownYoutubePin.png"; 
+
+const HEADER_OPTIONS = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
+const FORM_TYPES = ["Adoção", "Apadrinhamento", "Lar Temporário", "Reinvidicação"];
+
+const SOCIAL_MEDIA_LINKS = [
+    { orange: InstagramPin, brown: InstagramBrownPin, alt: "Instagram", href: "https://www.instagram.com" },
+    { orange: FacebookIcon, brown: FacebookBrownIcon, alt: "Facebook", href: "https://www.facebook.com" },
+    { orange: YoutubePin, brown: YoutubeBrownPin, alt: "YouTube", href: "https://www.youtube.com" },
+    { orange: TiktokIcon, brown: TiktokBrownIcon, alt: "TikTok", href: "https://www.tiktok.com" }
+];
 
 const ManageNgoProfile = () => {
-    const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
-    const handleHeaderAction = (selected: string) => {} 
-
-    const socialMediaLinks = [
-    {
-        orange: Insta,
-        brown: InstaB,
-        alt: "Instagram",
-        href: "https://www.instagram.com"
-    },
-    {
-        orange: Facebook,
-        brown: FacebookB,
-        alt: "Facebook",
-        href: "https://www.facebook.com"
-    },
-    {
-        orange: Youtube,
-        brown: YoutubeB,
-        alt: "YouTube",
-        href: "https://www.youtube.com"
-    },
-    {
-        orange: Tiktok,
-        brown: TiktokB,
-        alt: "TikTok",
-        href: "https://www.tiktok.com"
-    }
-    ];
+    const handleHeaderAction = (selected: string) => { }
 
     return (
-       <Container>
-            <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" Logo={logo} />
+        <Container>
+            <Header
+                options={HEADER_OPTIONS}
+                optionsToAction={handleHeaderAction}
+                color="rgba(0, 0, 0, 0)"
+                Logo={logo}
+            />
 
             <MiddleContainer>
                 <Voltar>Voltar</Voltar>
@@ -74,7 +62,7 @@ const ManageNgoProfile = () => {
                             <TextsContainer>
                                 <p>Ong</p>
                                 <h1>Nome da ONG</h1>
-                                <a href="">Ver Site Institucional da ONG</a>
+                                <a href="#">Ver Site Institucional da ONG</a>
                             </TextsContainer>
 
                             <ButtonsContainer>
@@ -82,13 +70,13 @@ const ManageNgoProfile = () => {
                                     width="100%"
                                     buttonType="Secundário"
                                     content="Excluir ONG"
-                                    onClick=""
+                                    onClick={() => {}}
                                 />
                                 <PrimarySecondaryButton
                                     width="100%"
                                     buttonType="Primário"
                                     content="Editar ONG"
-                                    onClick=""
+                                    onClick={() => {}}
                                 />
                             </ButtonsContainer>
                         </NgoNameContainer>
@@ -102,7 +90,7 @@ const ManageNgoProfile = () => {
                             </InformationsContainer>
 
                             <SocialIconsDiv>
-                                {socialMediaLinks.map((icon, index) => (
+                                {SOCIAL_MEDIA_LINKS.map((icon, index) => (
                                     <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
                                         <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
                                     </a>
@@ -119,54 +107,28 @@ const ManageNgoProfile = () => {
 
                         <NgoFormsContainer>
                             <h3>Formulário da ONG</h3>
-                            
-                            <FormsContainer>
-                                <div>
-                                    Adoção
-                                    <PrimarySecondaryButton
-                                        width="170px"
-                                        buttonType="Ver Formulário"
-                                        content="Excluir ONG"
-                                        onClick=""
-                                    />
-                                </div>
-                                <div>
-                                    Apadrinhamento
-                                    <PrimarySecondaryButton
-                                        width="170px"
-                                        buttonType="Ver Formulário"
-                                        content="Excluir ONG"
-                                        onClick=""
-                                    />
-                                </div>
-                                <div>
-                                    Lar Temporário
-                                    <PrimarySecondaryButton
-                                        width="170px"
-                                        buttonType="Ver Formulário"
-                                        content="Excluir ONG"
-                                        onClick=""
-                                    />
-                                </div>
-                                <div>
-                                    Reinvidicação
-                                    <PrimarySecondaryButton
-                                        width="170px"
-                                        buttonType="Ver Formulário"
-                                        content="Excluir ONG"
-                                        onClick=""
-                                    />
-                                </div>
-                            </FormsContainer>
 
+                            <FormsContainer>
+                                {FORM_TYPES.map((formType, index) => (
+                                    <div key={index}>
+                                        {formType}
+                                        <PrimarySecondaryButton
+                                            width="170px"
+                                            buttonType="Secundário"
+                                            content="Ver Formulário"
+                                            onClick={() => {}}
+                                        />
+                                    </div>
+                                ))}
+                            </FormsContainer>
                         </NgoFormsContainer>
                     </NgoDescriptionContainer>
                 </ProfileContainer>
             </MiddleContainer>
-            <Footer/>
-       </Container> 
-    )}
 
-
+            <Footer />
+        </Container>
+    );
+};
 
 export default ManageNgoProfile;
