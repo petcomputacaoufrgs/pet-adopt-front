@@ -6,4 +6,5 @@ export interface IButton {
     highlighted?: boolean;
     content: React.ReactNode;
     onClick: any;
+    $flex?: boolean;
 }
