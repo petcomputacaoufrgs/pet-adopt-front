@@ -9,8 +9,15 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
     $estado === "hover"
       ? "0 4px 10px rgba(0, 0, 0, 0.1)"
       : $estado === "selected"
-      ? "0 0 0 2px #ff7a00"
-      : "0 2px 5px rgba(0, 0, 0, 0.05)"};
+      ? "0 0 0 2px  rgba(0, 0, 0, 0.1)"
+      : "0 2px 5px rgba(0, 0, 0, 0.0)"};
+
+  border: ${({ $estado }) =>
+    $estado === "hover"
+      ? "0px solid rgba(222, 222, 222, 1)"
+      : $estado === "selected"
+      ? "0px solid rgba(222, 222, 222, 1)"
+      : "1px solid rgba(0, 0, 0, 0.1)"};
   position: relative;
   cursor: ${({ $modo }) => ($modo === "edit" ? "pointer" : "default")};
   transition: box-shadow 0.3s ease;
@@ -46,24 +53,7 @@ export const DataItem = styled.p`
   }
 `;
 
-export const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-`;
 
-export const DropdownMenu = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 8px;
-`;
 
 
 export const EditButtonWrapper = styled.div`
@@ -90,4 +80,10 @@ export const SocialMediaGroup = styled.div`
     heigth: 24px;
     width: 24px;
   }
+`
+
+export const Cabecalho = styled.div `
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `

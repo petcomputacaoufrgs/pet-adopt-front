@@ -10,11 +10,8 @@ export const PrimaryStyledLink = styled.a<{$disabled?: boolean, fontsize?: strin
   padding: 0px 0px;
   gap: 10px;
   line-height: 28px;
-  display: flex; 
   align-items: center; 
   justify-content: center;
-  order: 2;
-  flex-grow: 0;
   
   height: 36px;
 
@@ -40,6 +37,8 @@ export const PrimaryStyledLink = styled.a<{$disabled?: boolean, fontsize?: strin
 
   svg {
     fill: currentColor; // para o ícone seguir a cor do texto
+    padding-left: 5px;
+    padding-top: 2px;
   }
 
    /* Telas menores que 768px */

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CardContainer, InfoSection, OngName, OngType, DataItem, ButtonGroup, EditButtonWrapper, NGOApproveButtonWrapper, SocialMediaGroup} from "./styles";
+import { CardContainer, InfoSection, OngName, OngType, DataItem, EditButtonWrapper, NGOApproveButtonWrapper, SocialMediaGroup, Cabecalho} from "./styles";
 import { OngInfoCardProps } from "./types";
 import Location from "../../assets/Location.png"
 import  Id from "../../assets/identifier.png";
@@ -34,8 +34,22 @@ export const OngInfoCard: React.FC<OngInfoCardProps> = ({
       $estado={selected ? "selected" : hovered ? "hover" : "default"}
       $modo={modo}
     >
+    <Cabecalho>
+        {modo === "edit" && selected && (
+        <EditButtonWrapper>
+            <EditButton
+              width="34px"
+              height="34px"
+              options={[
+                { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
+                { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
+              ]}
+            />
+          </EditButtonWrapper>
+      )}
       <OngName>Nome da ONG</OngName>
       <OngType>Ong</OngType>
+      </Cabecalho>
 
       <InfoSection>
         <DataItem><img className="bullet_imgs" src={Location}/>São Pedro da Água Branca</DataItem>
@@ -51,18 +65,7 @@ export const OngInfoCard: React.FC<OngInfoCardProps> = ({
         <ButtonLink href="#" link_type="primary" fontsize = "16px">Saiba mais</ButtonLink>
       </InfoSection>
 
-      {modo === "edit" && selected && (
-        <EditButtonWrapper>
-            <EditButton
-              width="34px"
-              height="34px"
-              options={[
-                { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
-                { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
-              ]}
-            />
-          </EditButtonWrapper>
-      )}
+      
 
        {modo === "approve" && (
         <NGOApproveButtonWrapper>
