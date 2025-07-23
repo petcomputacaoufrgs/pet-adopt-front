@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useRef } from "react";
 import {
   CloseButton,
   ContentContainer,
-  NGOApproveButtonWrapper,
   NGOCardsContainer,
-  NGOCardWrapper,
   Overlay,
   TopBarContainer,
   TopBarContent,
@@ -18,16 +15,27 @@ import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import SuccessToast from "../../components/SuccessToast";
-import { OngInfoCard } from "../../components/OngInfoCard";
-
+import OngInfoCard from "../../components/OngInfoCard";
 
 import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
 
-const ApproveNGOs = () => {
+type ModalAction = { tipo: "aprovar" | "recusar"; ongId: string } | null;
 
+
+
+const ngosMock = [
+  { id: "1", nome: "ONG A" },
+  { id: "2", nome: "ONG B" },
+  { id: "3", nome: "ONG C" },
+  { id: "4", nome: "ONG D" },
+  { id: "5", nome: "ONG E" },
+];
+
+const ApproveNGOs = () => {
+  
   /**
    * Estados que representam os filtros aplicados às ONGs.
    * Cada um armazena uma característica diferente usada para filtrar as ONGs.
@@ -56,8 +64,7 @@ const ApproveNGOs = () => {
   };
 
 
-  const ngos = ["Isso aqui vai ser", "pego do back.", "Como são só os nomes,", "possivelmente não tem", "problema de pegar", "todas as ONGs que", "temos de uma vez"]
-
+  const ngos = ngosMock
   const [ngosPerPage, setPetsPerPage] = useState<number>(getNGOsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -126,147 +133,152 @@ const ApproveNGOs = () => {
   };
 
 
-  /**
-   * Confirmação das ações para aprovar ou recusar ongs
-   */
-
-  type ModalAction = 'aprovar' | 'recusar' | null;
+  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [modalAction, setModalAction] = useState<ModalAction>(null);
-  const [showToast, setShowToast] = useState(false); // controla exibição no DOM
-  const [toastVisible, setToastVisible] = useState(false); // controla animação
-  const [toastType, setToastType] = useState<'aprovar' | 'recusar' | null>(null);
+  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
 
+  // Fecha toast com animação
+ const resetToast = () => {
+  setToastVisible(false);
 
-  const handleConfirm = () => {
-    if (modalAction === 'aprovar') {
-      console.log("ONG aprovada!");
-      setToastType('aprovar');
-    } else if (modalAction === 'recusar') {
-      console.log("ONG recusada!");
-      setToastType('recusar');
-    }
+  if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+  if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+  if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
 
-    setShowToast(true);
-    setTimeout(() => setToastVisible(true), 50); // delay para ativar fade-in
-
-    // Fade-out + remoção do DOM
-    setTimeout(() => setToastVisible(false), 3000); // inicia fade-out
-    setTimeout(() => setShowToast(false), 3500);    // remove do DOM após fade-out
-
-    setModalAction(null);
-  };
-
-
-
-  return (
-<>
-  <Header
-    options={headerOptions}
-    optionsToAction={handleHeaderAction}
-    color="#FFF6E8"
-    Logo={HorizontalLogo}
-  />
-
-    {showToast && toastType && (
-    <SuccessToast
-      message={`Ong ${toastType === 'aprovar' ? 'aprovada' : 'recusada'} com sucesso!`}
-      description="Você pode ver essa ONG em Gerenciar ONGs."
-      onClose={() => {
-        setToastVisible(false);
-        setTimeout(() => setShowToast(false), 500); // garante fade-out
-      }}
-      isVisible={toastVisible}
-    />
-  )}
-
-
-  <BannerComponent
-    limitWidthForImage="850px"
-    color="rgba(178, 243, 255, 1)"
-    title="Juntos por um mundo melhor!"
-    subTitle="Hora de escolher quem vai impactar positivamente nossa comunidade"
-    imageUrl={ApproveNGOsDog}
-  />
-
-  <TopBarContainer>
-    <TopBarContent>
-      {hideNGOFilter && (
-        <PrimarySecondaryButton
-          onClick={() => setshowNGOsFilter(true)}
-          content="Filtros"
-        />
-      )}
-
-      <Breadcrumb
-        items={[
-          { label: "Home", to: "/" },
-          { label: "Validar ONGs" },
-        ]}
-      />
-    </TopBarContent>
-
-  </TopBarContainer>
-
-  {showNGOsFilter && (
-    <Overlay>
-      <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
-
-      <NGOsFilter
-        ngos={ngos}
-        selectedState={selectedState}
-        setSelectedState={setSelectedState}
-        city={city}
-        setCity={setCity}
-        name={name}
-        setName={setName}
-
-        hasBorder={false}
-      />
-    </Overlay>
-  )}
-
-  <ContentContainer>
-    {!hideNGOFilter && (
-      <NGOsFilter
-        ngos={ngos}
-        selectedState={selectedState}
-        setSelectedState={setSelectedState}
-        city={city}
-        setCity={setCity}
-        name={name}
-        setName={setName}
-      />
-    )}
-
-    <NGOCardsContainer>
-     {showedNGOs.map((ngo, index) => (
-  <OngInfoCard
-    key={index}
-    modo="approve"
-    modalAction={modalAction}
-    setModalAction={setModalAction}
-    handleConfirm={handleConfirm}
-  />
-))}
-    </NGOCardsContainer>
-  </ContentContainer>
-
-  <PaginationButtons
-    currentPage={currentPage}
-    setCurrentPage={setCurrentPage}
-    itemsLength={ngos.length}
-    itemsPerPage={ngosPerPage}
-    buttonHeight="30px"
-    buttonWidth="30px"
-    containerHeight="160px"
-  />
-
-  <Footer />
-</>
-  )
+  setShowToast(false);
+  setToastType(null);
 };
 
 
-export default ApproveNGOs;
+  // Abrir modal (e fechar toast se estiver aberto)
+  const abrirModal = (tipo: "aprovar" | "recusar", ongId: string) => {
+    resetToast();
+    setModalAction({ tipo, ongId });
+  };
+
+  // Confirmar ação
+  const handleConfirm = () => {
+  if (!modalAction) return;
+
+  resetToast();
+  setToastType(modalAction.tipo);
+  setShowToast(true);
+
+  showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+  hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+  fullCloseTimeoutRef.current = setTimeout(() => {
+    setShowToast(false);
+    setToastType(null);
+  }, 3500);
+
+  setModalAction(null);
+};
 
 
+  return (
+    <>
+      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={HorizontalLogo}/>
+
+      <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Juntos por um mundo melhor!" subTitle="Hora de escolher quem vai impactar positivamente nossa comunidade"   imageUrl={ApproveNGOsDog}/>
+
+      <TopBarContainer>
+        <TopBarContent>
+          {hideNGOFilter && (
+            <PrimarySecondaryButton onClick={() => setshowNGOsFilter(true)} content="Filtros"  />
+          )}
+          <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Gerenciar ONGs" },  ]} />
+        </TopBarContent>
+      </TopBarContainer>
+
+    {showNGOsFilter && (
+      <Overlay>
+        <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
+
+        <NGOsFilter
+          ngos={ngos.map((ngo) => ngo.nome)}
+          selectedState={selectedState}
+          setSelectedState={setSelectedState}
+          city={city}
+          setCity={setCity}
+          name={name}
+          setName={setName}
+
+          hasBorder={false}
+        />
+      </Overlay>
+    )}
+
+    <ContentContainer>
+      {!hideNGOFilter && (
+        <NGOsFilter
+          ngos={ngos.map((ngo) => ngo.nome)}
+          selectedState={selectedState}
+          setSelectedState={setSelectedState}
+          city={city}
+          setCity={setCity}
+          name={name}
+          setName={setName}
+        />
+      )}
+
+        
+          <NGOCardsContainer>
+            {showedNGOs.map((ngo) => (
+              <OngInfoCard
+                key={ngo.id}
+                showApproveButtons={true}
+                onApproveClick={() => abrirModal("aprovar", ngo.id)}
+                onRejectClick={() => abrirModal("recusar", ngo.id)}
+              />
+            ))}
+          </NGOCardsContainer>
+
+       
+
+        <ConfirmModal
+          isOpen={modalAction !== null}
+          title={
+            modalAction?.tipo === "aprovar"
+              ? "Que bom que gostou! Deseja aprovar esta ONG?"
+              : "Tem certeza que deseja recusar esta ONG?"
+          }
+          message={
+            modalAction?.tipo === "aprovar"
+              ? "Tem certeza de que deseja aprovar esta ONG? Caso mude de ideia, você poderá removê-la depois."
+              : "Uma vez recusada, a ONG sairá da lista de avaliação."
+          }
+          confirmLabel={modalAction?.tipo === "aprovar" ? "Sim, Aprovar" : "Sim, Recusar"}
+          cancelLabel="Cancelar"
+          onConfirm={handleConfirm}
+          onClose={() => setModalAction(null)}
+        />
+
+        {showToast && toastType && (
+          <SuccessToast
+            message={`ONG ${toastType === "aprovar" ? "aprovada" : "recusada"} com sucesso!`}
+            description= {`${toastType === "aprovar" ? "Você pode ver essa ONG em Gerenciar ONGs." : "A ONG foi removida da sua lista de validação."}`}
+            onClose={() => {
+              setToastVisible(false);
+              setTimeout(() => setShowToast(false), 300);
+            }}
+            isVisible={toastVisible}
+          />
+        )}
+      </ContentContainer>
+       <PaginationButtons
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          itemsLength={ngos.length}
+          itemsPerPage={ngosPerPage}
+          buttonHeight="30px"
+          buttonWidth="30px"
+          containerHeight="160px"
+        />
+        <Footer />
+    </>
+  );
+};export default ApproveNGOs;

@@ -18,6 +18,7 @@ import Header from "../../components/Header";
 import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
+import OngInfoCard from "../../components/OngInfoCard";
 import Footer from "../HomePage/6Footer";
 
 import DeleteIcon from "../../assets/DeleteIcon.svg";
@@ -193,20 +194,10 @@ const ManageNGOs = () => {
 
     <NGOCardsContainer>
       {showedNGOs.map((pet, index) => (
-        <NGOCardWrapper key={index}>
-          <div style={{backgroundColor: "#dedede", width: "362px", height: "394px"}}></div>
-
-          <EditButtonWrapper>
-            <EditButton
-              width="34px"
-              height="34px"
-              options={[
-                { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
-                { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
-              ]}
-            />
-          </EditButtonWrapper>
-        </NGOCardWrapper>
+        <OngInfoCard
+            key={index}
+            showEditOptions={true}
+          />
       ))}
     </NGOCardsContainer>
   </ContentContainer>

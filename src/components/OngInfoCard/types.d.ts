@@ -1,8 +1,11 @@
 export interface OngInfoCardProps {
-  modo?: "edit" | "approve";
-  estado?: "default" | "hover" | "selected";
+  showApproveButtons?: boolean;
+  showEditOptions?: boolean;
 
-  modalAction: 'aprovar' | 'recusar' | null;
-  setModalAction: React.Dispatch<React.SetStateAction<'aprovar' | 'recusar' | null>>;
-  handleConfirm: () => void;
+  onApproveClick?: () => void;
+  onRejectClick?: () => void;
+  onEditClick?: () => void;
+  onDeleteClick?: () => void;
+
+  selected?: boolean;
 }
