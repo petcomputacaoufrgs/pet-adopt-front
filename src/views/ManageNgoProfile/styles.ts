@@ -153,8 +153,8 @@ export const SocialIconsDiv = styled.div`
 `;
 
 export const Icon = styled.div<{ $orange: string; $brown: string }>`
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -176,6 +176,8 @@ export const NgoDescriptionContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 48px;
+    box-sizing: border-box;
 
     @media (max-width: 1387px) {
         width: 100%;
@@ -183,10 +185,11 @@ export const NgoDescriptionContainer = styled.div`
 `;
 
 export const NgoTextsContainer = styled.div`
-    width: 91%;
-    height: 380px;
+    width: 100%;
+    height: 66%;
     display: flex;
     flex-direction: column;
+    overflow: scroll;
 
     h3 {
         margin: 0;
@@ -203,8 +206,8 @@ export const NgoTextsContainer = styled.div`
 `;
 
 export const NgoFormsContainer = styled.div`
-    width: 91%; 
-    height: 170px;
+    width: 100%; 
+    height: 30%;
     display: flex;
     flex-direction: column;
 
@@ -213,6 +216,7 @@ export const NgoFormsContainer = styled.div`
 
     h3 {
         margin: 0;
+        margin-bottom: 12px;
     }
 `;
 
@@ -229,5 +233,11 @@ export const FormsContainer = styled.div`
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-right: 12px;
+        gap: 12px;
+    }
+
+    div:last-of-type{
+        margin: 0;
     }
 `;

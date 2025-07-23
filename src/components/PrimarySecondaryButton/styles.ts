@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 // --- Base Button Styles ---
-const BaseButton = styled.button<{$width?: string;}>`
+const BaseButton = styled.button<{$width?: string; $maxHeight?: string}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 800;
   font-size: 18px;
@@ -13,8 +13,8 @@ const BaseButton = styled.button<{$width?: string;}>`
   align-items: center;
 
   width: ${(props) => props.$width || "auto"};
-  max-height: 48px;
-  min-height: 48px;
+  max-height: ${(props) => props.$maxHeight || "auto"};
+  min-height: 30px;
 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 
