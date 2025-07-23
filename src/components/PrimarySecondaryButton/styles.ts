@@ -31,6 +31,8 @@ const BaseButton = styled.button<{$width?: string;}>`
     background-color: #DEDEDE;
     color: #A6A6A6;
     border: none;
+    transform: scale(1.0);
+    cursor: default;
   }
 
   &:hover,

@@ -1,7 +1,7 @@
 import React from "react";
 import { CircleAlert } from "lucide-react"; // Assumindo que CircleAlert é importado corretamente de lucide-react
 
-import { Container, ErrorContainer, ErrorMessage, InfoText, Label, StyledInput } from "./styles";
+import { Container, ErrorContainer, ErrorMessage, InfoText, Label, RequiredAsterisk, StyledInput} from "./styles";
 import { LargeInputProps } from "./types"; // Importando LargeInputProps de um arquivo types separado, conforme indicado
 
 const LargeInputField: React.FC<LargeInputProps> = ({
@@ -22,18 +22,16 @@ const LargeInputField: React.FC<LargeInputProps> = ({
   children,
   isDisabled,
 }) => {
-  // Renderiza o label, com asterisco se obrigatório
-  const renderLabel = () =>
-    title && (
-      <Label $fontSize={fontSize} isDisabled={isDisabled}>
-        {title}
-        {required && <span style={{ color: "#F17D6E" }}> *</span>}
-      </Label>
-    );
 
   return (
-    <>
-      {renderLabel()}
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      {title && (
+        <Label $fontSize={fontSize} isDisabled={isDisabled}>
+          {title}
+          {required && <RequiredAsterisk> *</RequiredAsterisk>}
+        </Label>
+      )}      
+
       <Container $width={inputWidth} isDisabled={isDisabled}>
         <StyledInput
           disabled={isDisabled}
@@ -61,7 +59,7 @@ const LargeInputField: React.FC<LargeInputProps> = ({
           <ErrorMessage $fontSize={fontSize}>{errorText}</ErrorMessage>
         </ErrorContainer>
       )}
-    </>
+    </div>
   );
 };
 
