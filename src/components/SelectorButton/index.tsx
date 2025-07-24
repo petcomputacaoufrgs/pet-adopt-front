@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StyledButton, StyledText } from './styles';
 
 import { SelectorButtonProps } from './types';
@@ -17,6 +18,10 @@ function SelectorButton({
   overlayImageLeft = '0px',
   overlayImageTop = '0px',
 }: SelectorButtonProps) {
+
+  const [inputValue, setInputValue] = useState('');
+
+  
   return (
     <div
       style={{

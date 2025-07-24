@@ -29,7 +29,7 @@ function BasicInput({
   children,
 }: BasicInputProps) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: $width }}>
       {title && (
         <Label $fontSize={$fontSize}>
           {title}
@@ -37,7 +37,7 @@ function BasicInput({
         </Label>
       )}
 
-      <Container $width={$width}>
+      <Container $width={"100%"}>
         <StyledInput
           id={title}
           readOnly={$readOnly}

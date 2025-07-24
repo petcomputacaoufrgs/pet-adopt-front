@@ -38,3 +38,29 @@ appearance: none;
     transform: scale(1);
   }
 `;
+
+export const StyledInput = styled.input<{$fontSize: string; $inputWidth: string}>`
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: ${({ $fontSize }) => $fontSize};
+  box-sizing: border-box;
+  border: 1px solid #FFC99C;
+  color: #553525;
+  background-color: #FFF3DF;
+  padding: 8px 24px 8px 24px;
+  border-radius: 100px;
+
+  position: absolute;
+
+  right: 0;
+
+  width: ${(props) => props.$inputWidth};
+
+  &:hover {
+    cursor: text;
+  }
+
+  &:focus {
+    outline: none;
+    border: 1px solid #FF9944;
+  }
+`;
