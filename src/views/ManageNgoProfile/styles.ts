@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 // -- Containers Principais --
 export const Container = styled.div`
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 
@@ -28,11 +28,6 @@ export const ProfileContainer = styled.div`
     display: flex;
     flex-direction: row;
     margin-top: 50px;
-
-    @media (max-width: 1387px) {
-        flex-direction: column;
-        height: auto;
-    }
 `;
 
 // -- Componentes de Card da ONG --
@@ -41,19 +36,13 @@ export const NgoCardContainer = styled.div`
     height: 88%;
     border: 1px solid #DEDEDE;
     border-radius: 20px;
-    padding: 48px;
+    padding: 3.2%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-right: 24px;
     box-sizing: border-box;
-
-    @media (max-width: 1387px) {
-        width: 100%;
-        height: 50%;
-        flex-direction: row;
-    }
 `;
 
 export const NgoNameContainer = styled.div`
@@ -63,9 +52,6 @@ export const NgoNameContainer = styled.div`
     flex-direction: column;
     margin-bottom: 32px;
     box-sizing: border-box;
-
-    @media (max-width: 1387px) {
-    }
 `;
 
 export const TextsContainer = styled.div`
@@ -77,7 +63,7 @@ export const TextsContainer = styled.div`
     h1 {
         margin: 0;
         font-weight: 800;
-        font-size: 32px;
+        font-size: clamp(26px, 2vw, 32px);
         margin-bottom: 2px;
     }
 
@@ -89,7 +75,7 @@ export const TextsContainer = styled.div`
 
     a {
         margin: 0;
-        font-size: 18px;
+        font-size: clamp(12px, 1vw, 18px);
         font-weight: 800;
         color: #553525;
         text-decoration: none;
@@ -102,10 +88,6 @@ export const ButtonsContainer = styled.div`
     flex-direction: row;
     justify-content: center;
     gap: 8px;
-
-    @media (max-width: 1387px) {
-        flex-direction: column;
-    }
 `;
 
 export const NgoInformationsContainer = styled.div`
@@ -120,11 +102,11 @@ export const NgoInformationsContainer = styled.div`
     padding: 32px 24px 32px 24px;
     box-sizing: border-box;
 
-    font-size: 18px;
+    font-size: clamp(14px, 1vw, 18px);
     color: #755B4D;
 
-    @media (max-width: 1387px) {
-
+    @media (max-width: 1526px) {
+        font-size: 14px;
     }
 `;
 
@@ -176,12 +158,8 @@ export const NgoDescriptionContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px;
+    padding: 3.2%;
     box-sizing: border-box;
-
-    @media (max-width: 1387px) {
-        width: 100%;
-    }
 `;
 
 export const NgoTextsContainer = styled.div`
@@ -189,20 +167,22 @@ export const NgoTextsContainer = styled.div`
     height: 66%;
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    margin-bottom: 32px;
 
     h3 {
         margin: 0;
         font-weight: 800;
-        font-size: 18px;
+        font-size: clamp(12px, 1vw, 18px);
     }
 
     p {
         margin: 0;
-        font-size: 16px;
         margin-top: 24px;
         text-align: justify;
+        font-size: clamp(10px, 1vw, 16px);
     }
+
+    
 `;
 
 export const NgoFormsContainer = styled.div`
@@ -210,8 +190,7 @@ export const NgoFormsContainer = styled.div`
     height: 30%;
     display: flex;
     flex-direction: column;
-
-    font-size: 18px;
+    font-size: clamp(12px, 1vw, 18px);
     font-weight: 800;
 
     h3 {
@@ -221,20 +200,25 @@ export const NgoFormsContainer = styled.div`
 `;
 
 export const FormsContainer = styled.div`
-    height: 126px;
+    height: 75%;
     display: flex;
     flex-direction: row;
+    justify-content: center;
 
     div {
-        width: 25%;
+        width: 24%;
         border: 1px solid #DEDEDE;
         border-radius: 12px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        text-align: center;
         margin-right: 12px;
         gap: 12px;
+        padding: 2.7%;
+        box-sizing: border-box;
+        font-size: clamp(12px, 1vw, 18px);
     }
 
     div:last-of-type{

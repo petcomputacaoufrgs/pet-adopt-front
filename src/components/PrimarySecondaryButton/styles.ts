@@ -4,7 +4,7 @@ import styled from "styled-components";
 const BaseButton = styled.button<{$width?: string; $maxHeight?: string}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 800;
-  font-size: 18px;
+  font-size: clamp(12px, 1vw, 18px);
   border-radius: 100px;
   padding: 10px; 
 
@@ -37,10 +37,6 @@ const BaseButton = styled.button<{$width?: string; $maxHeight?: string}>`
   &:active {
     cursor: pointer;
     transform: scale(1.05);
-  }
-
-  @media (max-width: 430px) {
-    font-size: 16px;
   }
 `;
 

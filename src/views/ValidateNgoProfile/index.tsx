@@ -43,23 +43,24 @@ const NGO_INFO = [
 
 const NGO_DESCRIPTION_PARAGRAPHS = [
     "O Cão Sem Dono é uma ONG (Organização Não Governamental), sem fins lucrativos, e que nasceu de um grande sonho do seu atual presidente: tirar o maior número possível de animais das ruas, dar tratamento adequado e integrá-los a famílias que lhes deem amor, carinho e uma vida digna.",
-    "Foi criada informalmente em 2005 na cidade de São Paulo. Seu estatuto foi lançado e registrado em 23 de Abril de 2008, mesmo dia em que obteve seu CNPJ. Atualmente a ONG mantém 2 abrigos (a sede fica em Itapecerica da Serra, SP) com 450 animais que são constantemente tratados por veterinários, alimentados com ração de boa qualidade, bebem água potável, dormem em abrigos especialmente construídos e são tratados com muito amor e carinho por todos os funcionários e voluntários que estão sempre visitando as instalações onde ficam os cães.",
+    "Foi criada informalmente em 2005 na cidade de São Paulo. Seu estatuto foi lançado e registrado em 23 de Abril de 2008, mesmo dia em que obteve seu CNPJ.",
+    "Atualmente a ONG mantém 2 abrigos (a sede fica em Itapecerica da Serra, SP) com 450 animais que são constantemente tratados por veterinários, alimentados com ração de boa qualidade, bebem água potável, dormem em abrigos especialmente construídos e são tratados com muito amor e carinho por todos os funcionários e voluntários que estão sempre visitando as instalações onde ficam os cães.",
     "Sua equipe é formada por Presidente, Diretores e 33 colaboradores entre tratadores, veterinários, auxiliares de veterinária, equipe do Bazar, equipe de resgate e a equipe do escritório."
 ];
 
 // component
-const ValidateNgoProfile = () => {
+const ManageNgoProfile = () => {
     return (
         <Container>
             <Header
                 options={HEADER_OPTIONS}
                 optionsToAction={() => {}}
-                color="rgba(0, 0, 0, 0)"
+                color="#FFF6E8"
                 Logo={logo}
             />
 
             <MiddleContainer>
-                <Breadcrumb items={[{ label: "< Voltar", to: "/" }]} />
+                <Breadcrumb items={[{ label: "< Voltar", to: "/" }]} /> 
 
                 <ProfileContainer>
                     <NgoCardContainer>
@@ -73,12 +74,14 @@ const ValidateNgoProfile = () => {
                             <ButtonsContainer>
                                 <PrimarySecondaryButton
                                     width="100%"
+                                    maxHeight="48px"
                                     buttonType="Secundário"
                                     content="Recusar"
                                     onClick={() => {}}
                                 />
                                 <PrimarySecondaryButton
                                     width="100%"
+                                    maxHeight="48px"
                                     buttonType="Primário"
                                     content="Aceitar"
                                     onClick={() => {}}
@@ -114,7 +117,8 @@ const ValidateNgoProfile = () => {
                                     <div key={index}>
                                         {formType}
                                         <PrimarySecondaryButton
-                                            width="170px"
+                                            width="100%"
+                                            maxHeight="36px"
                                             buttonType="Secundário"
                                             content="Ver Formulário"
                                             onClick={() => {}}
@@ -132,4 +136,4 @@ const ValidateNgoProfile = () => {
     );
 };
 
-export default ValidateNgoProfile;
+export default ManageNgoProfile;

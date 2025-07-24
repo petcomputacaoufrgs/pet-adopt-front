@@ -3,10 +3,9 @@ import styled from "styled-components";
 // -- Containers Principais --
 export const Container = styled.div`
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 55px;
 
     font-family: 'Nunito Sans', sans-serif;
     color: #553525;
@@ -15,59 +14,68 @@ export const Container = styled.div`
 export const MiddleContainer = styled.div`
     display: flex;
     flex-direction: column;
+    width: 79%;
+    height: 48%;
     align-self: center;
-    gap: 50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    box-sizing: border-box;
 `;
 
 export const ProfileContainer = styled.div`
     width: 100%;
-    height: 680px;
+    height: 100%;
     display: flex;
     flex-direction: row;
-    gap: 50px;
+    margin-top: 50px;
 `;
 
 // -- Componentes de Card da ONG --
 export const NgoCardContainer = styled.div`
-    width: 490px; 
-    height: 585px;
+    width: 35%; 
+    height: 88%;
     border: 1px solid #DEDEDE;
     border-radius: 20px;
+    padding: 3.2%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 32px;
+    margin-right: 24px;
+    box-sizing: border-box;
 `;
 
 export const NgoNameContainer = styled.div`
-    width: 395px; 
-    height: 185px;
+    width: 100%; 
+    height: 37%;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    margin-bottom: 32px;
+    box-sizing: border-box;
 `;
 
 export const TextsContainer = styled.div`
-    height: 110px;
+    height: 59%;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    margin-bottom: 24px;
 
     h1 {
         margin: 0;
         font-weight: 800;
-        font-size: 32px;
+        font-size: clamp(26px, 2vw, 32px);
+        margin-bottom: 2px;
     }
 
     p {
         margin: 0;
         font-size: 18px;
+        margin-bottom: 2px;
     }
 
     a {
         margin: 0;
-        font-size: 18px;
+        font-size: clamp(12px, 1vw, 18px);
         font-weight: 800;
         color: #553525;
         text-decoration: none;
@@ -75,7 +83,7 @@ export const TextsContainer = styled.div`
 `;
 
 export const ButtonsContainer = styled.div`
-    height: 50px;
+    height: 28%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -83,42 +91,52 @@ export const ButtonsContainer = styled.div`
 `;
 
 export const NgoInformationsContainer = styled.div`
-    width: 395px;
-    height: 275px;
+    width: 100%;
+    height: 57%;
     background: #FFF6E8;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 32px;
+    padding: 32px 24px 32px 24px;
+    box-sizing: border-box;
 
-    font-size: 18px;
+    font-size: clamp(14px, 1vw, 18px);
     color: #755B4D;
+
+    @media (max-width: 1526px) {
+        font-size: 14px;
+    }
 `;
 
 export const InformationsContainer = styled.div`
-    width: 345px; 
-    height: 150px;
+    width: 100%; 
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
 
     p {
         margin: 0;
+        margin-bottom: 12px;
     }
 `;
 
 export const SocialIconsDiv = styled.div`
-    width: 345px; 
+    width: 100%; 
     display: flex;
     flex-direction: row;
-    gap: 24px;
+
+    a{
+        margin-right: 12px;
+    }
 `;
 
 export const Icon = styled.div<{ $orange: string; $brown: string }>`
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -132,67 +150,78 @@ export const Icon = styled.div<{ $orange: string; $brown: string }>`
 
 // -- Componentes de Descrição da ONG --
 export const NgoDescriptionContainer = styled.div`
-    width: 1010px;
-    height: 670px;
+    width: 72%;
+    height: 100%;
     border: 1px solid #DEDEDE;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 32px;
+    padding: 3.2%;
+    box-sizing: border-box;
 `;
 
 export const NgoTextsContainer = styled.div`
-    width: 910px;
-    height: 380px;
+    width: 100%;
+    height: 66%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    margin-bottom: 32px;
 
     h3 {
         margin: 0;
         font-weight: 800;
-        font-size: 18px;
+        font-size: clamp(12px, 1vw, 18px);
     }
 
     p {
         margin: 0;
-        font-size: 16px;
         margin-top: 24px;
         text-align: justify;
+        font-size: clamp(10px, 1vw, 16px);
     }
+
+    
 `;
 
 export const NgoFormsContainer = styled.div`
-    width: 910px; 
-    height: 170px;
+    width: 100%; 
+    height: 30%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-
-    font-size: 18px;
+    font-size: clamp(12px, 1vw, 18px);
     font-weight: 800;
 
     h3 {
         margin: 0;
+        margin-bottom: 12px;
     }
 `;
 
 export const FormsContainer = styled.div`
-    height: 126px;
+    height: 75%;
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    justify-content: center;
 
     div {
-        width: 218px;
+        width: 24%;
         border: 1px solid #DEDEDE;
         border-radius: 12px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 24px;
+        text-align: center;
+        margin-right: 12px;
+        gap: 12px;
+        padding: 2.7%;
+        box-sizing: border-box;
+        font-size: clamp(12px, 1vw, 18px);
+    }
+
+    div:last-of-type{
+        margin: 0;
     }
 `;

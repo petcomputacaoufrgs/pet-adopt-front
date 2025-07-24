@@ -117,8 +117,8 @@ const ManageNgoProfile = () => {
                                     <div key={index}>
                                         {formType}
                                         <PrimarySecondaryButton
-                                            width="170px"
-                                            maxHeight="34px"
+                                            width="100%"
+                                            maxHeight="36px"
                                             buttonType="Secundário"
                                             content="Ver Formulário"
                                             onClick={() => {}}
