@@ -6,7 +6,7 @@ const BaseButton = styled.button<{$width?: string;}>`
   font-weight: 800;
   font-size: 18px;
   border-radius: 100px;
-  padding: 10px; 
+  padding: 10px 15px; 
 
   display: flex;
   justify-content: center;

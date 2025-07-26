@@ -4,6 +4,7 @@ export const Container = styled.div`
   gap: 16px;
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const Label = styled.label<{ fontSize: string }>`

@@ -4,6 +4,7 @@ import LoginView from "./views/Login";
 import SignupView from "./views/SignUp"
 import ManageAnimals from "./views/ManageAnimals";
 import ManageNGOs from "./views/ManageNGOs";
+import { AnimalForm } from "./views/AnimalForm";
 
 function App() {  
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signup" element={<SignupView />} />
           <Route path="/manageAnimals" element={<ManageAnimals />}></Route>
           <Route path="/manageNgo" element={<ManageNGOs />}></Route>
+          <Route path="/editAnimal" element={<AnimalForm animalData={true}/>}></Route>
           {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
         </Routes>
       </BrowserRouter>

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 
 // Componente estilizado usando styled-components
-export const DropDownContainer = styled.div<{ $width: string, $optionHeight: string, $maxHeight: string, $fontSize: string }>`
+export const DropDownContainer = styled.div<{ $width: string, $fontSize: string }>`
   display: flex;
   flex-direction: column;
   width: ${({ $width }) => $width};
@@ -11,7 +11,7 @@ export const DropDownContainer = styled.div<{ $width: string, $optionHeight: str
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* shadow-sm */
   
-  max-height: ${({ $maxHeight }) => $maxHeight};
+
 
   overflow: hidden;
 
@@ -19,7 +19,7 @@ export const DropDownContainer = styled.div<{ $width: string, $optionHeight: str
   button {
     all: unset;
     width: ${({ $width }) => $width};
-    height: ${({ $optionHeight }) => $optionHeight};
+
     cursor: pointer;
     padding: 8px 16px;
     font-family: "Nunito Sans", sans-serif;

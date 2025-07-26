@@ -26,9 +26,9 @@ const Dicas = () => {
         <CardsContainer>
           <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"} backgroundImage={imagemGatoFundo} width={"45vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"}  backgroundImage="#FF9944" width={"32vw"} heightDesktop={"48%"} heightMobile="25vh"/>
+          <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"}  backgroundColor="#FF9944" width={"32vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
-          <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"}  backgroundImage="#45E4FF" width={"27vw"} heightDesktop={"48%"} heightMobile="25vh"/>
+          <ImageCard to="/" title="Expectativa e Realidade." textColor={"#553525"}  backgroundColor="#45E4FF" width={"27vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
           <ImageCard to="/" title="Expectativa e Realidade." textColor={"white"} backgroundImage={imagemCachorroFundo} width={"39vw"} heightDesktop={"48%"} heightMobile="25vh"/>
 
