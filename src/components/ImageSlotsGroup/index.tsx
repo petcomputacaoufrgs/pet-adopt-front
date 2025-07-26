@@ -6,7 +6,7 @@ interface IImageSlotsGroup {
     images: (string | null)[];
     setImages: (images: (string | null)[]) => void;
 }
-export function ImageSlotsGroup({images, setImages} : IImageSlotsGroup) {
+export default function ImageSlotsGroup({images, setImages} : IImageSlotsGroup) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
