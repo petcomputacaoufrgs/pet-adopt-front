@@ -15,7 +15,8 @@ function App() {
           <Route path="/" element={<HomeView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/signup" element={<SignupView />} />
-          <Route path="/manageAnimals" element={<ManageAnimals />}></Route>
+          <Route path="/manageAnimals" element={<ManageAnimals allowEdit={true}/>}></Route>
+          <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>}></Route>
           <Route path="/manageNgo" element={<ManageNGOs />}></Route>
           <Route path="/editAnimal" element={<AnimalForm animalData={true}/>}></Route>
           {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
