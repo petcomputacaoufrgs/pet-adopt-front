@@ -31,3 +31,12 @@ export const StyledInput = styled.input<{ $width: string, $fontSize: string, $pa
 
   &:
 `;
+
+export const PasswordContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+
+`;

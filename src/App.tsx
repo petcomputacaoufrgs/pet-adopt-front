@@ -5,6 +5,7 @@ import SignupView from "./views/SignUp"
 import ManageAnimals from "./views/ManageAnimals";
 import ManageNGOs from "./views/ManageNGOs";
 import ApproveNGOs from "./views/ApproveNGOs";
+import ManageInfo from "./views/ManageInfo";
 
 function App() {  
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/manageAnimals" element={<ManageAnimals />}></Route>
           <Route path="/manageNgo" element={<ManageNGOs />}></Route>
           <Route path="/approveNgo" element={<ApproveNGOs />}></Route>
+          <Route path="/manageInfo" element={< ManageInfo/>}></Route>
           {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
         </Routes>
       </BrowserRouter>
