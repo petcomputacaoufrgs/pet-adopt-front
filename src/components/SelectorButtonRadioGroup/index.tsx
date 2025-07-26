@@ -1,8 +1,5 @@
-// SelectorRadioGroup/index.tsx
-import React from 'react'; // React é importado para usar o JSX
-
 import { Container } from './styles';
-import { SelectorRadioGroupProps } from './types'; // Assumindo que Option e SelectorRadioGroupProps estão em types.ts
+import { SelectorRadioGroupProps } from './types'; 
 
 import SelectorButton from '../SelectorButton';
 
@@ -17,12 +14,12 @@ function SelectorRadioGroup({
   overlayImageTop = '0px',
   overlayImageLeft = '0px',
 }: SelectorRadioGroupProps) {
-  // Lida com a seleção de um botão, permitindo desmarcar se já estiver selecionado
+
   const handleSelect = (index: number) => {
     if (selectedValue === -1 || selectedValue !== index) {
       setSelectedValue(index);
     } else {
-      setSelectedValue(-1); // Desmarca o botão se ele já estiver selecionado
+      setSelectedValue(-1); 
     }
   };
 
@@ -32,9 +29,9 @@ function SelectorRadioGroup({
         <SelectorButton
           key={option.value}
           label={option.label}
-          active={selectedValue === -1 || selectedValue === index} // Ativo se nenhum selecionado ou se for o selecionado
-          clicked={selectedValue === index} // Apenas "clicado" se for o selecionado
-          setActive={() => handleSelect(index)} // Função para lidar com o clique
+          active={selectedValue === -1 || selectedValue === index} 
+          clicked={selectedValue === index} 
+          setActive={() => handleSelect(index)} 
           width={width}
           height={height}
           backgroundImage={option.backgroundImage}

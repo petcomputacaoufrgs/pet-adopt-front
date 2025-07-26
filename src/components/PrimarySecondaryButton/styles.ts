@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 // --- Base Button Styles ---
-const BaseButton = styled.button<{$width?: string;}>`
+const BaseButton = styled.button<{$width?: string; $maxHeight?: string}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 800;
-  font-size: 18px;
+  font-size: clamp(12px, 1vw, 18px);
   border-radius: 100px;
   padding: 10px 15px; 
 
@@ -13,8 +13,8 @@ const BaseButton = styled.button<{$width?: string;}>`
   align-items: center;
 
   width: ${(props) => props.$width || "auto"};
-  max-height: 48px;
-  min-height: 48px;
+  max-height: ${(props) => props.$maxHeight || "auto"};
+  min-height: 30px;
 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 
@@ -39,10 +39,6 @@ const BaseButton = styled.button<{$width?: string;}>`
   &:active {
     cursor: pointer;
     transform: scale(1.05);
-  }
-
-  @media (max-width: 430px) {
-    font-size: 16px;
   }
 `;
 

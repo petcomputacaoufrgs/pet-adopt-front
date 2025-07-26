@@ -1,6 +1,3 @@
-// AnimalFormSection.tsx
-
-import styled from "styled-components";
 import {
   AnimalFormContainer,
   FormContainer,

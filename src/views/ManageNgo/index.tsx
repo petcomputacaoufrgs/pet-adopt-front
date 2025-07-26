@@ -25,7 +25,7 @@ import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
 import PencilIcon from "../../assets/PencilIcon.svg";
 
-const ManageNGOs = () => {
+const ManageNgo = () => {
 
   /**
    * Estados que representam os filtros aplicados às ONGs.
@@ -227,6 +227,6 @@ const ManageNGOs = () => {
 };
 
 
-export default ManageNGOs;
+export default ManageNgo;
 
 

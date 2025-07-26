@@ -1,4 +1,3 @@
-// SearchBar/index.tsx
 import { useEffect, useRef, useState } from 'react';
 
 import { Container, ToggleButton, DropDownWrapper } from './styles';
@@ -133,7 +132,7 @@ export default function SearchBar({
   }, []);
 
   return (
-    <Container ref={containerRef} width={width}> {/* Usando a prop width aqui */}
+    <Container ref={containerRef} width={width}>
       <BasicInput
         $readOnly={readOnly}
         onKeyDown={handleKeyDown}

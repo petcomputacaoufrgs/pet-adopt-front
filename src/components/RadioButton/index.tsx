@@ -59,7 +59,7 @@ function RadioButton({
         type="radio"
         name={groupName}
         value={value}
-        onChange={handleToggleSelection} // Usa a nova função de toggle
+        onChange={handleToggleSelection} 
         checked={checked}
       />
       {label}

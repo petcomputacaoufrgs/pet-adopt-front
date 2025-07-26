@@ -20,11 +20,10 @@ const ColoredCard = ({
 
     window.addEventListener("resize", handleResize);
 
-    // Remove the event listener on component unmount to prevent memory leaks
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [imageUrl, imageUrlMobile]); // Dependencies to update if URLs change
+  }, [imageUrl, imageUrlMobile]); 
 
   return (
     <StyledLink to={to}>

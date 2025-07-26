@@ -1,4 +1,4 @@
-import { X, ImagePlus, CirclePlus } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect } from "react";
 import { DeleteButton, ImageSlotContainer } from "./styles";
 
@@ -38,7 +38,7 @@ export function ImageSlot({ image, onClick, onRemove }: ImageSlotProps) {
           </DeleteButton>
         </div>
       ) : (
-        <img src={imagePlus}></img>
+        <img src={imagePlus} alt="ImagePlus"/>
       )}
     </ImageSlotContainer>
   );
