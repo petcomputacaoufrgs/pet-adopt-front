@@ -10,8 +10,11 @@ export const Label = styled.label<LabelProps>`
   font-size: ${({ $fontSize }) => $fontSize};
   font-weight: 700;
   color: #553525;
-  margin-bottom: 6px;
   opacity: ${({ isDisabled }) => (isDisabled ? 0.5 : 1)};
+`;
+
+export const RequiredAsterisk = styled.span`
+  color: #F17D6E;
 `;
 
 interface ContainerProps {
@@ -40,14 +43,16 @@ interface StyledInputProps {
 export const StyledInput = styled.textarea<StyledInputProps>`
   width: ${({ $width }) => $width};
   font-size: ${({ $fontSize }) => $fontSize};
+  box-sizing: border-box;
+  height: 104px;
+  padding-top: 8px;
   padding-right: ${({ $paddingRight }) => $paddingRight};
   padding-left: 24px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  border: 1px solid ${({ $error }) => ($error ? '#FF3B30' : '#ccc')};
-  border-radius: 4px;
-  background-color: ${({ $inputType }) => ($inputType === 'Primário' ? '#FFF3E8' : '#FFFFFF')};
-  resize: none;
+  border-radius: 12px;
+  border: ${({ $error, $inputType }) =>
+    $error ? "1px solid #FF3B30" : $inputType === "Primário" ? "1px solid #FFC99C" : "1px solid #BCAFA9"};
+  color: #553525;
+  background-color: ${({ $inputType }) => ($inputType === "Primário" ? "#FFF3DF" : "#FFFFFF")};  resize: none;
   outline: none;
   font-family: 'Nunito Sans', sans-serif;
   color: #553525;

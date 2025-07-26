@@ -34,7 +34,7 @@ export default function SearchBar({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   // Tamanho do ícone da seta, 6px maior que a fonte base
-  const arrowSize = parseFloat(fontSize) + 6;
+  const arrowSize = parseFloat(fontSize) + 20;
 
   // Referência para o container principal para detecção de clique fora
   const containerRef = useRef<HTMLDivElement>(null);
@@ -150,7 +150,7 @@ export default function SearchBar({
         onClick={handleClickOnEmptyInput}
         $paddingRight={'3.5em'} 
       >
-        <ToggleButton onClick={toggleOptions}>
+        <ToggleButton type="button" onClick={toggleOptions}>
           {showOptions ? (
             <ChevronDown size={arrowSize} color="#A39289" />
           ) : (

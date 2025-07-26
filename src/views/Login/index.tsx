@@ -19,6 +19,9 @@ import Header from "../../components/Header";
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
+import BasicInput from "../../components/BasicInput";
+import PasswordInputField from "../../components/PasswordInput";
+import { verify } from "crypto";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -83,27 +86,35 @@ const Login: React.FC = () => {
             )}
 
             <LoginFormInputsContainer>
-              <h3>Email</h3>
-              <Input
-                type="email"
+              
+              <BasicInput
+                title="E-mail"
+                required = {false} 
                 placeholder="Insira seu email aqui"
                 value={email}
+                $fontSize="1rem"
+                $width="100%"
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
 
-              <h3>Senha</h3>
-              <Input
-                type="password"
-                placeholder="Insira sua senha aqui"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+              <PasswordInputField
+                  title="Senha"
+                  required={false}
+                  isDisabled={false}
+                  $fontSize="1rem" 
+                  placeholder="Insira sua senha aqui"
+                  $width="100%"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  } }
+                  visible={false} 
               />
+              
             </LoginFormInputsContainer>
 
             <LoginFormLinksContainer>
-              <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Entrar" onClick="Submit"/>
+              <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin}/>
 
               <p>Esqueci minha senha</p>
               <TextContainer>
