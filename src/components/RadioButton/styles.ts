@@ -49,9 +49,6 @@ export const StyledInput = styled.input<{$fontSize: string; $inputWidth: string}
   padding: 8px 24px 8px 24px;
   border-radius: 100px;
 
-  position: absolute;
-
-  right: 0;
 
   width: ${(props) => props.$inputWidth};
 

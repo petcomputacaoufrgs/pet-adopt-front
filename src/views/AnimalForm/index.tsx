@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ImageSlotsGroup } from "../../components/ImageSlotsGroup";
-import { AnimalFormContainer, FormContainer, ImageSlotsContainer, InfoContent, InputsContainer, InputSubtitle, Label, RequiredAsterisk } from "./styles";
+import { AnimalFormContainer, FormContainer, ImageSlotsContainer, InfoContent, InputsContainer, InputSubtitle, Label, LocationInputsContainer, RequiredAsterisk } from "./styles";
 import LargeInputField from "../../components/LargeInput";
 import BasicInput from "../../components/BasicInput";
 import styled from "styled-components";
@@ -11,6 +11,8 @@ import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
 
 import AnimalFormPhoto from "../../assets/AnimalFormPhoto.png";
+import AnimalFormPhotoMobile from "../../assets/AnimalFormPhotoMobile.png";
+
 import Header from "../../components/Header";
 
 import logo from "../../assets/HorizontalLogo.png"
@@ -80,7 +82,7 @@ export function AnimalForm({animalData} : IAnimalForm) {
   <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo}/>
 
 
-  <div style={{padding: "32px", display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundImage: `url(${AnimalFormPhoto})`, backgroundSize: "cover", backgroundPosition: "center"}}>
+  <div style={{padding: windowSize > 818? "32px" : "32px 0", display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundImage: `url(${AnimalFormPhoto})`, backgroundSize: "cover", backgroundPosition: "center"}}>
     <AnimalFormContainer>
 
       <FormContainer >
@@ -91,7 +93,7 @@ export function AnimalForm({animalData} : IAnimalForm) {
         </InfoContent>
 
         <InputsContainer>
-          <div style={{width: "50%", display: "flex", flexDirection: "column", gap: "24px"}}>
+          <div style={{width: windowSize > 818? "50%" : "100%", display: "flex", flexDirection: "column", gap: "24px"}}>
 
           <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
             <BasicInput
@@ -124,7 +126,7 @@ export function AnimalForm({animalData} : IAnimalForm) {
               onChange={(e) => setBreed(e.target.value)}
             />
 
-            {window.innerWidth <= 1280 && window.innerWidth > 979 && 
+            {windowSize <= 1280 && windowSize >= 932 &&
               <SearchBar 
                 title="Selecione a ONG"
                 required = {true}
@@ -138,10 +140,9 @@ export function AnimalForm({animalData} : IAnimalForm) {
             
             }
 
-
-
-            { windowSize <= 979 &&
-            <LargeInputField
+          
+          {windowSize < 932 &&
+          <LargeInputField
             title="Características e Observações"
             required={true}
             $fontSize="1rem"
@@ -154,10 +155,13 @@ export function AnimalForm({animalData} : IAnimalForm) {
             isDisabled={false}
             $inputType="Primário"
           />
-            }
+
+          }
 
 
 
+            
+            
             </div>
 
 
@@ -222,12 +226,12 @@ export function AnimalForm({animalData} : IAnimalForm) {
             
           </div>
 
-      <div style={{width: "50%"}}>
+      <div style={{width: windowSize > 818? "50%" : "100%"}}>
 
         <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
 
-          {windowSize > 979 &&
 
+        {windowSize >= 923 &&
           <LargeInputField
             title="Características e Observações"
             required={true}
@@ -241,20 +245,20 @@ export function AnimalForm({animalData} : IAnimalForm) {
             isDisabled={false}
             $inputType="Primário"
           />
-
         }
+
 
 
         {/* <SearchBar /> */}
 
-          <div style={{display: 'flex', gap: "24px"}}>
+          <LocationInputsContainer>
               <BasicInput 
                 title="Cidade"
                 required = {true}
                 placeholder="Cidade do pet"
                 value={city}
                 $fontSize="1rem"
-                $width="70%"
+                $width={windowSize > 1180 ? "55%" : "100%"}
                 onChange={(e) => setCity(e.target.value)}
               />
 
@@ -265,13 +269,12 @@ export function AnimalForm({animalData} : IAnimalForm) {
                 query={state}
                 setQuery={setState}
                 options={["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]}
-                width= "30%"
+                width= {windowSize > 1180 ? "45%" : "100%"}
                 fontSize="1rem"
               />
-            
-          </div>
+            </LocationInputsContainer>
 
-            {windowSize > 1280 || windowSize <= 979 &&
+            {(windowSize > 1280 || windowSize < 932) &&
             <SearchBar 
                 title="Selecione a ONG"
                 required = {true}

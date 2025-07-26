@@ -41,6 +41,16 @@ export const FormContainer = styled.div`
 
 `
 
+export const LocationInputsContainer = styled.div`
+  display: flex;
+  gap: 24px;
+
+  @media (max-width: 1180px) {
+    flex-direction: column;
+    gap: 16px;
+    
+  }
+`
 export const AnimalFormContainer = styled.div`
   width: 1536px;
   display: flex;
@@ -60,11 +70,17 @@ export const AnimalFormContainer = styled.div`
   @media (max-width: 1000px) {
     width: 95%;
   }
+
 `
 
 export const InputsContainer = styled.div`
   display: flex;
   gap: 30px;
+
+  @media (max-width: 818px) {
+    flex-direction: column;
+    align-items: center;
+  }
 
 `
 
@@ -81,7 +97,7 @@ export const ImageSlotsContainer = styled.div`
   
     }
 
-    @media (max-width: 979px) {
+    @media (max-width: 931px) {
       justify-content: center;
     }
 `

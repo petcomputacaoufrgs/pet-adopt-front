@@ -14,7 +14,7 @@ function RadioButton({
   required = true,
   userFillOption,
   index,
-  userFillInputWidth = "70%"
+  userFillInputWidth = "100%"
 }: RadioOption) {
 
   const [customValue, setCustomValue] = useState('');
@@ -46,13 +46,15 @@ function RadioButton({
       key={value}
       style={{
         display: 'flex',
-        position: "relative",
-        alignItems: 'center',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
         gap: '0.75em', // 12px / 16px (base font size) = 0.75em
         fontSize: fontSize,
         color: '#553525',
       }}
     >
+
+    <div style={{display: "flex",  gap: '0.75em'}}>
       <StyledRadioButton
         type="radio"
         name={groupName}
@@ -61,6 +63,7 @@ function RadioButton({
         checked={checked}
       />
       {label}
+    </div>
 
 
      {userFillOption && checked && (
