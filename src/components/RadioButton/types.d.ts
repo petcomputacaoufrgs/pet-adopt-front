@@ -3,7 +3,11 @@ export interface RadioOption {
   value: string;
   groupName: string;
   checked: boolean;
-  onChange: (value : string) => void;
+  onChange?: (value : string) => void;
+  onSelectToggle: (index: number) => void;
   fontSize: string;
-  required?: boolean
+  required?: boolean;
+  userFillOption?: boolean;
+  index: number;
+  userFillInputWidth?: string;
 }

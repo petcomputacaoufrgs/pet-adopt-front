@@ -6,7 +6,7 @@ const BaseButton = styled.button<{$width?: string; $maxHeight?: string}>`
   font-weight: 800;
   font-size: clamp(12px, 1vw, 18px);
   border-radius: 100px;
-  padding: 10px; 
+  padding: 10px 15px; 
 
   display: flex;
   justify-content: center;
@@ -31,6 +31,8 @@ const BaseButton = styled.button<{$width?: string; $maxHeight?: string}>`
     background-color: #DEDEDE;
     color: #A6A6A6;
     border: none;
+    transform: scale(1.0);
+    cursor: default;
   }
 
   &:hover,

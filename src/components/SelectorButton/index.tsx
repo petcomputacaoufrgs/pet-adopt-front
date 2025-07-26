@@ -17,6 +17,7 @@ function SelectorButton({
   overlayImageLeft = '0px',
   overlayImageTop = '0px',
 }: SelectorButtonProps) {
+
   return (
     <div
       style={{

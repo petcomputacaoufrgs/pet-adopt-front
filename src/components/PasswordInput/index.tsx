@@ -1,12 +1,11 @@
-// PasswordInput/index.tsx
 import React from 'react';
 
-import { StyledInput } from './styles';
+import { PasswordContainer, StyledInput } from './styles';
 import { PasswordInputProps } from './types';
 
 import { Eye, EyeOff, CircleAlert } from 'lucide-react';
 
-function PasswordInputField({
+function PasswordInput({
   title,
   required,
   $fontSize,
@@ -28,7 +27,7 @@ function PasswordInputField({
   const inputType = visible && !isDisabled ? 'text' : 'password';
 
   return (
-    <>
+    <PasswordContainer>
       {title && (
         <label
           style={{
@@ -36,7 +35,6 @@ function PasswordInputField({
             fontSize: $fontSize,
             fontWeight: 700,
             color: '#553525',
-            marginBottom: '0.375em', // 6px / 16px (base font size) = 0.375em
             opacity: isDisabled ? 0.3 : 1,
           }}
         >
@@ -89,7 +87,7 @@ function PasswordInputField({
       </div>
 
       {error && errorMessage && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375em', marginTop: '0.5em' }}> {/* 6px e 8px convertidos para em */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375em'}}> {/* 6px convertidos para em */}
           <CircleAlert color="#FF3B30" size={`calc(${$fontSize} - 0.125em)`} /> {/* 2px convertido para em */}
 
           <span
@@ -102,63 +100,10 @@ function PasswordInputField({
           >
             {errorMessage}
           </span>
+
         </div>
       )}
-    </>
-  );
-}
-
-function PasswordInput() {
-  const [senha, setSenha] = React.useState('');
-  const [error, setError] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState('');
-
-  const verificarSenhaFraca = (senha: string) => {
-    if (senha.trim() === '') {
-      setError(false);
-      setErrorMessage('');
-      return;
-    }
-    if (senha.length < 6) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos 6 caracteres');
-      return;
-    }
-    if (!/[A-Z]/.test(senha)) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos uma letra maiúscula');
-      return;
-    }
-    if (!/[0-9]/.test(senha)) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos um número');
-      return;
-    }
-    if (!/[!@#$%^&*]/.test(senha)) {
-      setError(true);
-      setErrorMessage('A senha deve ter pelo menos um caractere especial');
-      return;
-    }
-    setError(false);
-    setErrorMessage('');
-  };
-
-  return (
-    <PasswordInputField
-      title="Lorem ipsum"
-      required={true}
-      isDisabled={false}
-      $fontSize="1em" 
-      placeholder="Insira sua senha aqui"
-      $width="38.28%" 
-      value={senha}
-      onChange={(e) => {
-        setSenha(e.target.value);
-        verificarSenhaFraca(e.target.value);
-      } }
-      error={error}
-      errorMessage={errorMessage} 
-      visible={false} />
+    </PasswordContainer>
   );
 }
 

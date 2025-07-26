@@ -4,6 +4,9 @@ export interface RadioGroupProps {
   fontSize: string;
   name: string;
   options: Option[];
-  selectedValue: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
+  toggleIndex: number;
+  onSelectToggle: (index: number) => void;
+  userFillOptionLabel?: string;
+
 }

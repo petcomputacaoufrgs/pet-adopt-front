@@ -10,15 +10,16 @@ import {
   LoginFormTextContainer,
   LoginFormInputsContainer,
   LoginFormLinksContainer,
-  Input,
   TextContainer,
-} from "./styles"; // styles
+} from "./styles"; 
 
-import Header from "../../components/Header"; // components
-import PrimarySecondaryButton from "../../components/PrimarySecondaryButton"; // components
+import Header from "../../components/Header"; 
+import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
-import loginPageLogo from "../../assets/HorizontalLogo.png"; // assets
-import loginDog from "../../assets/LoginDog.png"; // assets
+import loginPageLogo from "../../assets/HorizontalLogo.png";
+import LoginDog from "../../assets/LoginDog.png";
+import BasicInput from "../../components/BasicInput";
+import PasswordInputField from "../../components/PasswordInput";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -64,7 +65,7 @@ const Login: React.FC = () => {
       />
 
       <LoginContainer>
-        <Image src={loginDog} alt="Cachorro da página de login" />
+        <Image src={LoginDog} alt="Cachorro da página de login" />
 
         <LoginFormContainer>
           <LoginForm onSubmit={handleLogin}>
@@ -86,33 +87,35 @@ const Login: React.FC = () => {
             )}
 
             <LoginFormInputsContainer>
-              <h3>Email</h3>
-              <Input
-                type="email"
+              
+              <BasicInput
+                title="E-mail"
+                required = {false} 
                 placeholder="Insira seu email aqui"
                 value={email}
+                $fontSize="1rem"
+                $width="100%"
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
 
-              <h3>Senha</h3>
-              <Input
-                type="password"
-                placeholder="Insira sua senha aqui"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+              <PasswordInputField
+                  title="Senha"
+                  required={false}
+                  isDisabled={false}
+                  $fontSize="1rem" 
+                  placeholder="Insira sua senha aqui"
+                  $width="100%"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  } }
+                  visible={false} 
               />
+              
             </LoginFormInputsContainer>
 
             <LoginFormLinksContainer>
-              <PrimarySecondaryButton
-                /*type="submit"*/
-                width="100%"
-                buttonType="Primário"
-                content="Entrar"
-                onClick="Submit"
-              />
+              <PrimarySecondaryButton width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin}/>
 
               <p>Esqueci minha senha</p>
               <TextContainer>
