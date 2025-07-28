@@ -7,17 +7,11 @@ export const PrimaryStyledLink = styled.a<{$disabled?: boolean, fontsize?: strin
   text-decoration: none;
   color: ${(props) => (props.$disabled ? '#DEDEDE' : '#553525') };
   font-size: ${({ fontsize }) => fontsize || "16px"};
-  padding: 0px 0px;
   gap: 10px;
-  line-height: 28px;
   align-items: center; 
   justify-content: center;
-  
-  height: 36px;
-
   border-bottom: 2px solid transparent;
   transition: border-color 0.3s ease;
-
   
   &:hover {
     cursor: ${(props) => (props.$disabled ? "not-allowed" : "pointer")};
@@ -44,7 +38,6 @@ export const PrimaryStyledLink = styled.a<{$disabled?: boolean, fontsize?: strin
    /* Telas menores que 768px */
   @media (max-width: 768px) {
     font-size: 14px !important;;
-    height: 24px;
     gap: 8px;
   }
 

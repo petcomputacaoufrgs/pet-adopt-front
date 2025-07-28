@@ -7,4 +7,5 @@ export interface IButton {
     content: React.ReactNode;
     onClick: any;
     $flex?: boolean;
+    $fontSize?: string;
 }

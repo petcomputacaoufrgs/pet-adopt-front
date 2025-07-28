@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+
 export const ContentContainer = styled.div`
     display: flex;
     padding: 0;
@@ -10,7 +11,7 @@ export const ContentContainer = styled.div`
 export const NGOCardsContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
-    gap: 32px 24px;
+    gap: 14px 24px;
 
     @media (max-width: 1612px) {
         grid-template-columns: repeat(2, 1fr); 
@@ -57,7 +58,6 @@ export const FixedFilterButton = styled.button`
     left: 0;
     top: 50%;
     z-index: 1000;
-
 `
 
 

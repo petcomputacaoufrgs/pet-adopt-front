@@ -7,23 +7,55 @@ import {
   DataItem,
   EditButtonWrapper,
   NGOApproveButtonWrapper,
-  SocialMediaGroup,
+  SocialIconsDiv,
+  Icon,
   Cabecalho,
   OngTextGroup,
 } from "./styles";
 import { OngInfoCardProps } from "./types";
 
-import Location from "../../assets/Location.png";
-import Id from "../../assets/identifier.png";
-import Phone from "../../assets/phone.png";
-import Contact from "../../assets/contact.png";
-import FacebookIcon from "../../assets/OrangeFacebookPin.png";
+import Location from "../../assets/location.svg";
+import Id from "../../assets/id.svg";
+import Phone from "../../assets/phone.svg";
+import Email from "../../assets/email.svg";
 import DeleteIcon from "../../assets/DeleteIcon.svg";
 import PencilIcon from "../../assets/PencilIcon.svg";
 
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
 import EditButton from "../EditButton";
 import ButtonLink from "../ButtonLink/ButtonLink";
+
+// social icons
+import FacebookIcon from "../../assets/OrangeFacebookPin.png"; 
+import FacebookBrownIcon from "../../assets/BrownFacebookPin.png"; 
+import InstagramPin from "../../assets/OrangeInstagramPin.png"; 
+import InstagramBrownPin from "../../assets/BrownInstagramPin.png"; 
+import TiktokIcon from "../../assets/OrangeTiktokPin.png"; 
+import TiktokBrownIcon from "../../assets/BrownTiktokPin.png"; 
+import YoutubePin from "../../assets/OrangeYoutubePin.png"; 
+import YoutubeBrownPin from "../../assets/BrownYoutubePin.png"; 
+
+const SOCIAL_MEDIA_LINKS = [
+    { orange: InstagramPin, brown: InstagramBrownPin, alt: "Instagram", href: "https://www.instagram.com" },
+    { orange: FacebookIcon, brown: FacebookBrownIcon, alt: "Facebook", href: "https://www.facebook.com" },
+    { orange: YoutubePin, brown: YoutubeBrownPin, alt: "YouTube", href: "https://www.youtube.com" },
+    { orange: TiktokIcon, brown: TiktokBrownIcon, alt: "TikTok", href: "https://www.tiktok.com" }
+];
+
+
+const NGO_INFO = [
+    "São Pedro da Água Branca",
+    "contato@amorpetong.org",
+    "(51) 98765-4321",
+    "CPF/CNPJ"
+];
+
+const NGO_ICONS = [
+  Location,
+  Email,
+  Id,
+  Phone
+]
 
 const OngInfoCard: React.FC<OngInfoCardProps> = ({
   showApproveButtons = false,
@@ -64,34 +96,28 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
       </Cabecalho>
 
       <InfoSection>
-        <DataItem>
-          <img className="bullet_imgs" src={Location} />
-          Cidade da ONG
-        </DataItem>
-        <DataItem>
-          <img className="bullet_imgs" src={Contact} />
-          contato@exemplo.org
-        </DataItem>
-        <DataItem>
-          <img className="bullet_imgs" src={Id} />
-          00.000.000/0000-00
-        </DataItem>
-        <DataItem>
-          <img className="bullet_imgs" src={Phone} />
-          (00) 00000-0000
-        </DataItem>
-
-        <SocialMediaGroup>
-          {[...Array(4)].map((_, i) => (
+        
+         {NGO_INFO.map((info, i) => (
             <DataItem key={i}>
-              <img className="bullet_imgs" src={FacebookIcon} alt="Icone social" />
+              <img src={NGO_ICONS[i]} alt="" />
+              <p>{info}</p>
             </DataItem>
           ))}
-        </SocialMediaGroup>
+        
 
-        <ButtonLink href="#" link_type="primary" fontsize="16px">
-          Saiba mais
-        </ButtonLink>
+         <SocialIconsDiv>
+            {SOCIAL_MEDIA_LINKS.map(({ href, orange, brown, alt }, index) => (
+                <a key={index} href={href} target="_blank" rel="noopener noreferrer">
+                    <Icon $orange={orange} $brown={brown} aria-label={alt} />
+                </a>
+            ))}
+        </SocialIconsDiv>
+        
+        <div>
+          <ButtonLink href="#" link_type="primary" fontsize="15px">
+            Saiba Mais
+          </ButtonLink>
+        </div>
       </InfoSection>
 
       {showApproveButtons && (
@@ -100,12 +126,14 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
             buttonType="Secundário"
             content="Recusar"
             onClick={onRejectClick}
+            maxHeight="40px"
             $flex
           />
           <PrimarySecondaryButton
             buttonType="Primário"
             content="Aceitar"
             onClick={onApproveClick}
+            maxHeight="40px"
             $flex
           />
         </NGOApproveButtonWrapper>

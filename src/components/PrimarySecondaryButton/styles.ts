@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 // --- Base Button Styles ---
-const BaseButton = styled.button<{$width?: string; $maxHeight?: string  $flex?: boolean;}>`
+const BaseButton = styled.button<{$width?: string; $maxHeight?: string;  $flex?: boolean, $fontSize?: string}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 800;
-  font-size: clamp(12px, 1vw, 18px);
+  font-size: ${(props)=> props.$fontSize};
   border-radius: 100px;
   padding: 10px 15px; 
 

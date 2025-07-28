@@ -1,9 +1,9 @@
 import styled, { css } from "styled-components";
 
 export const CardContainer = styled.div<{ $estado: "default" | "hover" | "selected"; $modo: "edit" | "approve" | "none"}>`
-  width: 280px;
+  width: 90%;
   background-color: white;
-  border-radius: 16px;
+  border-radius: 15px;
   padding: 20px;
   box-shadow: ${({ $estado }) =>
     $estado === "hover"
@@ -21,6 +21,7 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
   position: relative;
   cursor: ${({ $modo }) => ($modo === "edit" ? "pointer" : "default")};
   transition: box-shadow 0.3s ease;
+   align-self: start;
 `;
 
 export const OngName = styled.h3`
@@ -38,39 +39,79 @@ export const OngType = styled.p`
 `;
 
 export const InfoSection = styled.div`
-  background-color: #fff2e5;
-  border-radius: 10px;
-  padding: 10px;
-  margin: 12px 0;
+    width: 100%;
+    background: #FFF6E8;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: center;
+    padding: 20px 24px 20px 24px;
+    box-sizing: border-box;
+
+    font-size: clamp(14px, 1vw, 18px);
+    color: #755B4D;
+
+    @media (max-width: 1526px) {
+        font-size: 14px;
+    }
 `;
 
-export const DataItem = styled.p`
-  font-size: 0.85rem;
-  color: rgba(86, 53, 38, 1);
-  padding: 2px;
+export const DataItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 12px;
+
+  img {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #755B4D;
+    word-break: break-word;
+  }
 `;
+
 
 
 
 export const NGOApproveButtonWrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content:center;
   gap: 10px;
   width: 100%;
-  padding-top: 5px
+  padding-top: 15px
 `;
 
-export const SocialMediaGroup = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  img{
-    heigth: 24px;
-    width: 24px;
-  }
-`
+export const SocialIconsDiv = styled.div`
+    width: 100%; 
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0px 15px 0px;
+    a{
+        margin-right: 12px;
+    }
+`;
+
+export const Icon = styled.div<{ $orange: string; $brown: string }>`
+    width: 25px;
+    height: 25px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(${props => props.$orange});
+    transition: background-image 0.3s ease-in-out;
+
+    &:hover {
+        background-image: url(${props => props.$brown});
+    }
+`;
+
 export const Cabecalho = styled.div`
   position: relative;
   display: flex;

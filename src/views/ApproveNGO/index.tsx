@@ -34,7 +34,7 @@ const ngosMock = [
   { id: "5", nome: "ONG E" },
 ];
 
-const ApproveNGOs = () => {
+const ApproveNGO = () => {
   
   /**
    * Estados que representam os filtros aplicados às ONGs.
@@ -281,4 +281,4 @@ const ApproveNGOs = () => {
         <Footer />
     </>
   );
-};export default ApproveNGOs;
+};export default ApproveNGO;
