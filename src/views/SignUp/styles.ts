@@ -22,21 +22,18 @@ export const Image = styled.img`
 export const SignUpFormContainer = styled.div  <{role: string}>`
   display: flex;
   justify-content: center;
-  align-items: center;
   width: 100%;
+  height: 100%;
   color: #563526;
 
-  ${props => 
-  props.role === 'ong' && 
-  css`
-    height: 100%;
-    align-items: flex-start;
-    overflow-y: scroll;
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-    display: none;
-    }
-  `}
+  align-items: flex-start;
+  overflow-y: scroll;
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+  display: none;
+  }
+  
 `;
 
 export const SignUpForm = styled.form <{role: string}>`
@@ -46,18 +43,14 @@ export const SignUpForm = styled.form <{role: string}>`
   width: 645px;
   height: 500px;
   gap: 32px;
-  justify-content: center;
 
   p,h1,h3{
     margin: 0;
   }
 
-  ${props => 
-  props.role === 'ong' && 
-  css`
-    justify-content: flex-start;
-    margin-top: 69px;
-  `}
+  justify-content: flex-start;
+  margin-top: 69px;
+  
 `;
 
 export const SignUpFormTextContainer = styled.div`
