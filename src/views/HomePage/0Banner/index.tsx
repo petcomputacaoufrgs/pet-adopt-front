@@ -20,7 +20,6 @@ const Banner: React.FC<AboutProps> = ({ id }) => {
 
   return (
     <BannerContainer>
-        <OngInfoCard/>
 
       <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" Logo={logo} />
 

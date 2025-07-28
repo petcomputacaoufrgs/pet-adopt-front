@@ -5,4 +5,5 @@ export interface ILink {
   href: string;
   link_type: LinkType;
   disabled?: boolean;
+  fontsize?: string;
 }

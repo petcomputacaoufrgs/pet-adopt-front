@@ -102,18 +102,3 @@ export const Input = styled.input`
   border-radius: 4px;
   font-size: 1rem;
 `;
-
-export const TextContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  marin-top: 12px;
-
-  div{
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #BCAFA9;
-    margin: 0;
-  }
-`;

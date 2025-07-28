@@ -18,6 +18,7 @@ import Header from "../../components/Header";
 import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
+import OngInfoCard from "../../components/OngInfoCard";
 import Footer from "../HomePage/6Footer";
 
 import DeleteIcon from "../../assets/DeleteIcon.svg";
@@ -25,7 +26,7 @@ import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
 import PencilIcon from "../../assets/PencilIcon.svg";
 
-const ManageNGOs = () => {
+const ManageNgo = () => {
 
   /**
    * Estados que representam os filtros aplicados às ONGs.
@@ -193,20 +194,10 @@ const ManageNGOs = () => {
 
     <NGOCardsContainer>
       {showedNGOs.map((pet, index) => (
-        <NGOCardWrapper key={index}>
-          <div style={{backgroundColor: "#dedede", width: "362px", height: "394px"}}></div>
-
-          <EditButtonWrapper>
-            <EditButton
-              width="34px"
-              height="34px"
-              options={[
-                { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
-                { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
-              ]}
-            />
-          </EditButtonWrapper>
-        </NGOCardWrapper>
+        <OngInfoCard
+            key={index}
+            showEditOptions={true}
+          />
       ))}
     </NGOCardsContainer>
   </ContentContainer>
@@ -227,6 +218,6 @@ const ManageNGOs = () => {
 };
 
 
-export default ManageNGOs;
+export default ManageNgo;
 
 

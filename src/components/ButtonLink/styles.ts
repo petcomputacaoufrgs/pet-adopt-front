@@ -1,26 +1,17 @@
 import styled from "styled-components";
 
-export const PrimaryStyledLink = styled.a<{$disabled?: boolean;}>`
+export const PrimaryStyledLink = styled.a<{$disabled?: boolean, fontsize?: string}>`
   font-family: 'Nunito Sans', sans-serif;
   font-style: normal;
   font-weight: 800; 
   text-decoration: none;
   color: ${(props) => (props.$disabled ? '#DEDEDE' : '#553525') };
-  font-size: 28px !important;;
-  padding: 0px 0px;
+  font-size: ${({ fontsize }) => fontsize || "16px"};
   gap: 10px;
-  line-height: 28px;
-  display: flex; 
   align-items: center; 
   justify-content: center;
-  order: 2;
-  flex-grow: 0;
-  
-  height: 36px;
-
   border-bottom: 2px solid transparent;
   transition: border-color 0.3s ease;
-
   
   &:hover {
     cursor: ${(props) => (props.$disabled ? "not-allowed" : "pointer")};
@@ -40,24 +31,25 @@ export const PrimaryStyledLink = styled.a<{$disabled?: boolean;}>`
 
   svg {
     fill: currentColor; // para o ícone seguir a cor do texto
+    padding-left: 5px;
+    padding-top: 2px;
   }
 
    /* Telas menores que 768px */
   @media (max-width: 768px) {
     font-size: 14px !important;;
-    height: 24px;
     gap: 8px;
   }
 
 
 }`;
 
-export const SecondaryStyledLink = styled.a<{$disabled?: boolean;}>`
+export const SecondaryStyledLink = styled.a<{$disabled?: boolean; fontsize?: string}>`
   font-family: 'Nunito Sans', sans-serif;
   font-style: normal;
   font-weight: 800; 
   text-decoration: none;
-  font-size: 18px !important;;
+  font-size: ${({ fontsize }) => fontsize || "16px"};
   gap: 10px;
   display: inline-flex; 
   align-items: center; 

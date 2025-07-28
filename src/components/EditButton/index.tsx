@@ -10,23 +10,16 @@ import {
 
 import { IEditButtonProps } from "./types";
 
-import editIcon from "../../assets/SystemIcon.svg"; // Assuming 'SystemIcon.svg' is the generic edit icon
-
-/*type Option = {
-  label: string;
-  onClick: () => void;
-  iconSrc?: string;
-};*/
+import editIcon from "../../assets/SystemIcon.svg"; 
 
 const EditButton = ({ options, width, height }: IEditButtonProps) => {
   const [showOptions, setShowOptions] = useState(false);
 
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const optionsContainerRef = useRef<HTMLDivElement>(null); // Ref for the options container
+  const optionsContainerRef = useRef<HTMLDivElement>(null); 
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Close options if click is outside the button and outside the options container
       if (
         showOptions &&
         buttonRef.current &&

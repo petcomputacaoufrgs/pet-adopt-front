@@ -18,9 +18,10 @@ import PencilIcon from "../../assets/PencilIcon.svg";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Breadcrumb from "../../components/BreadCrumb";
+import { IManageAnimals } from "./types";
 
 
-const ManageAnimals = () => {
+const ManageAnimals = ({allowEdit} : IManageAnimals) => {
 
   /**
    * Estados que representam os filtros aplicados aos animais.
@@ -240,6 +241,7 @@ const ManageAnimals = () => {
             to={pet.to}
           />
 
+        {allowEdit &&
           <EditButtonWrapper>
             <EditButton
               width="34px"
@@ -250,6 +252,8 @@ const ManageAnimals = () => {
               ]}
             />
           </EditButtonWrapper>
+
+        }
         </PetCardWrapper>
       ))}
     </DogCardsContainer>

@@ -36,7 +36,7 @@ export const BackgroundDiv = styled.div<{$backgroundImage: string, $backgroundCo
   background-position: center;
   background-repeat: no-repeat; 
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1300px) {
      background-size: cover;
   } 
 

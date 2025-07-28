@@ -1,4 +1,3 @@
-// PasswordInput/index.tsx
 import React from 'react';
 
 import { PasswordContainer, StyledInput } from './styles';
@@ -36,7 +35,9 @@ function PasswordInput({
             fontSize: $fontSize,
             fontWeight: 700,
             color: '#553525',
+            marginBottom: '8px',
             opacity: isDisabled ? 0.3 : 1,
+            
           }}
         >
           {title}

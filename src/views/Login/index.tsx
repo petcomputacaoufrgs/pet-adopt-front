@@ -1,27 +1,25 @@
 import { useState } from "react";
 import axios from "axios";
 
-import { 
+import {
   Container,
   LoginContainer,
   Image,
-  LoginFormContainer, 
-  LoginForm, 
+  LoginFormContainer,
+  LoginForm,
   LoginFormTextContainer,
   LoginFormInputsContainer,
   LoginFormLinksContainer,
-  Input, 
-  TextContainer
-} from "./styles";
+  TextContainer,
+} from "./styles"; 
 
-import Header from "../../components/Header";
+import Header from "../../components/Header"; 
+import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
-import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import BasicInput from "../../components/BasicInput";
 import PasswordInputField from "../../components/PasswordInput";
-import { verify } from "crypto";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -35,7 +33,10 @@ const Login: React.FC = () => {
     setSuccessMessage("");
 
     try {
-      await axios.post("http://localhost:3002/api/v1/auth/login", { email, password });
+      await axios.post("http://localhost:3002/api/v1/auth/login", {
+        email,
+        password,
+      });
       setSuccessMessage("Login realizado com sucesso!");
     } catch (err) {
       console.error(err);
@@ -44,10 +45,10 @@ const Login: React.FC = () => {
   };
 
   const headerOptions = [
-    "Sobre Nós", 
-    "Animais Recém Adicionados", 
-    "Dicas", 
-    "Fale Conosco"
+    "Sobre Nós",
+    "Animais Recém Adicionados",
+    "Dicas",
+    "Fale Conosco",
   ];
 
   const handleHeaderAction = (selected: string) => {
@@ -56,15 +57,15 @@ const Login: React.FC = () => {
 
   return (
     <Container>
-      <Header 
-        options={headerOptions} 
-        optionsToAction={handleHeaderAction} 
-        color="rgba(0, 0, 0, 0)" 
-        Logo={loginPageLogo} 
-      />      
+      <Header
+        options={headerOptions}
+        optionsToAction={handleHeaderAction}
+        color="rgba(0, 0, 0, 0)"
+        Logo={loginPageLogo}
+      />
 
       <LoginContainer>
-        <Image src={LoginDog} alt="Dog do Login"/>
+        <Image src={LoginDog} alt="Cachorro da página de login" />
 
         <LoginFormContainer>
           <LoginForm onSubmit={handleLogin}>
@@ -114,13 +115,13 @@ const Login: React.FC = () => {
             </LoginFormInputsContainer>
 
             <LoginFormLinksContainer>
-              <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin}/>
+              <PrimarySecondaryButton width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin}/>
 
               <p>Esqueci minha senha</p>
               <TextContainer>
-                <div/>
+                <div />
                 <span>Ou</span>
-                <div/>
+                <div />
               </TextContainer>
               <p>Criar uma conta</p>
             </LoginFormLinksContainer>

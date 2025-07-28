@@ -1,42 +1,57 @@
 import styled from "styled-components";
 
+// -------------------------------------------------------------
+// Container Principal
+// -------------------------------------------------------------
 export const Container = styled.div`
-  font-family: 'Nunito Sans', sans-serif;
+  background-color: #fff6e8;
+  height: 100vh;
+
+  font-family: "Nunito Sans", sans-serif;
+
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background-color: #FFF6E8
-  `;
+`;
 
+// -------------------------------------------------------------
+// Contêiner de Login
+// -------------------------------------------------------------
 export const LoginContainer = styled.div`
+  overflow: hidden;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  overflow: hidden;
 `;
 
-export const Image = styled.img` 
+export const Image = styled.img`
   object-fit: cover;
 `;
 
+// -------------------------------------------------------------
+// Contêiner do Formulário de Login
+// -------------------------------------------------------------
 export const LoginFormContainer = styled.div`
+  color: #563526;
+  width: 100%;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-
-  color: #563526;
 `;
 
 export const LoginForm = styled.form`
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  width: 645px;
   height: 500px;
+  width: 645px; /* Usando px para um tamanho fixo, mas considere % para responsividade */
   gap: 32px;
 
-  p,h1,h3{
+  display: flex;
+  flex-direction: column;
+
+  p,
+  h1,
+  h3 {
     margin: 0;
   }
 `;
@@ -52,52 +67,54 @@ export const LoginFormInputsContainer = styled.div`
   flex-direction: column;
   gap: 22px;
 
-  h3{
+  h3 {
     margin-bottom: 12px;
   }
 
   h3:nth-of-type(2) {
-    margin-top: 32px; 
+    margin-top: 32px;
   }
+`;
+
+export const Input = styled.input`
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.8em; /* Usando em para tamanho de padding em relação à fonte */
+  width: 100%;
+
+  font-size: 1em; /* Usando em para tamanho de fonte */
 `;
 
 export const LoginFormLinksContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  p{
+  p {
     align-self: center;
   }
 
-  p:nth-of-type(1){
+  p:nth-of-type(1) {
     margin-top: 16px;
     margin-bottom: 12px;
   }
 
-  p:nth-of-type(2){
+  p:nth-of-type(2) {
     margin-top: 12px;
   }
 `;
 
-export const Input = styled.input`
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-`;
-
 export const TextContainer = styled.div`
+  gap: 8px;
+  margin-top: 12px; /* Mantido em px conforme sua regra para margens de elementos 'netos' */
+
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
-  marin-top: 12px;
 
-  div{
-    width: 100%;
+  div {
     border: none;
-    border-bottom: 1px solid #BCAFA9;
+    border-bottom: 1px solid #bcafa9;
     margin: 0;
+    width: 100%;
   }
 `;

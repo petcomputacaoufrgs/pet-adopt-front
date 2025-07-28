@@ -1,17 +1,7 @@
-// IMPORTS ============================================================
-// Os imports seguem a seguinte ordem:
-// 1. Contextos
-// 2. Bibliotecas
-// 3. Estilos
-// 4. Componentes
-// 5. Imagens
-
-// bibliotecas
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// estilos
 import { 
   Container,
   SignUpContainer,
@@ -21,10 +11,8 @@ import {
   SignUpFormTextContainer,
   SignUpFormInputsContainer,
   SignUpFormLinksContainer,
-  TextContainer 
 } from "./styles";
 
-// componentes
 import Header from "../../components/Header";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import BasicInput from "../../components/BasicInput";
@@ -34,7 +22,6 @@ import SearchBar from "../../components/SearchBar";
 import SignUpToggle from "../../components/SignUpToggle";
 import LargeInputField from "../../components/LargeInput";
 
-// imagenss
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 
@@ -97,13 +84,13 @@ const SignUp: React.FC = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (role=='membro' && (!name || !email || !password || !confirmPassword || !ngo)) {
+    if (role === 'membro' && (!name || !email || !password || !confirmPassword || !ngo)) {
       setError(true);
       setErrorMessage('Preencha todos campos obrigatórios');
       return;
     }
 
-    if (role=='ong' && (!name || !email || !password || !confirmPassword || !document || !instagramLink || !adoptionFormLink)) {
+    if (role === 'ong' && (!name || !email || !password || !confirmPassword || !document || !instagramLink || !adoptionFormLink)) {
       setError(true);
       setErrorMessage('Preencha todos campos obrigatórios');
       return;
