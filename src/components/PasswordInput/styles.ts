@@ -11,9 +11,9 @@ export const StyledInput = styled.input<{ $width: string, $fontSize: string, $pa
   width: ${({ $width }) => $width};
   font-size: ${({ $fontSize }) => $fontSize};
   box-sizing: border-box;
-  border: ${({ $error, $inputType }) => $error? "1px solid #FF3B30" : ($inputType == "Primário")? "1px solid #FFC99C" : "1px solid #BCAFA9"};
+  border: ${({ $error, $inputType }) => $error? "1px solid #FF3B30" : ($inputType === "Primário")? "1px solid #FFC99C" : "1px solid #BCAFA9"};
   color: #553525;
-  background-color: ${({ $inputType }) => ($inputType == "Primário")? "#FFF3DF" : "#FFFFFF"};
+  background-color: ${({ $inputType }) => ($inputType === "Primário")? "#FFF3DF" : "#FFFFFF"};
   padding-top: 8px;
   padding-bottom: 8px;
   padding-right: ${({ $paddingRight }) => $paddingRight};
@@ -26,17 +26,18 @@ export const StyledInput = styled.input<{ $width: string, $fontSize: string, $pa
 
   &:focus {
     outline: none;
-    border: ${({ $error, $inputType }) => $error? "1px solid #FF3B30" : ($inputType == "Primário")? "1px solid #FF9944" : "1px solid #755B4D"};
+    border: ${({ $error, $inputType }) => $error? "1px solid #FF3B30" : ($inputType === "Primário")? "1px solid #FF9944" : "1px solid #755B4D"};
   }
 
   &:
 `;
 
 export const PasswordContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+  width: 100%;  
   gap: 8px;
 
+  display: flex;
+  align-items: left;
+  flex-direction: column;
 
 `;

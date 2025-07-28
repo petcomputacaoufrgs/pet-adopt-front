@@ -4,8 +4,7 @@ import styled from "styled-components";
 export const GridContainer = styled.div`
   font-family: 'Nunito Sans', sans-serif;
   display: grid;
-  grid-template-areas:
-    "header";
+  grid-template-areas: "header";
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   min-height: 505px;

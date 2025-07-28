@@ -16,8 +16,10 @@ function RadioGroup({
   fontSize,
   name,
   options,
-  selectedValue,
   onChange,
+  userFillOptionLabel,
+  toggleIndex,
+  onSelectToggle
 }: RadioGroupProps) {
   return (
     <Container>
@@ -28,16 +30,19 @@ function RadioGroup({
         </Label>
       )}
 
-      {options.map(({ label, value }) => (
+      {options.map(({ label, value }, index) => (
         <RadioButton
           key={value}
           label={label}
           value={value}
           groupName={name}
-          checked={selectedValue === value}
+          checked={toggleIndex === index}
           onChange={onChange}
+          onSelectToggle={() => onSelectToggle(index)}
+          index={index}
           fontSize={fontSize}
           required={required}
+          userFillOption={userFillOptionLabel === label}
         />
       ))}
     </Container>

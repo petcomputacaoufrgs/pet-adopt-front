@@ -1,22 +1,22 @@
 import styled from "styled-components";
 
 // --- Base Button Styles ---
-const BaseButton = styled.button<{$width?: string;  $flex?: boolean;}>`
+const BaseButton = styled.button<{$width?: string; $maxHeight?: string  $flex?: boolean;}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 800;
-  font-size: 18px;
+  font-size: clamp(12px, 1vw, 18px);
   border-radius: 100px;
-  padding: 10px; 
+  padding: 10px 15px; 
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-width: ${(props) =>
+  width: ${(props) =>
     props.$flex ? "100%" : props.$width || "auto"}; 
   ${(props) => props.$flex && "flex: 1;"};
-  max-height: 48px;
-  min-height: 48px;
+  max-height: ${(props) => props.$maxHeight || "auto"};
+  min-height: 30px;
 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 
@@ -33,16 +33,14 @@ width: ${(props) =>
     background-color: #DEDEDE;
     color: #A6A6A6;
     border: none;
+    transform: scale(1.0);
+    cursor: default;
   }
 
   &:hover,
   &:active {
     cursor: pointer;
     transform: scale(1.05);
-  }
-
-  @media (max-width: 430px) {
-    font-size: 16px;
   }
 `;
 

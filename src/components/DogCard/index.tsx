@@ -15,8 +15,8 @@ import { ICard } from "./types";
 
 import Tag from "../Tags";
 
-import LocationPin from "../../assets/LocationPin.png"; // Assuming LocationPin is generic
-import PawPin from "../../assets/PawPin.png"; // Assuming PawPin is generic
+import LocationPin from "../../assets/LocationPin.png"; 
+import PawPin from "../../assets/PawPin.png"; 
 
 const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
   return (

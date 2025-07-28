@@ -1,4 +1,3 @@
-// PasswordInput/index.tsx
 import React from 'react';
 
 import { PasswordContainer, StyledInput } from './styles';
