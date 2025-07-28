@@ -509,14 +509,8 @@ const SignUp: React.FC = () => {
                 textColor="#553525"
                 onClick={() => currentUserActions(currentUserOptions[0])}
               >
-                {role === 'ong' && (
                 <h3 style={{ marginBottom: '69px' }}>Fazer Login</h3>
-                )}
-
-                {role === 'membro' && (
-                <h3>Fazer Login</h3>
-                )}
-
+                
               </ActionText>
           
             </SignUpFormLinksContainer>
