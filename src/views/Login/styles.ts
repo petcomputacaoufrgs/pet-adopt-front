@@ -34,10 +34,20 @@ export const Image = styled.img`
 export const LoginFormContainer = styled.div`
   color: #563526;
   width: 100%;
+  height: 100%;
 
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+
+  justify-content: flex-start;
   align-items: center;
+
+  overflow-y: scroll;
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+  display: none;
+  }
 `;
 
 export const LoginForm = styled.form`
@@ -45,6 +55,9 @@ export const LoginForm = styled.form`
   height: 500px;
   width: 645px; /* Usando px para um tamanho fixo, mas considere % para responsividade */
   gap: 32px;
+
+  margin-top: 22vh; /* Mantido em vh para responsividade */
+  margin-bottom: 22vh;
 
   display: flex;
   flex-direction: column;
