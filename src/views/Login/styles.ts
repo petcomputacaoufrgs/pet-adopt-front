@@ -22,6 +22,11 @@ export const LoginContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+
+  height: 100%;
+  min-height: 600px;
+
 `;
 
 export const Image = styled.img`
@@ -33,13 +38,14 @@ export const Image = styled.img`
 // -------------------------------------------------------------
 export const LoginFormContainer = styled.div`
   color: #563526;
-  width: 100%;
+  background-color: #fff6e8;
   height: 100%;
-
+  min-height: 600px;
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
 
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 
   overflow-y: scroll;
@@ -47,6 +53,10 @@ export const LoginFormContainer = styled.div`
   scrollbar-width: none;
   &::-webkit-scrollbar {
   display: none;
+  }
+
+  @media (max-width: 1199px){
+    justify-content: center;
   }
 `;
 
@@ -56,8 +66,7 @@ export const LoginForm = styled.form`
   width: 645px; /* Usando px para um tamanho fixo, mas considere % para responsividade */
   gap: 32px;
 
-  margin-top: 22vh; /* Mantido em vh para responsividade */
-  margin-bottom: 22vh;
+  margin: 0;
 
   display: flex;
   flex-direction: column;
@@ -67,6 +76,21 @@ export const LoginForm = styled.form`
   h3 {
     margin: 0;
   }
+
+  @media (max-width: 1199px){
+      margin: 0;
+      
+  }
+
+  @media (max-width: 680px){
+    width: 500px;
+  }
+
+  @media (max-width: 560px){
+    width: 90%;
+  }
+
+
 `;
 
 export const LoginFormTextContainer = styled.div`

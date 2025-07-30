@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import {
@@ -55,6 +55,19 @@ const Login: React.FC = () => {
     // Ação a ser definida
   };
 
+// CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
+  
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
+    
+  useEffect(() => {
+        const handleResize = () => {
+          setWindowSize(window.innerWidth);
+        }
+    
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <Container>
       <Header
@@ -65,7 +78,9 @@ const Login: React.FC = () => {
       />
 
       <LoginContainer>
-        <Image src={LoginDog} alt="Cachorro da página de login" />
+      {windowSize >= 1200 &&
+        <div style={{minHeight: "600px", maxWidth: "732.95px", backgroundImage: `url(${LoginDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
+        } 
 
         <LoginFormContainer>
           <LoginForm onSubmit={handleLogin}>

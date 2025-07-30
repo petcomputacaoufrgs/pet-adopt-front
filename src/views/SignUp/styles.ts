@@ -13,6 +13,13 @@ export const SignUpContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   overflow: hidden;
+  height: 100%;
+    
+  @media (max-width: 1199px){
+    justify-content: center;
+
+  }
+
 `;
 
 export const Image = styled.img` 
@@ -22,7 +29,7 @@ export const Image = styled.img`
 export const SignUpFormContainer = styled.div  <{role: string}>`
   display: flex;
   justify-content: center;
-  width: 100%;
+  flex-grow: 1;
   height: 100%;
   color: #563526;
 
@@ -32,6 +39,10 @@ export const SignUpFormContainer = styled.div  <{role: string}>`
   scrollbar-width: none;
   &::-webkit-scrollbar {
   display: none;
+  }
+
+  @media (max-width: 1199px){
+    width: 100%;
   }
   
 `;
@@ -50,6 +61,14 @@ export const SignUpForm = styled.form <{role: string}>`
 
   justify-content: flex-start;
   margin-top: 69px;
+
+  @media (max-width: 680px){
+    width: 500px;
+  }
+
+  @media (max-width: 560px){
+    width: 90%;
+  }
   
 `;
 
