@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {
     Container,
     Main,
+    PetProfileDiv,
     InfosAction,
     Buttons,
     BackButtonContainer,
@@ -18,6 +19,13 @@ import {
     Cards,
     Icon,
     SocialIconsDiv,
+    ViewerContainer,
+    ThumbnailGallery,
+    ThumbnailWrapper,
+    ThumbnailBadge,
+    Thumbnail,
+    MainImageContainer,
+    MainImage,
 } from "./styles";
 
 import { ChevronLeft, Info } from 'lucide-react';
@@ -46,7 +54,16 @@ import FacebookB from "../../assets/BrownFacebookPin.png";
 import YoutubeB from "../../assets/BrownYoutubePin.png";
 import TiktokB from "../../assets/BrownTiktokPin.png";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import { Button } from "@mui/material";
+
+//importando fotos para galeria
+import Image1 from "./images/mel.jpeg";
+import Image2 from "./images/mutano1.jpeg";
+import Image3 from "./images/mutano2.jpeg";
+import Image4 from "./images/salem1.jpeg";
+import Image5 from "./images/salem2.jpeg";
+import Image6 from "./images/salem2.jpeg";
+import Image7 from "./images/salem2.jpeg";
+
 
 type ModalAction = { tipo: "excluir"; petId: string } | null;
 
@@ -80,6 +97,16 @@ const PetProfile: React.FC = () => {
             twitter: "https://twitter.com",
         }
     }
+
+    const petImages = [
+        Image1,
+        Image2,
+        Image3,
+        Image4,
+        Image5,
+        Image6,
+        Image7,
+    ];
     
     const socialMediaLinks = [
         {
@@ -107,6 +134,8 @@ const PetProfile: React.FC = () => {
         href: "https://www.tiktok.com"
         }
     ];
+
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
     
     const headerOptions = [
     "Sobre Nós",
@@ -199,150 +228,198 @@ const PetProfile: React.FC = () => {
                     </ActionText>
                 </BackButtonContainer>
 
-                <InfosAction>
+                <PetProfileDiv>
 
-                    <Cards>
+                    <ViewerContainer>
+                        <ThumbnailGallery>
+                            {petImages.map((image, index) => {
+                                if (index < 4) {
+                                    return (
+                                    <Thumbnail
+                                        key={index}
+                                        src={image}
+                                        alt={`Thumbnail ${index + 1}`}
+                                        isActive={index === activeImageIndex}
+                                        index={index}
+                                        onClick={() => setActiveImageIndex(index)}
+                                    />
+                                    );
+                                }
+                                if (index === 4) {
+                                    const remaining = petImages.length - 4;
+                                    return (
+                                    <ThumbnailWrapper key={index}>
 
-                        <InfoCard>
+                                        <ThumbnailBadge>
+                                            <h1>+{remaining}</h1>
+                                        </ThumbnailBadge>
 
-                            <CardHeader>
-                                
-                                <Title>
-                                    <h1> {pet.name}</h1>
+                                        <Thumbnail
+                                        src={image}
+                                        alt={`Thumbnail ${index}`}
+                                        isActive={index === activeImageIndex}
+                                        index={index}
+                                        />
+                                    </ThumbnailWrapper>
+                                    );
+                                }
+                                return null;
+                                })}
+                        </ThumbnailGallery>
 
-                                    <TagsContainer>
+                        <MainImageContainer>
+                            <MainImage
+                                src={petImages[activeImageIndex]}
+                                alt="Pet Main"
+                            />
+                        </MainImageContainer>
+                    </ViewerContainer>
 
-                                        <Tag $text={pet.specie} type={"light"} fontSize={"14px"} />
+                    <InfosAction>
 
-                                        <Tag $text={pet.sex} type={"light"} fontSize={"14px"} />
+                        <Cards>
 
-                                        <Tag $text={pet.size} type={"light"} fontSize={"14px"} />
-                                        <Tag $text={pet.race} type={"light"} fontSize={"14px"} />
+                            <InfoCard>
 
-                                    </TagsContainer>
-                                </Title>
-
-                                <InfoContainer>
-
-                                    <InfoElement>
-                                        <CircleCheck size={20} color= "#FFFFFF" fill="#FF9944"/>
-                                        <h4> Disponivel </h4>
-                                    </InfoElement>
-
-                                    <InfoElement>
-                                        <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
-                                        <h4> {pet.age} Anos de Idade </h4>
-                                    </InfoElement>
-
-                                    <InfoElement>
-                                        <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
-                                        <h4> {pet.location} </h4>
-                                    </InfoElement>
-
-                                </InfoContainer>
-
-                            </CardHeader>
-
-                            <CardAbout>
-                                <h2> Sobre o Pet </h2>
-                                <h3> {pet.description} </h3>
-                            </CardAbout>
-
-                        </InfoCard>
-
-                        <InfoCard>
-
-                            <CardHeader>
-                                <Title>
-                                    <h2> {ong.name} </h2>
-                                </Title>
-
-                                <InfoContainer>
+                                <CardHeader>
                                     
-                                    <InfoElement>
-                                        <MapPin size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                        <h4> {ong.location} </h4>
-                                    </InfoElement>
+                                    <Title>
+                                        <h1> {pet.name}</h1>
 
-                                    <InfoElement>
-                                        <Mail size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                        <h4> {ong.email} </h4>
-                                    </InfoElement>
+                                        <TagsContainer>
 
-                                    <InfoElement>
-                                        <Phone size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                        <h4> {ong.contact} </h4>
-                                    </InfoElement>
+                                            <Tag $text={pet.specie} type={"light"} fontSize={"14px"} />
 
-                                </InfoContainer>
+                                            <Tag $text={pet.sex} type={"light"} fontSize={"14px"} />
 
-                                <h3> 
+                                            <Tag $text={pet.size} type={"light"} fontSize={"14px"} />
+                                            <Tag $text={pet.race} type={"light"} fontSize={"14px"} />
+
+                                        </TagsContainer>
+                                    </Title>
+
+                                    <InfoContainer>
+
+                                        <InfoElement>
+                                            <CircleCheck size={20} color= "#FFFFFF" fill="#FF9944"/>
+                                            <h4> Disponivel </h4>
+                                        </InfoElement>
+
+                                        <InfoElement>
+                                            <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
+                                            <h4> {pet.age} Anos de Idade </h4>
+                                        </InfoElement>
+
+                                        <InfoElement>
+                                            <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
+                                            <h4> {pet.location} </h4>
+                                        </InfoElement>
+
+                                    </InfoContainer>
+
+                                </CardHeader>
+
+                                <CardAbout>
+                                    <h2> Sobre o Pet </h2>
+                                    <h3> {pet.description} </h3>
+                                </CardAbout>
+
+                            </InfoCard>
+
+                            <InfoCard>
+
+                                <CardHeader>
+                                    <Title>
+                                        <h2> {ong.name} </h2>
+                                    </Title>
+
+                                    <InfoContainer>
+                                        
+                                        <InfoElement>
+                                            <MapPin size={20} color="#FFFFFF" fill = "#FF9944"/>
+                                            <h4> {ong.location} </h4>
+                                        </InfoElement>
+
+                                        <InfoElement>
+                                            <Mail size={20} color="#FFFFFF" fill = "#FF9944"/>
+                                            <h4> {ong.email} </h4>
+                                        </InfoElement>
+
+                                        <InfoElement>
+                                            <Phone size={20} color="#FFFFFF" fill = "#FF9944"/>
+                                            <h4> {ong.contact} </h4>
+                                        </InfoElement>
+
+                                    </InfoContainer>
+
+                                    <h3> 
+                                        
+                                        {ong.description.length > 280
+                                            ? ong.description.slice(0, 280) + "..."
+                                            : ong.description
+                                        } 
+
+                                        <span
+                                            style={{
+                                            color: "#563526",
+                                            fontWeight: 700,
+                                            cursor: "pointer",
+                                            marginLeft: 4,
+                                            textDecoration: "underline"
+                                            }}
+                                            onClick={() => navigate("/validateNgoProfile")}
+                                        >
+                                            Saber Mais
+                                        </span>
+                                        
+                                    </h3>
+                                        
+                                </CardHeader>  
                                     
-                                    {ong.description.length > 280
-                                        ? ong.description.slice(0, 280) + "..."
-                                        : ong.description
-                                    } 
+                                <SocialIconsDiv>
 
-                                    <span
-                                        style={{
-                                        color: "#563526",
-                                        fontWeight: 700,
-                                        cursor: "pointer",
-                                        marginLeft: 4,
-                                        textDecoration: "underline"
-                                        }}
-                                        onClick={() => navigate("/validateNgoProfile")}
-                                    >
-                                        Saber Mais
-                                    </span>
-                                    
-                                </h3>
-                                    
-                            </CardHeader>  
-                                
-                            <SocialIconsDiv>
+                                    <h3> Acompanhe a ONG nas Redes Sociais: </h3>
 
-                                <h3> Acompanhe a ONG nas Redes Sociais: </h3>
+                                    {socialMediaLinks.map((icon, index) => (
+                                        <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
+                                        <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
+                                        </a>
+                                    ))}
+                                </SocialIconsDiv>
 
-                                {socialMediaLinks.map((icon, index) => (
-                                    <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
-                                    <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
-                                    </a>
-                                ))}
-                            </SocialIconsDiv>
+                            </InfoCard>
 
-                        </InfoCard>
+                        </Cards>
+                        
+                        <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet.id)} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate("/editAnimal")} isDisabled={false}/>
+                        </Buttons>
 
-                    </Cards>
-                    
-                    <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
-                        <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet.id)} isDisabled={false}/>
-                        <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate("/editAnimal")} isDisabled={false}/>
-                    </Buttons>
-
-                    <ConfirmModal
-                        isOpen={modalAction !== null}
-                        title= "Tem certeza que deseja excluir este pet?"
-                        message="Esta ação não poderá ser desfeita. O pet será removido permanentemente do sistema."
-                        confirmLabel="Sim, excluir"
-                        cancelLabel="Cancelar"
-                        onConfirm={handleConfirm}
-                        onClose={() => setModalAction(null)}
-                    />
-
-                    {showToast && toastType && (
-                        <SuccessToast
-                            message= "Pet excluído com sucesso!"
-                            description= "O pet foi removido do sistema."
-                            onClose={() => {
-                                setToastVisible(false);
-                                setTimeout(() => setShowToast(false), 300);
-                            }}
-                            isVisible={toastVisible}
+                        <ConfirmModal
+                            isOpen={modalAction !== null}
+                            title= "Tem certeza que deseja excluir este pet?"
+                            message="Esta ação não poderá ser desfeita. O pet será removido permanentemente do sistema."
+                            confirmLabel="Sim, excluir"
+                            cancelLabel="Cancelar"
+                            onConfirm={handleConfirm}
+                            onClose={() => setModalAction(null)}
                         />
-                    )}
 
-                </InfosAction>
+                        {showToast && toastType && (
+                            <SuccessToast
+                                message= "Pet excluído com sucesso!"
+                                description= "O pet foi removido do sistema."
+                                onClose={() => {
+                                    setToastVisible(false);
+                                    setTimeout(() => setShowToast(false), 300);
+                                }}
+                                isVisible={toastVisible}
+                            />
+                        )}
+
+                    </InfosAction>
+                </PetProfileDiv>
 
             </Main>
 

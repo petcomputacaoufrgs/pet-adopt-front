@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
     width: 100%;
@@ -54,6 +54,15 @@ export const Main = styled.main`
         color: #755B4D;
     }
         
+`
+export const PetProfileDiv = styled.div`
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+
+    gap: 23px;
+
 `
 export const InfosAction = styled.div`
     width: 750px;
@@ -174,4 +183,84 @@ export const SocialIconsDiv = styled.div`
 
   gap: 16px
 
+`;
+
+// Interface for the Thumbnail's props
+interface ThumbnailProps {
+  isActive?: boolean;
+  index?: number;
+}
+
+export const ViewerContainer = styled.div`
+  display: flex;
+  gap: 16px; /* Space between thumbnails and the main image */
+`;
+
+export const ThumbnailGallery = styled.div`
+  display: flex;
+  height: 640px; /* Match the height of the main image */
+  flex-direction: column; /* Stacks thumbnails vertically */
+  justify-content: flex-start; /* Aligns thumbnails to the top */
+  gap: 26px;
+`;
+
+export const ThumbnailWrapper = styled.div`
+  position: relative;
+  width: 105px;
+  height: 107px;
+`;
+
+export const ThumbnailBadge = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 108px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.65); // cor escura semi-transparente
+  pointer-events: none;
+`;
+
+export const Thumbnail = styled.img<ThumbnailProps>`
+  width: 105px;
+  height: 107px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 20px;
+  border: 2px solid transparent; /* Default transparent border */
+  transition: border-color 0.3s;
+
+
+  ${props =>
+    props.index !== undefined && props.index < 4 
+    &&
+    css`
+      &:hover {
+        opacity: 0.8;
+      }
+  `}
+  
+  
+
+  /* Conditionally applies style if the 'isActive' prop is true */
+  ${props =>
+    props.isActive &&
+    props.index !== undefined &&
+    props.index < 4 &&
+    css`
+      border-color: #FF9944; /* Border color for the active image */
+    `}
+`;
+
+export const MainImageContainer = styled.div`
+  /* This container can be used for additional styling around the image */
+`;
+
+export const MainImage = styled.img`
+  width: 618px; /* Adjust width as needed */
+  height: 640px;
+  object-fit: cover;
+  border-radius: 12px;
 `;
