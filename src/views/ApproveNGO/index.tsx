@@ -97,7 +97,7 @@ const ApproveNGO = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [showNGOsFilter]);
+  }, [showNGOsFilter, currentPage, ngos.length]);
 
   /**
    * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda.

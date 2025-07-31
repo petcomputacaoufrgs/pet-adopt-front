@@ -4,7 +4,6 @@ import axios from "axios";
 import {
   Container,
   LoginContainer,
-  Image,
   LoginFormContainer,
   LoginForm,
   LoginFormTextContainer,

@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import {
   CloseButton,
   ContentContainer,
-  EditButtonWrapper,
   NGOCardsContainer,
-  NGOCardWrapper,
   Overlay,
   TopBarContainer,
   TopBarContent,
@@ -13,7 +11,6 @@ import {
 
 import BannerComponent from "../../components/BannerComponent";
 import Breadcrumb from "../../components/BreadCrumb";
-import EditButton from "../../components/EditButton";
 import Header from "../../components/Header";
 import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
@@ -21,10 +18,8 @@ import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import OngInfoCard from "../../components/OngInfoCard";
 import Footer from "../HomePage/6Footer";
 
-import DeleteIcon from "../../assets/DeleteIcon.svg";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
-import PencilIcon from "../../assets/PencilIcon.svg";
 
 const ManageNgo = () => {
 
@@ -90,7 +85,7 @@ const ManageNgo = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [showNGOsFilter]);
+  }, [showNGOsFilter, currentPage, ngos.length]);
 
   /**
    * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda.
