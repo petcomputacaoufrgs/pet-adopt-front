@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { 
   Container,
   SignUpContainer,
-  Image,
   SignUpFormContainer, 
   SignUpForm, 
   SignUpFormTextContainer,
@@ -24,7 +23,6 @@ import LargeInputField from "../../components/LargeInput";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
-import Login from "../Login";
 
 // VIEW ==============================================================================
 // O componente SignUp é responsável por renderizar a página de cadastro de usuários

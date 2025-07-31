@@ -2,7 +2,6 @@ import { BannerContainer } from "./styles";
 
 import Header from "../../../components/Header";
 import Info from "../../../components/Info";
-import OngInfoCard from "../../../components/OngInfoCard";
 
 import logo from "../../../assets/HorizontalLogo.png"
 
