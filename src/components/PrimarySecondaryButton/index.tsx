@@ -2,14 +2,14 @@ import { PrimaryButton, SecondaryButton } from "./styles";
 
 import {IButton} from "./types"
 
-const PrimarySecondaryButton = ({ width, buttonType = "Primário", isDisabled = false, highlighted = false, content, onClick, maxHeight,  $flex=false, $fontSize="clamp(12px, 1vw, 18px)"}: IButton) => {
+const PrimarySecondaryButton = ({ width, buttonType = "Primário", isDisabled = false, highlighted = false, content, onClick, height, $flex=false, paddingV, paddingH}: IButton) => {
     return ( 
       <>
 
         {(buttonType === "Primário") ? (
-          <PrimaryButton $width={width} onClick={onClick} disabled={isDisabled} $highlighted={highlighted} $maxHeight={maxHeight} $flex={$flex} $fontSize={$fontSize}>{content}</PrimaryButton>
+          <PrimaryButton $width={width} onClick={onClick} disabled={isDisabled} $highlighted={highlighted} $height={height} $flex={$flex} $paddingV={paddingV} $paddingH={paddingH}>{content}</PrimaryButton>
         ) : (
-          <SecondaryButton $width={width} onClick={onClick} disabled={isDisabled} $highlighted={highlighted} $maxHeight={maxHeight} $flex={$flex} $fontSize={$fontSize}>{content}</SecondaryButton>
+          <SecondaryButton $width={width} onClick={onClick} disabled={isDisabled} $highlighted={highlighted} $height={height} $flex={$flex} $paddingV={paddingV} $paddingH={paddingH}>{content}</SecondaryButton>
         )}
         
       </>

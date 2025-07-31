@@ -97,7 +97,7 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
 
       <InfoSection>
         
-         {NGO_INFO.map((info, i) => (
+        {NGO_INFO.map((info, i) => (
             <DataItem key={i}>
               <img src={NGO_ICONS[i]} alt="" />
               <p>{info}</p>
@@ -105,7 +105,7 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
           ))}
         
 
-         <SocialIconsDiv>
+        <SocialIconsDiv>
             {SOCIAL_MEDIA_LINKS.map(({ href, orange, brown, alt }, index) => (
                 <a key={index} href={href} target="_blank" rel="noopener noreferrer">
                     <Icon $orange={orange} $brown={brown} aria-label={alt} />
@@ -126,14 +126,18 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
             buttonType="Secundário"
             content="Recusar"
             onClick={onRejectClick}
-            maxHeight="40px"
+            height="40px"
+            paddingV=""
+            paddingH=""
             $flex
           />
           <PrimarySecondaryButton
             buttonType="Primário"
             content="Aceitar"
             onClick={onApproveClick}
-            maxHeight="40px"
+            height="40px"
+            paddingV=""
+            paddingH=""
             $flex
           />
         </NGOApproveButtonWrapper>
