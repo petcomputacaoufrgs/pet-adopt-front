@@ -1,11 +1,12 @@
 export interface IButton {
     width?: string;
-    maxHeight?: string;
+    height?: string;
     buttonType?: string;
     isDisabled?: boolean;
     highlighted?: boolean;
     content: React.ReactNode;
     onClick: any;
     $flex?: boolean;
-    $fontSize?: string;
+    paddingV?: string; 
+    paddingH?: string;
 }

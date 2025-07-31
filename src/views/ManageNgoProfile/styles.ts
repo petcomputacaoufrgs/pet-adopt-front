@@ -6,7 +6,6 @@ export const Container = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-
     font-family: 'Nunito Sans', sans-serif;
     color: #553525;
 `;
@@ -26,8 +25,13 @@ export const ProfileContainer = styled.div`
     width: 100%;
     height: 100%;
     display: flex;
+    justify-content: center;
     flex-direction: row;
     margin-top: 50px;
+
+    @media(max-width: 768px){
+        flex-direction: column;
+    }
 `;
 
 // -- Componentes de Card da ONG --
@@ -43,6 +47,13 @@ export const NgoCardContainer = styled.div`
     justify-content: center;
     margin-right: 24px;
     box-sizing: border-box;
+
+    @media(max-width: 768px){
+        margin: 0;
+        margin-bottom: 24px;
+        width: 100%;
+        padding: 8%;
+    }
 `;
 
 export const NgoNameContainer = styled.div`
@@ -63,14 +74,18 @@ export const TextsContainer = styled.div`
     h1 {
         margin: 0;
         font-weight: 800;
-        font-size: clamp(26px, 2vw, 32px);
+        font-size: clamp(18px, 2vw, 32px);
         margin-bottom: 2px;
+
+        @media(max-width: 660px){
+            font-size: 16px;
+        }
     }
 
     p {
         margin: 0;
-        font-size: 18px;
-        margin-bottom: 2px;
+        font-size: clamp(14px, 1vw, 18px);
+        margin-bottom: 2px;  
     }
 
     a {
@@ -79,15 +94,31 @@ export const TextsContainer = styled.div`
         font-weight: 800;
         color: #553525;
         text-decoration: none;
+
+        @media (max-width: 660px){
+            font-size: 8px;
+        }
+    }
+
+    @media(max-width: 768px){
+        align-items: center;
     }
 `;
 
 export const ButtonsContainer = styled.div`
-    height: 28%;
     display: flex;
     flex-direction: row;
     justify-content: center;
     gap: 8px;
+
+    @media(max-width: 1050px){
+        flex-direction: column;
+    }
+
+    @media(max-width: 768px){
+        flex-direction: row;
+        gap: 30px;
+    } 
 `;
 
 export const NgoInformationsContainer = styled.div`
@@ -102,12 +133,7 @@ export const NgoInformationsContainer = styled.div`
     padding: 32px 24px 32px 24px;
     box-sizing: border-box;
 
-    font-size: clamp(14px, 1vw, 18px);
     color: #755B4D;
-
-    @media (max-width: 1526px) {
-        font-size: 14px;
-    }
 `;
 
 export const InformationsContainer = styled.div`
@@ -117,10 +143,13 @@ export const InformationsContainer = styled.div`
     flex-direction: column;
     margin-bottom: 20px;
     box-sizing: border-box;
+    font-size: clamp(12px, 1vw, 18px);
 
     p {
         margin: 0;
         margin-bottom: 12px;
+        word-break: break-word;
+        white-space: normal;
     }
 `;
 
@@ -146,6 +175,16 @@ export const Icon = styled.div<{ $orange: string; $brown: string }>`
     &:hover {
         background-image: url(${props => props.$brown});
     }
+
+    @media (max-width: 1024px) {
+        width: 25px;
+        height: 25px;   
+    }
+
+    @media (max-width: 850px) {
+        width: 20px;
+        height: 20px;   
+    }
 `;
 
 // -- Componentes de Descrição da ONG --
@@ -160,6 +199,15 @@ export const NgoDescriptionContainer = styled.div`
     justify-content: center;
     padding: 3.2%;
     box-sizing: border-box;
+
+    @media (max-width: 1050px) {
+        width: 62%;
+    }
+
+    @media(max-width: 768px){
+        width: 100%;
+        padding: 8%;
+    }
 `;
 
 export const NgoTextsContainer = styled.div`
@@ -180,9 +228,11 @@ export const NgoTextsContainer = styled.div`
         margin-top: 24px;
         text-align: justify;
         font-size: clamp(10px, 1vw, 16px);
-    }
 
-    
+        @media(max-width: 1050px){
+            margin-top: 14px;
+        }
+    }    
 `;
 
 export const NgoFormsContainer = styled.div`
@@ -205,6 +255,10 @@ export const FormsContainer = styled.div`
     flex-direction: row;
     justify-content: center;
 
+    @media (max-width: 1050px) {
+        flex-direction: column;
+    }
+
     div {
         width: 24%;
         border: 1px solid #DEDEDE;
@@ -218,7 +272,14 @@ export const FormsContainer = styled.div`
         gap: 12px;
         padding: 2.7%;
         box-sizing: border-box;
-        font-size: clamp(12px, 1vw, 18px);
+        font-size: clamp(10px, 1vw, 16px);
+        white-space: nowrap;
+
+        @media (max-width: 1050px) {
+            width: 100%;
+            margin: 0;
+            margin-bottom: 12px;
+        }      
     }
 
     div:last-of-type{
