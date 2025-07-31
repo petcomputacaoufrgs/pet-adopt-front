@@ -1,10 +1,12 @@
 import React from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 import {
     Container,
     Main,
+    InfosAction,
+    Buttons,
     BackButtonContainer,
     InfoCard,
     CardHeader,
@@ -30,6 +32,8 @@ import Header from "../../components/Header";
 import Footer from "../HomePage/6Footer";
 import ActionText from "../../components/ActionText";
 import Tag from "../../components/Tags";
+import ConfirmModal from "../../components/ConfirmModal";
+import SuccessToast from "../../components/SuccessToast";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import DogForCard from "../../assets/HomePageCardDog.png";
@@ -41,39 +45,42 @@ import InstaB from "../../assets/BrownInstagramPin.png";
 import FacebookB from "../../assets/BrownFacebookPin.png";
 import YoutubeB from "../../assets/BrownYoutubePin.png";
 import TiktokB from "../../assets/BrownTiktokPin.png";
+import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
+import { Button } from "@mui/material";
 
-/* Dados temporários dos animais a serem exibidos na tela.
-* Idealmente, no futuro devem ser carregados do backend conforme a página atual.
-*/
-const pet = { 
-    image_url: DogForCard, 
-    flag: true, 
-    specie: "Cachorro", 
-    sex: "Fêmea", 
-    size: "Porte Médio", 
-    name: "Mel", 
-    race: "Vira-lata", 
-    age: "2", 
-    location: "São Paulo, SP", 
-    description: "Mel é uma cachorrinha muito carinhosa e brincalhona. Ela adora correr e brincar com outros animais. Está pronta para encontrar um lar cheio de amor e carinho."
-};
-
-const ong = {
-    name: "ONG Adoção Feliz",
-    location: "São Paulo, SP",
-    contact: "(11) 1234-5678",
-    email: "contato@amorpetong.org",
-    description: "O Cão Sem Dono é uma ONG (Organização Não Governamental), sem fins lucrativos, e que nasceu de um grande sonho do seu atual presidente: tirar o maior número possível de animais das ruas, dar tratamento adequado e integrá-los a famílias que lhes deem amor, carinho e uma vida digna. /n/nFoi criada informalmente em 2005 na cidade de São Paulo. Seu estatuto foi lançado e registrado em 23 de Abril de 2008, mesmo dia em que obteve seu CNPJ./n/nAtualmente a ONG mantém 2 abrigos (a sede fica em Itapecerica da Serra, SP) com 450 animais que são constantemente tratados por veterinários, alimentados com ração de boa qualidade, bebem água potável, dormem em abrigos especialmente construídos e são tratados com muito amor e carinho por todos os funcionários e voluntários que estão sempre visitando as instalações onde ficam os cães./n/nSua equipe é formada por Presidente, Diretores e 33 colaboradores entre tratadores, veterinários, auxiliares de veterinária, equipe do Bazar, equipe de resgate e a equipe do escritório.",
-    social_media: {
-        facebook: "https://www.facebook.com",
-        instagram: "https://www.instagram.com",
-        twitter: "https://twitter.com",
-    }
-}
-
+type ModalAction = { tipo: "excluir"; petId: string } | null;
 
 const PetProfile: React.FC = () => {
+    /* Dados temporários dos animais a serem exibidos na tela.
+    * Idealmente, no futuro devem ser carregados do backend conforme a página atual.
+    */
+    const pet = { 
+        id: "-1",
+        image_url: DogForCard, 
+        flag: true, 
+        specie: "Cachorro", 
+        sex: "Fêmea", 
+        size: "Porte Médio", 
+        name: "Mel", 
+        race: "Vira-lata", 
+        age: "2", 
+        location: "São Paulo, SP", 
+        description: "Mel é uma cachorrinha muito carinhosa e brincalhona. Ela adora correr e brincar com outros animais. Está pronta para encontrar um lar cheio de amor e carinho."
+    };
 
+    const ong = {
+        name: "ONG Adoção Feliz",
+        location: "São Paulo, SP",
+        contact: "(11) 1234-5678",
+        email: "contato@amorpetong.org",
+        description: "O Cão Sem Dono é uma ONG (Organização Não Governamental), sem fins lucrativos, e que nasceu de um grande sonho do seu atual presidente: tirar o maior número possível de animais das ruas, dar tratamento adequado e integrá-los a famílias que lhes deem amor, carinho e uma vida digna. /n/nFoi criada informalmente em 2005 na cidade de São Paulo. Seu estatuto foi lançado e registrado em 23 de Abril de 2008, mesmo dia em que obteve seu CNPJ./n/nAtualmente a ONG mantém 2 abrigos (a sede fica em Itapecerica da Serra, SP) com 450 animais que são constantemente tratados por veterinários, alimentados com ração de boa qualidade, bebem água potável, dormem em abrigos especialmente construídos e são tratados com muito amor e carinho por todos os funcionários e voluntários que estão sempre visitando as instalações onde ficam os cães./n/nSua equipe é formada por Presidente, Diretores e 33 colaboradores entre tratadores, veterinários, auxiliares de veterinária, equipe do Bazar, equipe de resgate e a equipe do escritório.",
+        social_media: {
+            facebook: "https://www.facebook.com",
+            instagram: "https://www.instagram.com",
+            twitter: "https://twitter.com",
+        }
+    }
+    
     const socialMediaLinks = [
         {
         orange: Insta,
@@ -115,12 +122,56 @@ const PetProfile: React.FC = () => {
     const navigate = useNavigate();
 
     const handleUserAction = (selected: string) => {
-        if (selected === "Manage Infors") navigate("/manageInfo");
+        if (selected === "Manage Infos") navigate("/manageInfo");
     };
 
-    const currentUserOptions = ["Manage Infors"];
+    const currentUserOptions = ["Manage Infos"];
 
     const currentUserActions = handleUserAction;
+
+    const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [modalAction, setModalAction] = useState<ModalAction>(null);
+    const [toastType, setToastType] = useState< "excluir" | null>(null);
+    const [showToast, setShowToast] = useState(false);
+    const [toastVisible, setToastVisible] = useState(false);
+
+    const resetToast = () => {
+        setToastVisible(false);
+
+        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+        if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
+
+        setShowToast(false);
+        setToastType(null);
+    };
+
+    // Abrir modal (e fechar toast se estiver aberto)
+    const abrirModal = (tipo: "excluir", petId: string) => {
+        resetToast();
+        setModalAction({ tipo, petId });
+    };
+
+    // Confirmar ação
+    const handleConfirm = () => {
+        if (!modalAction) return;
+        
+
+        resetToast();
+        setToastType(modalAction.tipo);
+        setShowToast(true);
+
+        showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+        hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+        fullCloseTimeoutRef.current = setTimeout(() => {
+        setShowToast(false);
+        setToastType(null);
+        }, 3500);
+
+        setModalAction(null);
+    };
 
     return (
         <Container>
@@ -148,119 +199,150 @@ const PetProfile: React.FC = () => {
                     </ActionText>
                 </BackButtonContainer>
 
-                <Cards>
+                <InfosAction>
 
-                    <InfoCard>
+                    <Cards>
 
-                        <CardHeader>
-                            
-                            <Title>
-                                <h1> {pet.name}</h1>
+                        <InfoCard>
 
-                                <TagsContainer>
-
-                                    <Tag $text={pet.specie} type={"light"} fontSize={"14px"} />
-
-                                    <Tag $text={pet.sex} type={"light"} fontSize={"14px"} />
-
-                                    <Tag $text={pet.size} type={"light"} fontSize={"14px"} />
-                                    <Tag $text={pet.race} type={"light"} fontSize={"14px"} />
-
-                                </TagsContainer>
-                            </Title>
-
-                            <InfoContainer>
-
-                                <InfoElement>
-                                    <CircleCheck size={20} color= "#FFFFFF" fill="#FF9944"/>
-                                    <h4> Disponivel </h4>
-                                </InfoElement>
-
-                                <InfoElement>
-                                    <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
-                                    <h4> {pet.age} Anos de Idade </h4>
-                                </InfoElement>
-
-                                <InfoElement>
-                                    <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
-                                    <h4> {pet.location} </h4>
-                                </InfoElement>
-
-                            </InfoContainer>
-
-                        </CardHeader>
-
-                        <CardAbout>
-                            <h2> Sobre o Pet </h2>
-                            <h3> {pet.description} </h3>
-                        </CardAbout>
-
-                    </InfoCard>
-
-                    <InfoCard>
-
-                        <CardHeader>
-                            <Title>
-                                <h2> {ong.name} </h2>
-                            </Title>
-
-                            <InfoContainer>
+                            <CardHeader>
                                 
-                                <InfoElement>
-                                    <MapPin size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                    <h4> {ong.location} </h4>
-                                </InfoElement>
+                                <Title>
+                                    <h1> {pet.name}</h1>
 
-                                <InfoElement>
-                                    <Mail size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                    <h4> {ong.email} </h4>
-                                </InfoElement>
+                                    <TagsContainer>
 
-                                <InfoElement>
-                                    <Phone size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                    <h4> {ong.contact} </h4>
-                                </InfoElement>
+                                        <Tag $text={pet.specie} type={"light"} fontSize={"14px"} />
 
-                            </InfoContainer>
+                                        <Tag $text={pet.sex} type={"light"} fontSize={"14px"} />
 
-                            <h3> 
+                                        <Tag $text={pet.size} type={"light"} fontSize={"14px"} />
+                                        <Tag $text={pet.race} type={"light"} fontSize={"14px"} />
+
+                                    </TagsContainer>
+                                </Title>
+
+                                <InfoContainer>
+
+                                    <InfoElement>
+                                        <CircleCheck size={20} color= "#FFFFFF" fill="#FF9944"/>
+                                        <h4> Disponivel </h4>
+                                    </InfoElement>
+
+                                    <InfoElement>
+                                        <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
+                                        <h4> {pet.age} Anos de Idade </h4>
+                                    </InfoElement>
+
+                                    <InfoElement>
+                                        <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
+                                        <h4> {pet.location} </h4>
+                                    </InfoElement>
+
+                                </InfoContainer>
+
+                            </CardHeader>
+
+                            <CardAbout>
+                                <h2> Sobre o Pet </h2>
+                                <h3> {pet.description} </h3>
+                            </CardAbout>
+
+                        </InfoCard>
+
+                        <InfoCard>
+
+                            <CardHeader>
+                                <Title>
+                                    <h2> {ong.name} </h2>
+                                </Title>
+
+                                <InfoContainer>
+                                    
+                                    <InfoElement>
+                                        <MapPin size={20} color="#FFFFFF" fill = "#FF9944"/>
+                                        <h4> {ong.location} </h4>
+                                    </InfoElement>
+
+                                    <InfoElement>
+                                        <Mail size={20} color="#FFFFFF" fill = "#FF9944"/>
+                                        <h4> {ong.email} </h4>
+                                    </InfoElement>
+
+                                    <InfoElement>
+                                        <Phone size={20} color="#FFFFFF" fill = "#FF9944"/>
+                                        <h4> {ong.contact} </h4>
+                                    </InfoElement>
+
+                                </InfoContainer>
+
+                                <h3> 
+                                    
+                                    {ong.description.length > 280
+                                        ? ong.description.slice(0, 280) + "..."
+                                        : ong.description
+                                    } 
+
+                                    <span
+                                        style={{
+                                        color: "#563526",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        marginLeft: 4,
+                                        textDecoration: "underline"
+                                        }}
+                                        onClick={() => navigate("/validateNgoProfile")}
+                                    >
+                                        Saber Mais
+                                    </span>
+                                    
+                                </h3>
+                                    
+                            </CardHeader>  
                                 
-                                {ong.description.length > 280
-                                    ? ong.description.slice(0, 280) + "..."
-                                    : ong.description
-                                } 
+                            <SocialIconsDiv>
 
-                                <span
-                                    style={{
-                                    color: "#563526",
-                                    fontWeight: 700,
-                                    cursor: "pointer",
-                                    marginLeft: 4,
-                                    textDecoration: "underline"
-                                    }}
-                                    onClick={() => navigate("/validateNgoProfile")}
-                                >
-                                    Saber Mais
-                                </span>
-                                
-                            </h3>
-                                
-                        </CardHeader>  
-                            
-                        <SocialIconsDiv>
+                                <h3> Acompanhe a ONG nas Redes Sociais: </h3>
 
-                            <h3> Acompanhe a ONG nas Redes Sociais: </h3>
+                                {socialMediaLinks.map((icon, index) => (
+                                    <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
+                                    <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
+                                    </a>
+                                ))}
+                            </SocialIconsDiv>
 
-                            {socialMediaLinks.map((icon, index) => (
-                                <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
-                                <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
-                                </a>
-                            ))}
-                        </SocialIconsDiv>
+                        </InfoCard>
 
-                    </InfoCard>
+                    </Cards>
+                    
+                    <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
+                        <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet.id)} isDisabled={false}/>
+                        <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate("/editAnimal")} isDisabled={false}/>
+                    </Buttons>
 
-                </Cards>
+                    <ConfirmModal
+                        isOpen={modalAction !== null}
+                        title= "Tem certeza que deseja excluir este pet?"
+                        message="Esta ação não poderá ser desfeita. O pet será removido permanentemente do sistema."
+                        confirmLabel="Sim, excluir"
+                        cancelLabel="Cancelar"
+                        onConfirm={handleConfirm}
+                        onClose={() => setModalAction(null)}
+                    />
+
+                    {showToast && toastType && (
+                        <SuccessToast
+                            message= "Pet excluído com sucesso!"
+                            description= "O pet foi removido do sistema."
+                            onClose={() => {
+                                setToastVisible(false);
+                                setTimeout(() => setShowToast(false), 300);
+                            }}
+                            isVisible={toastVisible}
+                        />
+                    )}
+
+                </InfosAction>
 
             </Main>
 

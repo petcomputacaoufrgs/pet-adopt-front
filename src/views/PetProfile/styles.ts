@@ -27,6 +27,7 @@ export const Main = styled.main`
 
     padding-left: 10.4166667vw; // 200px em vw utilizando 1920px como base
     padding-right: 10.4166667vw;
+    padding-bottom: 100px;
 
     h1{
         font-size: 2rem; // 32px em rem utilizando 16px como base
@@ -54,9 +55,24 @@ export const Main = styled.main`
     }
         
 `
+export const InfosAction = styled.div`
+    width: 750px;
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 32px
+`
+
+export const Buttons = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+`
 
 export const Cards = styled.div`
-    width: 100%;
+    width: 750px;
     display: flex;
     flex-direction: column;
 
@@ -73,13 +89,13 @@ export const BackButtonContainer = styled.div`
 `
 
 export const InfoCard = styled.div`
-    width: 38.9583333vw; // 750px em vw utilizando 1920px como base
+    width: 750px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
 
-    padding: 2.5vw; // 40px em vw utilizando 1920px como base
+    padding: 40px;
 
     gap: 32px;
 
