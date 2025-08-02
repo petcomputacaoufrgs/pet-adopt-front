@@ -9,6 +9,7 @@ import ValidateNgoProfile from "./views/ValidateNgoProfile";
 import { AnimalForm } from "./views/AnimalForm";
 import ApproveNGO from "./views/ApproveNGO";
 import ManageInfo from "./views/ManageInfo";
+import PetProfile from "./views/PetProfile";
 
 function App() {  
 
@@ -27,6 +28,7 @@ function App() {
           <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>}></Route>
           <Route path="/editAnimal" element={<AnimalForm animalData={true}/>}></Route>
           <Route path="/manageInfo" element={< ManageInfo/>}></Route>
+          <Route path="/petProfile" element={<PetProfile />} />
           {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
         </Routes>
       </BrowserRouter>
