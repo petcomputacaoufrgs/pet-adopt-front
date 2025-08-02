@@ -42,6 +42,7 @@ import ActionText from "../../components/ActionText";
 import Tag from "../../components/Tags";
 import ConfirmModal from "../../components/ConfirmModal";
 import SuccessToast from "../../components/SuccessToast";
+import GalleryModal from "../../components/GalleryModal";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import DogForCard from "../../assets/HomePageCardDog.png";
@@ -66,6 +67,7 @@ import Image7 from "./images/salem2.jpeg";
 
 
 type ModalAction = { tipo: "excluir"; petId: string } | null;
+type GalleryModalAction = { isOpen: boolean; imageIndex: number } | null;
 
 const PetProfile: React.FC = () => {
     /* Dados temporários dos animais a serem exibidos na tela.
@@ -202,6 +204,18 @@ const PetProfile: React.FC = () => {
         setModalAction(null);
     };
 
+    const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+    const [GalleryModalAction, setGalleryModalAction] = useState<GalleryModalAction>(null);
+
+    const handleIndicatorClick = (index: number) => {
+        setCurrentPhotoIndex(index);
+        // Aqui você também adicionaria a lógica para trocar a imagem exibida
+    };
+
+    const abrirGalleryModal = (isOpen: boolean, imageIndex: number) => {
+        setGalleryModalAction({isOpen, imageIndex})
+    };
+
     return (
         <Container>
 
@@ -259,10 +273,15 @@ const PetProfile: React.FC = () => {
                                         alt={`Thumbnail ${index}`}
                                         isActive={index === activeImageIndex}
                                         index={index}
+                                        onClick={() => {
+                                            abrirGalleryModal(true, currentPhotoIndex);
+                                            setCurrentPhotoIndex(index);
+                                        }}
                                         />
                                     </ThumbnailWrapper>
                                     );
                                 }
+                                
                                 return null;
                                 })}
                         </ThumbnailGallery>
@@ -270,9 +289,18 @@ const PetProfile: React.FC = () => {
                         <MainImageContainer>
                             <MainImage
                                 src={petImages[activeImageIndex]}
-                                alt="Pet Main"
                             />
                         </MainImageContainer>
+
+                        <GalleryModal
+                            isOpen={GalleryModalAction !== null}
+                            image={petImages[currentPhotoIndex]}
+                            onClose={() => setGalleryModalAction(null)}
+                            totalItems={petImages.length}
+                            activeIndex={currentPhotoIndex}
+                            onIndicatorClick={setCurrentPhotoIndex}
+                        />
+                        
                     </ViewerContainer>
 
                     <InfosAction>
