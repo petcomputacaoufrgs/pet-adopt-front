@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import { 
   Container,
   SignUpContainer,
-  Image,
   SignUpFormContainer, 
   SignUpForm, 
   SignUpFormTextContainer,
@@ -219,6 +218,22 @@ const SignUp: React.FC = () => {
 
   const currentUserActions = handleUserAction;
 
+
+  // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
+
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
+  
+  useEffect(() => {
+      const handleResize = () => {
+        setWindowSize(window.innerWidth);
+      }
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+
+
   // RENDERIZAÇÃO ============================================================
   
   return (
@@ -231,7 +246,11 @@ const SignUp: React.FC = () => {
       />      
 
       <SignUpContainer>
-        <Image src={LoginDog} alt="Dog do Login"/>
+
+        {windowSize >= 1200 &&
+        <div style={{maxWidth: "732.95px", backgroundImage: `url(${LoginDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
+        } 
+
 
         <SignUpFormContainer role={role}>
                   

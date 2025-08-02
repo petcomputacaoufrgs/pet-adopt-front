@@ -1,21 +1,27 @@
 import styled from "styled-components";
 
-export const HeaderWrapper = styled.div<{$showCompactMenu: boolean; $color: string;}>`
-  background-color: ${({ $showCompactMenu, $color }) => $showCompactMenu ? "white" : $color};
+export const HeaderWrapper = styled.div<{$showCompactMenu: boolean; $color: string; $shrink: boolean}>`
+  background-color: ${({ $showCompactMenu, $color, $shrink }) => ($showCompactMenu || $shrink) ? "white" : $color};
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   width: 100%;
   font-family: 'Nunito Sans', sans-serif;
+
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
 `;
 
-export const HeaderContainer = styled.div <{$backgroundColor: string}> `
+export const HeaderContainer = styled.div <{$backgroundColor: string; $shrink: boolean}> `
   display: flex;
+  position: sticky;
   justify-content: center;
   align-items: center;
   width: 80%;
-  min-height: 108px;
+  min-height: ${({$shrink}) => $shrink? "80px" : "108px"};
   gap: min(128px, 9vw);
   background-color: ${(props) => props.$backgroundColor};
 

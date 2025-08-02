@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -212,9 +212,38 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     }
   };
 
+  const [isScrolled, setScrolled] = useState(false);
+  const isScrolledRef = useRef(false);
+
+  useEffect(() => {
+    isScrolledRef.current = isScrolled;
+  }, [isScrolled]);
+  
+
+  const handleScroll = () => {
+    const scrollY = window.pageYOffset;
+    const currentlyScrolled = isScrolledRef.current;
+
+    if (!currentlyScrolled && scrollY > 60) {
+      setScrolled(true);
+    } else if (currentlyScrolled && scrollY < 10) {
+      setScrolled(false);
+    }
+  };
+
+  useEffect(() => {
+      window.addEventListener('scroll', handleScroll);
+
+      return () => {
+          window.removeEventListener('scroll', handleScroll);
+      };
+  }, []);
+
+
   return (
-    <HeaderWrapper $showCompactMenu={showCompactMenu} $color={color}>
-      <HeaderContainer $backgroundColor={"transparent"}>
+
+    <HeaderWrapper $shrink={isScrolled} $showCompactMenu={showCompactMenu} $color={color}>
+      <HeaderContainer $shrink={isScrolled} $backgroundColor={"transparent"}>
         <Image src={Logo} />
 
         <TextContainer>
