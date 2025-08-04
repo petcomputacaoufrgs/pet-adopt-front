@@ -10,50 +10,29 @@ export const CardContainer = styled.div`
 `;
 
 export const Image = styled.img`
-    @media (min-width: 768px) {
-        width: 362px;
-        height: 240px;
-    }
-
-    @media (max-width: 768px) {
-        width: 375px;
-        height: 210px;
-    } 
+  width: 100%;
+  max-width: 362px;
+  height: auto;
 `;
 
 export const CardInfoContainer = styled.div`
-    background-color: #FFFFFF;
-    border: 1px solid #DEDEDE;
-    border-radius: 20px;
-    margin-top: -25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    @media (min-width: 768px) {
-        width: 362px;
-        height: 292px;
-    }
-
-    @media (max-width: 768px) {
-        width: 375px;
-        height: 260px;
-    } 
+   background-color: #FFFFFF;
+  border: 1px solid #DEDEDE;
+  border-radius: 0 0 20px 20px;
+  margin-top: -25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5em;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
 `;
 
 export const CardCenteredContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-
-    @media (min-width: 768px) {
-        width: 282px;
-        height: 220px;
-    }
-
-    @media (max-width: 768px) {
-        width: 305px;
-        height: 196px;
-    }
+   display: flex;
+  flex-direction: column;
+  width: 100%;
 `;
 
 export const CardTagsContainer = styled.div`

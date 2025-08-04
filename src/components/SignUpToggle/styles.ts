@@ -27,7 +27,7 @@ export const ToggleButton = styled.button  <{$isActive:boolean}>`
   font-weight: 600;
 
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: 0.3s ease-in-out;
 
   /* Se a prop "isActive" for true, aplica os estilos de ATIVO */
   ${props =>

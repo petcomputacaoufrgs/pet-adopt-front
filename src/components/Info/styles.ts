@@ -25,7 +25,7 @@ export const InfoContent = styled.div <{$position:string}>`
     margin: 0;
     font-weight: 800;
     font-size: clamp(1.2rem, 3vw, 1.5em); /* Responsivo */
-    line-height: 0;
+    line-height: 1.2;
     color: #553525;
   }
 
@@ -39,22 +39,30 @@ export const InfoContent = styled.div <{$position:string}>`
     
 `;
 
-export const InfoContainer = styled.div <{$position:string}>`
+export const InfoContainer = styled.div<{$position: string}>`
   font-family: 'Nunito Sans', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: ${(props) => props.$position};
   justify-content: center;
+
   width: 100%;
   max-width: 617px;
-  max-height: 492px; 
-  padding: 7em; 
+  padding: 7em;
+
+  box-sizing: border-box;
 
   @media (max-width: 1200px) {
-    padding: 3em
-  } 
-  
+    padding: 3em;
+  }
+
+  @media (max-width: 768px) {
+    padding: 2em 1em;
+    max-width: 100%; /* para evitar corte lateral */
+  }
+
   @media (max-height: 700px) {
-    padding: 3em
-  } 
+    padding: 3em;
+  }
 `;
+

@@ -23,7 +23,7 @@ const Info = ({ subTitle, title, buttonTitle, to, position, children }: IInfo) =
       </InfoContent>
 
       <PrimarySecondaryButton
-        width={"275px"}
+        width={"clamp(100px, 60%, 275px)"}
         buttonType={"Primário"}
         isDisabled={false}
         content={buttonTitle}

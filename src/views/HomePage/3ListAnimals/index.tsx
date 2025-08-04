@@ -89,7 +89,7 @@ const ListAnimals = forwardRef<HTMLDivElement>((_props, ref) => {
       </DogContainter>
       
       <ButtonContainer>
-        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="5px" paddingV="10px"></PrimarySecondaryButton>
+        <PrimarySecondaryButton width="clamp(200px, 50%, 339px)" content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")}></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>
