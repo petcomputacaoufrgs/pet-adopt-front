@@ -7,17 +7,20 @@ export const CardContainer = styled.div<{ $backgroundColor: string }>`
   align-items: center;
   justify-content: center;
 
-  width: 40%;
-  height: 40vh;
+  width: 41%;
+  height: 60%;
+
+  box-sizing: border-box;
+  padding: 4%;
 
   background: ${(props) => props.$backgroundColor};
   border-radius: 50px;
 
   border: none;
 
-  @media (max-width: 1300px) {
+  @media (max-width: 1200px) {
     width: 60%;
-    height: 60vh;
+    height: 80%;
     border-radius: 30px;
   } 
   
@@ -34,8 +37,6 @@ export const Image = styled.img`
   max-width: 150px; 
   height: auto; 
   margin-left: 16px;
-
-
 `;
 
 

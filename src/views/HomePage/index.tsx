@@ -22,7 +22,6 @@ const HomeView = () => {
     <>
       <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo} />
       <Banner/>
-      <Actions />
       <About />
       <ListAnimals />
       <Dicas />
