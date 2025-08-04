@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ListContainer = styled.div`
   font-family: 'Nunito Sans', sans-serif;
-  dislay: flex;
+ display: flex;
   flex-direction: column;
   margin-top: 100px;
   margin-bottom: 100px;

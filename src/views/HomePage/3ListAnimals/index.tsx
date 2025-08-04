@@ -80,7 +80,7 @@ const Actions = () => {
       </DogContainter>
       
       <ButtonContainer>
-        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={1}></PrimarySecondaryButton>
+        <PrimarySecondaryButton width="clamp(200px, 50%, 339px)" content="Ver todos os Animais Disponíveis" onClick={1}></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>
