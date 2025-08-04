@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import BackgroundImage from "../../assets/PetRegisterBackground.png"
 
 export const Container = styled.div`
 

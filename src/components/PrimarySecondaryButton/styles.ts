@@ -1,22 +1,25 @@
 import styled from "styled-components";
 
 // --- Base Button Styles ---
-const BaseButton = styled.button<{$width?: string; $maxHeight?: string;  $flex?: boolean, $fontSize?: string}>`
+const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: boolean; $paddingV?: string; $paddingH?: string}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 800;
-  font-size: ${(props)=> props.$fontSize};
+  font-size: clamp(12px, 1vw, 18px);
   border-radius: 100px;
-  padding: 10px 15px; 
+  padding: ${(props) => props.$paddingV || 'auto'} ${(props) => props.$paddingH || 'auto'};;
+  box-sizing: border-box;
 
   display: flex;
   justify-content: center;
   align-items: center;
+  white-space:nowrap;
 
   width: ${(props) =>
     props.$flex ? "100%" : props.$width || "auto"}; 
   ${(props) => props.$flex && "flex: 1;"};
-  max-height: ${(props) => props.$maxHeight || "auto"};
-  min-height: 30px;
+
+  height: ${(props) => props.$height || 'auto'};
+  min-height: 34px;
 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 
@@ -41,6 +44,10 @@ const BaseButton = styled.button<{$width?: string; $maxHeight?: string;  $flex?:
   &:active {
     cursor: pointer;
     transform: scale(1.05);
+  }
+
+  @media(max-width: 1200px){
+    font-size: 10px;
   }
 `;
 
@@ -101,11 +108,5 @@ export const SecondaryButton = styled(BaseButton)<{$highlighted: boolean, $flex?
   &:active path {
     fill: white; 
     stroke: white;
-  }
-
-  @media (max-width: 430px) {
-    padding: 8px 26px;
-  }
-
-  
+  }  
 `;

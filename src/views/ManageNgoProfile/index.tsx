@@ -36,7 +36,7 @@ const SOCIAL_MEDIA_LINKS = [
 
 const NGO_INFO = [
     "São Pedro da Água Branca",
-    "contato@amorpetong.org",
+    "kamille.kpimentel@gmail.com.org",
     "(51) 98765-4321",
     "CPF/CNPJ"
 ];
@@ -66,7 +66,7 @@ const ManageNgoProfile = () => {
                     <NgoCardContainer>
                         <NgoNameContainer>
                             <TextsContainer>
-                                <p>Ong</p>
+                                {window.innerWidth > 768 && <p>Ong</p>}
                                 <h1>Nome da ONG</h1>
                                 <a href="#">Ver Site Institucional da ONG</a>
                             </TextsContainer>
@@ -74,16 +74,18 @@ const ManageNgoProfile = () => {
                             <ButtonsContainer>
                                 <PrimarySecondaryButton
                                     width="100%"
-                                    maxHeight="48px"
+                                    paddingV="8px"
+                                    paddingH="25px"
                                     buttonType="Secundário"
                                     content="Excluir ONG"
                                     onClick={() => {}}
                                 />
                                 <PrimarySecondaryButton
                                     width="100%"
-                                    maxHeight="48px"
+                                    paddingV="8px"
+                                    paddingH="25px"
                                     buttonType="Primário"
-                                    content="Editar ONG"
+                                    content="Excluir ONG"
                                     onClick={() => {}}
                                 />
                             </ButtonsContainer>
@@ -118,7 +120,9 @@ const ManageNgoProfile = () => {
                                         {formType}
                                         <PrimarySecondaryButton
                                             width="100%"
-                                            maxHeight="36px"
+                                            height="24px"
+                                            paddingV="0px"
+                                            paddingH="0px"
                                             buttonType="Secundário"
                                             content="Ver Formulário"
                                             onClick={() => {}}

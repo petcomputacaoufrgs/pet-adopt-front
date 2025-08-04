@@ -31,7 +31,8 @@ const ManageInfo: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState(false);
-  const [nameError, setNameError] = useState(false);
+  /*const [nameError, setNameError] = useState(false);*/
+
   useEffect(() => {
       setName("Amanda Silva");
       setEmail("amandasilva@gmail.com");
@@ -66,7 +67,7 @@ const ManageInfo: React.FC = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (role=='membro' && (!name || !email || !password || !confirmPassword)) {
+    if (role ==='membro' && (!name || !email || !password || !confirmPassword)) {
       setError(true);
       setErrorMessage('Preencha todos campos obrigatórios');
       return;
@@ -252,7 +253,7 @@ const ManageInfo: React.FC = () => {
                 $width="100%"
                 error={emailError}
                 errorMessage={emailErrorMessage} 
-                $readOnly={role=="admin3"?false:true}
+                $readOnly={role ==="admin3"?false:true}
               />
                 <PasswordInput
                   title="Senha"
