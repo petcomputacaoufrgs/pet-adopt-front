@@ -208,7 +208,8 @@ export const SocialContainer = styled.div`
     align-items: center;
 
     @media (max-width: 900px) {
-    flex-direction: column;
+      flex-direction: column;
+        align-items: flex-start;
     }
 `
 export const Icon = styled.div<{ $orange: string; $brown: string }>`
