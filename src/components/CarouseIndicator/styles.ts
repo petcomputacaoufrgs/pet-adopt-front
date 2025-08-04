@@ -5,13 +5,15 @@ export const IndicatorContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px; /* Espaçamento entre as barras */
+  gap: 00.4166667vw; // 8px em vw utilizando 1920px como base
 `;
 
 export const IndicatorBar = styled.div<{$isActive:boolean}>`
 
-  width: 12px;
-  height: 12px;
+  width: 00.625vw; /* 12px em vw utilizando 1920px como base */
+  min-width: 9px;
+  height: 00.625vw; /* 12px em vw utilizando 1920px como base */
+  min-height: 9px;
   cursor: pointer;
 
   background-color: #ffffffff;
@@ -23,6 +25,7 @@ export const IndicatorBar = styled.div<{$isActive:boolean}>`
     props.$isActive &&
     css`
       background-color: #FF9944;
-      width: 32px;
+      width: 01.6666667vw; // 32px em vw utilizando 1920px como base
+      min-width: 24px;
     `}
 `;

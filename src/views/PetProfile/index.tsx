@@ -16,6 +16,7 @@ import {
     InfoContainer,
     InfoElement,
     CardAbout,
+    SocialContainer,
     Cards,
     Icon,
     SocialIconsDiv,
@@ -59,11 +60,10 @@ import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 //importando fotos para galeria
 import Image1 from "./images/mel.jpeg";
 import Image2 from "./images/mutano1.jpeg";
-import Image3 from "./images/mutano2.jpeg";
-import Image4 from "./images/salem1.jpeg";
-import Image5 from "./images/salem2.jpeg";
-import Image6 from "./images/salem2.jpeg";
-import Image7 from "./images/salem2.jpeg";
+import Image3 from "./images/salem1.jpeg";
+import Image4 from "./images/salem2.jpeg";
+import Image5 from "./images/mel2.jpeg";
+import Image6 from "./images/mutano2.jpeg";
 
 
 type ModalAction = { tipo: "excluir"; petId: string } | null;
@@ -107,7 +107,6 @@ const PetProfile: React.FC = () => {
         Image4,
         Image5,
         Image6,
-        Image7,
     ];
     
     const socialMediaLinks = [
@@ -264,8 +263,12 @@ const PetProfile: React.FC = () => {
                                     return (
                                     <ThumbnailWrapper key={index}>
 
-                                        <ThumbnailBadge>
-                                            <h1>+{remaining}</h1>
+                                        <ThumbnailBadge 
+                                            onClick={() => {
+                                                abrirGalleryModal(true, currentPhotoIndex);
+                                                setCurrentPhotoIndex(index);
+                                        }}>
+                                            <h6>+{remaining}</h6>
                                         </ThumbnailBadge>
 
                                         <Thumbnail
@@ -273,10 +276,6 @@ const PetProfile: React.FC = () => {
                                         alt={`Thumbnail ${index}`}
                                         isActive={index === activeImageIndex}
                                         index={index}
-                                        onClick={() => {
-                                            abrirGalleryModal(true, currentPhotoIndex);
-                                            setCurrentPhotoIndex(index);
-                                        }}
                                         />
                                     </ThumbnailWrapper>
                                     );
@@ -404,16 +403,17 @@ const PetProfile: React.FC = () => {
                                         
                                 </CardHeader>  
                                     
-                                <SocialIconsDiv>
+                                <SocialContainer>
+                                    <h5> Acompanhe a ONG nas Redes Sociais: </h5>
+                                    <SocialIconsDiv>
 
-                                    <h3> Acompanhe a ONG nas Redes Sociais: </h3>
-
-                                    {socialMediaLinks.map((icon, index) => (
-                                        <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
-                                        <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
-                                        </a>
-                                    ))}
-                                </SocialIconsDiv>
+                                        {socialMediaLinks.map((icon, index) => (
+                                            <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
+                                            <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
+                                            </a>
+                                        ))}
+                                    </SocialIconsDiv>
+                                </SocialContainer>
 
                             </InfoCard>
 

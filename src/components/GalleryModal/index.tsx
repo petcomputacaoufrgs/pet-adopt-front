@@ -46,19 +46,19 @@ const GalleryModal: React.FC<GalleryModalProps> = ({
                             onClick={onClose}
                             aria-label="Fechar"
                         >
-                                <Close width={42} height={42}/>
+                                <Close width="100%" height="100%"/>
                         </CloseButtonStyled>                
                 </TopBar>
 
                     <NavigatorContainer>
                         <NavigatorButton onClick={decIndex}>
-                            <ChevronLeft color="#553525" width="50px" height="50px"/>
+                            <ChevronLeft color="#553525" width="100%" height="100%"/>
                         </NavigatorButton>
 
                         <Image src={image}/>
 
                         <NavigatorButton onClick={incIndex}>
-                            <ChevronRight color="#553525" width="50px" height="50px"/>
+                            <ChevronRight color="#553525" width="100%" height="100%"/>
                         </NavigatorButton>
                     </NavigatorContainer>
                     

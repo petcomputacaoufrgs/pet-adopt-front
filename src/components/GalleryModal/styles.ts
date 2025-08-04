@@ -2,14 +2,16 @@ import styled, {css} from 'styled-components';
 import { StyledCloseButtonProps } from '../CloseButton/types';
 
 export const GalleryContainer = styled.div `
-    width:944px;
-    height: 768px;
+    width: 49.1666667vw; // 944px em vw utilizando 1920px como base
+    min-width: 450px;
+    height: 40vw; // 768px em vw utilizando 1920px como base
+    min-height: 350px;
 
     display: flex;
     flex-direction: column;
 
     justify-content: center;
-    align-items:center;
+    align-items: center;
 `
 
 export const NavigatorContainer = styled.div `
@@ -18,13 +20,15 @@ export const NavigatorContainer = styled.div `
     justify-content: center;
     align-items: center;
 
-    gap: 48px;
+    gap: 02.5vw; // 48px em vw utilizando 1920px como base
 `
 
 export const NavigatorButton = styled.div `
     
-    width: 50px;
-    height: 50px;
+    width: 02.6041667vw; // 50px em vw utilizando 1920px como base
+    min-width: 25px;
+    height: 02.6041667vw; // 50px em vw utilizando 1920px como base
+    min-height: 25px;
 
     display: flex;
 
@@ -57,6 +61,13 @@ export const ModalWrapper = styled.div`
   background-color: transparent;
   color: rgba(86, 53, 38, 1);
   text-align: center;
+  justify-content: center;
+  align-items: center;
+
+  display: flex;              
+  flex-direction: column;    
+  justify-content: center;
+  align-items: center;
 `;
 
 export const Backdrop = styled.div`
@@ -81,15 +92,19 @@ export const BottomBar = styled.div`
 `;
 
 export const Image = styled.img`
-  width: 748px; /* Adjust width as needed */
-  height: 768px;
+  width: 38.9583333vw; // 748px em vw utilizando 1920px como base
+  min-width: 350px;
+  height: 40vw; // 768px em vw utilizando 1920px como base
+  min-height: 350px;
   object-fit: cover;
   border-radius: 12px;
 `;
 
 export const CloseButtonStyled = styled.button<StyledCloseButtonProps>`
-  width: 42px;
-  height: 42px;
+  width: 02.1875vw; // 42px em vw utilizando 1920px como base
+  min-width: 25px;
+  height: 02.1875vw; // 42px em vw utilizando 1920px como base
+  min-height: 25px;
   border-radius: 50%;
   background: transparent;
   border: none;
