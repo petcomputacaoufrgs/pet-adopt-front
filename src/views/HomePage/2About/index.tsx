@@ -3,13 +3,12 @@ import {AboutContainer, AboutDiv, BackgroundDiv} from "./styles";
 import Info from "../../../components/Info";
 
 import dogLines from "../../../assets/HomePageDogLines.png"
-import { forwardRef } from "react";
 
 
-const About = forwardRef<HTMLDivElement>((_props, ref) => {
+const About = () => {
   return (
 
-    <AboutContainer ref={ref}>
+    <AboutContainer>
 
       <AboutDiv $backgroundColor="#FFF6E8">
           
@@ -31,7 +30,7 @@ const About = forwardRef<HTMLDivElement>((_props, ref) => {
     </AboutContainer>
 
   );
-});
+};
 
 export default About;
 

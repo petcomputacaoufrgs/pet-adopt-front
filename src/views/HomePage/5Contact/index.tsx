@@ -8,11 +8,11 @@ import Lines from "../../../assets/HomePageLinesContact.png"
 import {forwardRef} from "react";
 
 
-const Contact = forwardRef<HTMLDivElement>((_props, ref) => {
+const Contact = () => {
     
     return (
         
-        <GridContainer ref={ref}>
+        <GridContainer>
 
             <Image1Div>
                 <Image1 src = {Gatinhos}/>
@@ -31,7 +31,7 @@ const Contact = forwardRef<HTMLDivElement>((_props, ref) => {
         </GridContainer>
     );
 
-});
+};
 
 
 export default Contact;

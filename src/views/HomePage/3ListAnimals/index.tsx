@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import {  ListContainer, 
           TextContainer, 
@@ -14,11 +14,8 @@ import DogForCard from "../../../assets/HomePageCardDog.png";
 import PrimarySecondaryButton from "../../../components/PrimarySecondaryButton";
 import { useNavigate } from "react-router-dom";
 
-interface IListAnimals {
-    ref?: React.Ref<HTMLDivElement>;
-}
 
-const ListAnimals = forwardRef<HTMLDivElement>((_props, ref) => {
+const ListAnimals = () => {
   // Array com 8 objetos pet
   const pets = [
     { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Mel", race: "Vira-lata", age: "2", location: "São Paulo, SP", to: "/pet1" },
@@ -62,7 +59,7 @@ const ListAnimals = forwardRef<HTMLDivElement>((_props, ref) => {
   
 
   return (
-    <ListContainer ref={ref}>
+    <ListContainer>
 
       <TextContainer>
         <TextTitle2>Não Perca os Animaizinhos</TextTitle2>
@@ -89,11 +86,11 @@ const ListAnimals = forwardRef<HTMLDivElement>((_props, ref) => {
       </DogContainter>
       
       <ButtonContainer>
-        <PrimarySecondaryButton width="clamp(200px, 50%, 339px)" content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")}></PrimarySecondaryButton>
+        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="5px" paddingV="10px"></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>
   );
-});
+};
 
 export default ListAnimals;
