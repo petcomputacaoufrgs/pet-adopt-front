@@ -22,7 +22,6 @@ import TiktokB from "../../../assets/BrownTiktokPin.png";
 
 const Footer = () => {
   const links1 = [
-    { label: "Institucional", href: "#" },
     { label: "Sobre Nós", href: "#" },
     { label: "Animais Recém Adicionados", href: "#" },
     { label: "Dicas", href: "#" },
@@ -32,7 +31,6 @@ const Footer = () => {
   ];
 
   const links2 = [
-    { label: "Login", href: "#" },
     { label: "Sou Administrador", href: "#" },
     { label: "Sou uma ONG", href: "#" },
     { label: "Sou Membro de ONG", href: "#" }
@@ -77,12 +75,14 @@ const Footer = () => {
 
         <FooterLinks>
           <FooterSection>
+            <p>Institucional</p>
             {links1.map((link, index) => (
               <a key={index} href={link.href}><p>{link.label}</p></a>
             ))}
           </FooterSection>
 
           <FooterSection>
+            <p>Login</p>
             {links2.map((link, index) => (
               <a key={index} href={link.href}><p>{link.label}</p></a>
             ))}
