@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
     width: 100%;
+    min-width: 360px;
     min-height: 100vh;  
     display: flex;
     flex-direction: column;
@@ -29,29 +30,49 @@ export const Main = styled.main`
     padding-right: 10.4166667vw;
     padding-bottom: 100px;
 
+    h1{ //titulo
+        font-size: 2rem; // 32px em rem utilizando 16px como base
+        font-weight: 700;
+        margin: 0;
+    }
+
+    h2{ //subtitulo
+        font-size: 1.125rem; // 18px em rem utilizando 16px como base
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    h3{ //trecho
+        font-size: 1rem; // 16px em rem utilizando 16px como base
+        font-weight: 400;
+        margin: 0;
+    }
+
+    h4{//infos
+        font-size: 1rem; // 16px em rem utilizando 16px como base
+        font-weight: 400;
+        margin: 0;
+        color: #755B4D;
+    }
+    
     h1{
         font-size: 2rem; // 32px em rem utilizando 16px como base
         font-weight: 700;
         margin: 0;
     }
 
-    h2{
-        font-size: 1.125rem; // 18px em rem utilizando 16px como base
-        font-weight: 700;
-        margin: 0;
-    }
-    
-    h3{
+    h5{//texto para social media
         font-size: 1rem; // 16px em rem utilizando 16px como base
         font-weight: 400;
         margin: 0;
+        flex: 1;
+        white-space: nowrap;
     }
 
-    h4{
-        font-size: 1rem; // 16px em rem utilizando 16px como base
-        font-weight: 400;
+    h6{ //texto da thumb
+        font-size: clamp(1rem, 01.6666667vw, 01.6666667vw); // 32px em rem utilizando 16px como base
+        font-weight: 700;
         margin: 0;
-        color: #755B4D;
     }
         
 `
@@ -63,9 +84,16 @@ export const PetProfileDiv = styled.div`
 
     gap: 23px;
 
+
+    @media (max-width: 1480px) {
+      flex-direction: column;
+      justify-content:center;
+      align-items: center;
+    }
+
 `
 export const InfosAction = styled.div`
-    width: 750px;
+    width: 100%; // 750px em vw utilizando 1920px como base
     display: flex;
 
     flex-direction: column;
@@ -81,7 +109,7 @@ export const Buttons = styled.div`
 `
 
 export const Cards = styled.div`
-    width: 750px;
+    width: 100%;
     display: flex;
     flex-direction: column;
 
@@ -98,7 +126,7 @@ export const BackButtonContainer = styled.div`
 `
 
 export const InfoCard = styled.div`
-    width: 750px;
+    width: 100%;
 
     display: flex;
     flex-direction: column;
@@ -128,6 +156,12 @@ export const TagsContainer = styled.div`
     display: flex;
     flex-direction: row;
     gap: 12px;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+    }
 `
 
 export const InfoContainer = styled.div`
@@ -145,6 +179,10 @@ export const InfoContainer = styled.div`
     border-bottom: 0.1px solid #DEDEDE;
 
     box-sizing: border-box;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+    }
 `
 
 export const InfoElement = styled.div`
@@ -154,10 +192,24 @@ export const InfoElement = styled.div`
 `
 
 export const CardAbout = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
-    width: 100%;
     gap: 12px;
+`
+export const SocialContainer = styled.div`
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 900px) {
+    flex-direction: column;
+    }
 `
 export const Icon = styled.div<{ $orange: string; $brown: string }>`
   width: 35px;
@@ -181,7 +233,7 @@ export const SocialIconsDiv = styled.div`
 
   align-items: center;
 
-  gap: 16px
+  gap: 16px;
 
 `;
 
@@ -193,39 +245,53 @@ interface ThumbnailProps {
 
 export const ViewerContainer = styled.div`
   display: flex;
-  gap: 16px; /* Space between thumbnails and the main image */
+  gap: 00.8333333vw; // 16px em vw utilizando 1920px como base
 `;
 
 export const ThumbnailGallery = styled.div`
   display: flex;
-  height: 640px; /* Match the height of the main image */
+  height: 33.3333333vw; /* 618px em vw utilizando 1920px como base */
+  min-height: 320px;
   flex-direction: column; /* Stacks thumbnails vertically */
   justify-content: flex-start; /* Aligns thumbnails to the top */
-  gap: 26px;
+  gap: 01.3541667vw; /* 26px */
+
 `;
 
 export const ThumbnailWrapper = styled.div`
   position: relative;
-  width: 105px;
-  height: 107px;
+  width: 05.46875vw; // 105px em vw utilizando 1920px como base
+  min-width: 50px;
+  height: 05.5729167vw; // 107px em vw utilizando 1920px como base
+  min-height: 50px;
 `;
 
 export const ThumbnailBadge = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  width: 108px;
-  height: 110px;
+  width: 05.625vw; // 108px em vw utilizando 1920px como base
+  min-width: 60px;
+  height: 05.7291667vw; // 110px em vw utilizando 1920px como base
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.65); // cor escura semi-transparente
-  pointer-events: none;
+  cursor: pointer;
+
+  font-size: 01.6666667vw; // 32px em vw utilizando 1920px como base
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+  }
 `;
 
 export const Thumbnail = styled.img<ThumbnailProps>`
-  width: 105px;
-  height: 107px;
+  width: 05.46875vw; // 105px em vw utilizando 1920px como base
+  min-width: 50px;
+  height: 05.5729167vw; // 107px em vw utilizando 1920px como base
+  min-height: 50px;
   object-fit: cover;
   cursor: pointer;
   border-radius: 20px;
@@ -259,8 +325,10 @@ export const MainImageContainer = styled.div`
 `;
 
 export const MainImage = styled.img`
-  width: 618px; /* Adjust width as needed */
-  height: 640px;
+  width: 32.1875vw; // 618px em vw utilizando 1920px como base
+  min-width: 320px;
+  height: 33.3333333vw; // 640px em vw utilizando 1920px como base
+  min-height: 320px;
   object-fit: cover;
   border-radius: 12px;
 `;
