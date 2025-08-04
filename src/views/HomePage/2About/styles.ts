@@ -11,6 +11,9 @@ export const AboutContainer = styled.div`
     @media (max-width: 1200px) {
       flex-direction: column;
     } 
+
+  scroll-margin-top: 80px;
+
 `;
 
 export const AboutDiv = styled.div<{ $backgroundColor: string }>`

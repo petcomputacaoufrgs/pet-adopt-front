@@ -8,7 +8,7 @@ import AnimalFormSection from "../../components/AnimalFormSection";
 
 import { IAnimalForm } from "./types";
 
-export function AnimalForm({animalData} : IAnimalForm) {
+export default function EditAnimal({animalData} : IAnimalForm) {
   let initialImages = [];
 
   if(animalData)
@@ -84,7 +84,7 @@ export function AnimalForm({animalData} : IAnimalForm) {
         setOng={setOng}
         images={images}
         setImages={setImages}
-        animalData={null} // ou algum objeto se estiver editando
+        animalData={animalData} // ou algum objeto se estiver editando
       />
 
       <Footer />

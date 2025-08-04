@@ -129,7 +129,7 @@ const Login: React.FC = () => {
             </LoginFormInputsContainer>
 
             <LoginFormLinksContainer>
-              <PrimarySecondaryButton width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin}/>
+              <PrimarySecondaryButton width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin} paddingH="5px" paddingV="10px"/>
 
               <p>Esqueci minha senha</p>
               <TextContainer>

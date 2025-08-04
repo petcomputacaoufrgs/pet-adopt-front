@@ -6,10 +6,12 @@ import imagemGatoFundo from "../../../assets/HomePageCat2.jpeg";
 import imagemCachorroFundo from "../../../assets/HomePageDog2.jpeg";
 import imagemPreenchimento from "../../../assets/HomePageLayer.png";
 
-const Dicas = () => {
+import {forwardRef} from "react";
+
+const Dicas = forwardRef<HTMLDivElement>((_props, ref) => {
 
   return (
-    <HintsContainer>
+    <HintsContainer ref={ref}>
 
         <InfoDiv>
           <div id="titleDiv">
@@ -39,7 +41,7 @@ const Dicas = () => {
     </HintsContainer>
 
   );
-};
+});
 
 
 export default Dicas;

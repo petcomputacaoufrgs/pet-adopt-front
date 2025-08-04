@@ -6,6 +6,9 @@ export const ListContainer = styled.div`
   flex-direction: column;
   margin-top: 100px;
   margin-bottom: 100px;
+
+  scroll-margin-top: 80px;
+
 `;
 
 export const TextContainer = styled.div`

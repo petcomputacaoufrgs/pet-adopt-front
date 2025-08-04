@@ -5,12 +5,14 @@ import ContactCard from "../../../components/ContactCard";
 import Gatinhos from "../../../assets/HomePageCat.png"
 import Lines from "../../../assets/HomePageLinesContact.png"
 
+import {forwardRef} from "react";
 
-const Contact = () => {
+
+const Contact = forwardRef<HTMLDivElement>((_props, ref) => {
     
     return (
         
-        <GridContainer>
+        <GridContainer ref={ref}>
 
             <Image1Div>
                 <Image1 src = {Gatinhos}/>
@@ -28,6 +30,8 @@ const Contact = () => {
 
         </GridContainer>
     );
-};
+
+});
+
 
 export default Contact;

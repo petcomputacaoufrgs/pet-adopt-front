@@ -7,10 +7,12 @@ import imagemGenericaMobile from "../../../assets/MobileGenericImage.png";
 import { useNavigate } from "react-router-dom";
 import ActionText from "../../../components/ActionText";
 
+
 const Actions = () => {
 
   const navigateTo = useNavigate();
  
+  
 
   return (
 

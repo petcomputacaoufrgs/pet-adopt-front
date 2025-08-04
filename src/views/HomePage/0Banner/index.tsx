@@ -1,32 +1,24 @@
 import { BannerContainer } from "./styles";
-
-import Header from "../../../components/Header";
 import Info from "../../../components/Info";
+import { useNavigate } from "react-router-dom";
 
-import logo from "../../../assets/HorizontalLogo.png"
+
+import React from "react";
 
 interface AboutProps {
   id?: string;
 }
 
-const Banner: React.FC<AboutProps> = ({ id }) => {
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
-
-
-  const handleHeaderAction = (selected: string) => {
-  } 
-
+const Banner: React.FC<AboutProps> = ({ id}) => {
 
   return (
     <BannerContainer>
 
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="rgba(0, 0, 0, 0)" Logo={logo} />
-
       <Info
         subTitle="Lorem ipsum dolor sit amet"
         title="Lorem ipsum dolor sit amet, consectetur adipiscing elit,"
-        buttonTitle="Vejas Nossos Animaizinhos"
-        to="/teste"
+        buttonTitle="Veja Nossos Animaizinhos"
+        to="/searchAnimals"
         position="flex-start"
       >
         <p>

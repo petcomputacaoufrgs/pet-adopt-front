@@ -3,20 +3,18 @@ import {AboutContainer, AboutDiv, BackgroundDiv} from "./styles";
 import Info from "../../../components/Info";
 
 import dogLines from "../../../assets/HomePageDogLines.png"
+import { forwardRef } from "react";
 
-interface AboutProps {
-  id?: string; // Tornar o id opcional
-}
 
-const About: React.FC<AboutProps> = ({ id })=> {
+const About = forwardRef<HTMLDivElement>((_props, ref) => {
   return (
 
-    <AboutContainer>
+    <AboutContainer ref={ref}>
 
       <AboutDiv $backgroundColor="#FFF6E8">
           
 
-        <Info subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" buttonTitle= "Ver Nossos Animaizinhos" to = "/teste" position="flex-start">
+        <Info subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" buttonTitle= "Ver Nossos Animaizinhos" to = "/searchAnimals" position="flex-start">
           
           <p>Temos como meta possibilitar o máximo de adoções responsáveis, visando impactar positivamente a vida dos animais errantes, proporcionando-lhes dignidade, e também ajudando a aliviar a superlotação de canis e ONGs.</p>
           
@@ -33,7 +31,7 @@ const About: React.FC<AboutProps> = ({ id })=> {
     </AboutContainer>
 
   );
-};
+});
 
 export default About;
 

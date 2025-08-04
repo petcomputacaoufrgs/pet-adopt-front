@@ -4,12 +4,14 @@ import { InfoContainer, InfoContent } from "./styles";
 import { IInfo } from "./types";
 
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
+import { useNavigate } from "react-router-dom";
 
 const Info = ({ subTitle, title, buttonTitle, to, position, children }: IInfo) => {
 
+  const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    console.log(`Botão clicado! Título: ${buttonTitle}`);
+    navigate(to);
   };
 
   return (
@@ -26,6 +28,8 @@ const Info = ({ subTitle, title, buttonTitle, to, position, children }: IInfo) =
         isDisabled={false}
         content={buttonTitle}
         onClick={handleButtonClick}
+        paddingH="5px"
+        paddingV="10px"
       />
     </InfoContainer>
   );

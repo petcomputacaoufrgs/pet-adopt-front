@@ -503,9 +503,9 @@ const SignUp: React.FC = () => {
             <SignUpFormLinksContainer>
 
               {role === 'membro' ? (
-                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isMemberDisabled}/>
+                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isMemberDisabled} paddingH="5px" paddingV="10px"/>
               ) : (
-                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isOngDisabled}/>
+                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isOngDisabled} paddingH="5px" paddingV="10px"/>
               )}
 
               <ActionText
