@@ -19,14 +19,43 @@ import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Breadcrumb from "../../components/BreadCrumb";
 import { IManageAnimals } from "./types";
+import { Pet } from "../../types/pets";
+import axios from 'axios';
 
 
-const ManageAnimals = ({allowEdit} : IManageAnimals) => {
+const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
+  // --- Estados e lógica do ManagePets ---
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   /**
    * Estados que representam os filtros aplicados aos animais.
    * Cada um armazena uma característica diferente usada para filtrar os pets.
    */
+  useEffect(() => {
+    fetchPets();
+  }, []);
+
+  const fetchPets = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get('http://localhost:3002/api/v1/pets');
+      setPets(response.data);
+      console.log(response.data[0].photos);
+    } catch (error) {
+      console.error(error);
+      if (axios.isAxiosError(error) && error.response) {
+        setErrorMessage(error.response.data.message || 'Erro ao carregar Pets.');
+      } else {
+        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // --- Estados dos filtros ---
   const [selectedSpecie, setSelectedSpecie] = useState<number>(-1);
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedAge, setSelectedAge] = useState<string>("");
@@ -37,24 +66,7 @@ const ManageAnimals = ({allowEdit} : IManageAnimals) => {
   const [breed, setBreed] = useState<string>("");
   const [selectedSex, setSelectedSex] = useState<string>("");
 
-  /**
-   * Dados temporários dos animais a serem exibidos na tela.
-   * Idealmente, no futuro devem ser carregados do backend conforme a página atual.
-   */
-  const pets = [
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Mel", race: "Vira-lata", age: "2", location: "São Paulo, SP", to: "/pet1" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Rex", race: "Pastor Alemão", age: "4", location: "Rio de Janeiro, RJ", to: "/pet2" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Pequeno", name: "Luna", race: "Poodle", age: "1", location: "Belo Horizonte, MG", to: "/pet3" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Médio", name: "Thor", race: "Bulldog", age: "3", location: "Curitiba, PR", to: "/pet4" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Grande", name: "Bela", race: "Labrador", age: "5", location: "Porto Alegre, RS", to: "/pet5" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Pequeno", name: "Max", race: "Chihuahua", age: "2", location: "Salvador, BA", to: "/pet6" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Nina", race: "Golden Retriever", age: "3", location: "Recife, PE", to: "/pet7" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Bob", race: "Rottweiler", age: "4", location: "Fortaleza, CE", to: "/pet8" }
-  ];
-
-
-  // Controla a exibição do filtro. Se for `true`, o filtro será ocultado (versões menores da tela) e o botão "filtros" deve ser apertado para mostrá-lo no lado da tela.
-  // Se for false ele aparecerá na tela mesmo.
+  // --- Layout e paginação ---
   const [hideAnimalFilter, setHideAnimalFilter] = useState(window.innerWidth < 1240);
 
 
@@ -102,7 +114,7 @@ const ManageAnimals = ({allowEdit} : IManageAnimals) => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [showAnimalFilterOnSide]);
+  }, [showAnimalFilterOnSide, pets.length, currentPage]);
 
   /**
    * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda.
@@ -137,143 +149,146 @@ const ManageAnimals = ({allowEdit} : IManageAnimals) => {
     }
   };
 
+  // Função utilitária para formatar strings
+  const formatString = (str?: any) => {
+    if (str === undefined || str === null) return "";
+    const clean = String(str).replace(/['"]/g, "").trim();
+    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  };
 
+  // --- JSX do componente ---
   return (
-<>
-  <Header
-    options={headerOptions}
-    optionsToAction={handleHeaderAction}
-    color="#FFF6E8"
-    Logo={logo}
-  />
+    <>
+      <Header
+        options={headerOptions}
+        optionsToAction={handleHeaderAction}
+        color="#FFF6E8"
+        Logo={logo}
+      />
 
-  <BannerComponent
-    limitWidthForImage="850px"
-    color="#F5ABA2"
-    title="Encontre seu novo melhor amigo!"
-    subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!"
-    imageUrl={dog}
-  />
+      <BannerComponent
+        limitWidthForImage="850px"
+        color="#F5ABA2"
+        title="Encontre seu novo melhor amigo!"
+        subTitle="Conheça aqui peludinhos cheios de amor, esperando por um lar para chamar de seu!"
+        imageUrl={dog}
+      />
 
-  <TopBarContainer>
-    <TopBarContent>
-      {hideAnimalFilter && (
-        <PrimarySecondaryButton
-          onClick={() => setShowAnimalFilterOnSide(true)}
-          content="Filtros"
-        />
+      <TopBarContainer>
+        <TopBarContent>
+          {hideAnimalFilter && (
+            <PrimarySecondaryButton
+              onClick={() => setShowAnimalFilterOnSide(true)}
+              content="Filtros"
+            />
+          )}
+
+          <Breadcrumb
+            items={[
+              { label: "Home", to: "/" },
+              { label: "Gerenciar Animais" },
+            ]}
+          />
+        </TopBarContent>
+      </TopBarContainer>
+
+      {showAnimalFilterOnSide && (
+        <Overlay>
+          <CloseButton onClick={() => setShowAnimalFilterOnSide(false)}>x</CloseButton>
+
+          <AnimalFilter
+            selectedSpecie={selectedSpecie}
+            setSelectedSpecie={setSelectedSpecie}
+            selectedState={selectedState}
+            setSelectedState={setSelectedState}
+            selectedAge={selectedAge}
+            setSelectedAge={setSelectedAge}
+            selectedSize={selectedSize}
+            setSelectedSize={setSelectedSize}
+            selectedSituation={selectedSituation}
+            setSelectedSituation={setSelectedSituation}
+            city={city}
+            setCity={setCity}
+            name={name}
+            setName={setName}
+            breed={breed}
+            setBreed={setBreed}
+            selectedSex={selectedSex}
+            setSelectedSex={setSelectedSex}
+            hasBorder={false}
+          />
+        </Overlay>
       )}
 
-      <Breadcrumb
-        items={[
-          { label: "Home", to: "/" },
-          { label: "Gerenciar Animais" },
-        ]}
-      />
-    </TopBarContent>
-  </TopBarContainer>
-
-  {showAnimalFilterOnSide && (
-    <Overlay>
-      <CloseButton onClick={() => setShowAnimalFilterOnSide(false)}>x</CloseButton>
-
-      <AnimalFilter
-        selectedSpecie={selectedSpecie}
-        setSelectedSpecie={setSelectedSpecie}
-        selectedState={selectedState}
-        setSelectedState={setSelectedState}
-        selectedAge={selectedAge}
-        setSelectedAge={setSelectedAge}
-        selectedSize={selectedSize}
-        setSelectedSize={setSelectedSize}
-        selectedSituation={selectedSituation}
-        setSelectedSituation={setSelectedSituation}
-        city={city}
-        setCity={setCity}
-        name={name}
-        setName={setName}
-        breed={breed}
-        setBreed={setBreed}
-        selectedSex={selectedSex}
-        setSelectedSex={setSelectedSex}
-
-        hasBorder={false}
-      />
-    </Overlay>
-  )}
-
-  <ContentContainer>
-    {!hideAnimalFilter && (
-      <AnimalFilter
-        selectedSpecie={selectedSpecie}
-        setSelectedSpecie={setSelectedSpecie}
-        selectedState={selectedState}
-        setSelectedState={setSelectedState}
-        selectedAge={selectedAge}
-        setSelectedAge={setSelectedAge}
-        selectedSize={selectedSize}
-        setSelectedSize={setSelectedSize}
-        selectedSituation={selectedSituation}
-        setSelectedSituation={setSelectedSituation}
-        city={city}
-        setCity={setCity}
-        name={name}
-        setName={setName}
-        breed={breed}
-        setBreed={setBreed}
-        selectedSex={selectedSex}
-        setSelectedSex={setSelectedSex}
-
-      />
-    )}
-
-    <DogCardsContainer>
-      {showedPets.map((pet, index) => (
-        <PetCardWrapper key={index}>
-          <DogCard
-            imageUrl={pet.image_url}
-            sex={pet.sex}
-            size={pet.size}
-            name={pet.name}
-            race={pet.race}
-            age={pet.age}
-            location={pet.location}
-            to={pet.to}
+      <ContentContainer>
+        {!hideAnimalFilter && (
+          <AnimalFilter
+            selectedSpecie={selectedSpecie}
+            setSelectedSpecie={setSelectedSpecie}
+            selectedState={selectedState}
+            setSelectedState={setSelectedState}
+            selectedAge={selectedAge}
+            setSelectedAge={setSelectedAge}
+            selectedSize={selectedSize}
+            setSelectedSize={setSelectedSize}
+            selectedSituation={selectedSituation}
+            setSelectedSituation={setSelectedSituation}
+            city={city}
+            setCity={setCity}
+            name={name}
+            setName={setName}
+            breed={breed}
+            setBreed={setBreed}
+            selectedSex={selectedSex}
+            setSelectedSex={setSelectedSex}
           />
+        )}
 
-        {allowEdit &&
-          <EditButtonWrapper>
-            <EditButton
-              width="34px"
-              height="34px"
-              options={[
-                { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
-                { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
-              ]}
-            />
-          </EditButtonWrapper>
+        <DogCardsContainer>
+          {showedPets.map((pet, index) => (
+            <PetCardWrapper key={index}>
+              <DogCard
+                imageUrl={ DogForCard}
+                sex={formatString(pet.sex)}
+                size={formatString(pet.size) ||""}
+                name={formatString(pet.name)}
+                race={formatString(pet.species)}
+                age={formatString(pet.age)}
+                location={formatString(`${pet.city}, ${pet.state}`)}
+                to={"/pet1}"}
+              />
 
-        }
-        </PetCardWrapper>
-      ))}
-    </DogCardsContainer>
-  </ContentContainer>
+              {allowEdit &&
+                <EditButtonWrapper>
+                  <EditButton
+                    width="34px"
+                    height="34px"
+                    options={[
+                      { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
+                      { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
+                    ]}
+                  />
+                </EditButtonWrapper>
+              }
+            </PetCardWrapper>
+          ))}
+        </DogCardsContainer>
+      </ContentContainer>
 
-  <PaginationButtons
-    currentPage={currentPage}
-    setCurrentPage={setCurrentPage}
-    itemsLength={pets.length}
-    itemsPerPage={petsPerPage}
-    buttonHeight="30px"
-    buttonWidth="30px"
-    containerHeight="160px"
-  />
+      <PaginationButtons
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        itemsLength={pets.length}
+        itemsPerPage={petsPerPage}
+        buttonHeight="30px"
+        buttonWidth="30px"
+        containerHeight="160px"
+      />
 
-  <Footer />
-</>
-  )
+      <Footer />
+    </>
+  );
 };
-
 
 export default ManageAnimals;
 
