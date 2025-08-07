@@ -35,29 +35,8 @@ import TiktokBrownIcon from "../../assets/BrownTiktokPin.png";
 import YoutubePin from "../../assets/OrangeYoutubePin.png"; 
 import YoutubeBrownPin from "../../assets/BrownYoutubePin.png"; 
 
-const SOCIAL_MEDIA_LINKS = [
-    { orange: InstagramPin, brown: InstagramBrownPin, alt: "Instagram", href: "https://www.instagram.com" },
-    { orange: FacebookIcon, brown: FacebookBrownIcon, alt: "Facebook", href: "https://www.facebook.com" },
-    { orange: YoutubePin, brown: YoutubeBrownPin, alt: "YouTube", href: "https://www.youtube.com" },
-    { orange: TiktokIcon, brown: TiktokBrownIcon, alt: "TikTok", href: "https://www.tiktok.com" }
-];
-
-
-const NGO_INFO = [
-    "São Pedro da Água Branca",
-    "contato@amorpetong.org",
-    "(51) 98765-4321",
-    "CPF/CNPJ"
-];
-
-const NGO_ICONS = [
-  Location,
-  Email,
-  Id,
-  Phone
-]
-
 const OngInfoCard: React.FC<OngInfoCardProps> = ({
+  ngo,
   showApproveButtons = false,
   showEditOptions = false,
   onApproveClick,
@@ -68,6 +47,53 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
 }) => {
   const [hovered, setHovered] = useState(false);
 
+  // Criar array com informações da ONG baseado nos dados recebidos
+  const ngoInfo = [
+    ngo?.city || "",
+    ngo?.email || "",
+    ngo?.phone || "",
+    ngo?.cnpj || ""
+  ];
+
+  const ngoIcons = [
+    Location,
+    Email,
+    Phone,
+    Id
+  ];
+
+  // Configurar links das redes sociais baseado nos dados da ONG
+  const socialMediaLinks = [
+    {
+      orange: InstagramPin,
+      brown: InstagramBrownPin,
+      alt: "Instagram",
+      href: ngo?.instagram,
+      available: !!ngo?.instagram
+    },
+    {
+      orange: FacebookIcon,
+      brown: FacebookBrownIcon,
+      alt: "Facebook",
+      href: ngo?.facebook,
+      available: !!ngo?.facebook
+    },
+    {
+      orange: YoutubePin,
+      brown: YoutubeBrownPin,
+      alt: "YouTube",
+      href: ngo?.youtube,
+      available: !!ngo?.youtube
+    },
+    {
+      orange: TiktokIcon,
+      brown: TiktokBrownIcon,
+      alt: "TikTok",
+      href: ngo?.tiktok,
+      available: !!ngo?.tiktok
+    }
+  ].filter(social => social.available); // Mostrar apenas redes sociais disponíveis
+
   return (
     <CardContainer
       onMouseEnter={() => setHovered(true)}
@@ -77,18 +103,26 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
     >
       <Cabecalho>
         <OngTextGroup>
-          <OngName>Nome da ONG</OngName>
-          <OngType>Tipo da ONG</OngType>
+          <OngName>{ngo?.name || "Nome não informado"}</OngName>
+          <OngType>ONG</OngType>
         </OngTextGroup>
 
-        {showEditOptions && (
+        {showEditOptions && ngo &&(
           <EditButtonWrapper>
             <EditButton
               width="34px"
               height="34px"
               options={[
-                { label: "Editar", onClick: onEditClick, iconSrc: PencilIcon },
-                { label: "Excluir", onClick: onDeleteClick, iconSrc: DeleteIcon },
+                { 
+                  label: "Editar", 
+                  onClick: () => onEditClick?.(ngo), 
+                  iconSrc: PencilIcon 
+                },
+                { 
+                  label: "Excluir", 
+                  onClick: () => onDeleteClick?.(ngo), 
+                  iconSrc: DeleteIcon 
+                },
               ]}
             />
           </EditButtonWrapper>
@@ -96,22 +130,22 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
       </Cabecalho>
 
       <InfoSection>
-        
-        {NGO_INFO.map((info, i) => (
-            <DataItem key={i}>
-              <img src={NGO_ICONS[i]} alt="" />
-              <p>{info}</p>
-            </DataItem>
-          ))}
-        
+        {ngoInfo.map((info, i) => (
+          info != "" && (<DataItem key={i}>
+            <img src={ngoIcons[i]} alt="" />
+            <p>{info}</p>
+          </DataItem>)
+        ))}
 
-        <SocialIconsDiv>
-            {SOCIAL_MEDIA_LINKS.map(({ href, orange, brown, alt }, index) => (
-                <a key={index} href={href} target="_blank" rel="noopener noreferrer">
-                    <Icon $orange={orange} $brown={brown} aria-label={alt} />
-                </a>
+        {socialMediaLinks.length > 0 && (
+          <SocialIconsDiv>
+            {socialMediaLinks.map(({ href, orange, brown, alt }, index) => (
+              <a key={index} href={href} target="_blank" rel="noopener noreferrer">
+                <Icon $orange={orange} $brown={brown} aria-label={alt} />
+              </a>
             ))}
-        </SocialIconsDiv>
+          </SocialIconsDiv>
+        )}
         
         <div>
           <ButtonLink href="#" link_type="primary" fontsize="15px">
@@ -120,12 +154,12 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
         </div>
       </InfoSection>
 
-      {showApproveButtons && (
+      {showApproveButtons && ngo &&(
         <NGOApproveButtonWrapper>
           <PrimarySecondaryButton
             buttonType="Secundário"
             content="Recusar"
-            onClick={onRejectClick}
+            onClick={() => onRejectClick?.(ngo)}
             height="40px"
             paddingV=""
             paddingH=""
@@ -134,7 +168,7 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
           <PrimarySecondaryButton
             buttonType="Primário"
             content="Aceitar"
-            onClick={onApproveClick}
+            onClick={() => onApproveClick?.(ngo)}
             height="40px"
             paddingV=""
             paddingH=""

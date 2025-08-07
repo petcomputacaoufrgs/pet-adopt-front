@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import {
   CloseButton,
@@ -21,28 +22,70 @@ import Footer from "../HomePage/6Footer";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
 
-const ManageNgo = () => {
+// Interface para definir a estrutura da ONG
+interface NGO {
+  id: string;
+  name: string;
+  city: string;
+  email: string;
+  phone: string;
+  cnpj: string;
+  instagram?: string;
+  facebook?: string;
+  youtube?: string;
+  tiktok?: string;
+  state?: string;
+}
 
+const ManageNgo = () => {
   /**
    * Estados que representam os filtros aplicados às ONGs.
    * Cada um armazena uma característica diferente usada para filtrar as ONGs.
    */
-
   const [selectedState, setSelectedState] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [name, setName] = useState<string>("");
 
+  // Estado para armazenar as ONGs
+  const [ngos, setNgos] = useState<NGO[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
-  // Controla a exibição do filtro. Se for `true`, o filtro será ocultado (versões menores da tela) e o botão "filtros" deve ser apertado para mostrá-lo no lado da tela.
-  // Se for false ele aparecerá na tela mesmo.
+  // Controla a exibição do filtro
   const [hideNGOFilter, sethideNGOFilter] = useState(window.innerWidth < 1240);
-
-
-  // Define quando o filtro deve se mostrado no lado da tela (modo mobile ao clicar no botão "filtros").
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
   /**
-   * Retorna a quantidade de pets que devem ser mostrados por página, de acordo com a largura atual da janela.
+   * Função para buscar todas as ONGs do backend
+   */
+  const fetchNGOs = async () => {
+  try {
+    setIsLoading(true);
+    setError("");
+    
+    const response = await axios.get('http://localhost:3002/api/v1/ngos');
+    
+    // Mapear os dados para garantir que tenham o campo 'id'
+    const mappedNgos = response.data.map((ngo: any) => ({
+      ...ngo,
+      id: ngo._id || ngo.id,
+    }));
+    
+    setNgos(mappedNgos);
+  } catch (err) {
+    
+    if (axios.isAxiosError(err) && err.response) {
+      setError(err.response.data?.message || 'Erro ao carregar ONGs.');
+    } else {
+      setError('Erro de conexão. Tente novamente mais tarde.');
+    }
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+  /**
+   * Retorna a quantidade de ONGs que devem ser mostrados por página, de acordo com a largura atual da janela.
    */
   const getNGOsPerPage = () => {
     if (window.innerWidth >= 1612) return 9;
@@ -50,26 +93,29 @@ const ManageNgo = () => {
     else return 5;
   };
 
-
-  const ngos = ["Isso aqui vai ser", "pego do back.", "Como são só os nomes,", "possivelmente não tem", "problema de pegar", "todas as ONGs que", "temos de uma vez"]
-
-  const [ngosPerPage, setPetsPerPage] = useState<number>(getNGOsPerPage());
+  const [ngosPerPage, setNgosPerPage] = useState<number>(getNGOsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Define os pets que serão mostrados com base na página atual
+  // Define as ONGs que serão mostradas com base na página atual
   const startIndexShowedNGOs = ngosPerPage * (currentPage - 1);
   const showedNGOs = ngos.slice(startIndexShowedNGOs, startIndexShowedNGOs + ngosPerPage);
 
+  /**
+   * Efeito para buscar ONGs quando o componente for montado
+   */
+  useEffect(() => {
+    fetchNGOs();
+  }, []);
 
   /**
-   * Atualiza o estado do layout e quantidade de pets por página ao redimensionar a tela.
+   * Atualiza o estado do layout e quantidade de ONGs por página ao redimensionar a tela.
    */
   useEffect(() => {
     const handleResize = () => {
       const isWindowSmall = window.innerWidth < 1240;
       const newNGOsPerPage = getNGOsPerPage();
 
-      setPetsPerPage(newNGOsPerPage);
+      setNgosPerPage(newNGOsPerPage);
       sethideNGOFilter(isWindowSmall);
 
       // Corrige página atual se necessário
@@ -120,98 +166,153 @@ const ManageNgo = () => {
     }
   };
 
+  /**
+   * Função para deletar uma ONG
+   */
+  const deleteNGO = async (ngoId: string) => {
+    try {  
+      await axios.delete(`http://localhost:3002/api/v1/ngos/${ngoId}`);
+      
+      // Remover a ONG da lista local
+      setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+      
+      // Ajustar página atual se necessário
+      const updatedNgos = ngos.filter(ngo => ngo.id !== ngoId);
+      if (ngosPerPage * currentPage > updatedNgos.length && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+      
+    } catch (err) {
+      
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data?.message || 'Erro ao deletar ONG.');
+      } else {
+        setError('Erro de conexão. Tente novamente mais tarde.');
+      }
+    }
+  };
+
+  /**
+   * Função para lidar com o clique em deletar
+   */
+  const handleDeleteClick = (ngo?: NGO) => {
+    if (!ngo) return;
+    
+    const confirmDelete = window.confirm(
+      `Tem certeza que deseja excluir a ONG "${ngo.name}"? Esta ação não pode ser desfeita.`
+    );
+    
+    if (confirmDelete) {
+      deleteNGO(ngo.id);
+    }
+  };
+
+  /**
+   * Função para lidar com o clique em editar
+   */
+  const handleEditClick = (ngo?: NGO) => {
+    if (!ngo) return;
+    
+    console.log("Editando ONG:", ngo); // Debug
+    // Aqui pode navegar para uma página de edição
+  };
 
   return (
-<>
-  <Header
-    options={headerOptions}
-    optionsToAction={handleHeaderAction}
-    color="#FFF6E8"
-    Logo={HorizontalLogo}
-  />
+    <>
+      <Header
+        options={headerOptions}
+        optionsToAction={handleHeaderAction}
+        color="#FFF6E8"
+        Logo={HorizontalLogo}
+      />
 
-  <BannerComponent
-    limitWidthForImage="850px"
-    color="#FFC99C"
-    title="Descubra as ONGs desse projeto incrível!"
-    subTitle="Venha conhecer as ONGs que fazem parte deste projeto inspirador e transformador!"
-    imageUrl={ManageNGOsCat}
-  />
+      <BannerComponent
+        limitWidthForImage="850px"
+        color="#FFC99C"
+        title="Descubra as ONGs desse projeto incrível!"
+        subTitle="Venha conhecer as ONGs que fazem parte deste projeto inspirador e transformador!"
+        imageUrl={ManageNGOsCat}
+      />
 
-  <TopBarContainer>
-    <TopBarContent>
-      {hideNGOFilter && (
-        <PrimarySecondaryButton
-          onClick={() => setshowNGOsFilter(true)}
-          content="Filtros"
-        />
+      <TopBarContainer>
+        <TopBarContent>
+          {hideNGOFilter && (
+            <PrimarySecondaryButton
+              onClick={() => setshowNGOsFilter(true)}
+              content="Filtros"
+            />
+          )}
+
+          <Breadcrumb
+            items={[
+              { label: "Home", to: "/" },
+              { label: "Gerenciar ONGs" },
+            ]}
+          />
+        </TopBarContent>
+      </TopBarContainer>
+
+      {showNGOsFilter && (
+        <Overlay>
+          <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
+
+          <NGOsFilter
+            ngos={ngos.map(ngo => ngo.name)} // Convertendo para array de strings para o filtro
+            selectedState={selectedState}
+            setSelectedState={setSelectedState}
+            city={city}
+            setCity={setCity}
+            name={name}
+            setName={setName}
+            hasBorder={false}
+          />
+        </Overlay>
       )}
 
-      <Breadcrumb
-        items={[
-          { label: "Home", to: "/" },
-          { label: "Gerenciar ONGs" },
-        ]}
-      />
-    </TopBarContent>
-  </TopBarContainer>
-
-  {showNGOsFilter && (
-    <Overlay>
-      <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
-
-      <NGOsFilter
-        ngos={ngos}
-        selectedState={selectedState}
-        setSelectedState={setSelectedState}
-        city={city}
-        setCity={setCity}
-        name={name}
-        setName={setName}
-
-        hasBorder={false}
-      />
-    </Overlay>
-  )}
-
-  <ContentContainer>
-    {!hideNGOFilter && (
-      <NGOsFilter
-        ngos={ngos}
-        selectedState={selectedState}
-        setSelectedState={setSelectedState}
-        city={city}
-        setCity={setCity}
-        name={name}
-        setName={setName}
-      />
-    )}
-
-    <NGOCardsContainer>
-      {showedNGOs.map((pet, index) => (
-        <OngInfoCard
-            key={index}
-            showEditOptions={true}
+      <ContentContainer>
+        {!hideNGOFilter && (
+          <NGOsFilter
+            ngos={ngos.map(ngo => ngo.name)}
+            selectedState={selectedState}
+            setSelectedState={setSelectedState}
+            city={city}
+            setCity={setCity}
+            name={name}
+            setName={setName}
           />
-      ))}
-    </NGOCardsContainer>
-  </ContentContainer>
+        )}
 
-  <PaginationButtons
-    currentPage={currentPage}
-    setCurrentPage={setCurrentPage}
-    itemsLength={ngos.length}
-    itemsPerPage={ngosPerPage}
-    buttonHeight="30px"
-    buttonWidth="30px"
-    containerHeight="160px"
-  />
+        <NGOCardsContainer>
+          {isLoading && <p>Carregando ONGs...</p>}
+          {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
+          {!isLoading && !error && ngos.length === 0 && <p>Nenhuma ONG encontrada.</p>}
+          
+          {!isLoading && !error && showedNGOs.map((ngo, index) => (
+            <OngInfoCard
+              key={ngo.id || index}
+              ngo={ngo}
+              showEditOptions={true}
+              onEditClick={handleEditClick}
+              onDeleteClick={handleDeleteClick}
+            />
+          ))}
+        </NGOCardsContainer>
+      </ContentContainer>
 
-  <Footer />
-</>
-  )
+      <PaginationButtons
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        itemsLength={ngos.length}
+        itemsPerPage={ngosPerPage}
+        buttonHeight="30px"
+        buttonWidth="30px"
+        containerHeight="160px"
+      />
+
+      <Footer />
+    </>
+  );
 };
-
 
 export default ManageNgo;
 
