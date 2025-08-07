@@ -72,17 +72,16 @@ const ManageNgo = () => {
     }));
     
     setNgos(mappedNgos);
-  } catch (err) {
-    
-    if (axios.isAxiosError(err) && err.response) {
-      setError(err.response.data?.message || 'Erro ao carregar ONGs.');
-    } else {
-      setError('Erro de conexão. Tente novamente mais tarde.');
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data?.message || 'Erro ao carregar ONGs.');
+      } else {
+        setError('Erro de conexão. Tente novamente mais tarde.');
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   /**
    * Retorna a quantidade de ONGs que devem ser mostrados por página, de acordo com a largura atual da janela.
