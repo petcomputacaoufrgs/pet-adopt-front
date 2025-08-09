@@ -31,6 +31,11 @@ const SignUp: React.FC = () => {
 
   // ESTADOS =================================================
 
+  interface NGO_ID {
+    id: string;
+    name: string;
+  }
+
   // utilizar um pull do BD aqui
   const ongOptions = ["Ong Cachorrada", 
                    "Ong Adoção", 
@@ -59,6 +64,9 @@ const SignUp: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState(false);
 
+  // Estado para armazenar as ONGs disponíveis
+  const [ngoOptions, setNgoOptions] = useState<NGO_ID[]>([]);
+
   // Estados específico da role Membro
   const [ngo, setNgo] = useState('');
 
@@ -75,7 +83,29 @@ const SignUp: React.FC = () => {
   const [temporaryHomeForm, setTemporaryHomeForm] = useState('');
   const [claimForm, setClaimForm] = useState('');
 
-  // FUNÇÕES DE VALIDAÇÃO ===========================================
+  // FUNÇÕES DE INTEGRAÇÂO COM BACKEND ===========================
+
+  const fetchNgoOptions = async () => {
+    try {
+      const response = await axios.get('http://localhost:3002/api/v1/ngos');
+      
+      // Pega só nome e ID da NGO
+      const mappedNgoOptions = response.data.map((ngo: any) => ({
+        id: ngo._id || ngo.id, // Lida com nomeclatura "_id" do MongoDB.
+        name: ngo.name
+      }));
+      
+      console.log("NGO options mapped:", mappedNgoOptions); // Debug
+      
+      setNgoOptions(mappedNgoOptions);
+    } catch (error) {
+      console.error('Error fetching NGO options:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNgoOptions();
+  }, []);
 
   const handleMemberSignUp = async () => {
     try {
@@ -152,9 +182,6 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    //Debug
-    console.log("Role selecionada:", role);
-
     if (role === 'membro') {
       await handleMemberSignUp();
     }
@@ -162,6 +189,8 @@ const SignUp: React.FC = () => {
       await handleOngSignUp();
     }
   }
+
+// FUNÇÕES DE VALIDAÇÃO ===========================================
   const verifyPassword = (password: string) => {
     if(password.trim() === '') {
       setPasswordError(false);
@@ -414,7 +443,7 @@ const SignUp: React.FC = () => {
 
               {role === 'membro' && (
                 <SearchBar 
-                  options={ongOptions}
+                  options={ngoOptions.map(ngo => ngo.name)}
                   width="100%"
                   fontSize="1rem"
                   titleFontSize="1rem"
