@@ -63,7 +63,7 @@ const ManageNgo = () => {
     setIsLoading(true);
     setError("");
     
-    const response = await axios.get('http://localhost:3002/api/v1/ngos');
+    const response = await axios.get('http://localhost:3002/api/v1/ngos/approved');
     
     // Mapear os dados para garantir que tenham o campo 'id'
     const mappedNgos = response.data.map((ngo: any) => ({

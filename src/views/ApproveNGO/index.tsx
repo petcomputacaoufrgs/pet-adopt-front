@@ -125,7 +125,7 @@ const ApproveNGO = () => {
     setIsLoading(true);
     setError("");
 
-    const response = await axios.delete(`http://localhost:3002/api/v1/ngos/${ngoId}`);
+    const response = await axios.patch(`http://localhost:3002/api/v1/ngos/${ngoId}/reject`);
 
     // Atualiza a lista de ONGs removendo a ONG rejeitada
     setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));

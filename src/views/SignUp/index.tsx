@@ -76,7 +76,7 @@ const SignUp: React.FC = () => {
 
   const fetchNgoOptions = async () => {
     try {
-      const response = await axios.get('http://localhost:3002/api/v1/ngos');
+      const response = await axios.get('http://localhost:3002/api/v1/ngos/approved');
       
       // Pega só nome e ID da NGO
       const mappedNgoOptions = response.data.map((ngo: any) => ({
