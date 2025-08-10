@@ -36,18 +36,6 @@ const SignUp: React.FC = () => {
     name: string;
   }
 
-  // utilizar um pull do BD aqui
-  const ongOptions = ["Ong Cachorrada", 
-                   "Ong Adoção", 
-                   "Ong Ajuda Animal", 
-                   "Ong Pet Lovers",
-                   "Ong Animais Felizes", 
-                   "Ong Vida Animal", 
-                   "Ong Amigos dos Animais", 
-                   "Ong Patinhas Solidárias", 
-                   "Ong Cão Feliz", 
-                   "Ong Gatos e Cães Unidos"];
-
   // Estados comum as duas roles (membro e ong)
   const [role, setRole] = useState('membro');
   const [name, setName] = useState('');
@@ -64,13 +52,14 @@ const SignUp: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState(false);
 
-  // Estado para armazenar as ONGs disponíveis
+  // Estados para armazenar as ONGs disponíveis e o texto de busca
   const [ngoOptions, setNgoOptions] = useState<NGO_ID[]>([]);
+  const [ngoSearchText, setNgoSearchText] = useState('');
 
-  // Estados específico da role Membro
-  const [ngo, setNgo] = useState('');
+  // Estado específico da role Membro
+  const [ngo, setNgo] = useState<NGO_ID | null>(null); 
 
-  // Estados específico da role Ong
+  // Estados específicos da role Ong
   const [document, setDocument] = useState('');
   const [description, setDescription] = useState('');
   const [phone, setPhone] = useState('');
@@ -95,8 +84,6 @@ const SignUp: React.FC = () => {
         name: ngo.name
       }));
       
-      console.log("NGO options mapped:", mappedNgoOptions); // Debug
-      
       setNgoOptions(mappedNgoOptions);
     } catch (error) {
       console.error('Error fetching NGO options:', error);
@@ -109,13 +96,13 @@ const SignUp: React.FC = () => {
 
   const handleMemberSignUp = async () => {
     try {
-      await axios.post('http://localhost:3002/api/v1/auth/signup', {
+      await axios.post('http://localhost:3002/api/v1/auth/signup/regular', {
         name,
         email,
         password,
         confirmPassword,
         role,
-        ngo,
+        ngoId: ngo?.id
       });
       setSuccessMessage('Cadastro realizado com sucesso!');
     } catch (err) {
@@ -130,22 +117,28 @@ const SignUp: React.FC = () => {
 
   const handleOngSignUp = async () => {
     try {
-      await axios.post('http://localhost:3002/api/v1/ngos', {
-        name,
-        email,
-        password,
-        confirmPassword,
-        document,
-        description,
-        phone,
-        city,
-        website,
-        instagram,
-        facebook,
-        adoptionForm,
-        sponsorshipForm,
-        temporaryHomeForm,
-        claimForm,
+      await axios.post('http://localhost:3002/api/v1/auth/signup/ngo', {
+        user: {
+          name,
+          email,
+          password,
+          confirmPassword
+        },
+        ngo: {
+          name,
+          email,
+          document,
+          description,
+          phone,
+          city,
+          website,
+          instagram,
+          facebook,
+          adoptionForm,
+          sponsorshipForm,
+          temporaryHomeForm,
+          claimForm,
+        }
       });
       setSuccessMessage('Cadastro realizado com sucesso!');
     } catch (err) {
@@ -287,6 +280,30 @@ const SignUp: React.FC = () => {
   const currentUserOptions = ["Fazer Login"];
 
   const currentUserActions = handleUserAction;
+
+  // Função para atualizar quando uma ONG é selecionada
+  const handleNgoSelection = (searchText: string) => {
+    setNgoSearchText(searchText);
+    
+    // Busca por correspondência exata
+    const exactMatch = ngoOptions.find(option => option.name === searchText);
+    
+    if (exactMatch) {
+      setNgo(exactMatch);
+    } else {
+      // Se não há correspondência exata, busca por correspondência parcial
+      const partialMatch = ngoOptions.find(option => 
+        option.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+      
+      if (partialMatch && searchText.length > 0) {
+        // Não seleciona automaticamente, mas mantém como opção
+        setNgo(null);
+      } else {
+        setNgo(null);
+      }
+    }
+  };
 
 
   // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
@@ -441,7 +458,7 @@ const SignUp: React.FC = () => {
                 />
               )}
 
-              {role === 'membro' && (
+             {role === 'membro' && (
                 <SearchBar 
                   options={ngoOptions.map(ngo => ngo.name)}
                   width="100%"
@@ -450,8 +467,8 @@ const SignUp: React.FC = () => {
                   placeholder="Encontre ou selecione uma ONG"
                   title="Selecione sua ONG"
                   required={true}
-                  query={ngo}
-                  setQuery={setNgo}
+                  query={ngoSearchText}
+                  setQuery={handleNgoSelection}
                   readOnly={false}
                 />
               )}
