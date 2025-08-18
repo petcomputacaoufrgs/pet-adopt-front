@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { ngoService, authService } from "../../services";
+import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 
 import { 
@@ -76,7 +77,7 @@ const SignUp: React.FC = () => {
 
   const fetchNgoOptions = async () => {
     try {
-      const response = await axios.get('http://localhost:3002/api/v1/ngos/approved');
+      const response = await ngoService.getApproved();
       
       // Pega só nome e ID da NGO
       const mappedNgoOptions = response.data.map((ngo: any) => ({
@@ -96,7 +97,7 @@ const SignUp: React.FC = () => {
 
   const handleMemberSignUp = async () => {
     try {
-      await axios.post('http://localhost:3002/api/v1/auth/signup/regular', {
+      await authService.signupRegular({
         name,
         email,
         password,
@@ -107,7 +108,7 @@ const SignUp: React.FC = () => {
       setSuccessMessage('Cadastro realizado com sucesso!');
     } catch (err) {
       console.error(err);
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
       } else {
         setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
@@ -117,7 +118,7 @@ const SignUp: React.FC = () => {
 
   const handleOngSignUp = async () => {
     try {
-      await axios.post('http://localhost:3002/api/v1/auth/signup/ngo', {
+      await authService.signupNgo({
         user: {
           name,
           email,
@@ -143,7 +144,7 @@ const SignUp: React.FC = () => {
       setSuccessMessage('Cadastro realizado com sucesso!');
     } catch (err) {
       console.error(err);
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
       } else {
         setErrorMessage('Erro de conexão. Tente novamente mais tarde.');

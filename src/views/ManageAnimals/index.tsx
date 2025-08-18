@@ -20,7 +20,8 @@ import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Breadcrumb from "../../components/BreadCrumb";
 import { IManageAnimals } from "./types";
 import { Pet } from "../../types/pets";
-import axios from 'axios';
+import { petService } from "../../services";
+import { AxiosError } from "axios";
 
 
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
@@ -40,12 +41,12 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const fetchPets = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get('http://localhost:3002/api/v1/pets');
+      const response = await petService.getAll();
       setPets(response.data);
       console.log(response.data[0].photos);
     } catch (error) {
       console.error(error);
-      if (axios.isAxiosError(error) && error.response) {
+      if (error instanceof AxiosError && error.response) {
         setErrorMessage(error.response.data.message || 'Erro ao carregar Pets.');
       } else {
         setErrorMessage('Erro de conexão. Tente novamente mais tarde.');

@@ -42,7 +42,7 @@ import Footer from "../HomePage/6Footer";
 import ActionText from "../../components/ActionText";
 import Tag from "../../components/Tags";
 import ConfirmModal from "../../components/ConfirmModal";
-import SuccessToast from "../../components/SuccessToast";
+import SuccessToast from "../../components/Toast";
 import GalleryModal from "../../components/GalleryModal";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";

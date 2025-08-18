@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import { authService } from "../../services";
+import { AxiosError } from "axios";
 import HorizontalLogo from "../../assets/HorizontalLogo.png"
 
 import Header from "../../components/Header";
@@ -7,7 +8,7 @@ import Footer from "../HomePage/6Footer";
 import BasicInput from "../../components/BasicInput";
 import PasswordInput from "../../components/PasswordInput";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import SuccessToast from "../../components/SuccessToast";
+import SuccessToast from "../../components/Toast";
 import {
     Container,
     ContentContainer,
@@ -80,7 +81,7 @@ const ManageInfo: React.FC = () => {
     }
 
     try {
-      await axios.post('http://localhost:3002/api/v1/auth/manageInfo', {
+      await authService.manageInfo({
         name,
         email,
         password,
@@ -100,7 +101,7 @@ const ManageInfo: React.FC = () => {
       
     } catch (err) {
       console.error(err);
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
       } else {
         setErrorMessage('Erro de conexão. Tente novamente mais tarde.');

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { authService } from "../../services";
 
 import {
   Container,
@@ -32,10 +32,7 @@ const Login: React.FC = () => {
     setSuccessMessage("");
 
     try {
-      await axios.post("http://localhost:3002/api/v1/auth/login", {
-        email,
-        password,
-      });
+      await authService.login(email, password);
       setSuccessMessage("Login realizado com sucesso!");
     } catch (err) {
       console.error(err);

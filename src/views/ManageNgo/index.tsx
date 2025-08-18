@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { ngoService } from "../../services";
+import { AxiosError } from "axios";
 
 import {
   CloseButton,
@@ -63,7 +64,7 @@ const ManageNgo = () => {
     setIsLoading(true);
     setError("");
     
-    const response = await axios.get('http://localhost:3002/api/v1/ngos/approved');
+    const response = await ngoService.getApproved();
     
     // Mapear os dados para garantir que tenham o campo 'id'
     const mappedNgos = response.data.map((ngo: any) => ({
@@ -73,7 +74,7 @@ const ManageNgo = () => {
     
     setNgos(mappedNgos);
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao carregar ONGs.');
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
@@ -170,7 +171,7 @@ const ManageNgo = () => {
    */
   const deleteNGO = async (ngoId: string) => {
     try {  
-      await axios.delete(`http://localhost:3002/api/v1/ngos/${ngoId}`);
+      await ngoService.delete(ngoId);
       
       // Remover a ONG da lista local
       setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
@@ -183,7 +184,7 @@ const ManageNgo = () => {
       
     } catch (err) {
       
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao deletar ONG.');
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
