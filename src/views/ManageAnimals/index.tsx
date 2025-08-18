@@ -21,7 +21,7 @@ import Breadcrumb from "../../components/BreadCrumb";
 import { IManageAnimals } from "./types";
 import { Pet } from "../../types/pets";
 import { petService } from "../../services";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
 
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
@@ -38,22 +38,48 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     fetchPets();
   }, []);
 
+  const addDoubleQuotes = (str?: string) => {
+    if (!str) return "";
+    // Remove aspas existentes e adiciona aspas duplas
+    const clean = str.replace(/['"]/g, "").trim();
+    return `"${clean}"`;
+  };
+
   const fetchPets = async () => {
-    try {
-      setIsLoading(true);
-      const response = await petService.getAll();
-      setPets(response.data);
-      console.log(response.data[0].photos);
-    } catch (error) {
-      console.error(error);
-      if (error instanceof AxiosError && error.response) {
-        setErrorMessage(error.response.data.message || 'Erro ao carregar Pets.');
-      } else {
-        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+    const params = new URLSearchParams();
+    if (selectedSpecie !== -1)
+      switch (selectedSpecie) {
+        case 0: params.append("species", addDoubleQuotes("dog")); break;
+        case 1: params.append("species", addDoubleQuotes("cat")); break;
+        case 2: params.append("species", addDoubleQuotes("bird")); break;
+    } 
+    if (name) params.append("name", addDoubleQuotes(name));
+    if (selectedState) params.append("state", addDoubleQuotes(selectedState));
+    if (city) 
+      switch(city){
+        case "Rio Grande do Sul": params.append("city", addDoubleQuotes("RS")); break;
+        case "Santa Catarina": params.append("city", addDoubleQuotes("SC")); break;
+        case "Paraná": params.append("city", addDoubleQuotes("PR")); break;
       }
-    } finally {
-      setIsLoading(false);
-    }
+    if (breed) params.append("breed", addDoubleQuotes(breed));
+    if (selectedSex) params.append("sex", addDoubleQuotes(selectedSex));
+    if (selectedAge) params.append("age", addDoubleQuotes(selectedAge));
+    if (selectedSize) 
+      switch(selectedSize){
+        case "Pequeno": params.append("size", addDoubleQuotes("P")); break;
+        case "Médio": params.append("size", addDoubleQuotes("M")); break;
+        case "Grande": params.append("size", addDoubleQuotes("G")); break;
+      }
+    if (selectedSituation) params.append("situation", addDoubleQuotes(selectedSituation));
+
+    // Adicione este console.log para visualizar os parâmetros
+    console.log("Filtros enviados:", Object.fromEntries(params.entries()));
+
+    const response = await axios.get(
+      `http://localhost:3002/api/v1/pets?${params.toString()}`
+    );
+    setPets(response.data);
+    console.log(`http://localhost:3002/api/v1/pets?${params.toString()}`);
   };
 
   // --- Estados dos filtros ---
@@ -217,6 +243,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             selectedSex={selectedSex}
             setSelectedSex={setSelectedSex}
             hasBorder={false}
+            onSearch={fetchPets}
           />
         </Overlay>
       )}
@@ -242,6 +269,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             setBreed={setBreed}
             selectedSex={selectedSex}
             setSelectedSex={setSelectedSex}
+            onSearch={fetchPets}
           />
         )}
 

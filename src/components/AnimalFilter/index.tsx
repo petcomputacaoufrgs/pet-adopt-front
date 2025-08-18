@@ -43,7 +43,8 @@ export default function AnimalFilter({
   selectedSex,
   setSelectedSex,
   hasBorder = true,
-}: IAnimalFilter) {
+  onSearch,
+}: IAnimalFilter & { onSearch: () => void }) {
   const specieOptions = [
     {
       label: "Cachorro",
@@ -121,6 +122,11 @@ export default function AnimalFilter({
     setBreed("");
     setSelectedSex("");
   };
+
+
+
+ 
+
 
   const inputsWidth = "298px";
   const containerWidth = inputsWidth;
@@ -261,7 +267,7 @@ export default function AnimalFilter({
       </FilterContainer>
 
       <ButtonsContainer $width={inputsWidth}>
-        <PrimarySecondaryButton width="100%" content="Buscar" onClick={() => {}} />
+        <PrimarySecondaryButton width="100%" content="Buscar" onClick={onSearch} />
         <ActionText
           width="100%"
           fontSize="18px"
