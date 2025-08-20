@@ -1,7 +1,5 @@
-import { BannerContainer } from "./styles";
+import { BannerContainer, ImageContainer } from "./styles";
 import Info from "../../../components/Info";
-import { useNavigate } from "react-router-dom";
-
 
 import React from "react";
 
@@ -13,7 +11,6 @@ const Banner: React.FC<AboutProps> = ({ id}) => {
 
   return (
     <BannerContainer>
-
       <Info
         subTitle="Lorem ipsum dolor sit amet"
         title="Lorem ipsum dolor sit amet, consectetur adipiscing elit,"
@@ -25,6 +22,9 @@ const Banner: React.FC<AboutProps> = ({ id}) => {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </p>
       </Info>
+
+      <ImageContainer/>
+
     </BannerContainer>
   );
 };
