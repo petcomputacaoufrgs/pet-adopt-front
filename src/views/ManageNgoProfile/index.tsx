@@ -85,7 +85,7 @@ const ManageNgoProfile = () => {
                                     paddingV="8px"
                                     paddingH="25px"
                                     buttonType="Primário"
-                                    content="Excluir ONG"
+                                    content="Editar ONG"
                                     onClick={() => {}}
                                 />
                             </ButtonsContainer>
