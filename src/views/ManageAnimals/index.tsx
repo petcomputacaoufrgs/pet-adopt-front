@@ -26,8 +26,7 @@ import axios from 'axios';
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   // --- Estados e lógica do ManagePets ---
   const [pets, setPets] = useState<Pet[]>([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  
 
   /**
    * Estados que representam os filtros aplicados aos animais.
@@ -37,39 +36,65 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     fetchPets();
   }, []);
 
-  const addDoubleQuotes = (str?: string) => {
-    if (!str) return "";
-    // Remove aspas existentes e adiciona aspas duplas
-    const clean = str.replace(/['"]/g, "").trim();
-    return `"${clean}"`;
-  };
+  const formatAge = (age: string) => {
+    switch (age) {
+      case "newborn": return "Recém nascido";
+      case "baby": return "Filhote";
+      case "1y": return "1 ano";
+      case "2y": return "2 anos";
+      case "3y": return "3 anos";
+      case "4y": return "4 anos";
+      case "5y": return "5 anos";
+      case "6y+": return "6 anos+";
+      default: return age;
+    }
+  }
+
+  const formatSize = (size: string) => {
+    switch (size) {
+      case "P": return "Pequeno";
+      case "M": return "Médio";
+      case "G": return "Grande";
+      default: return size;
+    }
+  }
 
   const fetchPets = async () => {
     const params = new URLSearchParams();
     if (selectedSpecie !== -1)
       switch (selectedSpecie) {
-        case 0: params.append("species", addDoubleQuotes("dog")); break;
-        case 1: params.append("species", addDoubleQuotes("cat")); break;
-        case 2: params.append("species", addDoubleQuotes("bird")); break;
+        case 0: params.append("species", "dog"); break;
+        case 1: params.append("species", "cat"); break;
+        case 2: params.append("species", "bird"); break;
     } 
-    if (name) params.append("name", addDoubleQuotes(name));
-    if (selectedState) params.append("state", addDoubleQuotes(selectedState));
-    if (city) 
-      switch(city){
-        case "Rio Grande do Sul": params.append("city", addDoubleQuotes("RS")); break;
-        case "Santa Catarina": params.append("city", addDoubleQuotes("SC")); break;
-        case "Paraná": params.append("city", addDoubleQuotes("PR")); break;
+    if (name) params.append("name", name);
+    if (selectedState) params.append("state", selectedState);
+      switch(selectedState){
+        case "Rio Grande do Sul": params.append("state", "RS"); break;
+        case "Santa Catarina": params.append("state", "SC"); break;
+        case "Paraná": params.append("state", "PR"); break;
       }
-    if (breed) params.append("breed", addDoubleQuotes(breed));
-    if (selectedSex) params.append("sex", addDoubleQuotes(selectedSex));
-    if (selectedAge) params.append("age", addDoubleQuotes(selectedAge));
+    if (city)  params.append("city", city);
+    if (breed) params.append("breed", breed);
+    if (selectedSex) params.append("sex", selectedSex);
+    if (selectedAge) params.append("age", selectedAge);
+      switch(selectedAge){
+        case "Abaixo de 3 meses": params.append("age", "newborn"); break;
+        case "3 a 11 meses": params.append("age", "baby"); break;
+        case "1 ano": params.append("age", "1y"); break;
+        case "2 anos": params.append("age", "2y"); break;
+        case "3 anos": params.append("age", "3y"); break;
+        case "4 anos": params.append("age", "4y"); break;
+        case "5 anos": params.append("age", "5y"); break;
+        case "6 anos e acima": params.append("age", "6y+"); break;
+      }
     if (selectedSize) 
       switch(selectedSize){
-        case "Pequeno": params.append("size", addDoubleQuotes("P")); break;
-        case "Médio": params.append("size", addDoubleQuotes("M")); break;
-        case "Grande": params.append("size", addDoubleQuotes("G")); break;
+        case "Pequeno": params.append("size", "P"); break;
+        case "Médio": params.append("size", "M"); break;
+        case "Grande": params.append("size", "G"); break;
       }
-    if (selectedSituation) params.append("situation", addDoubleQuotes(selectedSituation));
+    if (selectedSituation) params.append("situation", selectedSituation);
 
     // Adicione este console.log para visualizar os parâmetros
     console.log("Filtros enviados:", Object.fromEntries(params.entries()));
@@ -79,6 +104,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     );
     setPets(response.data);
     console.log(`http://localhost:3002/api/v1/pets?${params.toString()}`);
+    
+      
   };
 
   // --- Estados dos filtros ---
@@ -182,6 +209,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     return clean.charAt(0).toUpperCase() + clean.slice(1);
   };
 
+
+
   // --- JSX do componente ---
   return (
     <>
@@ -278,10 +307,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
               <DogCard
                 imageUrl={ DogForCard}
                 sex={formatString(pet.sex)}
-                size={formatString(pet.size) ||""}
+                size={formatString(formatSize(pet.size ?? ""))}
                 name={formatString(pet.name)}
                 race={formatString(pet.species)}
-                age={formatString(pet.age)}
+                age={formatString(formatAge(pet.age))}
                 location={formatString(`${pet.city}, ${pet.state}`)}
                 to={"/pet1}"}
               />

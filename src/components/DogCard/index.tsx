@@ -37,7 +37,7 @@ const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
           <AgeLocationContainer>
             <PinText style={{ marginBottom: "5px" }}>
               <img id="paw" src={PawPin} alt="Paw Pin" />
-              <span>{age} Anos de idade</span>
+              <span>{age}</span>
             </PinText>
 
             <PinText>
