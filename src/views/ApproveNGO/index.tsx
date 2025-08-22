@@ -22,6 +22,7 @@ import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
+import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
 
@@ -176,7 +177,7 @@ const ApproveNGO = () => {
       sethideNGOFilter(isWindowSmall);
 
       // Corrige página atual se necessário
-      if (newNGOsPerPage * currentPage > ngos.length) {
+      if (showedNGOs.length > 0 && newNGOsPerPage * currentPage > ngos.length) {
         setCurrentPage(Math.ceil(ngos.length / newNGOsPerPage));
       }
 
@@ -287,7 +288,11 @@ const ApproveNGO = () => {
       <TopBarContainer>
         <TopBarContent>
           {hideNGOFilter && (
-            <PrimarySecondaryButton onClick={() => setshowNGOsFilter(true)} content="Filtros"  />
+            <PrimarySecondaryButton 
+              onClick={() => setshowNGOsFilter(true)} 
+              content="Filtros"  
+              height = {"48px"} 
+              paddingH= {"26px"} />
           )}
           <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Gerenciar ONGs" },  ]} />
         </TopBarContent>
@@ -324,9 +329,20 @@ const ApproveNGO = () => {
         />
       )}
 
+
+        <div style={{minWidth: hideNGOFilter? "60%" : "50%", width: hideNGOFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
         
+        <SectionWithEmptyState 
+          title="ONGs"
+          subtitle="Escolha as ONGs que farão parte do projeto"
+          emptyMessage="Nenhuma ONG Encontrada"
+          expandContainer={hideNGOFilter}
+          emptyState={showedNGOs.length == 0}
+        />
+        
+      
           <NGOCardsContainer>
-            {showedNGOs.map((ngo) => (
+            {showedNGOs.length > 0 && showedNGOs.map((ngo) => (
               <OngInfoCard
                 key={ngo.id}
                 ngo={ngo}
@@ -336,6 +352,8 @@ const ApproveNGO = () => {
               />
             ))}
           </NGOCardsContainer>
+
+          </div>
 
        
 

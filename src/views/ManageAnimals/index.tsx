@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import Footer from "../HomePage/6Footer";
 import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, Overlay, PetCardWrapper, TopBarContainer, TopBarContent } from "./styles";
 
-
 import DogCard from "../../components/DogCard";
 import DogForCard from "../../assets/HomePageCardDog.png";
 import EditButton from "../../components/EditButton";
@@ -18,6 +17,8 @@ import PencilIcon from "../../assets/PencilIcon.svg";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Breadcrumb from "../../components/BreadCrumb";
+import SectionWithEmptyState from "../../components/SectionWithEmptyState";
+
 import { IManageAnimals } from "./types";
 import { Pet } from "../../types/pets";
 import axios from 'axios';
@@ -154,7 +155,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
       setHideAnimalFilter(isWindowSmall);
 
       // Corrige página atual se necessário
-      if (newPetsPerPage * currentPage > pets.length) {
+      if (pets.length > 0 && newPetsPerPage * currentPage > pets.length) {
         setCurrentPage(Math.ceil(pets.length / newPetsPerPage));
       }
 
@@ -235,6 +236,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             <PrimarySecondaryButton
               onClick={() => setShowAnimalFilterOnSide(true)}
               content="Filtros"
+              height = {"48px"}
+              paddingH= {"26px"}
             />
           )}
 
@@ -301,6 +304,19 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
           />
         )}
 
+        <div style={{minWidth: hideAnimalFilter? "60%" : "50%", width: hideAnimalFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
+
+        <SectionWithEmptyState 
+          title="Pets Disponíveis"
+          subtitle={allowEdit? "Visualize e gerencie os pets disponíveis" : "Visualize os pets disponíveis"}
+          emptyMessage="Nenhum Pet Encontrado"
+          expandContainer={hideAnimalFilter}
+          emptyState={showedPets.length == 0}
+          buttonText="+ Cadastrar Pet"
+          onButtonClick={() => {}}
+        />
+         
+        {showedPets.length > 0 && 
         <DogCardsContainer>
           {showedPets.map((pet, index) => (
             <PetCardWrapper key={index}>
@@ -329,7 +345,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
               }
             </PetCardWrapper>
           ))}
+
         </DogCardsContainer>
+      }
+        </div>
       </ContentContainer>
 
       <PaginationButtons
