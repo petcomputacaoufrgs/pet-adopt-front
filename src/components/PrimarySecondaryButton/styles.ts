@@ -6,7 +6,10 @@ const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: bo
   font-weight: 800;
   font-size: clamp(12px, 1vw, 18px);
   border-radius: 100px;
-  padding: ${(props) => props.$paddingV || 'auto'} ${(props) => props.$paddingH || 'auto'};;
+  padding-top: ${(props) => props.$paddingV || 'auto'};
+  padding-bottom: ${(props) => props.$paddingV || 'auto'};
+  padding-left: ${(props) => props.$paddingH || 'auto'};
+  padding-right: ${(props) => props.$paddingH || 'auto'};
   box-sizing: border-box;
 
   display: flex;

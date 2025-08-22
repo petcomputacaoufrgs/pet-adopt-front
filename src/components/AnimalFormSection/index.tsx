@@ -78,14 +78,17 @@ export default function AnimalFormSection({
                   onChange={(e) => setName(e.target.value)}
                 />
 
-                <BasicInput
+                <SearchBar
                   title="Idade"
                   required
+                  readOnly
                   placeholder="Insira a idade do pet aqui"
-                  value={age}
-                  $fontSize="1rem"
-                  $width="100%"
-                  onChange={(e) => setAge(e.target.value)}
+                  query={age}
+                  setQuery={setAge}
+                  fontSize="1rem"
+                  width="100%"
+                  numOptionsShowed={8}
+                  options={["Abaixo de 3 meses", "3 a 11 meses", "1 ano", "2 anos", "3 anos", "4 anos", "5 anos", "6 anos e acima"]}
                 />
 
                 <BasicInput
