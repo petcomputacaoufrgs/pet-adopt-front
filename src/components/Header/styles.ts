@@ -26,6 +26,7 @@ export const HeaderContainer = styled.div<{$backgroundColor: string; $shrink: bo
   box-sizing: border-box;
 
   min-height: ${({$shrink}) => $shrink ? "80px" : "108px"};
+  transition: min-height 0.3s ease-in-out; 
   background-color: ${(props) => props.$backgroundColor};
 
   @media (max-width: 900px) {
