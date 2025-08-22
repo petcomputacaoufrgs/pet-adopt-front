@@ -31,17 +31,10 @@ const SignUp: React.FC = () => {
 
   // ESTADOS =================================================
 
-  // utilizar um pull do BD aqui
-  const ongOptions = ["Ong Cachorrada", 
-                   "Ong Adoção", 
-                   "Ong Ajuda Animal", 
-                   "Ong Pet Lovers",
-                   "Ong Animais Felizes", 
-                   "Ong Vida Animal", 
-                   "Ong Amigos dos Animais", 
-                   "Ong Patinhas Solidárias", 
-                   "Ong Cão Feliz", 
-                   "Ong Gatos e Cães Unidos"];
+  interface NGO_ID {
+    id: string;
+    name: string;
+  }
 
   // Estados comum as duas roles (membro e ong)
   const [role, setRole] = useState('membro');
@@ -59,23 +52,104 @@ const SignUp: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState(false);
 
-  // Estados específico da role Membro
-  const [ngo, setNgo] = useState('');
+  // Estados para armazenar as ONGs disponíveis e o texto de busca
+  const [ngoOptions, setNgoOptions] = useState<NGO_ID[]>([]);
+  const [ngoSearchText, setNgoSearchText] = useState('');
 
-  // Estados específico da role Ong
+  // Estado específico da role Membro
+  const [ngo, setNgo] = useState<NGO_ID | null>(null); 
+
+  // Estados específicos da role Ong
   const [document, setDocument] = useState('');
   const [description, setDescription] = useState('');
-  const [contact, setContact] = useState('');
+  const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
-  const [websiteLink, setWebsiteLink] = useState('');
-  const [instagramLink, setInstagramLink] = useState('');
-  const [facebookLink, setFacebookLink] = useState('');
-  const [adoptionFormLink, setAdoptionFormLink] = useState('');
-  const [sponsorshipFormLink, setSponsorshipFormLink] = useState('');
-  const [temporaryHomeFormLink, setTemporaryHomeFormLink] = useState('');
-  const [claimFormLink, setClaimFormLink] = useState('');
+  const [website, setWebsite] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [adoptionForm, setAdoptionForm] = useState('');
+  const [sponsorshipForm, setSponsorshipForm] = useState('');
+  const [temporaryHomeForm, setTemporaryHomeForm] = useState('');
+  const [claimForm, setClaimForm] = useState('');
 
-  // FUNÇÕES DE VALIDAÇÃO ===========================================
+  // FUNÇÕES DE INTEGRAÇÂO COM BACKEND ===========================
+
+  const fetchNgoOptions = async () => {
+    try {
+      const response = await axios.get('http://localhost:3002/api/v1/ngos/approved');
+      
+      // Pega só nome e ID da NGO
+      const mappedNgoOptions = response.data.map((ngo: any) => ({
+        id: ngo._id || ngo.id, // Lida com nomeclatura "_id" do MongoDB.
+        name: ngo.name
+      }));
+      
+      setNgoOptions(mappedNgoOptions);
+    } catch (error) {
+      console.error('Error fetching NGO options:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNgoOptions();
+  }, []);
+
+  const handleMemberSignUp = async () => {
+    try {
+      await axios.post('http://localhost:3002/api/v1/auth/signup/regular', {
+        name,
+        email,
+        password,
+        confirmPassword,
+        role,
+        ngoId: ngo?.id
+      });
+      setSuccessMessage('Cadastro realizado com sucesso!');
+    } catch (err) {
+      console.error(err);
+      if (axios.isAxiosError(err) && err.response) {
+        setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
+      } else {
+        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+      }
+    }
+  };
+
+  const handleOngSignUp = async () => {
+    try {
+      await axios.post('http://localhost:3002/api/v1/auth/signup/ngo', {
+        user: {
+          name,
+          email,
+          password,
+          confirmPassword
+        },
+        ngo: {
+          name,
+          email,
+          document,
+          description,
+          phone,
+          city,
+          website,
+          instagram,
+          facebook,
+          adoptionForm,
+          sponsorshipForm,
+          temporaryHomeForm,
+          claimForm,
+        }
+      });
+      setSuccessMessage('Cadastro realizado com sucesso!');
+    } catch (err) {
+      console.error(err);
+      if (axios.isAxiosError(err) && err.response) {
+        setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
+      } else {
+        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+      }
+    }
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
 
@@ -89,7 +163,7 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    if (role === 'ong' && (!name || !email || !password || !confirmPassword || !document || !instagramLink || !adoptionFormLink)) {
+    if (role === 'ong' && (!name || !email || !password || !confirmPassword || !document || !instagram || !adoptionForm)) {
       setError(true);
       setErrorMessage('Preencha todos campos obrigatórios');
       return;
@@ -101,26 +175,15 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    try {
-      await axios.post('http://localhost:3002/api/v1/auth/signup', {
-        name,
-        email,
-        password,
-        confirmPassword,
-        role,
-        ngo,
-      });
-      setSuccessMessage('Cadastro realizado com sucesso!');
-    } catch (err) {
-      console.error(err);
-      if (axios.isAxiosError(err) && err.response) {
-        setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
-      } else {
-        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
-      }
+    if (role === 'membro') {
+      await handleMemberSignUp();
     }
-  };
+    else if (role === 'ong') {
+      await handleOngSignUp();
+    }
+  }
 
+// FUNÇÕES DE VALIDAÇÃO ===========================================
   const verifyPassword = (password: string) => {
     if(password.trim() === '') {
       setPasswordError(false);
@@ -193,7 +256,7 @@ const SignUp: React.FC = () => {
   // Verifica se todos os campos obrigatórios estão preenchidos e se não há erros para habilitar o botão de cadastro. 
   // Se houver erros, o botão de cadastro ficará desabilitado
   const isMemberDisabled = !name || !email || !password || !confirmPassword || !ngo;
-  const isOngDisabled = !name || !email || !password || !confirmPassword || !document || !instagramLink || !adoptionFormLink;   
+  const isOngDisabled = !name || !email || !password || !confirmPassword || !document || !instagram || !adoptionForm;   
 
   const headerOptions = [
     "Sobre Nós", 
@@ -217,6 +280,30 @@ const SignUp: React.FC = () => {
   const currentUserOptions = ["Fazer Login"];
 
   const currentUserActions = handleUserAction;
+
+  // Função para atualizar quando uma ONG é selecionada
+  const handleNgoSelection = (searchText: string) => {
+    setNgoSearchText(searchText);
+    
+    // Busca por correspondência exata
+    const exactMatch = ngoOptions.find(option => option.name === searchText);
+    
+    if (exactMatch) {
+      setNgo(exactMatch);
+    } else {
+      // Se não há correspondência exata, busca por correspondência parcial
+      const partialMatch = ngoOptions.find(option => 
+        option.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+      
+      if (partialMatch && searchText.length > 0) {
+        // Não seleciona automaticamente, mas mantém como opção
+        setNgo(null);
+      } else {
+        setNgo(null);
+      }
+    }
+  };
 
 
   // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
@@ -371,17 +458,17 @@ const SignUp: React.FC = () => {
                 />
               )}
 
-              {role === 'membro' && (
+             {role === 'membro' && (
                 <SearchBar 
-                  options={ongOptions}
+                  options={ngoOptions.map(ngo => ngo.name)}
                   width="100%"
                   fontSize="1rem"
                   titleFontSize="1rem"
                   placeholder="Encontre ou selecione uma ONG"
                   title="Selecione sua ONG"
                   required={true}
-                  query={ngo}
-                  setQuery={setNgo}
+                  query={ngoSearchText}
+                  setQuery={handleNgoSelection}
                   readOnly={false}
                 />
               )}
@@ -391,18 +478,16 @@ const SignUp: React.FC = () => {
             {role === 'ong' && (
             
               <SignUpFormInputsContainer>
-                {role==='ong' && (
-                  <h2>Contato</h2>
-                )}
+                <h2>Contato</h2>
 
                 <BasicInput
                     title="Número para Contato (Opcional)"
                     required = {false}
                     placeholder="Insira o contato da sua ONG aqui"
-                    value={contact}
+                    value={phone}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setContact(e.target.value)}
+                    onChange={(e) => setPhone(e.target.value)}
                 />
 
                 <BasicInput
@@ -419,30 +504,30 @@ const SignUp: React.FC = () => {
                     title="Link do WebSite (Opcional)"
                     required = {false}
                     placeholder="Insira o link aqui"
-                    value={websiteLink}
+                    value={website}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setWebsiteLink(e.target.value)}
+                    onChange={(e) => setWebsite(e.target.value)}
                   />
 
                   <BasicInput
                     title="Link do Instagram"
                     required = {true}
                     placeholder="Insira o link aqui"
-                    value={instagramLink}
+                    value={instagram}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setInstagramLink(e.target.value)}
+                    onChange={(e) => setInstagram(e.target.value)}
                   />
 
                   <BasicInput
                     title="Link do Facebook (Opcional)"
                     required = {false}
                     placeholder="Insira o link aqui"
-                    value={facebookLink}
+                    value={facebook}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setFacebookLink(e.target.value)}
+                    onChange={(e) => setFacebook(e.target.value)}
                   />
 
               </SignUpFormInputsContainer>
@@ -452,48 +537,46 @@ const SignUp: React.FC = () => {
               {role === 'ong' && (
             
               <SignUpFormInputsContainer>
-                {role==='ong' && (
-                  <h2>Formulários</h2>
-                )}
+                <h2>Formulários</h2>
 
                 <BasicInput
                     title="Formulario de Adoção"
                     required = {true}
                     placeholder="Insira o link aqui"
-                    value={adoptionFormLink}
+                    value={adoptionForm}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setAdoptionFormLink(e.target.value)}
+                    onChange={(e) => setAdoptionForm(e.target.value)}
                 />
 
                 <BasicInput
                     title="Formulario de Apadrinhamento (Opcional)"
                     required = {false}
                     placeholder="Insira o link aqui"
-                    value={sponsorshipFormLink}
+                    value={sponsorshipForm}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setSponsorshipFormLink(e.target.value)}
+                    onChange={(e) => setSponsorshipForm(e.target.value)}
                 />
 
                 <BasicInput
                     title="Formulario de Lar Temporário (Opcional)"
                     required = {false}
                     placeholder="Insira o link aqui"
-                    value={temporaryHomeFormLink}
+                    value={temporaryHomeForm}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setTemporaryHomeFormLink(e.target.value)}
+                    onChange={(e) => setTemporaryHomeForm(e.target.value)}
                 />
 
                 <BasicInput
                     title="Formulario de Reivindicação (Opcional)"
                     required = {false}
                     placeholder="Insira o link aqui"
-                    value={claimFormLink}
+                    value={claimForm}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setClaimFormLink(e.target.value)}
+                    onChange={(e) => setClaimForm(e.target.value)}
                 />
 
               </SignUpFormInputsContainer>
@@ -503,9 +586,9 @@ const SignUp: React.FC = () => {
             <SignUpFormLinksContainer>
 
               {role === 'membro' ? (
-                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isMemberDisabled}/>
+                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isMemberDisabled} paddingH="5px" paddingV="10px"/>
               ) : (
-                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isOngDisabled}/>
+                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isOngDisabled} paddingH="5px" paddingV="10px"/>
               )}
 
               <ActionText

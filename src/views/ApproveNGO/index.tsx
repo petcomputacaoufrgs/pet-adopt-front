@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import {
   CloseButton,
   ContentContainer,
@@ -22,17 +23,22 @@ import ConfirmModal from "../../components/ConfirmModal";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
 
-type ModalAction = { tipo: "aprovar" | "recusar"; ongId: string } | null;
+type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
 
-
-
-const ngosMock = [
-  { id: "1", nome: "ONG A" },
-  { id: "2", nome: "ONG B" },
-  { id: "3", nome: "ONG C" },
-  { id: "4", nome: "ONG D" },
-  { id: "5", nome: "ONG E" },
-];
+// Interface para definir a estrutura da ONG
+interface NGO {
+  id: string;
+  name: string;
+  city: string;
+  email: string;
+  phone: string;
+  cnpj: string;
+  instagram?: string;
+  facebook?: string;
+  youtube?: string;
+  tiktok?: string;
+  state?: string;
+}
 
 const ApproveNGO = () => {
   
@@ -54,6 +60,85 @@ const ApproveNGO = () => {
   // Define quando o filtro deve se mostrado no lado da tela (modo mobile ao clicar no botão "filtros").
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
+  // Estado para armazenar as ONGs
+    const [ngos, setNgos] = useState<NGO[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>("");
+
+  /**
+   * Função para buscar todas as ONGs do backend
+  */
+  const fetchNGOs = async () => {
+  try {
+    setIsLoading(true);
+    setError("");
+    
+    const response = await axios.get('http://localhost:3002/api/v1/ngos/unapproved');
+    
+    // Mapear os dados para garantir que tenham o campo 'id'
+    const mappedNgos = response.data.map((ngo: any) => ({
+      ...ngo,
+      id: ngo._id || ngo.id,
+    }));
+    
+    setNgos(mappedNgos);
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data?.message || 'Erro ao carregar ONGs.');
+      } else {
+        setError('Erro de conexão. Tente novamente mais tarde.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Função para buscar todas as ONGs do backend
+  */
+  const approveNGO = async (ngoId: string) => {
+  try {
+    setIsLoading(true);
+    setError("");
+
+    const response = await axios.patch(`http://localhost:3002/api/v1/ngos/${ngoId}/approve`);
+
+    // Atualiza a lista de ONGs removendo a ONG aprovada
+    setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data?.message || 'Erro ao aprovar ONGs.');
+      } else {
+        setError('Erro de conexão. Tente novamente mais tarde.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Função para buscar todas as ONGs do backend
+  */
+  const rejectNGO = async (ngoId: string) => {
+  try {
+    setIsLoading(true);
+    setError("");
+
+    const response = await axios.patch(`http://localhost:3002/api/v1/ngos/${ngoId}/reject`);
+
+    // Atualiza a lista de ONGs removendo a ONG rejeitada
+    setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data?.message || 'Erro ao rejeitar ONGs.');
+      } else {
+        setError('Erro de conexão. Tente novamente mais tarde.');
+      }
+    }
+  };
+
   /**
    * Retorna a quantidade de pets que devem ser mostrados por página, de acordo com a largura atual da janela.
    */
@@ -63,8 +148,8 @@ const ApproveNGO = () => {
     else return 5;
   };
 
-
-  const ngos = ngosMock
+  
+  //const ngos = ngosMock
   const [ngosPerPage, setPetsPerPage] = useState<number>(getNGOsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -72,6 +157,12 @@ const ApproveNGO = () => {
   const startIndexShowedNGOs = ngosPerPage * (currentPage - 1);
   const showedNGOs = ngos.slice(startIndexShowedNGOs, startIndexShowedNGOs + ngosPerPage);
 
+  /**
+   * Efeito para buscar ONGs quando o componente for montado
+   */
+  useEffect(() => {
+    fetchNGOs();
+  }, []);
 
   /**
    * Atualiza o estado do layout e quantidade de pets por página ao redimensionar a tela.
@@ -151,32 +242,40 @@ const ApproveNGO = () => {
 
   setShowToast(false);
   setToastType(null);
-};
+  };
 
 
   // Abrir modal (e fechar toast se estiver aberto)
-  const abrirModal = (tipo: "aprovar" | "recusar", ongId: string) => {
+  const openModal = (tipo: "aprovar" | "recusar", ngoId: string) => {
     resetToast();
-    setModalAction({ tipo, ongId });
+    setModalAction({ tipo, ngoId: ngoId });
   };
 
   // Confirmar ação
   const handleConfirm = () => {
-  if (!modalAction) return;
+    if (!modalAction) return;
 
-  resetToast();
-  setToastType(modalAction.tipo);
-  setShowToast(true);
+    // Chama funções correspondentes do backend
+    if (modalAction.tipo === "aprovar") {
+      approveNGO(modalAction.ngoId);
+    }
+    else if (modalAction.tipo === "recusar") {
+      rejectNGO(modalAction.ngoId);
+    }
 
-  showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-  hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-  fullCloseTimeoutRef.current = setTimeout(() => {
-    setShowToast(false);
-    setToastType(null);
-  }, 3500);
+    resetToast();
+    setToastType(modalAction.tipo);
+    setShowToast(true);
 
-  setModalAction(null);
-};
+    showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+    hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+    fullCloseTimeoutRef.current = setTimeout(() => {
+      setShowToast(false);
+      setToastType(null);
+    }, 3500);
+
+    setModalAction(null);
+  };
 
 
   return (
@@ -199,7 +298,7 @@ const ApproveNGO = () => {
         <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
 
         <NGOsFilter
-          ngos={ngos.map((ngo) => ngo.nome)}
+          ngos={ngos.map(ngo => ngo.name)}
           selectedState={selectedState}
           setSelectedState={setSelectedState}
           city={city}
@@ -215,7 +314,7 @@ const ApproveNGO = () => {
     <ContentContainer>
       {!hideNGOFilter && (
         <NGOsFilter
-          ngos={ngos.map((ngo) => ngo.nome)}
+          ngos={ngos.map(ngo => ngo.name)}
           selectedState={selectedState}
           setSelectedState={setSelectedState}
           city={city}
@@ -230,9 +329,10 @@ const ApproveNGO = () => {
             {showedNGOs.map((ngo) => (
               <OngInfoCard
                 key={ngo.id}
+                ngo={ngo}
                 showApproveButtons={true}
-                onApproveClick={() => abrirModal("aprovar", ngo.id)}
-                onRejectClick={() => abrirModal("recusar", ngo.id)}
+                onApproveClick={() => openModal("aprovar", ngo.id)}
+                onRejectClick={() => openModal("recusar", ngo.id)}
               />
             ))}
           </NGOCardsContainer>
@@ -281,4 +381,6 @@ const ApproveNGO = () => {
         <Footer />
     </>
   );
-};export default ApproveNGO;
+};
+
+export default ApproveNGO;

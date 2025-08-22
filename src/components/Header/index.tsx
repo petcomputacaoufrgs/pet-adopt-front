@@ -143,6 +143,8 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
               isDisabled={false}
               content={option}
               onClick={() => currentUserActions(option)}
+              paddingH="5px"
+              paddingV="10px"
             />
           ))}
         </CompactLoginSignupButtonsContainer>
@@ -185,6 +187,8 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
               isDisabled={false}
               content={option}
               onClick={() => currentUserActions(option)}
+              paddingH="5px"
+              paddingV="10px"
             />
           ))}
         </>

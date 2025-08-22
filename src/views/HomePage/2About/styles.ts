@@ -11,26 +11,29 @@ export const AboutContainer = styled.div`
     @media (max-width: 1200px) {
       flex-direction: column;
     } 
+
 `;
 
-export const AboutDiv = styled.div<{ $backgroundColor: string }>`
+export const AboutDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100vh;
-  background: ${(props) => props.$backgroundColor};
-
+  background: #FFFFFF;
+  padding-left: 3%;
+  padding-right: 3%;
 `;
 
-export const BackgroundDiv = styled.div<{$backgroundImage: string, $backgroundColor: string}>`
+export const BackgroundDiv = styled.div<{$backgroundImage: string}>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100vh;
   
-  background: ${(props) => `url(${props.$backgroundImage}) ${props.$backgroundColor}`};
+  background-image: ${(props) => `url(${props.$backgroundImage})`};
+  background-color: #FF9944;
   
   background-size: cover;
   background-position: center;

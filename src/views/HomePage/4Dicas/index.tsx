@@ -6,6 +6,7 @@ import imagemGatoFundo from "../../../assets/HomePageCat2.jpeg";
 import imagemCachorroFundo from "../../../assets/HomePageDog2.jpeg";
 import imagemPreenchimento from "../../../assets/HomePageLayer.png";
 
+
 const Dicas = () => {
 
   return (

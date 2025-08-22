@@ -27,7 +27,7 @@ const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
         <CardCenteredContainer>
           <CardTagsContainer>
             <Tag $text={sex} type={"light"} fontSize={"14px"} />
-            <Tag $text={size} type={"light"} fontSize={"14px"} />
+            {size !== "" && <Tag $text={size} type={"light"} fontSize={"14px"} />}
           </CardTagsContainer>
 
           <AnimalName>{name}</AnimalName>
@@ -37,12 +37,12 @@ const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
           <AgeLocationContainer>
             <PinText style={{ marginBottom: "5px" }}>
               <img id="paw" src={PawPin} alt="Paw Pin" />
-              <text>{age} Anos de idade</text>
+              <span>{age}</span>
             </PinText>
 
             <PinText>
               <img id="loc" src={LocationPin} alt="Location Pin" />
-              <text>{location}</text>
+              <span>{location}</span>
             </PinText>
           </AgeLocationContainer>
         </CardCenteredContainer>

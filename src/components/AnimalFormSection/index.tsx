@@ -272,6 +272,7 @@ export default function AnimalFormSection({
             <PrimarySecondaryButton
               content={animalData ? "Editar Cadastro do Pet" : "Criar Cadastro do Pet"}
               onClick={() => console.log("REQUISIÇÃO DE EDIÇÃO/CRIAÇÃO")}
+              paddingH="10px" paddingV="10px"
             />
           </SubmitContainer>
         </FormContainer>

@@ -15,44 +15,59 @@ export const HeaderWrapper = styled.div<{$showCompactMenu: boolean; $color: stri
 
 `;
 
-export const HeaderContainer = styled.div <{$backgroundColor: string; $shrink: boolean}> `
-  display: flex;
-  position: sticky;
-  justify-content: center;
+export const HeaderContainer = styled.div<{$backgroundColor: string; $shrink: boolean}>`
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  width: 80%;
-  min-height: ${({$shrink}) => $shrink? "80px" : "108px"};
-  gap: min(128px, 9vw);
+  width: 100%;
+  max-width: 1280px;
+  padding: 0 clamp(8px, 2vw, 24px);
+  gap: 32px;
+  box-sizing: border-box;
+
+  min-height: ${({$shrink}) => $shrink ? "80px" : "108px"};
   background-color: ${(props) => props.$backgroundColor};
 
   @media (max-width: 900px) {
+    display: flex;
     justify-content: space-between;
+    width: 80%;
+    padding: 0;
   }
 `;
+
+
 
 export const TextContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 3vw;
+  gap: clamp(4px, 1.2vw, 20px);
+  overflow: hidden;
+  min-width: 0; 
 `;
+
 
 export const ButtonsContainer = styled.div`
   display: flex;
-  gap: 0.9vw;
+  gap: 16px;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 `;
 
 export const TextButton = styled.button`
-  display: flex;
-  justify-content: center;
+  display: inline-block;
   border: none;
-  background: rgb(0,0,0,0);
+  background: transparent;
   font-family: 'Nunito Sans', sans-serif;
   font-weight: 800;
-  font-size: clamp(16px, 1vw, 1.1em);
-  line-height: 2;
+
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.2;
+
   color: #553525;
+
+  white-space: nowrap; /* impede quebra de linha */
 
   &:hover {
     cursor: pointer;
@@ -60,10 +75,14 @@ export const TextButton = styled.button`
   }
 `;
 
+
+
 export const Image = styled.img`
-  width: auto;
-  height: 45px;
+  max-width: 100px;
+  height: auto;
+  flex-shrink: 0;
 `;
+
 
 export const CompactedMenuButton = styled.button<{$highlighted: boolean}>`
   min-width: 60px;

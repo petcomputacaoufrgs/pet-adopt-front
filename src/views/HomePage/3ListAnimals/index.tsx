@@ -12,8 +12,10 @@ import DogCard from "../../../components/DogCard";
 
 import DogForCard from "../../../assets/HomePageCardDog.png";
 import PrimarySecondaryButton from "../../../components/PrimarySecondaryButton";
+import { useNavigate } from "react-router-dom";
 
-const Actions = () => {
+
+const ListAnimals = () => {
   // Array com 8 objetos pet
   const pets = [
     { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Mel", race: "Vira-lata", age: "2", location: "São Paulo, SP", to: "/pet1" },
@@ -52,6 +54,10 @@ const Actions = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [pets]);
 
+
+  const navigate = useNavigate();
+  
+
   return (
     <ListContainer>
 
@@ -80,11 +86,11 @@ const Actions = () => {
       </DogContainter>
       
       <ButtonContainer>
-        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={1}></PrimarySecondaryButton>
+        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="5px" paddingV="10px"></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>
   );
 };
 
-export default Actions;
+export default ListAnimals;

@@ -6,7 +6,7 @@ import ManageAnimals from "./views/ManageAnimals";
 import ManageNgo from "./views/ManageNgo";
 import ManageNgoProfile from "./views/ManageNgoProfile";
 import ValidateNgoProfile from "./views/ValidateNgoProfile";
-import { AnimalForm } from "./views/AnimalForm";
+import EditAnimal from "./views/EditAnimal";
 import ApproveNGO from "./views/ApproveNGO";
 import ManageInfo from "./views/ManageInfo";
 import PetProfile from "./views/PetProfile";
@@ -26,7 +26,8 @@ function App() {
           <Route path="/approveNgo" element={<ApproveNGO />}></Route>
           <Route path="/manageAnimals" element={<ManageAnimals allowEdit={true}/>}></Route>
           <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>}></Route>
-          <Route path="/editAnimal" element={<AnimalForm animalData={true}/>}></Route>
+          <Route path="/editAnimal" element={<EditAnimal animalData={true}/>}></Route>
+          <Route path="/createAnimal" element={<EditAnimal animalData={false}/>}></Route>
           <Route path="/manageInfo" element={< ManageInfo/>}></Route>
           <Route path="/petProfile" element={<PetProfile />} />
           {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
