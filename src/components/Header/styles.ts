@@ -19,9 +19,7 @@ export const HeaderContainer = styled.div<{$backgroundColor: string; $shrink: bo
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  width: 100%;
-  max-width: 1280px;
-  padding: 0 clamp(8px, 2vw, 24px);
+  width: 80%;
   gap: 32px;
   box-sizing: border-box;
 
@@ -41,6 +39,7 @@ export const HeaderContainer = styled.div<{$backgroundColor: string; $shrink: bo
 export const TextContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: clamp(4px, 1.2vw, 20px);
   overflow: hidden;
   min-width: 0; 
@@ -78,7 +77,7 @@ export const TextButton = styled.button`
 
 
 export const Image = styled.img`
-  max-width: 100px;
+  max-width: 140px;
   height: auto;
   flex-shrink: 0;
 `;
