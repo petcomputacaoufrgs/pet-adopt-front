@@ -267,13 +267,14 @@ export default function AnimalFilter({
       </FilterContainer>
 
       <ButtonsContainer $width={inputsWidth}>
-        <PrimarySecondaryButton width="100%" content="Buscar" onClick={onSearch} />
+        <PrimarySecondaryButton width="100%" content="Buscar" onClick={onSearch} height="48px" />
         <ActionText
           width="100%"
           fontSize="18px"
           onClick={onCleanFilters}
           textColor="#553525"
           underlineOnHover={true}
+
         >
           Limpar Filtros
         </ActionText>

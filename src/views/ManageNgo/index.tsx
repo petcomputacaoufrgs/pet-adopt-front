@@ -22,6 +22,7 @@ import Footer from "../HomePage/6Footer";
 
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
+import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
 // Interface para definir a estrutura da ONG
 interface NGO {
@@ -119,7 +120,7 @@ const ManageNgo = () => {
       sethideNGOFilter(isWindowSmall);
 
       // Corrige página atual se necessário
-      if (newNGOsPerPage * currentPage > ngos.length) {
+      if (showedNGOs.length > 0 && newNGOsPerPage * currentPage > ngos.length) {
         setCurrentPage(Math.ceil(ngos.length / newNGOsPerPage));
       }
 
@@ -240,6 +241,8 @@ const ManageNgo = () => {
             <PrimarySecondaryButton
               onClick={() => setshowNGOsFilter(true)}
               content="Filtros"
+              height = {"48px"}
+              paddingH= {"26px"}
             />
           )}
 
@@ -282,6 +285,18 @@ const ManageNgo = () => {
           />
         )}
 
+
+        <div style={{minWidth: hideNGOFilter? "60%" : "50%", width: hideNGOFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
+        
+
+        <SectionWithEmptyState 
+          title="ONGs"
+          subtitle="Visualize as ONGs em atividade no momento"
+          emptyMessage="Nenhuma ONG Encontrada"
+          expandContainer={hideNGOFilter}
+          emptyState={showedNGOs.length == 0}
+        />
+        
         <NGOCardsContainer>
           {isLoading && <p>Carregando ONGs...</p>}
           {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
@@ -297,6 +312,9 @@ const ManageNgo = () => {
             />
           ))}
         </NGOCardsContainer>
+
+      </div>
+
       </ContentContainer>
 
       <PaginationButtons

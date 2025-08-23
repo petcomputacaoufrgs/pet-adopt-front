@@ -35,7 +35,7 @@ const PaginationButtons = ({
   currentPage,
   setCurrentPage,
 }: IPaginationButtonsProps) => {
-  const totalPages = Math.ceil(itemsLength / itemsPerPage);
+  const totalPages = (itemsLength == 0)? 1 : Math.ceil(itemsLength / itemsPerPage);
 
   const getVisiblePages = (
     currentPageParam: number,

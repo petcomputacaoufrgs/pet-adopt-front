@@ -21,7 +21,6 @@ const HomeView = () => {
   return (
     <>
       <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo} />
-      <Banner/>
       <About />
       <ListAnimals />
       <Dicas />
