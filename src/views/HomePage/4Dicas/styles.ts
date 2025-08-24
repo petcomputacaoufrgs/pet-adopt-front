@@ -39,6 +39,10 @@ export const HintsContainer = styled.div`
       padding-bottom: 20px;
     }
 
+    @media (max-height: 700px) {
+        padding-bottom: 20px;
+    }
+
 `
 
 export const InfoDiv = styled.div`

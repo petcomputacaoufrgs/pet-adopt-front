@@ -37,8 +37,8 @@ export const CardCenteredContainer = styled.div`
 
 export const CardTagsContainer = styled.div`
     display: flex;
-    justify-content: space-between;
-    width: 210px;
+    justify-content: flex-start;
+    gap: 8px;
     margin-bottom: 14px;
 `;
 
