@@ -10,6 +10,7 @@ import EditAnimal from "./views/EditAnimal";
 import ApproveNGO from "./views/ApproveNGO";
 import ManageInfo from "./views/ManageInfo";
 import PetProfile from "./views/PetProfile";
+import ManageNGOMembers from "./views/ManageNGOMembers";
 
 function App() {  
 
@@ -29,7 +30,9 @@ function App() {
           <Route path="/editAnimal" element={<EditAnimal animalData={true}/>}></Route>
           <Route path="/createAnimal" element={<EditAnimal animalData={false}/>}></Route>
           <Route path="/manageInfo" element={< ManageInfo/>}></Route>
+          <Route path="/manageMembers" element={< ManageNGOMembers/>}></Route>
           <Route path="/petProfile" element={<PetProfile />} />
+
           {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
         </Routes>
       </BrowserRouter>
