@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const InfoContent = styled.div <{$position:string}>`
+export const InfoContent = styled.div <{$position:string, $subtitleFontSize: string, $titleFontSize: string}>`
   display: flex;
   flex-direction: column;
   align-items: ${(props) => props.$position};
@@ -13,7 +13,7 @@ export const InfoContent = styled.div <{$position:string}>`
   p {
     margin: 0;
     font-weight: 400;
-    font-size: clamp(0.8rem, 1vw, 1.1em); /* Responsivo */
+    font-size: clamp(1rem, 1vw, 18px); /* Responsivo */
     line-height: 2;
     color: #553525;
 
@@ -23,7 +23,7 @@ export const InfoContent = styled.div <{$position:string}>`
     font-family: 'Source Serif 4', sans-serif;
     margin: 0;
     font-weight: 800;
-    font-size: clamp(1.2rem, 3vw, 32); 
+    font-size: ${(props) => props.$subtitleFontSize}; 
     line-height: 1.2;
     color: #553525;
     margin-bottom: 12px;
@@ -32,7 +32,7 @@ export const InfoContent = styled.div <{$position:string}>`
   h3 {
     margin: 0;
     font-weight: 800;
-    font-size: clamp(1.5rem, 4vw, 2em);
+    font-size: ${(props) => props.$titleFontSize};
     line-height: 1.5;
     color: #553525;
     margin-bottom: 24px;
@@ -60,8 +60,5 @@ export const InfoContainer = styled.div<{$position: string}>`
     max-width: 100%; /* para evitar corte lateral */
   }
 
-  @media (max-height: 700px) {
-    padding: 3em;
-  }
 `;
 

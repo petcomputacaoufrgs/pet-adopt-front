@@ -18,17 +18,33 @@ export const CardContainer = styled.div<{ $backgroundColor: string }>`
 
   border: none;
 
+  @media (max-width: 1750px) {
+    width: 45%;
+  }
+
+  @media (max-width: 1560px) {
+    height: 75%;
+  }
+
+  @media (max-width: 1350px) {
+    width: 50%;
+  }
+
   @media (max-width: 1200px) {
     width: 60%;
     height: 80%;
     border-radius: 30px;
   } 
-  
-  @media (max-height: 700px) {
-    width: 60%;
-    min-height: 400px;
-    border-radius: 30px;
-  } 
+
+  @media (max-width: 750px) {
+    width: 70%;
+    height: 85%;
+  }
+
+  @media (max-width: 550px) {
+    width: 95%;
+  }
+
 
 `;
 
