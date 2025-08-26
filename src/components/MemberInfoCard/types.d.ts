@@ -6,7 +6,7 @@ export interface MEMBER {
 
 export interface MemberInfoCardProps {
   member?: MEMBER;
-  onEditClick?: (ngo: NGO) => void;
-  onDeleteClick?: (ngo: NGO) => void;
+  onEditClick?: (member: MEMBER) => void;
+  onDeleteClick?: (member: MEMBER) => void;
   selected?: boolean;
 }

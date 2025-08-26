@@ -26,11 +26,20 @@ import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MembersFilter from "../../components/MembersFilter";
 
+// Interface para definir a estrutura da ONG
+interface MEMBER {
+  id: string;
+  name: string;
+  email: string;
+
+}
+
 const ManageNGOMembers: React.FC = () => {
   const [ngoMembers, setNgoMembers] = useState<User[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState<string>("");
+
 
   useEffect(() => {
     fetchNGOMembers();
@@ -138,6 +147,57 @@ const ManageNGOMembers: React.FC = () => {
     document.body.style.overflow = showMembersFilterOnSide ? "hidden" : "";
   }, [showMembersFilterOnSide]);
 
+  /**
+   * Função para deletar uma ONG
+   */
+  const deleteMember = async (memberId: string) => {
+    try {  
+      await axios.delete(`http://localhost:3002/api/v1/ngos/${memberId}`);
+      
+      // Remover a ONG da lista local
+      setNgoMembers(prevMembers => prevMembers.filter(member => member.id !== memberId));
+      
+      // Ajustar página atual se necessário
+      const updatedMembers = ngoMembers.filter(member => member.id !== memberId);
+      if (membersPerPage * currentPage > updatedMembers.length && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+      
+    } catch (err) {
+      
+      if (axios.isAxiosError(err) && err.response) {
+        setErrorMessage(err.response.data?.message || 'Erro ao deletar ONG.');
+      } else {
+        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+      }
+    }
+  };
+  
+  /**
+   * Função para lidar com o clique em deletar
+   */
+  const handleDeleteClick = (member: MEMBER) => {
+    if (!member) return;
+    
+    const confirmDelete = window.confirm(
+      `Tem certeza que deseja excluir a ONG "${member.name}"? Esta ação não pode ser desfeita.`
+    );
+    
+    if (confirmDelete) {
+      deleteMember(member.id);
+    }
+  };
+
+  /**
+   * Função para lidar com o clique em editar
+   */
+  const handleEditClick = (member: MEMBER) => {
+    if (!member) return;
+    
+    console.log("Editando ONG:", member); // Debug
+    // Aqui pode navegar para uma página de edição
+  };
+  
 
 
   return (
@@ -191,7 +251,10 @@ const ManageNGOMembers: React.FC = () => {
                 emptyMessage="Nenhuma ONG Encontrada"
                 expandContainer={hideMembersFilter}
                 emptyState={showedMembers.length == 0}
+                buttonText="+ Cadastrar Pet"
+                onButtonClick={() => {}}
               />
+
               
             
                 <NGOCardsContainer>
@@ -199,6 +262,8 @@ const ManageNGOMembers: React.FC = () => {
                     <MemberInfoCard
                       key={member.id}
                       member={member}
+                      onEditClick={handleEditClick}
+                      onDeleteClick={handleDeleteClick}
                     />
                   ))}
                 </NGOCardsContainer>

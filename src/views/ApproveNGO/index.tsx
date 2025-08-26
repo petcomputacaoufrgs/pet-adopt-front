@@ -342,6 +342,7 @@ const ApproveNGO = () => {
         
       
           <NGOCardsContainer>
+
             {showedNGOs.length > 0 && showedNGOs.map((ngo) => (
               <OngInfoCard
                 key={ngo.id}
