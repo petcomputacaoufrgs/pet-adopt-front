@@ -16,15 +16,54 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Tratamento global de erros
-    if (error.response?.status === 401) {
-      // Token expirado, redirecionar para login
-      // localStorage.removeItem('authToken');
-      // window.location.href = '/login';
+    const statusCode = error.response?.status;
+    const errorMessage = error.response?.data?.message || 'Erro interno do servidor';
+
+    // Log do erro para debug
+    console.error('API Error:', {
+      status: statusCode,
+      message: errorMessage,
+      url: error.config?.url
+    });
+
+    switch (statusCode) {
+      case 401:
+        // Token expirado ou inválido - redirecionar para login
+        console.log('Token expirado ou inválido, redirecionando para login...');
+        
+        // Limpar dados de autenticação
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        
+        // Salvar mensagem de erro para mostrar na tela de login
+        if (window.location.pathname !== '/login') {
+          localStorage.setItem('authError', 'Sua sessão expirou. Faça login novamente.');
+          window.location.href = '/login';
+        }
+        break;
+
+      case 403:
+        // Usuário logado mas sem autorização - redirecionar para homepage
+        console.log('Acesso negado, redirecionando para homepage...');
+        
+        if (window.location.pathname !== '/') {
+          localStorage.setItem('authorizationError', 'A sua conta não tem autorização para acessar esta funcionalidade.');
+          window.location.href = '/';
+        }
+        break;
+
+      case 404:
+        console.error('Recurso não encontrado:', errorMessage);
+        break;
+
+      case 500:
+        console.error('Erro interno do servidor:', errorMessage);
+        break;
+
+      default:
+        console.error('Erro na requisição:', errorMessage);
     }
-    if (error.response?.status === 403) {
-      // Acesso negado, redirecionar para HomePage
-    }
+
     return Promise.reject(error);
   }
 );

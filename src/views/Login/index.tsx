@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { authService } from "../../services";
+import { authService, getAuthError } from "../../services";
 
 import {
   Container,
@@ -26,14 +26,34 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Verificar se há mensagem de erro de autenticação ao carregar
+  useEffect(() => {
+    const authError = getAuthError();
+    if (authError) {
+      setErrorMessage(authError);
+    }
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
 
     try {
-      await authService.login(email, password);
+      const response = await authService.login(email, password);
+      
+      // Salvar dados do usuário se necessário
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      
       setSuccessMessage("Login realizado com sucesso!");
+      
+      // Redirecionar para a página apropriada após login
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+      
     } catch (err) {
       console.error(err);
       setErrorMessage("Login falhou. Verifique suas credenciais.");
@@ -86,13 +106,27 @@ const Login: React.FC = () => {
             </LoginFormTextContainer>
 
             {errorMessage && (
-              <div style={{ color: "red", margin: "10px 0" }}>
+              <div style={{ 
+                color: "red", 
+                margin: "10px 0", 
+                padding: "10px",
+                backgroundColor: "#ffeaea",
+                border: "1px solid #ffcdd2",
+                borderRadius: "4px"
+              }}>
                 {errorMessage}
               </div>
             )}
 
             {successMessage && (
-              <div style={{ color: "green", margin: "10px 0" }}>
+              <div style={{ 
+                color: "green", 
+                margin: "10px 0",
+                padding: "10px",
+                backgroundColor: "#f1f8e9",
+                border: "1px solid #c8e6c9",
+                borderRadius: "4px"
+              }}>
                 {successMessage}
               </div>
             )}

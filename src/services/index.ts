@@ -53,3 +53,22 @@ export const userService = {
   getByRole: (role: string) => 
     api.get(`/users/role/${role}`),
 };
+
+// Funções utilitárias para verificar e limpar mensagens de erro
+export const getAuthError = (): string | null => {
+  const error = localStorage.getItem('authError');
+  if (error) {
+    localStorage.removeItem('authError');
+    return error;
+  }
+  return null;
+};
+
+export const getAuthorizationError = (): string | null => {
+  const error = localStorage.getItem('authorizationError');
+  if (error) {
+    localStorage.removeItem('authorizationError');
+    return error;
+  }
+  return null;
+};
