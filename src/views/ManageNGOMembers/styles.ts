@@ -14,7 +14,7 @@ export const NGOCardsContainer = styled.div`
     gap: 14px 24px;
 
     @media (max-width: 1612px) {
-        grid-template-columns: repeat(2, 1fr); 
+        grid-template-columns: repeat(3, 1fr); 
     }
 
     @media (max-width: 800px) {

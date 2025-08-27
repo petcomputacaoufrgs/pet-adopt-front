@@ -25,14 +25,8 @@ import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MembersFilter from "../../components/MembersFilter";
+import EditMemberModal from '../../components/EditMemberModal/EditMemberModal';
 
-// Interface para definir a estrutura da ONG
-interface MEMBER {
-  id: string;
-  name: string;
-  email: string;
-
-}
 
 const ManageNGOMembers: React.FC = () => {
   const [ngoMembers, setNgoMembers] = useState<User[]>([]);
@@ -176,7 +170,7 @@ const ManageNGOMembers: React.FC = () => {
   /**
    * Função para lidar com o clique em deletar
    */
-  const handleDeleteClick = (member: MEMBER) => {
+  const handleDeleteClick = (member: User) => {
     if (!member) return;
     
     const confirmDelete = window.confirm(
@@ -191,11 +185,19 @@ const ManageNGOMembers: React.FC = () => {
   /**
    * Função para lidar com o clique em editar
    */
-  const handleEditClick = (member: MEMBER) => {
-    if (!member) return;
-    
-    console.log("Editando ONG:", member); // Debug
-    // Aqui pode navegar para uma página de edição
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [memberBeingEdited, setMemberBeingEdited] = useState<User | null>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = isEditModalOpen ? "hidden" : "";
+  }, [isEditModalOpen]);
+
+  const handleEditClick = (member: User) => {
+   if (!member) return;
+
+    setMemberBeingEdited(member);
+    setIsEditModalOpen(true);
   };
   
 
@@ -204,6 +206,7 @@ const ManageNGOMembers: React.FC = () => {
     <div>
       <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={HorizontalLogo}/>
       <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Gerencie sua equipe dos sonhos!" subTitle="Veja, organize e acompanhe sua equipe de um jeito simples e prático."   imageUrl={ManageMembersHamster}/>
+           
            <TopBarContainer>
               <TopBarContent>
                 {hideMembersFilter && (
@@ -269,10 +272,6 @@ const ManageNGOMembers: React.FC = () => {
                 </NGOCardsContainer>
       
                 </div>
-      
-             
-      
-
             </ContentContainer>
              <PaginationButtons
                 currentPage={currentPage}
@@ -284,7 +283,17 @@ const ManageNGOMembers: React.FC = () => {
                 containerHeight="160px"
               />
 
-
+              {isEditModalOpen && memberBeingEdited && (
+                  <EditMemberModal
+                    member={memberBeingEdited}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSave={(updatedMember) => {
+                      setNgoMembers(prev =>
+                        prev.map(m => (m.id === updatedMember.id ? updatedMember : m))
+                      );
+                    }}
+                  />
+                )}
               <Footer />
           
       
