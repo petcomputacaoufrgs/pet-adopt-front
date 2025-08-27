@@ -87,7 +87,7 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
 
   const getResponsiveMode = (): ResponsiveMode => {
     if (windowWidth >= 1480) return "full";
-    if (windowWidth >= 900) return "partial";
+    if (windowWidth >= 980) return "partial";
     return "compact";
   };
 
