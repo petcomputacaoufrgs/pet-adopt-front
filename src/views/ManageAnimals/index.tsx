@@ -5,6 +5,9 @@ import BannerComponent from "../../components/BannerComponent";
 import dog from "../../assets/ManageAnimalsDog.png";
 import logo from "../../assets/HorizontalLogo.png";
 import { useEffect, useState } from "react";
+import { petService, createPetFiltersFromState } from "../../services";
+import { formatAge, formatSize, formatString, formatSpecies } from "../../services";
+import { AxiosError } from "axios";
 import Footer from "../HomePage/6Footer";
 import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, Overlay, PetCardWrapper, TopBarContainer, TopBarContent } from "./styles";
 
@@ -21,96 +24,14 @@ import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
 import { IManageAnimals } from "./types";
 import { Pet } from "../../types/pets";
-import { petService } from "../../services";
-import axios, { AxiosError } from "axios";
-
 
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
-  // --- Estados e lógica do ManagePets ---
+  // Estados dos pets
   const [pets, setPets] = useState<Pet[]>([]);
-  
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
-  /**
-   * Estados que representam os filtros aplicados aos animais.
-   * Cada um armazena uma característica diferente usada para filtrar os pets.
-   */
-  useEffect(() => {
-    fetchPets();
-  }, []);
-
-  const formatAge = (age: string) => {
-    switch (age) {
-      case "newborn": return "Recém nascido";
-      case "baby": return "Filhote";
-      case "1y": return "1 ano";
-      case "2y": return "2 anos";
-      case "3y": return "3 anos";
-      case "4y": return "4 anos";
-      case "5y": return "5 anos";
-      case "6y+": return "6 anos+";
-      default: return age;
-    }
-  }
-
-  const formatSize = (size: string) => {
-    switch (size) {
-      case "P": return "Pequeno";
-      case "M": return "Médio";
-      case "G": return "Grande";
-      default: return size;
-    }
-  }
-
-  const fetchPets = async () => {
-    const params = new URLSearchParams();
-    if (selectedSpecie !== -1)
-      switch (selectedSpecie) {
-        case 0: params.append("species", "dog"); break;
-        case 1: params.append("species", "cat"); break;
-        case 2: params.append("species", "bird"); break;
-    } 
-    if (name) params.append("name", name);
-    if (selectedState) params.append("state", selectedState);
-      switch(selectedState){
-        case "Rio Grande do Sul": params.append("state", "RS"); break;
-        case "Santa Catarina": params.append("state", "SC"); break;
-        case "Paraná": params.append("state", "PR"); break;
-      }
-    if (city)  params.append("city", city);
-    if (breed) params.append("breed", breed);
-    if (selectedSex) params.append("sex", selectedSex);
-    if (selectedAge) params.append("age", selectedAge);
-      switch(selectedAge){
-        case "Abaixo de 3 meses": params.append("age", "newborn"); break;
-        case "3 a 11 meses": params.append("age", "baby"); break;
-        case "1 ano": params.append("age", "1y"); break;
-        case "2 anos": params.append("age", "2y"); break;
-        case "3 anos": params.append("age", "3y"); break;
-        case "4 anos": params.append("age", "4y"); break;
-        case "5 anos": params.append("age", "5y"); break;
-        case "6 anos e acima": params.append("age", "6y+"); break;
-      }
-    if (selectedSize) 
-      switch(selectedSize){
-        case "Pequeno": params.append("size", "P"); break;
-        case "Médio": params.append("size", "M"); break;
-        case "Grande": params.append("size", "G"); break;
-      }
-    if (selectedSituation) params.append("situation", selectedSituation);
-
-    // Adicione este console.log para visualizar os parâmetros
-    console.log("Filtros enviados:", Object.fromEntries(params.entries()));
-
-    const response = await axios.get(
-      `http://localhost:3002/api/v1/pets?${params.toString()}`
-    );
-    setPets(response.data);
-    console.log(`http://localhost:3002/api/v1/pets?${params.toString()}`);
-    
-      
-  };
-
-  // --- Estados dos filtros ---
+  // Estados dos filtros
   const [selectedSpecie, setSelectedSpecie] = useState<number>(-1);
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedAge, setSelectedAge] = useState<string>("");
@@ -121,21 +42,144 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const [breed, setBreed] = useState<string>("");
   const [selectedSex, setSelectedSex] = useState<string>("");
 
-  // --- Layout e paginação ---
+  // Layout e paginação
   const [hideAnimalFilter, setHideAnimalFilter] = useState(window.innerWidth < 1240);
-
-
-  // Define quando o filtro deve se mostrado no lado da tela (modo mobile ao clicar no botão "filtros").
   const [showAnimalFilterOnSide, setShowAnimalFilterOnSide] = useState(false);
 
   /**
-   * Retorna a quantidade de pets que devem ser mostrados por página, de acordo com a largura atual da janela.
+   * Função para buscar pets com filtros
    */
-  const getPetsPerPage = () => {
-    if (window.innerWidth >= 1612) return 9;
-    else if (window.innerWidth >= 800) return 6;
-    else return 5;
+  const fetchPets = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+      
+      // Criar filtros usando utilitário
+      const filters = createPetFiltersFromState({
+        selectedSpecie,
+        name,
+        selectedState,
+        city,
+        breed,
+        selectedSex,
+        selectedAge,
+        selectedSize,
+        selectedSituation
+      });
+      
+      console.log('📡 Buscando pets com filtros:', filters);
+      
+      const response = await petService.getAll(filters);
+      
+      // Mapear os dados para garantir que tenham o campo 'id'
+      const mappedPets = response.data.map((pet: any) => ({
+        ...pet,
+        id: pet._id || pet.id,
+      }));
+      
+      setPets(mappedPets);
+      
+      console.log('✅ Pets carregados:', mappedPets.length);
+      
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        setError(err.response.data?.message || 'Erro ao carregar pets.');
+      } else {
+        setError('Erro de conexão. Tente novamente mais tarde.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  /**
+   * Callback para limpar filtros
+   */
+  const handleClearFilters = () => {
+    console.log('🧹 Limpando filtros de pets');
+    
+    setSelectedSpecie(-1);
+    setSelectedState("");
+    setSelectedAge("");
+    setSelectedSize("");
+    setSelectedSituation("");
+    setCity("");
+    setName("");
+    setBreed("");
+    setSelectedSex("");
+    
+    // Buscar todos os pets
+    setTimeout(() => {
+      fetchPets();
+      setCurrentPage(1);
+    }, 100);
+  };
+
+  /**
+   * Função para deletar um pet
+   */
+  const deletePet = async (petId: string) => {
+    try {
+      await petService.delete(petId);
+      
+      // Remover o pet da lista local
+      setPets(prevPets => prevPets.filter(pet => (pet.id || pet._id) !== petId));
+      
+      // Ajustar página atual se necessário
+      const updatedPets = pets.filter(pet => (pet.id || pet._id) !== petId);
+      if (petsPerPage * currentPage > updatedPets.length && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+      
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        setError(err.response.data?.message || 'Erro ao deletar pet.');
+      } else {
+        setError('Erro de conexão. Tente novamente mais tarde.');
+      }
+    }
+  };
+
+  /**
+   * Função para lidar com o clique em deletar
+   */
+  const handleDeleteClick = (pet: Pet) => {
+    const petId = pet.id || pet._id;
+    if (!petId) return;
+    
+    const confirmDelete = window.confirm(
+      `Tem certeza que deseja excluir o pet "${pet.name}"? Esta ação não pode ser desfeita.`
+    );
+    
+    if (confirmDelete) {
+      deletePet(petId);
+    }
+  };
+
+  /**
+   * Função para lidar com o clique em editar
+   */
+  const handleEditClick = (pet: Pet) => {
+    const petId = pet.id || pet._id;
+    if (!petId) return;
+    
+    console.log("Editando pet:", pet); // Debug
+    // Aqui pode navegar para uma página de edição
+    // window.location.href = `/editAnimal?id=${petId}`;
+  };
+
+  // Função para gerar ID único caso não tenha
+  const getPetId = (pet: Pet, index: number): string => {
+    return pet.id || pet._id || `pet-${index}`;
+  };
+
+  // Função utilitária para definir quantidade de pets por página conforme largura da tela
+  function getPetsPerPage(): number {
+    if (window.innerWidth < 600) return 2;
+    if (window.innerWidth < 900) return 4;
+    if (window.innerWidth < 1240) return 6;
+    return 8;
+  }
 
   const [petsPerPage, setPetsPerPage] = useState<number>(getPetsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
@@ -143,6 +187,13 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   // Define os pets que serão mostrados com base na página atual
   const startIndexShowedPets = petsPerPage * (currentPage - 1);
   const showedPets = pets.slice(startIndexShowedPets, startIndexShowedPets + petsPerPage);
+
+  /**
+   * Efeito para buscar pets quando o componente for montado
+   */
+  useEffect(() => {
+    fetchPets();
+  }, []);
 
   /**
    * Atualiza o estado do layout e quantidade de pets por página ao redimensionar a tela.
@@ -159,7 +210,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
       if (pets.length > 0 && newPetsPerPage * currentPage > pets.length) {
         setCurrentPage(Math.ceil(pets.length / newPetsPerPage));
       }
-
 
       // Fecha o filtro no lado da tela se a janela for redimensionada para modo desktop
       if (!isWindowSmall && showAnimalFilterOnSide) {
@@ -185,7 +235,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   /**
    * Manipula ações do header com base na opção clicada.
-   * @param selected Opção clicada pelo usuário
    */
   const handleHeaderAction = (selected: string) => {
     switch (selected) {
@@ -204,16 +253,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     }
   };
 
-  // Função utilitária para formatar strings
-  const formatString = (str?: any) => {
-    if (str === undefined || str === null) return "";
-    const clean = String(str).replace(/['"]/g, "").trim();
-    return clean.charAt(0).toUpperCase() + clean.slice(1);
-  };
-
-
-
-  // --- JSX do componente ---
   return (
     <>
       <Header
@@ -276,6 +315,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             setSelectedSex={setSelectedSex}
             hasBorder={false}
             onSearch={fetchPets}
+            onClearFilters={handleClearFilters}
           />
         </Overlay>
       )}
@@ -302,53 +342,67 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             selectedSex={selectedSex}
             setSelectedSex={setSelectedSex}
             onSearch={fetchPets}
+            onClearFilters={handleClearFilters}
           />
         )}
 
         <div style={{minWidth: hideAnimalFilter? "60%" : "50%", width: hideAnimalFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
 
-        <SectionWithEmptyState 
-          title="Pets Disponíveis"
-          subtitle={allowEdit? "Visualize e gerencie os pets disponíveis" : "Visualize os pets disponíveis"}
-          emptyMessage="Nenhum Pet Encontrado"
-          expandContainer={hideAnimalFilter}
-          emptyState={showedPets.length == 0}
-          buttonText="+ Cadastrar Pet"
-          onButtonClick={() => {}}
-        />
+          <SectionWithEmptyState 
+            title="Pets Disponíveis"
+            subtitle={allowEdit? "Visualize e gerencie os pets disponíveis" : "Visualize os pets disponíveis"}
+            emptyMessage="Nenhum Pet Encontrado"
+            expandContainer={hideAnimalFilter}
+            emptyState={showedPets.length === 0}
+            buttonText="+ Cadastrar Pet"
+            onButtonClick={() => {
+              console.log("Navegando para criar pet");
+              // window.location.href = "/createAnimal";
+            }}
+          />
          
-        {showedPets.length > 0 && 
-        <DogCardsContainer>
-          {showedPets.map((pet, index) => (
-            <PetCardWrapper key={index}>
-              <DogCard
-                imageUrl={ DogForCard}
-                sex={formatString(pet.sex)}
-                size={formatString(formatSize(pet.size ?? ""))}
-                name={formatString(pet.name)}
-                race={formatString(pet.species)}
-                age={formatString(formatAge(pet.age))}
-                location={formatString(`${pet.city}, ${pet.state}`)}
-                to={"/pet1}"}
-              />
-
-              {allowEdit &&
-                <EditButtonWrapper>
-                  <EditButton
-                    width="34px"
-                    height="34px"
-                    options={[
-                      { label: "Editar", onClick: () => {}, iconSrc: PencilIcon },
-                      { label: "Excluir", onClick: () => {}, iconSrc: DeleteIcon },
-                    ]}
+          {isLoading && <p>Carregando pets...</p>}
+          {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
+          
+          {!isLoading && !error && showedPets.length > 0 && 
+            <DogCardsContainer>
+              {showedPets.map((pet, index) => (
+                <PetCardWrapper key={getPetId(pet, index)}>
+                  <DogCard
+                    imageUrl={DogForCard}
+                    sex={formatString(pet.sex)}
+                    size={formatString(formatSize(pet.size ?? ""))}
+                    name={formatString(pet.name)}
+                    race={formatString(formatSpecies(pet.species))}
+                    age={formatString(formatAge(pet.age))}
+                    location={formatString(`${pet.city}, ${pet.state}`)}
+                    to={`/pet/${getPetId(pet, index)}`}
                   />
-                </EditButtonWrapper>
-              }
-            </PetCardWrapper>
-          ))}
 
-        </DogCardsContainer>
-      }
+                  {allowEdit &&
+                    <EditButtonWrapper>
+                      <EditButton
+                        width="34px"
+                        height="34px"
+                        options={[
+                          { 
+                            label: "Editar", 
+                            onClick: () => handleEditClick(pet), 
+                            iconSrc: PencilIcon 
+                          },
+                          { 
+                            label: "Excluir", 
+                            onClick: () => handleDeleteClick(pet), 
+                            iconSrc: DeleteIcon 
+                          },
+                        ]}
+                      />
+                    </EditButtonWrapper>
+                  }
+                </PetCardWrapper>
+              ))}
+            </DogCardsContainer>
+          }
         </div>
       </ContentContainer>
 

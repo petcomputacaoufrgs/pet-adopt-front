@@ -1,10 +1,12 @@
 export interface INGOsFilter {
-  ngos: string[],
+  ngos: string[];
   selectedState: string;
-  setSelectedState: (value: string) => void;
+  setSelectedState: (state: string) => void;
   city: string;
-  setCity: (value: string) => void;
+  setCity: (city: string) => void;
   name: string;
-  setName: (value: string) => void;
+  setName: (name: string) => void;
   hasBorder?: boolean;
+  onSearch?: (filters: { name: string; city: string; state: string }) => void;
+  onClearFilters?: () => void;
 }

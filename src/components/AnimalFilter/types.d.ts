@@ -1,21 +1,23 @@
 export interface IAnimalFilter {
   selectedSpecie: number;
-  setSelectedSpecie: (value: number) => void;
+  setSelectedSpecie: (specie: number) => void;
   selectedState: string;
-  setSelectedState: (value: string) => void;
+  setSelectedState: (state: string) => void;
   selectedAge: string;
-  setSelectedAge: (value: string) => void;
+  setSelectedAge: (age: string) => void;
   selectedSize: string;
-  setSelectedSize: (value: string) => void;
+  setSelectedSize: (size: string) => void;
   selectedSituation: string;
-  setSelectedSituation: (value: string) => void;
+  setSelectedSituation: (situation: string) => void;
   city: string;
-  setCity: (value: string) => void;
+  setCity: (city: string) => void;
   name: string;
-  setName: (value: string) => void;
+  setName: (name: string) => void;
   breed: string;
-  setBreed: (value: string) => void;
+  setBreed: (breed: string) => void;
   selectedSex: string;
-  setSelectedSex: (value: string) => void;
+  setSelectedSex: (sex: string) => void;
   hasBorder?: boolean;
+  onSearch?: () => void;
+  onClearFilters?: () => void;
 }

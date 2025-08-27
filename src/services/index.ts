@@ -1,4 +1,6 @@
 import api from './api';
+import { NGOFilters, buildNGOUrl } from './filters/ngoFilters';
+import { PetFilters, buildPetUrl } from './filters/petFilters';
 
 // Serviços relacionados à autenticação
 export const authService = {
@@ -17,11 +19,15 @@ export const authService = {
 
 // Serviços relacionados às ONGs
 export const ngoService = {
-  getApproved: () => 
-    api.get('/ngos/approved'),
+  getApproved: (filters?: NGOFilters) => {
+    const url = buildNGOUrl('/ngos', filters);
+    return api.get(url);
+  },
   
-  getUnapproved: () => 
-    api.get('/ngos/unapproved'),
+  getUnapproved: (filters?: NGOFilters) => {
+    const url = buildNGOUrl('/ngos/unapproved', filters);
+    return api.get(url);
+  },
   
   approve: (ngoId: string) => 
     api.patch(`/ngos/${ngoId}/approve`),
@@ -32,8 +38,10 @@ export const ngoService = {
 
 // Serviços relacionados aos pets
 export const petService = {
-  getAll: () => 
-    api.get('/pets'),
+  getAll: (filters?: PetFilters) => {
+    const url = buildPetUrl('/pets', filters);
+    return api.get(url);
+  },
   
   getById: (petId: string) => 
     api.get(`/pets/${petId}`),
@@ -72,3 +80,9 @@ export const getAuthorizationError = (): string | null => {
   }
   return null;
 };
+
+// Exportar interfaces e utilitários
+export type { NGOFilters, PetFilters };
+export { buildNGOUrl } from './filters/ngoFilters';
+export { buildPetUrl, createPetFiltersFromState } from './filters/petFilters';
+export { formatAge, formatSize, formatString, formatSpecies } from './formatters/petFormatters';

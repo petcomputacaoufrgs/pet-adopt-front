@@ -102,7 +102,6 @@ const SignUp: React.FC = () => {
         email,
         password,
         confirmPassword,
-        role,
         ngoId: ngo?.id
       });
       setSuccessMessage('Cadastro realizado com sucesso!');

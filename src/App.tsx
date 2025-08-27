@@ -11,6 +11,7 @@ import ApproveNGO from "./views/ApproveNGO";
 import ManageInfo from "./views/ManageInfo";
 import PetProfile from "./views/PetProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ManageNGOMembers from "./views/ManageNGOMembers";
 
 function App() {  
 
@@ -59,6 +60,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['NGO_ADMIN']}>
                 <ManageNgoProfile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/manageNgoMembers" 
+            element={
+              <ProtectedRoute allowedRoles={['NGO_ADMIN']}>
+                <ManageNGOMembers />
               </ProtectedRoute>
             } 
           />
