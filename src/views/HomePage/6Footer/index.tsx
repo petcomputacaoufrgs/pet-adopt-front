@@ -22,18 +22,16 @@ import TiktokB from "../../../assets/BrownTiktokPin.png";
 
 const Footer = () => {
   const links1 = [
-    { label: "Sobre Nós", href: "#" },
-    { label: "Animais Recém Adicionados", href: "#" },
-    { label: "Dicas", href: "#" },
-    { label: "Fale Conosco", href: "#" },
-    { label: "Cadastrar ONG", href: "#" },
+    { label: "Sobre Nós", href: "#about" },
+    { label: "Animais Recém Adicionados", href: "#listAnimals" },
+    { label: "Dicas", href: "#hints" },
+    { label: "Fale Conosco", href: "#contact" },
     { label: "Política de Privacidade", href: "#" }
   ];
 
   const links2 = [
-    { label: "Sou Administrador", href: "#" },
-    { label: "Sou uma ONG", href: "#" },
-    { label: "Sou Membro de ONG", href: "#" }
+    { label: "Ja sou um parceiro", href: "login" },
+    { label: "Ainda nao sou um parceiro", href: "signup" },
   ];
 
   const socialMediaLinks = [
@@ -64,7 +62,7 @@ const Footer = () => {
   ];
   
   return (
-    <GridContainer>
+    <GridContainer id="footer">
       <FooterGrid>
         <FooterDiv>
           <Image3 src={Logo} />

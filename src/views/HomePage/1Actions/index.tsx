@@ -17,7 +17,7 @@ const Actions = () => {
   return (
 
     
-    <ActionsContainer>
+    <ActionsContainer id="actions">
       
        <InfoDiv>
         <LabelImage />

@@ -10,7 +10,7 @@ import imagemPreenchimento from "../../../assets/HomePageLayer.png";
 const Dicas = () => {
 
   return (
-    <HintsContainer>
+    <HintsContainer id="hints">
 
         <InfoDiv>
           <div id="titleDiv">

@@ -58,6 +58,13 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     },
   ];
 
+  const optionHrefMap: Record<string, string> = {
+  "Sobre Nós": "#about",
+  "Animais Recém Adicionados": "#listAnimals",
+  "Dicas": "#hints",
+  "Fale Conosco": "#contact",
+  };
+
   const navigate = useNavigate();
 
   const handleUserAction = (selected: string) => {
@@ -253,9 +260,9 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
         <TextContainer>
           {responsiveMode !== "compact" &&
             options.map((option) => (
-              <TextButton key={option} onClick={() => optionsToAction(option)}>
-                {option}
-              </TextButton>
+              <a href={optionHrefMap[option] || "#"} style={{ textDecoration: "none" }}>
+                <TextButton>{option}</TextButton>
+              </a>
             ))}
         </TextContainer>
 

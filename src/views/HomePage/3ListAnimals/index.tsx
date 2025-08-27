@@ -59,7 +59,7 @@ const ListAnimals = () => {
   
 
   return (
-    <ListContainer>
+    <ListContainer id="listAnimals">
 
       <TextContainer>
         <TextTitle2>Não Perca os Animaizinhos</TextTitle2>

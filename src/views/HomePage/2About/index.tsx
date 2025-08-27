@@ -7,7 +7,7 @@ import dogLines from "../../../assets/HomePageDogLines.png"
 
 const About = () => {
   return (
-    <AboutContainer>
+    <AboutContainer id="about">
       <AboutDiv>
           
         <Info subTitle= "Nosso Objetivo é" title="Alcançar Finais Felizes" buttonTitle= "Ver Nossos Animaizinhos" to = "/searchAnimals" position="flex-start">
