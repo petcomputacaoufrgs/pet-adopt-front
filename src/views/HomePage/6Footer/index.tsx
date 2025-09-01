@@ -22,10 +22,10 @@ import TiktokB from "../../../assets/BrownTiktokPin.png";
 
 const Footer = () => {
   const links1 = [
-    { label: "Sobre Nós", href: "#about" },
-    { label: "Animais Recém Adicionados", href: "#listAnimals" },
-    { label: "Dicas", href: "#hints" },
-    { label: "Fale Conosco", href: "#contact" },
+    { label: "Sobre Nós", href: "/#about" },
+    { label: "Animais Recém Adicionados", href: "/#listAnimals" },
+    { label: "Dicas", href: "/#hints" },
+    { label: "Fale Conosco", href: "/#contact" },
     { label: "Política de Privacidade", href: "#" }
   ];
 
