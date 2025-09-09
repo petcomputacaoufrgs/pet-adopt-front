@@ -3,7 +3,7 @@ import axios from 'axios';
 import Header from "../../components/Header";
 import logo from "../../assets/HorizontalLogo.png";
 import { User } from "../../types/user";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef} from "react";
 import {
   CloseButton,
   ContentContainer,
@@ -156,6 +156,16 @@ const ManageNGOMembers: React.FC = () => {
       if (membersPerPage * currentPage > updatedMembers.length && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
+
+      resetToast();
+      setShowToast(true);
+      setToastType("excluir");
+
+      showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+      hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+      fullCloseTimeoutRef.current = setTimeout(() => {
+        setShowToast(false);
+      }, 3500);
       
     } catch (err) {
       
@@ -171,16 +181,9 @@ const ManageNGOMembers: React.FC = () => {
    * Função para lidar com o clique em deletar
    */
   const handleDeleteClick = (member: User) => {
-    if (!member) return;
-    
-    const confirmDelete = window.confirm(
-      `Tem certeza que deseja excluir a ONG "${member.name}"? Esta ação não pode ser desfeita.`
-    );
-    
-    if (confirmDelete) {
-      deleteMember(member.id);
-    }
+    setMemberToDelete(member); // Apenas abre o modal
   };
+
 
   /**
    * Função para lidar com o clique em editar
@@ -188,6 +191,36 @@ const ManageNGOMembers: React.FC = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [memberBeingEdited, setMemberBeingEdited] = useState<User | null>(null);
+  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [memberToDelete, setMemberToDelete] = useState<User | null>(null);
+  const [toastType, setToastType] = useState<"excluir" | "editar" | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  
+    // Fecha toast com animação
+   const resetToast = () => {
+    setToastVisible(false);
+  
+    if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
+  
+    setShowToast(false);
+    setToastType(null)
+    };
+  
+  
+    // Confirmar exclusão
+   const handleDeleteConfirm = async () => {
+    if (!memberToDelete) return;
+
+    await deleteMember(memberToDelete.id);
+    setMemberToDelete(null);
+   
+  };
+
 
   useEffect(() => {
     document.body.style.overflow = isEditModalOpen ? "hidden" : "";
@@ -254,20 +287,18 @@ const ManageNGOMembers: React.FC = () => {
                 emptyMessage="Nenhuma ONG Encontrada"
                 expandContainer={hideMembersFilter}
                 emptyState={showedMembers.length == 0}
-                buttonText="+ Cadastrar Pet"
-                onButtonClick={() => {}}
               />
 
               
             
                 <NGOCardsContainer>
                   {showedMembers.length > 0 && showedMembers.map((member) => (
-                    <MemberInfoCard
-                      key={member.id}
-                      member={member}
-                      onEditClick={handleEditClick}
-                      onDeleteClick={handleDeleteClick}
-                    />
+                   <MemberInfoCard
+                    key={member.id}
+                    member={member}
+                    onEditClick={handleEditClick}
+                    onDeleteClick={() => handleDeleteClick(member)} // CORRETO
+                  />
                   ))}
                 </NGOCardsContainer>
       
@@ -295,7 +326,30 @@ const ManageNGOMembers: React.FC = () => {
                   />
                 )}
               <Footer />
-          
+             {memberToDelete && (
+                <ConfirmModal
+                  isOpen={true}
+                  title={"Só confirmando, deseja mesmo excluir esse administrador?"}
+                  message={"Tem certeza? Ao excluir, o administrador será removido do sistema permanentemente."}
+                  confirmLabel={"Sim, excluir"}
+                  cancelLabel="Cancelar"
+                  onConfirm={handleDeleteConfirm}
+                  onClose={() => setMemberToDelete(null)}
+                />
+              )}
+
+              {showToast && toastType && (
+                <SuccessToast
+                  message={`${toastType === "excluir" ? "Administrador excluído com sucesso!" : "Alterações salvas com sucesso"}`}
+                  description= {`${toastType === "excluir" ? "O administrador foi removido do sistema." : "Os dados do administrador foram atualizados."}`}
+                  onClose={() => {
+                    setToastVisible(false);
+                    setTimeout(() => setShowToast(false), 300);
+                  }}
+                  isVisible={toastVisible}
+                />
+              )}
+
       
     
       

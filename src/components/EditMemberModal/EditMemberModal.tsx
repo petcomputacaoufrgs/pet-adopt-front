@@ -47,9 +47,9 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({ member, onClose, onSa
   };
 
   useEffect(() => {
-      setName("Amanda Silva");
-      setEmail("amandasilva@gmail.com");
-    }, []);
+    setName(member.name);
+    setEmail(member.email);
+  }, [member]);
 
   //Mensagem de Sucesso
   const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -192,7 +192,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({ member, onClose, onSa
                         title= "Nome"
                         required = {true} 
                         placeholder="Insira seu nome aqui"
-                        value={member.name}
+                        value={name}
                         $fontSize="1rem"
                         $width="100%"
                         onChange={(e) => setName(e.target.value)}
@@ -201,7 +201,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({ member, onClose, onSa
                     title="E-mail"
                     required = {true} 
                     placeholder="Insira seu email aqui"
-                    value={member.email}
+                    value={email}
                           onChange={(e) => {
                         setEmail(e.target.value);
                         verifyEmail(e.target.value);
@@ -209,8 +209,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({ member, onClose, onSa
                     $fontSize="1rem"
                     $width="100%"
                     error={emailError}
-                    errorMessage={emailErrorMessage} 
-                    $readOnly={role ==="admin3"?false:true}
+                    errorMessage={emailErrorMessage}
                   />
                     <Divider />
                     <ButtonWrapper>
