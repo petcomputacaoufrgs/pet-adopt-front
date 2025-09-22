@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { ngoService, NGOFilters } from "../../services";
+import { AxiosError } from "axios";
 
 import {
   CloseButton,
@@ -41,7 +42,6 @@ interface NGO {
 const ManageNgo = () => {
   /**
    * Estados que representam os filtros aplicados às ONGs.
-   * Cada um armazena uma característica diferente usada para filtrar as ONGs.
    */
   const [selectedState, setSelectedState] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -49,6 +49,7 @@ const ManageNgo = () => {
 
   // Estado para armazenar as ONGs
   const [ngos, setNgos] = useState<NGO[]>([]);
+  const [allNgos, setAllNgos] = useState<NGO[]>([]); // Para manter lista completa para autocomplete
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -57,24 +58,34 @@ const ManageNgo = () => {
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
   /**
-   * Função para buscar todas as ONGs do backend
+   * Função para buscar ONGs com filtros
    */
-  const fetchNGOs = async () => {
-  try {
-    setIsLoading(true);
-    setError("");
-    
-    const response = await axios.get('http://localhost:3002/api/v1/ngos/approved');
-    
-    // Mapear os dados para garantir que tenham o campo 'id'
-    const mappedNgos = response.data.map((ngo: any) => ({
-      ...ngo,
-      id: ngo._id || ngo.id,
-    }));
-    
-    setNgos(mappedNgos);
+  const fetchNGOs = async (filters?: NGOFilters) => {
+    try {
+      setIsLoading(true);
+      setError("");
+      
+      console.log('📡 Buscando ONGs aprovadas com filtros:', filters);
+      
+      const response = await ngoService.getApproved(filters);
+      
+      // Mapear os dados para garantir que tenham o campo 'id'
+      const mappedNgos = response.data.map((ngo: any) => ({
+        ...ngo,
+        id: ngo._id || ngo.id,
+      }));
+      
+      setNgos(mappedNgos);
+      
+      // Se não há filtros, salvar como lista completa para autocomplete
+      if (!filters || Object.keys(filters).length === 0) {
+        setAllNgos(mappedNgos);
+      }
+      
+      console.log('✅ ONGs carregadas:', mappedNgos.length);
+      
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao carregar ONGs.');
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
@@ -82,6 +93,30 @@ const ManageNgo = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  /**
+   * Callback para quando o usuário pesquisar
+   */
+  const handleSearch = (filters: { name: string; city: string; state: string }) => {
+    const ngoFilters: NGOFilters = {};
+    
+    if (filters.name) ngoFilters.name = filters.name;
+    if (filters.city) ngoFilters.city = filters.city;
+    if (filters.state && filters.state !== 'Qualquer') ngoFilters.state = filters.state;
+    
+    console.log('🔍 Aplicando filtros:', ngoFilters);
+    fetchNGOs(ngoFilters);
+    setCurrentPage(1); // Resetar para primeira página
+  };
+
+  /**
+   * Callback para quando o usuário limpar filtros
+   */
+  const handleClearFilters = () => {
+    console.log('🧹 Limpando filtros');
+    fetchNGOs(); // Buscar sem filtros
+    setCurrentPage(1); // Resetar para primeira página
   };
 
   /**
@@ -104,7 +139,7 @@ const ManageNgo = () => {
    * Efeito para buscar ONGs quando o componente for montado
    */
   useEffect(() => {
-    fetchNGOs();
+    fetchNGOs(); // Buscar todas as ONGs inicialmente
   }, []);
 
   /**
@@ -147,7 +182,6 @@ const ManageNgo = () => {
 
   /**
    * Manipula ações do header com base na opção clicada.
-   * @param selected Opção clicada pelo usuário
    */
   const handleHeaderAction = (selected: string) => {
     switch (selected) {
@@ -171,7 +205,7 @@ const ManageNgo = () => {
    */
   const deleteNGO = async (ngoId: string) => {
     try {  
-      await axios.delete(`http://localhost:3002/api/v1/ngos/${ngoId}`);
+      await ngoService.delete(ngoId);
       
       // Remover a ONG da lista local
       setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
@@ -183,8 +217,7 @@ const ManageNgo = () => {
       }
       
     } catch (err) {
-      
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao deletar ONG.');
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
@@ -259,7 +292,7 @@ const ManageNgo = () => {
           <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
 
           <NGOsFilter
-            ngos={ngos.map(ngo => ngo.name)} // Convertendo para array de strings para o filtro
+            ngos={allNgos.map(ngo => ngo.name)} // Lista completa para autocomplete
             selectedState={selectedState}
             setSelectedState={setSelectedState}
             city={city}
@@ -267,6 +300,8 @@ const ManageNgo = () => {
             name={name}
             setName={setName}
             hasBorder={false}
+            onSearch={handleSearch}
+            onClearFilters={handleClearFilters}
           />
         </Overlay>
       )}
@@ -274,45 +309,45 @@ const ManageNgo = () => {
       <ContentContainer>
         {!hideNGOFilter && (
           <NGOsFilter
-            ngos={ngos.map(ngo => ngo.name)}
+            ngos={allNgos.map(ngo => ngo.name)} // Lista completa para autocomplete
             selectedState={selectedState}
             setSelectedState={setSelectedState}
             city={city}
             setCity={setCity}
             name={name}
             setName={setName}
+            onSearch={handleSearch}
+            onClearFilters={handleClearFilters}
           />
         )}
 
-
         <div style={{minWidth: hideNGOFilter? "60%" : "50%", width: hideNGOFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
         
-
-        <SectionWithEmptyState 
-          title="ONGs"
-          subtitle="Visualize as ONGs em atividade no momento"
-          emptyMessage="Nenhuma ONG Encontrada"
-          expandContainer={hideNGOFilter}
-          emptyState={showedNGOs.length == 0}
-        />
-        
-        <NGOCardsContainer>
-          {isLoading && <p>Carregando ONGs...</p>}
-          {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
-          {!isLoading && !error && ngos.length === 0 && <p>Nenhuma ONG encontrada.</p>}
+          <SectionWithEmptyState 
+            title="ONGs"
+            subtitle="Visualize as ONGs em atividade no momento"
+            emptyMessage="Nenhuma ONG Encontrada"
+            expandContainer={hideNGOFilter}
+            emptyState={showedNGOs.length === 0}
+          />
           
-          {!isLoading && !error && showedNGOs.map((ngo, index) => (
-            <OngInfoCard
-              key={ngo.id || index}
-              ngo={ngo}
-              showEditOptions={true}
-              onEditClick={handleEditClick}
-              onDeleteClick={handleDeleteClick}
-            />
-          ))}
-        </NGOCardsContainer>
+          <NGOCardsContainer>
+            {isLoading && <p>Carregando ONGs...</p>}
+            {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
+            {!isLoading && !error && ngos.length === 0 && <p>Nenhuma ONG encontrada.</p>}
+            
+            {!isLoading && !error && showedNGOs.map((ngo, index) => (
+              <OngInfoCard
+                key={ngo.id || index}
+                ngo={ngo}
+                showEditOptions={true}
+                onEditClick={handleEditClick}
+                onDeleteClick={handleDeleteClick}
+              />
+            ))}
+          </NGOCardsContainer>
 
-      </div>
+        </div>
 
       </ContentContainer>
 

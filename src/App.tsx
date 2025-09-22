@@ -10,6 +10,7 @@ import EditAnimal from "./views/EditAnimal";
 import ApproveNGO from "./views/ApproveNGO";
 import ManageInfo from "./views/ManageInfo";
 import PetProfile from "./views/PetProfile";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ManageNGOMembers from "./views/ManageNGOMembers";
 
 function App() {  
@@ -18,22 +19,95 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
+          {/* Rotas públicas */}
           <Route path="/" element={<HomeView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/signup" element={<SignupView />} />
-          <Route path="/manageNgo" element={<ManageNgo />}></Route>
-          <Route path="/manageNgoProfile" element={<ManageNgoProfile />}></Route>
-          <Route path="/validateNgoProfile" element={<ValidateNgoProfile />}></Route>
-          <Route path="/approveNgo" element={<ApproveNGO />}></Route>
-          <Route path="/manageAnimals" element={<ManageAnimals allowEdit={true}/>}></Route>
-          <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>}></Route>
-          <Route path="/editAnimal" element={<EditAnimal animalData={true}/>}></Route>
-          <Route path="/createAnimal" element={<EditAnimal animalData={false}/>}></Route>
-          <Route path="/manageInfo" element={< ManageInfo/>}></Route>
-          <Route path="/manageMembers" element={< ManageNGOMembers/>}></Route>
+          <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>} />
           <Route path="/petProfile" element={<PetProfile />} />
 
-          {/* <Route path="/selectorButton" element={<  AnimalFilter />}/> */}
+          {/* Rotas protegidas - Apenas ADMIN */}
+          <Route 
+            path="/approveNgo" 
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ApproveNGO />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/validateNgoProfile" 
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ValidateNgoProfile />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/manageNgo" 
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ManageNgo />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Rotas protegidas - Apenas NGO_ADMIN */}
+          <Route 
+            path="/manageNgoProfile" 
+            element={
+              <ProtectedRoute allowedRoles={['NGO_ADMIN']}>
+                <ManageNgoProfile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/manageNgoMembers" 
+            element={
+              <ProtectedRoute allowedRoles={['NGO_ADMIN']}>
+                <ManageNGOMembers />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Rotas protegidas - (Qualquer usuário logado) ADMIN, NGO_ADMIN e NGO_MEMBER */}
+          <Route 
+            path="/manageAnimals" 
+            element={
+              <ProtectedRoute allowedRoles={['ALL']}>
+                <ManageAnimals allowEdit={true}/>
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/editAnimal" 
+            element={
+              <ProtectedRoute allowedRoles={['ALL']}>
+                <EditAnimal animalData={true}/>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/manageInfo" 
+            element={
+              <ProtectedRoute allowedRoles={['ALL']}>
+                <ManageInfo />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/createAnimal" 
+            element={
+              <ProtectedRoute allowedRoles={['ALL']}>
+                <EditAnimal animalData={false}/>
+              </ProtectedRoute>
+            } 
+          />
+          
         </Routes>
       </BrowserRouter>
     </div>

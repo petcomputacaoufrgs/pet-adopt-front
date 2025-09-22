@@ -10,6 +10,7 @@ import Footer from "./6Footer";
 import logo from "../../assets/HorizontalLogo.png"
 import { useRef } from "react";
 
+import AuthorizationToast from '../../components/AuthorizationToast';
 
 const HomeView = () => {
   
@@ -20,6 +21,7 @@ const HomeView = () => {
 
   return (
     <>
+      <AuthorizationToast />
       <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo} />
       <About />
       <ListAnimals />

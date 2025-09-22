@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { userService } from "../../services";
+import { AxiosError } from "axios";
 
 import Header from "../../components/Header";
 import logo from "../../assets/HorizontalLogo.png";
@@ -42,11 +43,11 @@ const ManageNGOMembers: React.FC = () => {
   const fetchNGOMembers = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get('http://localhost:3002/api/v1/users/role/NGO_MEMBER');
+      const response = await userService.getByRole('NGO_MEMBER');
       setNgoMembers(response.data);
     } catch (error) {
       console.error(error);
-      if (axios.isAxiosError(error) && error.response) {
+      if (error instanceof AxiosError && error.response) {
         setErrorMessage(error.response.data.message || 'Erro ao carregar membros de ONGs.');
       } else {
         setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
