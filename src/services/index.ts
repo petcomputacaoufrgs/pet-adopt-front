@@ -64,7 +64,7 @@ export const userService = {
 
   getUnapprovedMembers: (ngoId: string, filters?: UserFilters) => {
     
-    const url = buildUserUrl('/user/unapprovedMembers', ngoId, filters);
+    const url = buildUserUrl('/users/unapprovedMembers/', ngoId, filters);
     return api.get(url);
   },
 
@@ -74,7 +74,7 @@ export const userService = {
   },
 
   approve: (memberId: string) => 
-    api.patch(`/user/${memberId}/approve`),
+    api.patch(`/users/${memberId}/approve`),
 
   delete: (memberId: string) => 
     api.delete(`/users/${memberId}`),

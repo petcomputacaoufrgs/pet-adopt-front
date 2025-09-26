@@ -35,13 +35,15 @@ interface MEMBER {
   id: string;
   name: string;
   email: string;
+  ngoId: string;
 }
 
 const ApproveNGOMembers = () => {
 
   /*estados que guardam informações da ong*/
   const { user, isLoading: authLoading } = useAuth();
-  const ngoId = user?.id;
+  const [ngoId, setNgoId] = useState<string | null>(null);
+  setNgoId(user?.ngoId);
   
   /**
    * Estados que representam os filtros aplicados às ONGs.
@@ -85,7 +87,7 @@ const ApproveNGOMembers = () => {
   const fetchMembers = async () => {
     
     try {
-
+      
       if (!ngoId) {
         setError("ID da ONG não encontrado");
         return;
@@ -93,8 +95,7 @@ const ApproveNGOMembers = () => {
       setIsLoading(true);
       setError("");
       
-      const response = await userService.getUnapprovedMembers(ngoId);
-      console.log("Membros recebidos da API:", response.data);
+      const response = await userService.getUnapprovedMembers(ngo);
       // Mapear os dados para garantir que tenham o campo 'id'
       const mappedMembers = response.data.map((member: any) => ({
         ...member,
@@ -236,7 +237,8 @@ const ApproveNGOMembers = () => {
   };
 
   /**
-   * Confirmar ação - VERSÃO CORRIGIDA
+   * Confirmar ação
+   *
    */
   const handleConfirm = async () => {
     if (!modalAction) return;
@@ -270,7 +272,7 @@ const ApproveNGOMembers = () => {
     console.log(ngoId);
     if (ngoId) fetchMembers();
   }, [ngoId]);
-
+  
   /**
    * Atualiza o estado do layout e quantidade de ONGs por página ao redimensionar a tela
    */
