@@ -5,6 +5,7 @@ interface User {
   email: string;
   role: 'ADMIN' | 'NGO_ADMIN' | 'NGO_MEMBER' | 'REGULAR';
   name?: string;
+  ngoId?: string;
 }
 
 interface AuthState {

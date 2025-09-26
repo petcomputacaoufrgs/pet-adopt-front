@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const CardContainer = styled.div<{ $estado: "default" | "hover" | "selected"}>`
+export const CardContainer = styled.div<{ $estado: "default" | "hover" | "selected", $modo: "edit" | "approve" | "none"}>`
   width: 90%;
   background-color: white;
   border-radius: 15px;
@@ -23,7 +23,7 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
    align-self: start;
 `;
 
-export const OngName = styled.h3`
+export const MemberName = styled.h3`
   margin: 0;
   font-weight: 700;
   text-align: center;
@@ -31,12 +31,20 @@ export const OngName = styled.h3`
   
 `;
 
-export const OngType = styled.p`
+export const MemberType = styled.p`
   margin-top: 0;
   padding-top:10px;
   text-align: center;
   font-size: 14px;
 `;
+
+export const MemberApproveButtonWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding-top: 15px
+`;
+
 
 export const InfoSection = styled.div`
     width: 100%;
@@ -119,7 +127,7 @@ export const Cabecalho = styled.div`
   padding: 10px;
 `;
 
-export const OngTextGroup = styled.div`
+export const MemberTextGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;

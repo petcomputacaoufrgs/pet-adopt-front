@@ -2,29 +2,29 @@ import React, { useState } from "react";
 import {
   CardContainer,
   InfoSection,
-  OngName,
-  OngType,
+  MemberName,
+  MemberType,
   DataItem,
   EditButtonWrapper,
-  NGOApproveButtonWrapper,
-  SocialIconsDiv,
-  Icon,
+  MemberApproveButtonWrapper,
   Cabecalho,
-  OngTextGroup,
+  MemberTextGroup,
 } from "./styles";
 import { MemberInfoCardProps } from "./types";
-
-import Location from "../../assets/location.svg";
-import Id from "../../assets/id.svg";
 import Phone from "../../assets/phone.svg";
 import Email from "../../assets/email.svg";
 import DeleteIcon from "../../assets/DeleteIcon.svg";
 import PencilIcon from "../../assets/PencilIcon.svg";
 
 import EditButton from "../EditButton";
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
 
 const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
   member,
+  showApproveButtons = false,
+  showEditOptions = false,
+  onApproveClick,
+  onRejectClick,
   onEditClick,
   onDeleteClick,
   selected = false,
@@ -47,12 +47,13 @@ const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       $estado={selected ? "selected" : hovered ? "hover" : "default"}
+      $modo={showApproveButtons ? "approve" : showEditOptions ? "edit" : "none"}
     >
       <Cabecalho>
-        <OngTextGroup>
-          <OngName>{member?.name || "Nome não informado"}</OngName>
-          <OngType>Administrador</OngType>
-        </OngTextGroup>
+        <MemberTextGroup>
+          <MemberName>{member?.name || "Nome não informado"}</MemberName>
+          <MemberType>Administrador</MemberType>
+        </MemberTextGroup>
 
         {member &&(
           <EditButtonWrapper>
@@ -84,6 +85,29 @@ const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
           </DataItem>)
         ))}
       </InfoSection>
+
+       {showApproveButtons && member &&(
+        <MemberApproveButtonWrapper>
+          <PrimarySecondaryButton
+            buttonType="Secundário"
+            content="Recusar"
+            onClick={() => onRejectClick?.(member)}
+            height="40px"
+            paddingV=""
+            paddingH=""
+            $flex
+          />
+          <PrimarySecondaryButton
+            buttonType="Primário"
+            content="Aceitar"
+            onClick={() => onApproveClick?.(member)}
+            height="40px"
+            paddingV=""
+            paddingH=""
+            $flex
+          />
+        </MemberApproveButtonWrapper>
+      )}
 
     </CardContainer>
   );

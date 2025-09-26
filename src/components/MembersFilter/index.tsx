@@ -10,7 +10,7 @@ import PrimarySecondaryButton from "../PrimarySecondaryButton";
 /*Dá onde vem os nomes filtrados?*/
 
 export default function MembersFilter({
-  ngoMembers,
+  members,
   name,
   setName,
   hasBorder = true

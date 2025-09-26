@@ -2,7 +2,6 @@ import { userService } from "../../services";
 import { AxiosError } from "axios";
 
 import Header from "../../components/Header";
-import logo from "../../assets/HorizontalLogo.png";
 import { User } from "../../types/user";
 import { useState, useEffect, useRef} from "react";
 import {
@@ -18,7 +17,7 @@ import BannerComponent from "../../components/BannerComponent";
 import Breadcrumb from "../../components/BreadCrumb";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import SuccessToast from "../../components/SuccessToast";
+import Toast from "../../components/Toast";
 import MemberInfoCard from '../../components/MemberInfoCard';
 import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -147,8 +146,7 @@ const ManageNGOMembers: React.FC = () => {
    */
   const deleteMember = async (memberId: string) => {
     try {  
-      await axios.delete(`http://localhost:3002/api/v1/ngos/${memberId}`);
-      
+  
       // Remover a ONG da lista local
       setNgoMembers(prevMembers => prevMembers.filter(member => member.id !== memberId));
       
@@ -170,11 +168,6 @@ const ManageNGOMembers: React.FC = () => {
       
     } catch (err) {
       
-      if (axios.isAxiosError(err) && err.response) {
-        setErrorMessage(err.response.data?.message || 'Erro ao deletar ONG.');
-      } else {
-        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
-      }
     }
   };
   
@@ -259,7 +252,7 @@ const ManageNGOMembers: React.FC = () => {
               <CloseButton onClick={() => setShowMembersFilterOnSide(false)}>x</CloseButton>
       
               <MembersFilter
-                ngoMembers={ngoMembers.map(ngo => ngo.name)}
+                members={ngoMembers.map(ngo => ngo.name)}
                 name={name}
                 setName={setName}
       
@@ -273,7 +266,7 @@ const ManageNGOMembers: React.FC = () => {
             {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}
             {!hideMembersFilter && (
               <MembersFilter
-                ngoMembers={ngoMembers.map(member => member.name)}
+                members={ngoMembers.map(member => member.name)}
                 name={name}
                 setName={setName}
               />
@@ -285,7 +278,7 @@ const ManageNGOMembers: React.FC = () => {
               <SectionWithEmptyState 
                 title="Administradores"
                 subtitle="Veja quem está como administrador no momento"
-                emptyMessage="Nenhuma ONG Encontrada"
+                emptyMessage="Nenhum Administrador Encontrado"
                 expandContainer={hideMembersFilter}
                 emptyState={showedMembers.length == 0}
               />
@@ -340,7 +333,7 @@ const ManageNGOMembers: React.FC = () => {
               )}
 
               {showToast && toastType && (
-                <SuccessToast
+                <Toast
                   message={`${toastType === "excluir" ? "Administrador excluído com sucesso!" : "Alterações salvas com sucesso"}`}
                   description= {`${toastType === "excluir" ? "O administrador foi removido do sistema." : "Os dados do administrador foram atualizados."}`}
                   onClose={() => {
@@ -356,7 +349,7 @@ const ManageNGOMembers: React.FC = () => {
       
       
     </div>
-  );
+  ); 
 };
 
 

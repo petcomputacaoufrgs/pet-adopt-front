@@ -7,7 +7,7 @@ import Footer from "../../views/HomePage/6Footer";
 import BasicInput from "../BasicInput";
 import PasswordInput from "../PasswordInput";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
-import SuccessToast from "../SuccessToast";
+import Toast from "../Toast";
 import { User } from "../../types/user";
 import CloseButton from "../CloseButton";
 
@@ -159,7 +159,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({ member, onClose, onSa
         />      
         
          {showToast && (
-          <SuccessToast
+          <Toast
             message= "Dados atualizados!"
             description= "Informações atualizadas com sucesso."
             onClose={() => {
