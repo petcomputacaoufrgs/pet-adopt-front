@@ -15,7 +15,9 @@ export default function NGOsFilter({
   setCity,
   name,
   setName,
-  hasBorder = true
+  hasBorder = true,
+  onSearch,
+  onClearFilters
 }: INGOsFilter) {
   const states = {
     options: [
@@ -31,14 +33,24 @@ export default function NGOsFilter({
     setCity(e.target.value);
   };
 
-  /*const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };*/
+  const handleSearch = () => {
+    const filters = {
+      name: name.trim(),
+      city: city.trim(),
+      state: selectedState
+    };
+    
+    console.log('🔍 Aplicando filtros:', filters);
+    onSearch?.(filters);
+  };
 
-  const onCleanFilters = () => {
+  const handleClearFilters = () => {
     setSelectedState("");
     setCity("");
     setName("");
+    
+    console.log('🧹 Limpando filtros');
+    onClearFilters?.();
   };
 
   const inputsWidth = "298px";
@@ -95,8 +107,18 @@ export default function NGOsFilter({
       </FilterContainer>
 
       <ButtonsContainer $width={inputsWidth}>
-        <PrimarySecondaryButton width="100%" content="Buscar" onClick={() => {}}/>
-        <ActionText width="100%" fontSize="1.125em" onClick={onCleanFilters} textColor="#553525" underlineOnHover>
+        <PrimarySecondaryButton 
+          width="100%" 
+          content="Buscar" 
+          onClick={handleSearch}
+        />
+        <ActionText 
+          width="100%" 
+          fontSize="1.125em" 
+          onClick={handleClearFilters} 
+          textColor="#553525" 
+          underlineOnHover
+        >
           Limpar Filtros
         </ActionText>
       </ButtonsContainer>

@@ -1,4 +1,4 @@
-import { SuccessToastProps } from './types';
+import { ToastProps } from './types';
 import {
   ToastContainer,
   TitleRow,
@@ -7,9 +7,15 @@ import {
 } from './styles';
 import CloseButton from '../CloseButton';
 
-export default function SuccessToast({ message, description, onClose ,  isVisible}: SuccessToastProps) {
+export default function Toast({ 
+  message, 
+  description, 
+  onClose, 
+  isVisible, 
+  type = 'success' 
+}: ToastProps) {
   return (
-    <ToastContainer isVisible={isVisible}>
+    <ToastContainer isVisible={isVisible} toastType={type}>
       <TitleRow>
         <Title>{message}</Title>
         <CloseButton themeMode="dark" onClick={onClose} />

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import { ngoService } from "../../services";
+import { AxiosError } from "axios";
 import {
   CloseButton,
   ContentContainer,
@@ -15,13 +16,14 @@ import Header from "../../components/Header";
 import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import SuccessToast from "../../components/SuccessToast";
+import Toast from "../../components/Toast";
 import OngInfoCard from "../../components/OngInfoCard";
 
 import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
+import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
 
@@ -61,29 +63,45 @@ const ApproveNGO = () => {
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
   // Estado para armazenar as ONGs
-    const [ngos, setNgos] = useState<NGO[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>("");
+  const [ngos, setNgos] = useState<NGO[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  // Estados para modais e toasts
+  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [modalAction, setModalAction] = useState<ModalAction>(null);
+  
+  // Toast de sucesso
+  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  
+  // Toast de erro
+  const [errorToast, setErrorToast] = useState<string | null>(null);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [errorToastVisible, setErrorToastVisible] = useState(false);
 
   /**
    * Função para buscar todas as ONGs do backend
-  */
+   */
   const fetchNGOs = async () => {
-  try {
-    setIsLoading(true);
-    setError("");
-    
-    const response = await axios.get('http://localhost:3002/api/v1/ngos/unapproved');
-    
-    // Mapear os dados para garantir que tenham o campo 'id'
-    const mappedNgos = response.data.map((ngo: any) => ({
-      ...ngo,
-      id: ngo._id || ngo.id,
-    }));
-    
-    setNgos(mappedNgos);
+    try {
+      setIsLoading(true);
+      setError("");
+      
+      const response = await ngoService.getUnapproved();
+      
+      // Mapear os dados para garantir que tenham o campo 'id'
+      const mappedNgos = response.data.map((ngo: any) => ({
+        ...ngo,
+        id: ngo._id || ngo.id,
+      }));
+      
+      setNgos(mappedNgos);
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
+      if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao carregar ONGs.');
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
@@ -94,48 +112,52 @@ const ApproveNGO = () => {
   };
 
   /**
-   * Função para buscar todas as ONGs do backend
-  */
+   * Função para aprovar ONG
+   */
   const approveNGO = async (ngoId: string) => {
-  try {
-    setIsLoading(true);
-    setError("");
+    try {
+      setIsLoading(true);
+      setError("");
 
-    const response = await axios.patch(`http://localhost:3002/api/v1/ngos/${ngoId}/approve`);
+      const response = await ngoService.approve(ngoId);
 
-    // Atualiza a lista de ONGs removendo a ONG aprovada
-    setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+      // Atualiza a lista de ONGs removendo a ONG aprovada
+      setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
 
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
-        setError(err.response.data?.message || 'Erro ao aprovar ONGs.');
+      if (err instanceof AxiosError && err.response) {
+        setError(err.response.data?.message || 'Erro ao aprovar ONG.');
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
       }
+      throw err; //Propagar o erro
     } finally {
       setIsLoading(false);
     }
   };
 
   /**
-   * Função para buscar todas as ONGs do backend
-  */
+   * Função para rejeitar ONG
+   */
   const rejectNGO = async (ngoId: string) => {
-  try {
-    setIsLoading(true);
-    setError("");
+    try {
+      setIsLoading(true);
+      setError("");
 
-    const response = await axios.patch(`http://localhost:3002/api/v1/ngos/${ngoId}/reject`);
+      await ngoService.delete(ngoId);
 
-    // Atualiza a lista de ONGs removendo a ONG rejeitada
-    setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+      // Atualiza a lista de ONGs removendo a ONG rejeitada
+      setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
 
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
-        setError(err.response.data?.message || 'Erro ao rejeitar ONGs.');
+      if (err instanceof AxiosError && err.response) {
+        setError(err.response.data?.message || 'Erro ao rejeitar ONG.');
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
       }
+      throw err; // Propagar o erro
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -148,14 +170,96 @@ const ApproveNGO = () => {
     else return 5;
   };
 
-  
-  //const ngos = ngosMock
   const [ngosPerPage, setPetsPerPage] = useState<number>(getNGOsPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Define os pets que serão mostrados com base na página atual
+  // Define as ONGs que serão mostradas com base na página atual
   const startIndexShowedNGOs = ngosPerPage * (currentPage - 1);
   const showedNGOs = ngos.slice(startIndexShowedNGOs, startIndexShowedNGOs + ngosPerPage);
+
+  /**
+   * Função para resetar toast de sucesso
+   */
+  const resetToast = () => {
+    setToastVisible(false);
+
+    if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
+
+    setShowToast(false);
+    setToastType(null);
+  };
+
+  /**
+   * Função para mostrar toast de erro
+   */
+  const showErrorToastMessage = (message: string) => {
+    setErrorToast(message);
+    setShowErrorToast(true);
+    setErrorToastVisible(true);
+
+    // Auto-hide após 4 segundos
+    setTimeout(() => {
+      setErrorToastVisible(false);
+      setTimeout(() => {
+        setShowErrorToast(false);
+        setErrorToast(null);
+      }, 300);
+    }, 4000);
+  };
+
+  /**
+   * Função para mostrar toast de sucesso
+   */
+  const showSuccessToast = (tipo: "aprovar" | "recusar") => {
+    resetToast();
+    setToastType(tipo);
+    setShowToast(true);
+
+    showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+    hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+    fullCloseTimeoutRef.current = setTimeout(() => {
+      setShowToast(false);
+      setToastType(null);
+    }, 3500);
+  };
+
+  /**
+   * Abrir modal (e fechar toast se estiver aberto)
+   */
+  const openModal = (tipo: "aprovar" | "recusar", ngoId: string) => {
+    resetToast();
+    setModalAction({ tipo, ngoId: ngoId });
+  };
+
+  /**
+   * Confirmar ação - VERSÃO CORRIGIDA
+   */
+  const handleConfirm = async () => {
+    if (!modalAction) return;
+
+    try {
+      if (modalAction.tipo === "aprovar") {
+        await approveNGO(modalAction.ngoId);
+      } else if (modalAction.tipo === "recusar") {
+        await rejectNGO(modalAction.ngoId);
+      }
+      showSuccessToast(modalAction.tipo);
+
+    } catch (error) {
+      // Se der erro, mostra toast de erro
+      console.error("Erro na operação:", error);
+      
+      const errorMessage = modalAction.tipo === "aprovar" 
+        ? "Erro ao aprovar ONG. Tente novamente." 
+        : "Erro ao rejeitar ONG. Tente novamente.";
+      
+      showErrorToastMessage(errorMessage);
+    } finally {
+      setModalAction(null);
+    }
+  };
 
   /**
    * Efeito para buscar ONGs quando o componente for montado
@@ -165,7 +269,7 @@ const ApproveNGO = () => {
   }, []);
 
   /**
-   * Atualiza o estado do layout e quantidade de pets por página ao redimensionar a tela.
+   * Atualiza o estado do layout e quantidade de ONGs por página ao redimensionar a tela
    */
   useEffect(() => {
     const handleResize = () => {
@@ -176,7 +280,7 @@ const ApproveNGO = () => {
       sethideNGOFilter(isWindowSmall);
 
       // Corrige página atual se necessário
-      if (newNGOsPerPage * currentPage > ngos.length) {
+      if (showedNGOs.length > 0 && newNGOsPerPage * currentPage > ngos.length) {
         setCurrentPage(Math.ceil(ngos.length / newNGOsPerPage));
       }
 
@@ -191,20 +295,19 @@ const ApproveNGO = () => {
   }, [showNGOsFilter, currentPage, ngos.length]);
 
   /**
-   * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda.
+   * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda
    */
   useEffect(() => {
     document.body.style.overflow = showNGOsFilter ? "hidden" : "";
   }, [showNGOsFilter]);
 
   /**
-   * Opções exibidas no header da aplicação.
+   * Opções exibidas no header da aplicação
    */
   const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
 
   /**
-   * Manipula ações do header com base na opção clicada.
-   * @param selected Opção clicada pelo usuário
+   * Manipula ações do header com base na opção clicada
    */
   const handleHeaderAction = (selected: string) => {
     switch (selected) {
@@ -223,110 +326,60 @@ const ApproveNGO = () => {
     }
   };
 
-
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [modalAction, setModalAction] = useState<ModalAction>(null);
-  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
-  const [showToast, setShowToast] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
-
-  // Fecha toast com animação
- const resetToast = () => {
-  setToastVisible(false);
-
-  if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-  if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-  if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-
-  setShowToast(false);
-  setToastType(null);
-  };
-
-
-  // Abrir modal (e fechar toast se estiver aberto)
-  const openModal = (tipo: "aprovar" | "recusar", ngoId: string) => {
-    resetToast();
-    setModalAction({ tipo, ngoId: ngoId });
-  };
-
-  // Confirmar ação
-  const handleConfirm = () => {
-    if (!modalAction) return;
-
-    // Chama funções correspondentes do backend
-    if (modalAction.tipo === "aprovar") {
-      approveNGO(modalAction.ngoId);
-    }
-    else if (modalAction.tipo === "recusar") {
-      rejectNGO(modalAction.ngoId);
-    }
-
-    resetToast();
-    setToastType(modalAction.tipo);
-    setShowToast(true);
-
-    showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-    hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-    fullCloseTimeoutRef.current = setTimeout(() => {
-      setShowToast(false);
-      setToastType(null);
-    }, 3500);
-
-    setModalAction(null);
-  };
-
-
   return (
     <>
       <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={HorizontalLogo}/>
 
-      <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Juntos por um mundo melhor!" subTitle="Hora de escolher quem vai impactar positivamente nossa comunidade"   imageUrl={ApproveNGOsDog}/>
+      <BannerComponent 
+        limitWidthForImage="850px" 
+        color="rgba(178, 243, 255, 1)"  
+        title="Juntos por um mundo melhor!" 
+        subTitle="Hora de escolher quem vai impactar positivamente nossa comunidade"   
+        imageUrl={ApproveNGOsDog}
+      />
 
       <TopBarContainer>
         <TopBarContent>
           {hideNGOFilter && (
-            <PrimarySecondaryButton onClick={() => setshowNGOsFilter(true)} content="Filtros"  />
+            <PrimarySecondaryButton 
+              onClick={() => setshowNGOsFilter(true)} 
+              content="Filtros"  
+              height = {"48px"} 
+              paddingH= {"26px"} />
           )}
-          <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Gerenciar ONGs" },  ]} />
+          <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Aprovar ONGs" }]} />
         </TopBarContent>
       </TopBarContainer>
 
-    {showNGOsFilter && (
-      <Overlay>
-        <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
-
-        <NGOsFilter
-          ngos={ngos.map(ngo => ngo.name)}
-          selectedState={selectedState}
-          setSelectedState={setSelectedState}
-          city={city}
-          setCity={setCity}
-          name={name}
-          setName={setName}
-
-          hasBorder={false}
-        />
-      </Overlay>
-    )}
-
-    <ContentContainer>
-      {!hideNGOFilter && (
-        <NGOsFilter
-          ngos={ngos.map(ngo => ngo.name)}
-          selectedState={selectedState}
-          setSelectedState={setSelectedState}
-          city={city}
-          setCity={setCity}
-          name={name}
-          setName={setName}
-        />
+      {showNGOsFilter && (
+        <Overlay>
+          <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
+          <NGOsFilter
+            ngos={ngos.map(ngo => ngo.name)}
+            selectedState={selectedState}
+            setSelectedState={setSelectedState}
+            city={city}
+            setCity={setCity}
+            name={name}
+            setName={setName}
+            hasBorder={false}
+          />
+        </Overlay>
       )}
 
+      <ContentContainer>
+        <div style={{minWidth: hideNGOFilter? "60%" : "50%", width: hideNGOFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
         
+          <SectionWithEmptyState 
+            title="ONGs"
+            subtitle="Escolha as ONGs que farão parte do projeto"
+            emptyMessage="Nenhuma ONG Encontrada"
+            expandContainer={hideNGOFilter}
+            emptyState={showedNGOs.length === 0}
+          />
+          
           <NGOCardsContainer>
-            {showedNGOs.map((ngo) => (
+            {showedNGOs.length > 0 && showedNGOs.map((ngo) => (
               <OngInfoCard
                 key={ngo.id}
                 ngo={ngo}
@@ -337,8 +390,9 @@ const ApproveNGO = () => {
             ))}
           </NGOCardsContainer>
 
-       
+        </div>
 
+        {/* Modal de Confirmação */}
         <ConfirmModal
           isOpen={modalAction !== null}
           title={
@@ -357,10 +411,12 @@ const ApproveNGO = () => {
           onClose={() => setModalAction(null)}
         />
 
+        {/* Toast de Sucesso */}
         {showToast && toastType && (
-          <SuccessToast
+          <Toast
+            type="success"
             message={`ONG ${toastType === "aprovar" ? "aprovada" : "recusada"} com sucesso!`}
-            description= {`${toastType === "aprovar" ? "Você pode ver essa ONG em Gerenciar ONGs." : "A ONG foi removida da sua lista de validação."}`}
+            description={`${toastType === "aprovar" ? "Você pode ver essa ONG em Gerenciar ONGs." : "A ONG foi removida da sua lista de validação."}`}
             onClose={() => {
               setToastVisible(false);
               setTimeout(() => setShowToast(false), 300);
@@ -368,17 +424,36 @@ const ApproveNGO = () => {
             isVisible={toastVisible}
           />
         )}
+
+        {/* Toast de Erro */}
+        {showErrorToast && errorToast && (
+          <Toast
+            type="error"
+            message="Erro na operação"
+            description={errorToast}
+            onClose={() => {
+              setErrorToastVisible(false);
+              setTimeout(() => {
+                setShowErrorToast(false);
+                setErrorToast(null);
+              }, 300);
+            }}
+            isVisible={errorToastVisible}
+          />
+        )}
       </ContentContainer>
-       <PaginationButtons
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          itemsLength={ngos.length}
-          itemsPerPage={ngosPerPage}
-          buttonHeight="30px"
-          buttonWidth="30px"
-          containerHeight="160px"
-        />
-        <Footer />
+
+      <PaginationButtons
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        itemsLength={ngos.length}
+        itemsPerPage={ngosPerPage}
+        buttonHeight="30px"
+        buttonWidth="30px"
+        containerHeight="160px"
+      />
+      
+      <Footer />
     </>
   );
 };

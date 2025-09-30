@@ -20,6 +20,8 @@ const ContactCard = ({
         <InfoComponent
           title={title}
           subTitle={subtitle}
+          titleFontSize="clamp(32px, 1vw, 48px)"
+          subtitleFontSize="clamp(20px, 1vw, 32px)"
           buttonTitle={buttonTitle}
           to={to}
           position={position}
