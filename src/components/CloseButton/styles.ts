@@ -37,6 +37,4 @@ export const CloseButtonStyled = styled.button<StyledCloseButtonProps>`
     transform: scale(0.95);
   }
 
-
-
 `;

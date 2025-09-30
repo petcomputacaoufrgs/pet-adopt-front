@@ -3,14 +3,9 @@ import Info from "../../../components/Info";
 
 import React from "react";
 
-interface AboutProps {
-  id?: string;
-}
-
-const Banner: React.FC<AboutProps> = ({ id}) => {
-
+const Banner = () => {
   return (
-    <BannerContainer>
+    <BannerContainer id="banner">
       <Info
         subTitle="Lorem ipsum dolor sit amet"
         title="Lorem ipsum dolor sit amet, consectetur adipiscing elit,"

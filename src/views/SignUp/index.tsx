@@ -61,7 +61,7 @@ const SignUp: React.FC = () => {
   const [ngo, setNgo] = useState<NGO_ID | null>(null); 
 
   // Estados específicos da role Ong
-  const [document, setDocument] = useState('');
+  const [doc, setdoc] = useState('');
   const [description, setDescription] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
@@ -127,7 +127,7 @@ const SignUp: React.FC = () => {
         ngo: {
           name,
           email,
-          document,
+          doc,
           description,
           phone,
           city,
@@ -163,7 +163,7 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    if (role === 'ong' && (!name || !email || !password || !confirmPassword || !document || !instagram || !adoptionForm)) {
+    if (role === 'ong' && (!name || !email || !password || !confirmPassword || !doc || !instagram || !adoptionForm)) {
       setError(true);
       setErrorMessage('Preencha todos campos obrigatórios');
       return;
@@ -256,7 +256,7 @@ const SignUp: React.FC = () => {
   // Verifica se todos os campos obrigatórios estão preenchidos e se não há erros para habilitar o botão de cadastro. 
   // Se houver erros, o botão de cadastro ficará desabilitado
   const isMemberDisabled = !name || !email || !password || !confirmPassword || !ngo;
-  const isOngDisabled = !name || !email || !password || !confirmPassword || !document || !instagram || !adoptionForm;   
+  const isOngDisabled = !name || !email || !password || !confirmPassword || !doc || !instagram || !adoptionForm;   
 
   const headerOptions = [
     "Sobre Nós", 
@@ -319,12 +319,34 @@ const SignUp: React.FC = () => {
       return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+// PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
 
+  function getScrollbarWidth() {
+    // Cria um div externo invisível
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll'; // Força o scroll
+    document.body.appendChild(outer);
+
+    // Cria um div interno
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    // Calcula a diferença
+    const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+
+    // Remove os divs da página
+    if (outer.parentNode) {
+      outer.parentNode.removeChild(outer);
+    }
+
+    return scrollbarWidth;
+  }
 
   // RENDERIZAÇÃO ============================================================
   
   return (
-    <Container>
+    <Container style={{ paddingRight: getScrollbarWidth() }}>
       <Header 
         options={headerOptions} 
         optionsToAction={handleHeaderAction} 
@@ -400,10 +422,10 @@ const SignUp: React.FC = () => {
                     title="CPF/CNPJ"
                     required = {true}
                     placeholder="Insira seu CPF/CNPJ aqui"
-                    value={document}
+                    value={doc}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setDocument(e.target.value)}
+                    onChange={(e) => setdoc(e.target.value)}
                   />
               )}
 

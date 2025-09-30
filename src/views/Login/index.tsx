@@ -84,8 +84,33 @@ const Login: React.FC = () => {
         return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+// PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
+
+  function getScrollbarWidth() {
+    // Cria um div externo invisível
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll'; // Força o scroll
+    document.body.appendChild(outer);
+
+    // Cria um div interno
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    // Calcula a diferença
+    const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+
+    // Remove os divs da página
+    if (outer.parentNode) {
+      outer.parentNode.removeChild(outer);
+    }
+
+    return scrollbarWidth;
+  }
+
+// ========================================================================================================
   return (
-    <Container>
+    <Container style={{ paddingRight: getScrollbarWidth() }}>
       <Header
         options={headerOptions}
         optionsToAction={handleHeaderAction}

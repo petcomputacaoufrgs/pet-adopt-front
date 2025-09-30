@@ -24,9 +24,10 @@ export const HeaderContainer = styled.div<{$backgroundColor: string; $shrink: bo
   box-sizing: border-box;
 
   min-height: ${({$shrink}) => $shrink ? "80px" : "108px"};
+  transition: min-height 0.3s ease-in-out; 
   background-color: ${(props) => props.$backgroundColor};
 
-  @media (max-width: 900px) {
+  @media (max-width: 980px) {
     display: flex;
     justify-content: space-between;
     width: 80%;
@@ -52,6 +53,14 @@ export const ButtonsContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  
+  @media (max-width: 1480px) {
+    padding-right: 80px;
+  }
+
+  @media (max-width: 980px) {
+    padding-right: 0px;
+  }
 `;
 
 export const TextButton = styled.button`

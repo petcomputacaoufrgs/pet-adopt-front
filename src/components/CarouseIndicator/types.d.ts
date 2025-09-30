@@ -1,4 +1,3 @@
-
 export interface CarouselIndicatorProps {
   totalItems: number;
   activeIndex: number;

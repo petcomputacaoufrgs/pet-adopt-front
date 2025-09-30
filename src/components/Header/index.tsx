@@ -58,6 +58,13 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     },
   ];
 
+  const optionHrefMap: Record<string, string> = {
+  "Sobre Nós": "#about",
+  "Animais Recém Adicionados": "#listAnimals",
+  "Dicas": "#hints",
+  "Fale Conosco": "#contact",
+  };
+
   const navigate = useNavigate();
 
   const handleUserAction = (selected: string) => {
@@ -86,8 +93,8 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
   type ResponsiveMode = "full" | "partial" | "compact";
 
   const getResponsiveMode = (): ResponsiveMode => {
-    if (windowWidth >= 1570) return "full";
-    if (windowWidth >= 1130) return "partial";
+    if (windowWidth >= 1480) return "full";
+    if (windowWidth >= 980) return "partial";
     return "compact";
   };
 
@@ -253,9 +260,9 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
         <TextContainer>
           {responsiveMode !== "compact" &&
             options.map((option) => (
-              <TextButton key={option} onClick={() => optionsToAction(option)}>
-                {option}
-              </TextButton>
+              <a href={optionHrefMap[option] || "#"} style={{ textDecoration: "none" }}>
+                <TextButton>{option}</TextButton>
+              </a>
             ))}
         </TextContainer>
 

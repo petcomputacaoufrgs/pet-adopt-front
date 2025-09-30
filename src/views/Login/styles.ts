@@ -4,28 +4,28 @@ import styled from "styled-components";
 // Container Principal
 // -------------------------------------------------------------
 export const Container = styled.div`
-  background-color: #fff6e8;
-  height: 100vh;
-
-  font-family: "Nunito Sans", sans-serif;
-
+  font-family: 'Nunito Sans', sans-serif;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  background-color: #FFF6E8
+  
 `;
 
 // -------------------------------------------------------------
 // Contêiner de Login
 // -------------------------------------------------------------
 export const LoginContainer = styled.div`
-  overflow: hidden;
-
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
-
+  overflow: hidden;
   height: 100%;
-  min-height: 600px;
+    
+  @media (max-width: 1199px){
+    justify-content: center;
+
+  }
 
 `;
 
@@ -37,16 +37,11 @@ export const Image = styled.img`
 // Contêiner do Formulário de Login
 // -------------------------------------------------------------
 export const LoginFormContainer = styled.div`
-  color: #563526;
-  background-color: #fff6e8;
-  height: 100%;
-  min-height: 600px;
   display: flex;
-  flex-grow: 1;
-  flex-direction: column;
+  height: 100%;
+  color: #563526;
 
-  justify-content: center;
-  align-items: center;
+  margin: auto;
 
   overflow-y: scroll;
 
@@ -56,7 +51,7 @@ export const LoginFormContainer = styled.div`
   }
 
   @media (max-width: 1199px){
-    justify-content: center;
+    width: 100%;
   }
 `;
 
@@ -66,7 +61,9 @@ export const LoginForm = styled.form`
   width: 645px; /* Usando px para um tamanho fixo, mas considere % para responsividade */
   gap: 32px;
 
-  margin: 0;
+  padding: 40px;
+
+  margin: auto;
 
   display: flex;
   flex-direction: column;
@@ -78,7 +75,7 @@ export const LoginForm = styled.form`
   }
 
   @media (max-width: 1199px){
-      margin: 0;
+      margin: auto;
       
   }
 
