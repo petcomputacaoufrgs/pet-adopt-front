@@ -4,7 +4,8 @@ interface User {
   id: string;
   email: string;
   role: 'ADMIN' | 'NGO_ADMIN' | 'NGO_MEMBER' | 'REGULAR';
-  name?: string;
+  ngoId: string;
+  name: string;
 }
 
 interface AuthState {
