@@ -348,8 +348,6 @@ const SignUp: React.FC = () => {
   return (
     <Container style={{ paddingRight: getScrollbarWidth() }}>
       <Header 
-        options={headerOptions} 
-        optionsToAction={handleHeaderAction} 
         color="rgba(0, 0, 0, 0)" 
         Logo={loginPageLogo} 
       />      

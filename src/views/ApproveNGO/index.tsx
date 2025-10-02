@@ -328,7 +328,7 @@ const ApproveNGO = () => {
 
   return (
     <>
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={HorizontalLogo}/>
+      <Header color="#FFF6E8" Logo={HorizontalLogo}/>
 
       <BannerComponent 
         limitWidthForImage="850px" 

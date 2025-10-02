@@ -253,8 +253,6 @@ const ManageNgo = () => {
   return (
     <>
       <Header
-        options={headerOptions}
-        optionsToAction={handleHeaderAction}
         color="#FFF6E8"
         Logo={HorizontalLogo}
       />

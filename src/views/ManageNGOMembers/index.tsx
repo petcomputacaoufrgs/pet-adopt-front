@@ -37,8 +37,6 @@ const ManageNGOMembers: React.FC = () => {
       <Header 
         color="rgba(0, 0, 0, 0)" 
         Logo={logo}
-        options={[]}
-        optionsToAction={() => {}}
       />
       <h1>Membros de ONGs</h1>
       

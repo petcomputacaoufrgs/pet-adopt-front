@@ -63,8 +63,7 @@ const ListAnimals = () => {
 
       <TextContainer>
         <TextTitle2>Não Perca os Animaizinhos</TextTitle2>
-        <TextTitle>Recém</TextTitle>
-        <TextTitle>Adicionados</TextTitle>
+        <TextTitle>Recém Adicionados</TextTitle>
       </TextContainer>
 
       <DogContainter>
@@ -86,7 +85,7 @@ const ListAnimals = () => {
       </DogContainter>
       
       <ButtonContainer>
-        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="5px" paddingV="10px"></PrimarySecondaryButton>
+        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="20px" paddingV="10px"></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>

@@ -219,8 +219,6 @@ const PetProfile: React.FC = () => {
         <Container>
 
             <Header
-                options={headerOptions}
-                optionsToAction={handleHeaderAction}
                 color="#FFF6E8"
                 Logo={loginPageLogo}
             />

@@ -13,6 +13,7 @@ export const AboutContainer = styled.div`
       min-height: calc(100vh - 108px);
     } 
 
+    scroll-margin-top: 108px;
 `;
 
 export const AboutDiv = styled.div`

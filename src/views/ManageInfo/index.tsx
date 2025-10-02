@@ -177,16 +177,7 @@ const ManageInfo: React.FC = () => {
     setEmailErrorMessage('');
 
   }
-  const headerOptions = [
-      "Gerenciar Animais", 
-      "Cadastrar Pet", 
-      "Gerenciar Ongs", 
-      "Validar Ongs",
-    ];
 
-  const handleHeaderAction = (selected: string) => {
-    // Ação a ser definida
-  };
 
   function Divider() {
     return <div style={{ height: '1px', width: '100%', backgroundColor: 'rgba(188, 175, 169, 1)', margin: '1em 0' }} />;
@@ -196,8 +187,6 @@ const ManageInfo: React.FC = () => {
   return (
     <>
         <Header 
-            options={headerOptions} 
-            optionsToAction={handleHeaderAction} 
             color="#FFF6E8"
             Logo={HorizontalLogo}
         />      

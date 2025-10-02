@@ -8,21 +8,34 @@ import Contact from "./5Contact";
 import Footer from "./6Footer";
 
 import logo from "../../assets/HorizontalLogo.png"
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import AuthorizationToast from '../../components/AuthorizationToast';
+import { useLocation } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const HomeView = () => {
   
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
+  const {isLoading} = useAuth();
+  
+  const location = useLocation();
 
-  const handleHeaderAction = (selected: string) => {
-  };
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const element = document.getElementById(location.state.scrollTo);
+      element?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location]);
+
+  if (isLoading) {
+    console.log("Loading...");
+    return null; 
+  }
 
   return (
     <>
       <AuthorizationToast />
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo} />
+      <Header color="#FFF6E8" Logo={logo} />
       <About />
       <ListAnimals />
       <Dicas />

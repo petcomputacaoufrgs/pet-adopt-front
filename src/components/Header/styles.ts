@@ -54,13 +54,7 @@ export const ButtonsContainer = styled.div`
   justify-content: center;
   flex-shrink: 0;
   
-  @media (max-width: 1480px) {
-    padding-right: 80px;
-  }
 
-  @media (max-width: 980px) {
-    padding-right: 0px;
-  }
 `;
 
 export const TextButton = styled.button`

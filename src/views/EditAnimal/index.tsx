@@ -55,7 +55,7 @@ export default function EditAnimal({animalData} : IAnimalForm) {
 
   <div style={{display: "flex", flexDirection: "column"}}>
 
-    <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo}/>
+    <Header  color="#FFF6E8" Logo={logo}/>
 
     <AnimalFormSection
         windowSize={windowSize}

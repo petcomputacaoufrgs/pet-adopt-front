@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   ButtonsContainer,
@@ -29,8 +29,21 @@ import OrangeFacebookPin from "../../assets/OrangeFacebookPin.png";
 import OrangeInstagramPin from "../../assets/OrangeInstagramPin.png";
 import OrangeTiktokPin from "../../assets/OrangeTiktokPin.png";
 import OrangeYoutubePin from "../../assets/OrangeYoutubePin.png";
+import { useAuth } from "../../hooks/useAuth";
+import { User } from "../../types/user";
+import { useHeaderOptions } from "./useHeaderOptions";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
-const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
+
+const Header = ({ color, Logo }: IHeader) => {
+
+  // 1. Hook que fornece informações de autenticação
+  const { user, isLoggedIn, isLoading } = useAuth();
+
+
+
+  const { accountOptions, navigationOptions, handleAction } = useHeaderOptions();
+
   const socialMediaLinks = [
     {
       orange: OrangeInstagramPin,
@@ -58,29 +71,9 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     },
   ];
 
-  const optionHrefMap: Record<string, string> = {
-  "Sobre Nós": "#about",
-  "Animais Recém Adicionados": "#listAnimals",
-  "Dicas": "#hints",
-  "Fale Conosco": "#contact",
-  };
 
-  const navigate = useNavigate();
 
-  const handleUserAction = (selected: string) => {
-    if (selected === "Cadastrar ONG ou Membro") navigate("/signup");
-    else if (selected === "Fazer Login") navigate("/login");
-  };
-
-  const currentUserOptions = user
-    ? user.userOptions
-    : ["Cadastrar ONG ou Membro", "Fazer Login"];
-
-  const currentUserActions = user
-    ? user.userOptionsToActions
-    : handleUserAction;
-
-  const standardUserOptionsButtonWidth = ["284px", "151px"];
+  const standardUserOptionsButtonWidth = ["151px", "284px"];
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -134,22 +127,22 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     <>
       {user ? (
         <CompactUserOptionsContainer>
-          {currentUserOptions.map((option) => (
-            <TextButton key={option} onClick={() => currentUserActions(option)}>
+          {accountOptions.map((option) => (
+            <TextButton key={option} onClick={() => handleAction(option)}>
               {option}
             </TextButton>
           ))}
         </CompactUserOptionsContainer>
       ) : (
         <CompactLoginSignupButtonsContainer>
-          {currentUserOptions.map((option: string) => (
+          {accountOptions.map((option: string) => (
             <PrimarySecondaryButton
               key={option}
-              width={`${90 / currentUserOptions.length}%`}
+              width={`${90 / accountOptions.length}%`}
               buttonType="Primário"
               isDisabled={false}
               content={option}
-              onClick={() => currentUserActions(option)}
+              onClick={() => handleAction(option)}
               paddingH="5px"
               paddingV="10px"
             />
@@ -158,8 +151,8 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
       )}
 
       <CompactGeneralOptionsContainer>
-        {options.map((option) => (
-          <TextButton key={option} onClick={() => optionsToAction(option)}>
+        {navigationOptions.map((option) => (
+          <TextButton key={option} onClick={() => handleAction(option)}>
             {option}
           </TextButton>
         ))}
@@ -180,20 +173,27 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
       return user ? (
         <DropdownButton
           buttonType="Secundário"
+          buttonWidth="192px"
           content={`Olá, ${user.name}`}
-          options={user.userOptions}
-          onClick={user.userOptionsToActions}
+          options={accountOptions}
+          paddingH="20px"
+          onClick={handleAction}
+                    indicator={(isOpen: boolean) => isOpen ? (
+            <ChevronDown size={30} color="#553525"/>
+          ) : (
+            <ChevronUp size={30} color="#553525" />
+          )}
         />
       ) : (
         <>
-          {currentUserOptions.map((option: string, index) => (
+          {accountOptions.map((option: string, index) => (
             <PrimarySecondaryButton
               key={option}
               width={standardUserOptionsButtonWidth[index]}
               buttonType={index === 0 ? "Secundário" : "Primário"}
               isDisabled={false}
               content={option}
-              onClick={() => currentUserActions(option)}
+              onClick={() => handleAction(option)}
               paddingH="5px"
               paddingV="10px"
             />
@@ -206,10 +206,17 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
       return (
         <DropdownButton
           buttonType={user ? "Secundário" : "Primário"}
+          buttonWidth="192px"
           content={user ? `Olá, ${user.name}` : MenuIcon}
-          onClick={currentUserActions}
-          options={currentUserOptions}
+          onClick={handleAction}
+          options={accountOptions}
+          paddingH="20px"
           dropDownWidth="250px"
+                    indicator={(isOpen: boolean) => isOpen ? (
+            <ChevronDown size={30} color="#553525"/>
+          ) : (
+            <ChevronUp size={30} color="#553525" />
+          )}
         />
       );
     }
@@ -250,6 +257,11 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
       };
   }, []);
 
+    // Evita renderizar antes de saber se está logado
+  if (isLoading ||isLoggedIn === undefined) {
+    return null; // ou um skeleton/header neutro
+  }
+
 
   return (
 
@@ -259,10 +271,10 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
 
         <TextContainer>
           {responsiveMode !== "compact" &&
-            options.map((option) => (
-              <a href={optionHrefMap[option] || "#"} style={{ textDecoration: "none" }}>
-                <TextButton>{option}</TextButton>
-              </a>
+            navigationOptions.map((option) => (
+                <TextButton key={option} onClick={() => handleAction(option)}>
+                  {option}
+                </TextButton>
             ))}
         </TextContainer>
 

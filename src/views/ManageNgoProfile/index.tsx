@@ -53,8 +53,6 @@ const ManageNgoProfile = () => {
     return (
         <Container>
             <Header
-                options={HEADER_OPTIONS}
-                optionsToAction={() => {}}
                 color="#FFF6E8"
                 Logo={logo}
             />

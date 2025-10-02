@@ -7,6 +7,8 @@ export const ListContainer = styled.div`
   margin-top: 100px;
   margin-bottom: 100px;
 
+  scroll-margin-top: 108px;
+
 `;
 
 export const TextContainer = styled.div`

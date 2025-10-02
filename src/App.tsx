@@ -12,6 +12,7 @@ import ManageInfo from "./views/ManageInfo";
 import PetProfile from "./views/PetProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ManageNGOMembers from "./views/ManageNGOMembers";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {  
 
@@ -21,10 +22,19 @@ function App() {
         <Routes>
           {/* Rotas públicas */}
           <Route path="/" element={<HomeView />} />
-          <Route path="/login" element={<LoginView />} />
-          <Route path="/signup" element={<SignupView />} />
           <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>} />
           <Route path="/petProfile" element={<PetProfile />} />
+
+          {/* Rotas públicas - Apenas para não autenticados */}
+          <Route 
+            path="/login" 
+            element={<PublicRoute><LoginView /></PublicRoute>}
+          />
+          <Route
+            path="/signup"
+            element={<PublicRoute><SignupView /></PublicRoute>}
+          />
+
 
           {/* Rotas protegidas - Apenas ADMIN */}
           <Route 

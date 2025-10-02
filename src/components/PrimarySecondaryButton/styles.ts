@@ -64,13 +64,11 @@ export const PrimaryButton = styled(BaseButton)<{$highlighted: boolean, $flex?: 
   }
 
   path {
-    fill: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
     stroke: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
   }
 
   &:hover path,
   &:active path {
-    fill: white;
     stroke: white;
   }
 `;
@@ -100,13 +98,11 @@ export const SecondaryButton = styled(BaseButton)<{$highlighted: boolean, $flex?
   }
 
   path {
-    fill: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
     stroke: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
   }
 
   &:hover path,
   &:active path {
-    fill: white; 
     stroke: white;
   }  
 `;

@@ -256,8 +256,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   return (
     <>
       <Header
-        options={headerOptions}
-        optionsToAction={handleHeaderAction}
         color="#FFF6E8"
         Logo={logo}
       />
