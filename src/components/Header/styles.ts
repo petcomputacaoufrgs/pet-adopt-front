@@ -20,7 +20,7 @@ export const HeaderContainer = styled.div<{$backgroundColor: string; $shrink: bo
   grid-template-columns: auto 1fr auto;
   align-items: center;
   width: 80%;
-  gap: 32px;
+  gap: clamp(18px, 2vw,32px);
   box-sizing: border-box;
 
   min-height: ${({$shrink}) => $shrink ? "80px" : "108px"};
@@ -64,7 +64,7 @@ export const TextButton = styled.button`
   font-family: 'Nunito Sans', sans-serif;
   font-weight: 800;
 
-  font-size: clamp(16px, 1.5vw, 18px);
+  font-size: clamp(16px, 1.2vw, 18px);
   line-height: 1.2;
 
   color: #553525;

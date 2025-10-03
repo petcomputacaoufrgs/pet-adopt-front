@@ -14,4 +14,4 @@ export interface IDropdownButtonProps {
     buttonType?: string; // Tipo do botão (Primário = "Primário", Secundário = qualquer outra string)
     paddingH?: string; 
     paddingV?: string;
-  }
+}

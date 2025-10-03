@@ -9,7 +9,7 @@ import { petService, createPetFiltersFromState } from "../../services";
 import { formatAge, formatSize, formatString, formatSpecies } from "../../services";
 import { AxiosError } from "axios";
 import Footer from "../HomePage/6Footer";
-import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, Overlay, PetCardWrapper, TopBarContainer, TopBarContent } from "./styles";
+import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, Overlay, PetCardWrapper, SectionAndDogCardsContainer, SectionWithEmptyStateContainer, TopBarContainer, TopBarContent } from "./styles";
 
 import DogCard from "../../components/DogCard";
 import DogForCard from "../../assets/HomePageCardDog.png";
@@ -344,8 +344,9 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
           />
         )}
 
-        <div style={{minWidth: hideAnimalFilter? "60%" : "50%", width: hideAnimalFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
+        <SectionAndDogCardsContainer hideAnimalFilter={hideAnimalFilter}>
 
+        <SectionWithEmptyStateContainer>
           <SectionWithEmptyState 
             title="Pets Disponíveis"
             subtitle={allowEdit? "Visualize e gerencie os pets disponíveis" : "Visualize os pets disponíveis"}
@@ -355,9 +356,9 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             buttonText="+ Cadastrar Pet"
             onButtonClick={() => {
               console.log("Navegando para criar pet");
-              // window.location.href = "/createAnimal";
             }}
           />
+        </SectionWithEmptyStateContainer>
          
           {isLoading && <p>Carregando pets...</p>}
           {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
@@ -401,7 +402,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
               ))}
             </DogCardsContainer>
           }
-        </div>
+        </SectionAndDogCardsContainer>
       </ContentContainer>
 
       <PaginationButtons

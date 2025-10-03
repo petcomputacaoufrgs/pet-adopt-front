@@ -7,6 +7,7 @@ export const CardContainer = styled.div`
     margin-right: 16px;
     margin-left: 16px;
     margin-bottom: 32px;
+    max-width: 362px;
 `;
 
 export const Image = styled.img`

@@ -24,7 +24,7 @@ export const useHeaderOptions = () => {
   },
   NGO_ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet", "Gerenciar ONGs", "Gerenciar Membros de ONG"],
+    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
   },
   REGULAR: {
     accountOptions: ["Fazer Login", "Cadastrar ONG ou Membro"],
@@ -61,7 +61,7 @@ export const useHeaderOptions = () => {
         "Gerenciar Pets" : () => handleNavigation("/searchAnimals"),
         "Validar ONGs": () => handleNavigation("/approveNgo"),
         "Gerenciar ONGs": () => handleNavigation("/manageNgo"),
-        "Gerenciar Membros de ONG": () => handleNavigation("/manageNgoMembers"),
+        "Gerenciar Membros": () => handleNavigation("/manageNgoMembers"),
         "Gerenciar Conta": () => handleNavigation("/manageInfo"),
         "Gerenciar Animais": () => handleNavigation("/manageAnimals"),
         "Cadastrar Pet": () => handleNavigation("/createAnimal"),

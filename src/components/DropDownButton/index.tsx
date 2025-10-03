@@ -12,12 +12,13 @@ const DropdownButton = ({
   onClick,
   indicator,
   showOptionsOnHover = false,
-  buttonWidth = "150px",
+  buttonWidth = "auto",
   dropDownWidth = "200px",
   fontSize = "16px",
   buttonType = "Primário",
   paddingH = "10px",
-  paddingV = "10px"
+  paddingV = "10px", 
+
 }: IDropdownButtonProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -73,6 +74,7 @@ const DropdownButton = ({
         buttonType={buttonType}
         paddingH={paddingH}
         paddingV={paddingV}
+        fontSize={fontSize}
       />
       {showDropdown && (
         <DropdownWrapper $dropDownWidth={dropDownWidth}>
