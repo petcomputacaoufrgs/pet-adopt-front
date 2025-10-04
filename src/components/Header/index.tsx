@@ -35,12 +35,7 @@ import { useHeaderOptions } from "./useHeaderOptions";
 import { ChevronDown, ChevronUp, Home, HomeIcon } from "lucide-react";
 
 
-const Header = ({ color, Logo }: IHeader) => {
-
-  // 1. Hook que fornece informações de autenticação
-  const { user, isLoggedIn, isLoading } = useAuth();
-
-
+const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
 
   const { accountOptions, navigationOptions, handleAction } = useHeaderOptions();
 
@@ -88,8 +83,7 @@ const Header = ({ color, Logo }: IHeader) => {
 
   const getResponsiveMode = (): ResponsiveMode => {
     if(!isLoggedIn){
-      console.log("Nao logado");
-      if (windowWidth >= 1480) return "full";
+      if (windowWidth >= 1560) return "full";
       if (windowWidth >= 980) return "partial";
       return "compact";
     }
@@ -143,13 +137,14 @@ const Header = ({ color, Logo }: IHeader) => {
 
   const navigate = useNavigate();
 
+
   const renderCompactMenu = () => (
     <>
       {/* Se o usuário estiver logado, mostra as opções de navegação e conta */}
       {isLoggedIn ? (
         <CompactUserOptionsContainer>
           <TextButton key="home" onClick={() => navigate("/")}>
-            Ir a Home Page
+            Home
           </TextButton>
 
           {navigationOptions.concat(accountOptions).map((option) => (
@@ -200,6 +195,9 @@ const Header = ({ color, Logo }: IHeader) => {
     </>
   );
 
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
+
+
   const renderMenuButtons = () => {
 
     // Se estiver no modo "full" 
@@ -243,7 +241,6 @@ const Header = ({ color, Logo }: IHeader) => {
 
     // Se estiver no modo "partial"
     if (responsiveMode === "partial") {
-      console.log(user?.role);
       // Se o usuário estiver logado e for ADMIN, mostra todas as opções no DropDown (navegação + conta)
       return (user && user.role === "ADMIN") ? (
 
@@ -284,7 +281,7 @@ const Header = ({ color, Logo }: IHeader) => {
 
     if (responsiveMode === "compact") {
       return (
-        <CompactedMenuButton onClick={handleClickOnCompactButton} $highlighted={showCompactMenu}>
+        <CompactedMenuButton ref={toggleButtonRef} onClick={handleClickOnCompactButton} $highlighted={showCompactMenu}>
           {MenuIcon}
         </CompactedMenuButton>
       );
@@ -292,23 +289,14 @@ const Header = ({ color, Logo }: IHeader) => {
   };
 
   const [isScrolled, setScrolled] = useState(false);
-  const isScrolledRef = useRef(false);
 
-  useEffect(() => {
-    isScrolledRef.current = isScrolled;
-  }, [isScrolled]);
   
-
   const handleScroll = () => {
     const scrollY = window.pageYOffset;
-    const currentlyScrolled = isScrolledRef.current;
-
-    if (!currentlyScrolled && scrollY > 60) {
-      setScrolled(true);
-    } else if (currentlyScrolled && scrollY < 10) {
-      setScrolled(false);
-    }
+    if (scrollY > 60) setScrolled(true);
+    else if (scrollY < 10) setScrolled(false);
   };
+
 
   useEffect(() => {
       window.addEventListener('scroll', handleScroll);
@@ -318,14 +306,23 @@ const Header = ({ color, Logo }: IHeader) => {
       };
   }, []);
 
-    // Evita renderizar antes de saber se está logado
-  if (isLoading ||isLoggedIn === undefined) {
-    return null; // ou um skeleton/header neutro
-  }
 
   const visibleOptionsOnHeader = (responsiveMode == "partial" && user && user.role === "ADMIN")? []: navigationOptions;
 
-  console.log(visibleOptionsOnHeader.length);
+  // Hook para detectar cliques fora do menu compacto quando ele está aberto e esconder ele de novo
+  const compactMenuRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+
+      if (compactMenuRef.current && !compactMenuRef.current.contains(e.target as Node) && toggleButtonRef.current && !toggleButtonRef.current.contains(e.target as Node))
+        setShowCompactMenu(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
 
   return (
 
@@ -356,9 +353,12 @@ const Header = ({ color, Logo }: IHeader) => {
         <ButtonsContainer>{renderMenuButtons()}</ButtonsContainer>
       </HeaderContainer>
 
-      <CompactMenu $visible={showCompactMenu}>
-        {showCompactMenu && renderCompactMenu()}
+    {showCompactMenu && responsiveMode === "compact" && (
+      <CompactMenu ref={compactMenuRef}>
+        {renderCompactMenu()}
+
       </CompactMenu>
+    )}
     </HeaderWrapper>
   );
 };

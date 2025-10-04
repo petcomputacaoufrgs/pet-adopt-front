@@ -86,7 +86,7 @@ export const Image = styled.img`
 `;
 
 
-export const CompactedMenuButton = styled.button<{$highlighted: boolean}>`
+export const CompactedMenuButton = styled.button<{$highlighted: boolean;}>`
   min-width: 60px;
   min-height: 40px;
   display: flex;
@@ -108,9 +108,11 @@ export const CompactedMenuButton = styled.button<{$highlighted: boolean}>`
       stroke: white;
     }
   }
+
+
 `;
 
-export const CompactMenu = styled.div<{$visible: boolean}>`
+export const CompactMenu = styled.div`
   width: 100%;
   background-color: #fff;
   display: flex;
@@ -120,14 +122,19 @@ export const CompactMenu = styled.div<{$visible: boolean}>`
   gap: 48px;
   transition: max-height 0.4s ease, opacity 0.4s ease;
 
-  padding: ${(props) => props.$visible ? "30px 0" : "0"};
-  max-height: ${(props) => (props.$visible ? "500px" : "0")};
-  opacity: ${(props) => (props.$visible ? 1 : 0)};
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding: 30px 0;
+  max-height: 500px;
   overflow: hidden;
 
   button {
     font-size: 18px;
+    text-wrap: wrap;
   }
+
+
 `;
 
 export const CompactGeneralOptionsContainer = styled.div`

@@ -22,6 +22,7 @@ import TiktokIcon from "../../assets/OrangeTiktokPin.png";
 import TiktokBrownIcon from "../../assets/BrownTiktokPin.png"; 
 import YoutubePin from "../../assets/OrangeYoutubePin.png"; 
 import YoutubeBrownPin from "../../assets/BrownYoutubePin.png"; 
+import { useAuth } from "../../hooks/useAuth";
 
 // constants
 const HEADER_OPTIONS = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
@@ -50,11 +51,17 @@ const NGO_DESCRIPTION_PARAGRAPHS = [
 
 // component
 const ManageNgoProfile = () => {
+    const {isLoading, user, isLoggedIn} = useAuth();
+    if(isLoading)
+        return null;
+    
     return (
         <Container>
             <Header
                 color="#FFF6E8"
                 Logo={logo}
+                isLoggedIn={isLoggedIn}
+                user={user}
             />
 
             <MiddleContainer>

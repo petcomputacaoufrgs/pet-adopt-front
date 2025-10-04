@@ -15,6 +15,9 @@ export interface IHeader {
    */
   Logo: string;
 
+  user: User | null;
+  isLoggedIn: boolean;
+
 
 }
 

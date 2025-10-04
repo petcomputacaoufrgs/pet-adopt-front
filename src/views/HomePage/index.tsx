@@ -11,31 +11,40 @@ import logo from "../../assets/HorizontalLogo.png"
 import { useEffect, useRef } from "react";
 
 import AuthorizationToast from '../../components/AuthorizationToast';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const HomeView = () => {
   
-  const {isLoading} = useAuth();
+  const {isLoading, user, isLoggedIn} = useAuth();
   
   const location = useLocation();
+  const scrollToId = location.state?.scrollTo;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.state?.scrollTo) {
-      const element = document.getElementById(location.state.scrollTo);
-      element?.scrollIntoView({ behavior: "smooth" });
+    if (!isLoading && scrollToId) {
+      // tenta rodar o scroll após o browser pintar (garante DOM pronto)
+      requestAnimationFrame(() => {
+        const el = document.getElementById(scrollToId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+        // limpa o state substituindo a entrada atual
+        navigate(location.pathname, { replace: true, state: {} });
+      });
     }
-  }, [location]);
+  }, [isLoading, scrollToId, location.pathname, navigate]);
 
   if (isLoading) {
-    console.log("Loading...");
     return null; 
   }
 
   return (
     <>
       <AuthorizationToast />
-      <Header color="#FFF6E8" Logo={logo} />
+      <Header color="#FFF6E8" Logo={logo} user={user} isLoggedIn={isLoggedIn} />
       <About />
       <ListAnimals />
       <Dicas />

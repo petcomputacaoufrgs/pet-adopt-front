@@ -24,11 +24,12 @@ import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
 import { IManageAnimals } from "./types";
 import { Pet } from "../../types/pets";
+import { useAuth } from "../../hooks/useAuth";
 
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   // Estados dos pets
   const [pets, setPets] = useState<Pet[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingPets, setIsLoadingPets] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
   // Estados dos filtros
@@ -46,12 +47,13 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const [hideAnimalFilter, setHideAnimalFilter] = useState(window.innerWidth < 1240);
   const [showAnimalFilterOnSide, setShowAnimalFilterOnSide] = useState(false);
 
+  
   /**
    * Função para buscar pets com filtros
    */
   const fetchPets = async () => {
     try {
-      setIsLoading(true);
+      setIsLoadingPets(true);
       setError("");
       
       // Criar filtros usando utilitário
@@ -88,7 +90,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
         setError('Erro de conexão. Tente novamente mais tarde.');
       }
     } finally {
-      setIsLoading(false);
+      setIsLoadingPets(false);
     }
   };
 
@@ -175,7 +177,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   // Função utilitária para definir quantidade de pets por página conforme largura da tela
   function getPetsPerPage(): number {
-    if (window.innerWidth < 600) return 2;
+    if (window.innerWidth < 600) return 3;
     if (window.innerWidth < 900) return 4;
     if (window.innerWidth < 1240) return 6;
     return 8;
@@ -228,36 +230,19 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     document.body.style.overflow = showAnimalFilterOnSide ? "hidden" : "";
   }, [showAnimalFilterOnSide]);
 
-  /**
-   * Opções exibidas no header da aplicação.
-   */
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
+    const { isLoading, user, isLoggedIn} = useAuth();
 
-  /**
-   * Manipula ações do header com base na opção clicada.
-   */
-  const handleHeaderAction = (selected: string) => {
-    switch (selected) {
-      case headerOptions[0]:
-        console.log("Sobre nós");
-        return;
-      case headerOptions[1]:
-        console.log("Animais Recém Adicionados");
-        return;
-      case headerOptions[2]:
-        console.log("Dicas");
-        return;
-      case headerOptions[3]:
-        console.log("Fale Conosco");
-        return;
-    }
-  };
+  if(isLoading)
+    return null;
+
 
   return (
     <>
       <Header
         color="#FFF6E8"
         Logo={logo}
+        isLoggedIn={isLoggedIn}
+        user={user}
       />
 
       <BannerComponent
@@ -268,7 +253,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
         imageUrl={dog}
       />
 
-      <TopBarContainer>
+      <TopBarContainer id="top-bar">
         <TopBarContent>
           {hideAnimalFilter && (
             <PrimarySecondaryButton
@@ -360,10 +345,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
           />
         </SectionWithEmptyStateContainer>
          
-          {isLoading && <p>Carregando pets...</p>}
+          {isLoadingPets && <p>Carregando pets...</p>}
           {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
           
-          {!isLoading && !error && showedPets.length > 0 && 
+          {!isLoadingPets && !error && showedPets.length > 0 && 
             <DogCardsContainer>
               {showedPets.map((pet, index) => (
                 <PetCardWrapper key={getPetId(pet, index)}>
@@ -373,9 +358,11 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
                     size={formatString(formatSize(pet.size ?? ""))}
                     name={formatString(pet.name)}
                     race={formatString(formatSpecies(pet.species))}
+                    breed={formatString(pet.breed || "")}
                     age={formatString(formatAge(pet.age))}
                     location={formatString(`${pet.city}, ${pet.state}`)}
-                    to={`/pet/${getPetId(pet, index)}`}
+                    id={getPetId(pet, index)}
+                    
                   />
 
                   {allowEdit &&
@@ -413,6 +400,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
         buttonHeight="30px"
         buttonWidth="30px"
         containerHeight="160px"
+        scrollTo="top-bar"
       />
 
       <Footer />

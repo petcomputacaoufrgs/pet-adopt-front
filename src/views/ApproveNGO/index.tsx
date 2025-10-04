@@ -24,6 +24,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
+import { useAuth } from "../../hooks/useAuth";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
 
@@ -43,6 +44,10 @@ interface NGO {
 }
 
 const ApproveNGO = () => {
+  
+
+
+
   
   /**
    * Estados que representam os filtros aplicados às ONGs.
@@ -64,7 +69,7 @@ const ApproveNGO = () => {
 
   // Estado para armazenar as ONGs
   const [ngos, setNgos] = useState<NGO[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
   // Estados para modais e toasts
@@ -88,7 +93,7 @@ const ApproveNGO = () => {
    */
   const fetchNGOs = async () => {
     try {
-      setIsLoading(true);
+      setIsLoadingNGOs(true);
       setError("");
       
       const response = await ngoService.getUnapproved();
@@ -107,7 +112,7 @@ const ApproveNGO = () => {
         setError('Erro de conexão. Tente novamente mais tarde.');
       }
     } finally {
-      setIsLoading(false);
+      setIsLoadingNGOs(false);
     }
   };
 
@@ -116,7 +121,7 @@ const ApproveNGO = () => {
    */
   const approveNGO = async (ngoId: string) => {
     try {
-      setIsLoading(true);
+      setIsLoadingNGOs(true);
       setError("");
 
       const response = await ngoService.approve(ngoId);
@@ -132,7 +137,7 @@ const ApproveNGO = () => {
       }
       throw err; //Propagar o erro
     } finally {
-      setIsLoading(false);
+      setIsLoadingNGOs(false);
     }
   };
 
@@ -141,7 +146,7 @@ const ApproveNGO = () => {
    */
   const rejectNGO = async (ngoId: string) => {
     try {
-      setIsLoading(true);
+      setIsLoadingNGOs(true);
       setError("");
 
       await ngoService.delete(ngoId);
@@ -157,7 +162,7 @@ const ApproveNGO = () => {
       }
       throw err; // Propagar o erro
     } finally {
-      setIsLoading(false);
+      setIsLoadingNGOs(false);
     }
   };
 
@@ -301,34 +306,16 @@ const ApproveNGO = () => {
     document.body.style.overflow = showNGOsFilter ? "hidden" : "";
   }, [showNGOsFilter]);
 
-  /**
-   * Opções exibidas no header da aplicação
-   */
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
 
-  /**
-   * Manipula ações do header com base na opção clicada
-   */
-  const handleHeaderAction = (selected: string) => {
-    switch (selected) {
-      case headerOptions[0]:
-        console.log("Sobre nós");
-        return;
-      case headerOptions[1]:
-        console.log("Animais Recém Adicionados");
-        return;
-      case headerOptions[2]:
-        console.log("Dicas");
-        return;
-      case headerOptions[3]:
-        console.log("Fale Conosco");
-        return;
-    }
-  };
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
+
 
   return (
     <>
-      <Header color="#FFF6E8" Logo={HorizontalLogo}/>
+      <Header color="#FFF6E8" Logo={HorizontalLogo} user={user} isLoggedIn={isLoggedIn} />
 
       <BannerComponent 
         limitWidthForImage="850px" 
@@ -338,7 +325,7 @@ const ApproveNGO = () => {
         imageUrl={ApproveNGOsDog}
       />
 
-      <TopBarContainer>
+      <TopBarContainer id="top-bar">
         <TopBarContent>
           {hideNGOFilter && (
             <PrimarySecondaryButton 
@@ -451,6 +438,7 @@ const ApproveNGO = () => {
         buttonHeight="30px"
         buttonWidth="30px"
         containerHeight="160px"
+        scrollTo="top-bar"
       />
       
       <Footer />

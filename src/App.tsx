@@ -23,7 +23,7 @@ function App() {
           {/* Rotas públicas */}
           <Route path="/" element={<HomeView />} />
           <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>} />
-          <Route path="/petProfile" element={<PetProfile />} />
+          <Route path="/petProfile/:id" element={<PetProfile />} />
 
           {/* Rotas públicas - Apenas para não autenticados */}
           <Route 

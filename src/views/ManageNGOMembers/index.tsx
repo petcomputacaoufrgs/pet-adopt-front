@@ -5,11 +5,16 @@ import Header from "../../components/Header";
 import logo from "../../assets/HorizontalLogo.png";
 import { User } from "../../types/user";
 import { useState, useEffect } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 const ManageNGOMembers: React.FC = () => {
+
+  
   const [ngoMembers, setNgoMembers] = useState<User[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingNGOMembers, setIsLoadingNGOMembers] = useState(true);
+
+  
 
   useEffect(() => {
     fetchNGOMembers();
@@ -17,7 +22,7 @@ const ManageNGOMembers: React.FC = () => {
 
   const fetchNGOMembers = async () => {
     try {
-      setIsLoading(true);
+      setIsLoadingNGOMembers(true);
       const response = await userService.getByRole('NGO_MEMBER');
       setNgoMembers(response.data);
     } catch (error) {
@@ -28,22 +33,30 @@ const ManageNGOMembers: React.FC = () => {
         setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
       }
     } finally {
-      setIsLoading(false);
+      setIsLoadingNGOMembers(false);
     }
   };
+
+  
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
 
   return (
     <div>
       <Header 
         color="rgba(0, 0, 0, 0)" 
         Logo={logo}
+        isLoggedIn={isLoggedIn}
+        user={user}
       />
       <h1>Membros de ONGs</h1>
       
-      {isLoading && <p>Carregando...</p>}
+      {isLoadingNGOMembers && <p>Carregando...</p>}
       {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}
       
-      {!isLoading && ngoMembers.length === 0 && <p>Nenhum membro de ONG encontrado.</p>}
+      {!isLoadingNGOMembers && ngoMembers.length === 0 && <p>Nenhum membro de ONG encontrado.</p>}
       
       {ngoMembers.map((member, index) => (
         <div key={index} style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>

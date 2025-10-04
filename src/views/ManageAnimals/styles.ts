@@ -77,6 +77,7 @@ export const TopBarContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 160px;
+  scroll-margin-top: 80px;
 `;
 
 export const TopBarContent = styled.div`
@@ -85,6 +86,7 @@ export const TopBarContent = styled.div`
   gap: 20px;
   align-items: center;
   justify-content: center;
+
 `;
 
 export const PetCardWrapper = styled.div`

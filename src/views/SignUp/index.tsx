@@ -24,12 +24,14 @@ import LargeInputField from "../../components/LargeInput";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
+import { useAuth } from "../../hooks/useAuth";
 
 // VIEW ==============================================================================
 // O componente SignUp é responsável por renderizar a página de cadastro de usuários
 
 const SignUp: React.FC = () => {
 
+  
   // ESTADOS =================================================
 
   interface NGO_ID {
@@ -258,12 +260,6 @@ const SignUp: React.FC = () => {
   const isMemberDisabled = !name || !email || !password || !confirmPassword || !ngo;
   const isOngDisabled = !name || !email || !password || !confirmPassword || !doc || !instagram || !adoptionForm;   
 
-  const headerOptions = [
-    "Sobre Nós", 
-    "Animais Recém Adicionados", 
-    "Dicas", 
-    "Fale Conosco"
-  ];
 
   // AÇÕES DE HEADER E NAVEGAÇÃO ============================================
 
@@ -345,11 +341,17 @@ const SignUp: React.FC = () => {
 
   // RENDERIZAÇÃO ============================================================
   
+    const {isLoading, user, isLoggedIn} = useAuth();
+    if(isLoading)
+        return null;
+      
   return (
     <Container style={{ paddingRight: getScrollbarWidth() }}>
       <Header 
         color="rgba(0, 0, 0, 0)" 
         Logo={loginPageLogo} 
+        isLoggedIn={isLoggedIn}
+        user={user}
       />      
 
       <SignUpContainer>

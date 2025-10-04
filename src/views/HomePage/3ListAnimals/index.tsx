@@ -78,7 +78,7 @@ const ListAnimals = () => {
               race={pet.race}
               age={pet.age}
               location={pet.location}
-              to={pet.to}
+              id={""}
             />
           ))}
         </DogCardsContainer>

@@ -17,7 +17,8 @@ export const TextContainer = styled.div`
   align-items: center;
   margin-bottom: 60px;
   font-weight: bold;
-  color: #553525
+  color: #553525;
+  text-align: center;
 `;
 
 export const TextTitle2 = styled.text`

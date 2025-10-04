@@ -65,7 +65,9 @@ export const useHeaderOptions = () => {
         "Gerenciar Conta": () => handleNavigation("/manageInfo"),
         "Gerenciar Animais": () => handleNavigation("/manageAnimals"),
         "Cadastrar Pet": () => handleNavigation("/createAnimal"),
+        "Home": () => handleNavigation("/"),
         "Sair": () => logout(),
+
 
         "Sobre Nós": () => handleNavigation("#about"),
         "Animais Recém Adicionados": () => handleNavigation("#listAnimals"),

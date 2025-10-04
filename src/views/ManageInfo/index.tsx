@@ -14,10 +14,12 @@ import {
     ContentContainer,
     UpdateButton
 } from "./styles"
+import { useAuth } from "../../hooks/useAuth";
 
 
 
 const ManageInfo: React.FC = () => {
+  
   const [role, setRole] = useState('membro');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -184,11 +186,18 @@ const ManageInfo: React.FC = () => {
   }
 
 
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
+
   return (
     <>
         <Header 
             color="#FFF6E8"
             Logo={HorizontalLogo}
+            isLoggedIn={isLoggedIn}
+            user={user}
         />      
         
          {showToast && (

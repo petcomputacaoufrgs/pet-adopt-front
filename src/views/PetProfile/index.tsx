@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
     Container,
@@ -64,28 +64,43 @@ import Image3 from "./images/salem1.jpeg";
 import Image4 from "./images/salem2.jpeg";
 import Image5 from "./images/mel2.jpeg";
 import Image6 from "./images/mutano2.jpeg";
+import { useAuth } from "../../hooks/useAuth";
+import { Pet } from "../../types/pets";
+import { petService } from "../../services";
 
 
 type ModalAction = { tipo: "excluir"; petId: string } | null;
 type GalleryModalAction = { isOpen: boolean; imageIndex: number } | null;
 
 const PetProfile: React.FC = () => {
+
+    const { id } = useParams<{ id: string }>();
+    const [pet, setPet] = useState<Pet | null>(null);
+
+    const fetchPetById = async (id: string) => {
+        try {
+            const response = await petService.getById(id);
+            setPet(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar pet:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (id) {
+            fetchPetById(id);
+        }
+    }, [id]);
+
+
+
+
+
+
     /* Dados temporários dos animais a serem exibidos na tela.
     * Idealmente, no futuro devem ser carregados do backend conforme a página atual.
     */
-    const pet = { 
-        id: "-1",
-        image_url: DogForCard, 
-        flag: true, 
-        specie: "Cachorro", 
-        sex: "Fêmea", 
-        size: "Porte Médio", 
-        name: "Mel", 
-        race: "Vira-lata", 
-        age: "2", 
-        location: "São Paulo, SP", 
-        description: "Mel é uma cachorrinha muito carinhosa e brincalhona. Ela adora correr e brincar com outros animais. Está pronta para encontrar um lar cheio de amor e carinho."
-    };
+
 
     const ong = {
         name: "ONG Adoção Feliz",
@@ -137,17 +152,6 @@ const PetProfile: React.FC = () => {
     ];
 
     const [activeImageIndex, setActiveImageIndex] = useState(0);
-    
-    const headerOptions = [
-    "Sobre Nós",
-    "Animais Recém Adicionados",
-    "Dicas",
-    "Fale Conosco",
-    ];
-
-    const handleHeaderAction = (selected: string) => {
-    // Ação a ser definida
-    };
 
     const navigate = useNavigate();
 
@@ -206,21 +210,29 @@ const PetProfile: React.FC = () => {
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [GalleryModalAction, setGalleryModalAction] = useState<GalleryModalAction>(null);
 
-    const handleIndicatorClick = (index: number) => {
-        setCurrentPhotoIndex(index);
-        // Aqui você também adicionaria a lógica para trocar a imagem exibida
-    };
 
     const abrirGalleryModal = (isOpen: boolean, imageIndex: number) => {
         setGalleryModalAction({isOpen, imageIndex})
     };
 
+    const {isLoading, user, isLoggedIn} = useAuth();
+    if(isLoading)
+        return null;
+
+    if (!pet) {
+        return <div>Carregando...</div>;
+    }
+    
+    console.log(pet.NGO);
+    console.log(user?.ngoId);
     return (
         <Container>
 
             <Header
                 color="#FFF6E8"
                 Logo={loginPageLogo}
+                user={user}
+                isLoggedIn={isLoggedIn}
             />
 
             <Main>
@@ -313,12 +325,12 @@ const PetProfile: React.FC = () => {
 
                                         <TagsContainer>
 
-                                            <Tag $text={pet.specie} type={"light"} fontSize={"14px"} />
+                                            <Tag $text={pet.species} type={"light"} fontSize={"14px"} />
 
                                             <Tag $text={pet.sex} type={"light"} fontSize={"14px"} />
 
-                                            <Tag $text={pet.size} type={"light"} fontSize={"14px"} />
-                                            <Tag $text={pet.race} type={"light"} fontSize={"14px"} />
+                                            {pet.size && <Tag $text={pet.size} type={"light"} fontSize={"14px"} />}
+                                            {pet.breed && <Tag $text={pet.breed} type={"light"} fontSize={"14px"} />}
 
                                         </TagsContainer>
                                     </Title>
@@ -337,7 +349,7 @@ const PetProfile: React.FC = () => {
 
                                         <InfoElement>
                                             <PawPrint size={20} color="#FF9944" fill = "#FF9944"/>
-                                            <h4> {pet.location} </h4>
+                                            <h4> {pet.city}, {pet.state}</h4>
                                         </InfoElement>
 
                                     </InfoContainer>
@@ -346,7 +358,7 @@ const PetProfile: React.FC = () => {
 
                                 <CardAbout>
                                     <h2> Sobre o Pet </h2>
-                                    <h3> {pet.description} </h3>
+                                    <h3> {pet.characteristics} </h3>
                                 </CardAbout>
 
                             </InfoCard>
@@ -416,11 +428,16 @@ const PetProfile: React.FC = () => {
                             </InfoCard>
 
                         </Cards>
+
+                        {(((user?.role === "NGO_MEMBER" || user?.role === "NGO_ADMIN") && user.ngoId == pet.NGO) || user?.role === "ADMIN") &&
+
                         
+
                         <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet.id)} isDisabled={false}/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate("/editAnimal")} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet.id as string)} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate(`/editAnimal/${pet.id}`)} isDisabled={false}/>
                         </Buttons>
+                        }
 
                         <ConfirmModal
                             isOpen={modalAction !== null}

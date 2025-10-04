@@ -28,7 +28,6 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const {isLoggedIn} = useAuth();
 
 
   // Verificar se há mensagem de erro de autenticação ao carregar
@@ -107,12 +106,19 @@ const Login: React.FC = () => {
   }
 
 
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
+  
 // ========================================================================================================
   return (
-    <Container style={{ paddingRight: getScrollbarWidth() }}>
+    <Container style={{ paddingRight: getScrollbarWidth() } }>
       <Header
         color="rgba(0, 0, 0, 0)"
         Logo={loginPageLogo}
+        isLoggedIn={isLoggedIn}
+        user={user}
       />
 
       <LoginContainer>

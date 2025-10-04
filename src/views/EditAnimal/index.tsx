@@ -7,8 +7,11 @@ import AnimalFormSection from "../../components/AnimalFormSection";
 
 
 import { IAnimalForm } from "./types";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function EditAnimal({animalData} : IAnimalForm) {
+
+  
   let initialImages = [];
 
   if(animalData)
@@ -34,10 +37,6 @@ export default function EditAnimal({animalData} : IAnimalForm) {
   const [ong, setOng] = useState<string>("");
 
 
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
-  const handleHeaderAction = (selected: string) => {
-  } 
-
   const [windowSize, setWindowSize] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -50,12 +49,17 @@ export default function EditAnimal({animalData} : IAnimalForm) {
   }, []);
 
 
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
+  
   return (
 
 
   <div style={{display: "flex", flexDirection: "column"}}>
 
-    <Header  color="#FFF6E8" Logo={logo}/>
+    <Header  color="#FFF6E8" Logo={logo} isLoggedIn={isLoggedIn} user={user} />
 
     <AnimalFormSection
         windowSize={windowSize}

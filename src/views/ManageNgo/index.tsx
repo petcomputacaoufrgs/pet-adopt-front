@@ -23,6 +23,7 @@ import Footer from "../HomePage/6Footer";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
+import { useAuth } from "../../hooks/useAuth";
 
 // Interface para definir a estrutura da ONG
 interface NGO {
@@ -40,6 +41,8 @@ interface NGO {
 }
 
 const ManageNgo = () => {
+
+
   /**
    * Estados que representam os filtros aplicados às ONGs.
    */
@@ -50,7 +53,7 @@ const ManageNgo = () => {
   // Estado para armazenar as ONGs
   const [ngos, setNgos] = useState<NGO[]>([]);
   const [allNgos, setAllNgos] = useState<NGO[]>([]); // Para manter lista completa para autocomplete
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
   // Controla a exibição do filtro
@@ -62,7 +65,7 @@ const ManageNgo = () => {
    */
   const fetchNGOs = async (filters?: NGOFilters) => {
     try {
-      setIsLoading(true);
+      setIsLoadingNGOs(true);
       setError("");
       
       console.log('📡 Buscando ONGs aprovadas com filtros:', filters);
@@ -91,7 +94,7 @@ const ManageNgo = () => {
         setError('Erro de conexão. Tente novamente mais tarde.');
       }
     } finally {
-      setIsLoading(false);
+      setIsLoadingNGOs(false);
     }
   };
 
@@ -250,11 +253,19 @@ const ManageNgo = () => {
     // Aqui pode navegar para uma página de edição
   };
 
+
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
+  
   return (
     <>
       <Header
         color="#FFF6E8"
         Logo={HorizontalLogo}
+        isLoggedIn={isLoggedIn}
+        user={user}
       />
 
       <BannerComponent
@@ -265,7 +276,7 @@ const ManageNgo = () => {
         imageUrl={ManageNGOsCat}
       />
 
-      <TopBarContainer>
+      <TopBarContainer id="top-bar">
         <TopBarContent>
           {hideNGOFilter && (
             <PrimarySecondaryButton
@@ -330,11 +341,11 @@ const ManageNgo = () => {
           />
           
           <NGOCardsContainer>
-            {isLoading && <p>Carregando ONGs...</p>}
+            {isLoadingNGOs && <p>Carregando ONGs...</p>}
             {error && <p style={{ color: 'red' }}>Erro: {error}</p>}
-            {!isLoading && !error && ngos.length === 0 && <p>Nenhuma ONG encontrada.</p>}
+            {!isLoadingNGOs && !error && ngos.length === 0 && <p>Nenhuma ONG encontrada.</p>}
             
-            {!isLoading && !error && showedNGOs.map((ngo, index) => (
+            {!isLoadingNGOs && !error && showedNGOs.map((ngo, index) => (
               <OngInfoCard
                 key={ngo.id || index}
                 ngo={ngo}
@@ -357,6 +368,7 @@ const ManageNgo = () => {
         buttonHeight="30px"
         buttonWidth="30px"
         containerHeight="160px"
+        scrollTo="top-bar"
       />
 
       <Footer />
