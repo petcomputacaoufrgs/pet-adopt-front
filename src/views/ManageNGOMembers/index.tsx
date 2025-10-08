@@ -26,33 +26,37 @@ import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MembersFilter from "../../components/MembersFilter";
 import EditMemberModal from '../../components/EditMemberModal/EditMemberModal';
-
+import { useAuth } from "../../hooks/useAuth";
 
 const ManageNGOMembers: React.FC = () => {
   const [ngoMembers, setNgoMembers] = useState<User[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState<string>("");
-
+  const ngoId = useAuth().user?.ngoId;
 
   useEffect(() => {
+    if(ngoId){
     fetchNGOMembers();
-  }, []);
+    }
+  }, [ngoId]);
 
   const fetchNGOMembers = async () => {
-    try {
-      setIsLoading(true);
-      const response = await userService.getByRole('NGO_MEMBER');
-      setNgoMembers(response.data);
-    } catch (error) {
-      console.error(error);
-      if (error instanceof AxiosError && error.response) {
-        setErrorMessage(error.response.data.message || 'Erro ao carregar membros de ONGs.');
-      } else {
-        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+    if (ngoId) {
+      try {
+        setIsLoading(true);
+        const response = await userService.getApprovedMembers(ngoId);
+        setNgoMembers(response.data);
+      } catch (error) {
+        console.error(error);
+        if (error instanceof AxiosError && error.response) {
+          setErrorMessage(error.response.data.message || 'Erro ao carregar membros de ONGs.');
+        } else {
+          setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -255,7 +259,7 @@ const ManageNGOMembers: React.FC = () => {
                 members={ngoMembers.map(ngo => ngo.name)}
                 name={name}
                 setName={setName}
-      
+
                 hasBorder={false}
               />
             </Overlay>
@@ -290,7 +294,7 @@ const ManageNGOMembers: React.FC = () => {
                    <MemberInfoCard
                     key={member.id}
                     member={member}
-                    onEditClick={handleEditClick}
+                    showEditOptions = {true}
                     onDeleteClick={() => handleDeleteClick(member)} // CORRETO
                   />
                   ))}

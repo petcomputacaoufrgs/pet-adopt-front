@@ -13,11 +13,9 @@ import {
 import { MemberInfoCardProps } from "./types";
 import Phone from "../../assets/phone.svg";
 import Email from "../../assets/email.svg";
-import DeleteIcon from "../../assets/DeleteIcon.svg";
-import PencilIcon from "../../assets/PencilIcon.svg";
 
-import EditButton from "../EditButton";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
+import DeleteButton from "../DeleteButton";
 
 const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
   member,
@@ -25,7 +23,6 @@ const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
   showEditOptions = false,
   onApproveClick,
   onRejectClick,
-  onEditClick,
   onDeleteClick,
   selected = false,
 }) => {
@@ -55,23 +52,12 @@ const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
           <MemberType>Administrador</MemberType>
         </MemberTextGroup>
 
-        {member &&(
+        {member && showEditOptions &&(
           <EditButtonWrapper>
-            <EditButton
+            <DeleteButton
               width="34px"
               height="34px"
-              options={[
-                { 
-                  label: "Editar", 
-                  onClick: () => onEditClick?.(member), 
-                  iconSrc: PencilIcon 
-                },
-                { 
-                  label: "Excluir", 
-                  onClick: () => onDeleteClick?.(member), 
-                  iconSrc: DeleteIcon 
-                },
-              ]}
+              onClick={() => onDeleteClick?.(member)}
             />
           </EditButtonWrapper>
         )}

@@ -62,16 +62,18 @@ export const userService = {
   getByRole: (role: string) => 
     api.get(`/users/role/${role}`),
 
+  
+  getApprovedMembers: (ngoId: string, filters?: UserFilters) => {
+    const url = buildUserUrl('/users/approvedMembers/', ngoId, filters);
+    return api.get(url);
+  },
+
   getUnapprovedMembers: (ngoId: string, filters?: UserFilters) => {
     
     const url = buildUserUrl('/users/unapprovedMembers/', ngoId, filters);
     return api.get(url);
   },
 
-  getApprovedMembers: (ngoId: string, filters?: UserFilters) => {
-    const url = buildUserUrl('/users/',ngoId, filters);
-    return api.get(url);
-  },
 
   approve: (memberId: string) => 
     api.patch(`/users/${memberId}/approve`),

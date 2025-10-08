@@ -35,16 +35,15 @@ interface MEMBER {
   id: string;
   name: string;
   email: string;
-  ngoId: string;
+  ngoId?: string;
 }
 
 const ApproveNGOMembers = () => {
 
   /*estados que guardam informações da ong*/
-  const { user, isLoading: authLoading } = useAuth();
-  const [ngoId, setNgoId] = useState<string | null>(null);
-  setNgoId(user?.ngoId);
-  
+  const ngoId = useAuth().user?.ngoId;
+
+    
   /**
    * Estados que representam os filtros aplicados às ONGs.
    * Cada um armazena uma característica diferente usada para filtrar as ONGs.
@@ -95,7 +94,7 @@ const ApproveNGOMembers = () => {
       setIsLoading(true);
       setError("");
       
-      const response = await userService.getUnapprovedMembers(ngo);
+      const response = await userService.getUnapprovedMembers(ngoId);
       // Mapear os dados para garantir que tenham o campo 'id'
       const mappedMembers = response.data.map((member: any) => ({
         ...member,
@@ -140,21 +139,22 @@ const ApproveNGOMembers = () => {
   };
 
   /**
-   * Função para rejeitar ONG
+   * Função para rejeitar membro
    */
-  const rejectNGO = async (memberId: string) => {
+  const rejectMember = async (memberId: string) => {
     try {
       setIsLoading(true);
       setError("");
 
       await userService.delete(memberId);
 
-      // Atualiza a lista de ONGs removendo a ONG rejeitada
+      // Atualiza a lista de membros removendo o membro rejeitado
       setMembers(prevMembers => prevMembers.filter(member => member.id !== memberId));
 
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao rejeitar Membro.');
+        console.log(err);
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
       }
@@ -165,7 +165,7 @@ const ApproveNGOMembers = () => {
   };
 
   /**
-   * Retorna a quantidade de pets que devem ser mostrados por página, de acordo com a largura atual da janela.
+   * Retorna a quantidade de membros que devem ser mostrados por página, de acordo com a largura atual da janela.
    */
   const getMembersPerPage = () => {
     if (window.innerWidth >= 1612) return 9;
@@ -176,7 +176,7 @@ const ApproveNGOMembers = () => {
   const [membersPerPage, setPetsPerPage] = useState<number>(getMembersPerPage());
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Define as ONGs que serão mostradas com base na página atual
+  // Define os membros que serão mostradas com base na página atual
   const startIndexShowedMembers = membersPerPage * (currentPage - 1);
   const showedMembers = members.slice(startIndexShowedMembers, startIndexShowedMembers + membersPerPage);
 
@@ -247,7 +247,7 @@ const ApproveNGOMembers = () => {
       if (modalAction.tipo === "aprovar") {
         await ApproveMember(modalAction.membroId);
       } else if (modalAction.tipo === "recusar") {
-        await rejectNGO(modalAction.membroId);
+        await rejectMember(modalAction.membroId);
       }
       showSuccessToast(modalAction.tipo);
 
@@ -272,7 +272,7 @@ const ApproveNGOMembers = () => {
     console.log(ngoId);
     if (ngoId) fetchMembers();
   }, [ngoId]);
-  
+
   /**
    * Atualiza o estado do layout e quantidade de ONGs por página ao redimensionar a tela
    */
@@ -345,7 +345,7 @@ const ApproveNGOMembers = () => {
               height = {"48px"} 
               paddingH= {"26px"} />
           )}
-          <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Aprovar ONGs" }]} />
+          <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Aprovar Membros" }]} />
         </TopBarContent>
       </TopBarContainer>
 
@@ -362,6 +362,15 @@ const ApproveNGOMembers = () => {
       )}
 
       <ContentContainer>
+         {!hideMemberFilter && (
+            <MembersFilter
+              members={members.map(member => member.name)}
+              name={name}
+              setName={setName}
+              hasBorder={false}
+          />
+          )}
+
         <div style={{minWidth: hideMemberFilter? "60%" : "50%", width: hideMemberFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
         
            <SectionWithEmptyState 
@@ -380,6 +389,7 @@ const ApproveNGOMembers = () => {
                 key={member.id}
                 member={member}
                 showApproveButtons={true}
+                showEditOptions = {false}
                 onApproveClick={() => openModal("aprovar", member.id)}
                 onRejectClick={() => openModal("recusar", member.id)}
               />
@@ -411,7 +421,7 @@ const ApproveNGOMembers = () => {
         {showToast && toastType && (
           <Toast
             type="success"
-            message={`ONG ${toastType === "aprovar" ? "aprovada" : "recusada"} com sucesso!`}
+            message={`Administrador ${toastType === "aprovar" ? "aprovado" : "recusado"} com sucesso!`}
             description={`${toastType === "aprovar" ? "Você pode ver esse Administrador em Gerenciar Administradores." : "O Administrador foi removido da sua lista de validação."}`}
             onClose={() => {
               setToastVisible(false);
