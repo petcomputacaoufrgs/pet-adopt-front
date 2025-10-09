@@ -315,7 +315,7 @@ const ApproveNGOMembers = () => {
       sethideMemberFilter(isWindowSmall);
 
       // Corrige página atual se necessário
-      if (showedMembers.length > 0 && newmembersPerPage * currentPage > members.length) {
+      if (allMembers.length > 0 && newmembersPerPage * currentPage > members.length) {
         setCurrentPage(Math.ceil(members.length / newmembersPerPage));
       }
 
@@ -375,12 +375,12 @@ const ApproveNGOMembers = () => {
       )}
 
       <ContentContainer>
-         {!hideMemberFilter && showedMembers.length > 0 && (
+         {!hideMemberFilter && allMembers.length > 0 && (
             <MembersFilter
               members={members.map(member => member.name)}
               name={name}
               setName={setName}
-              hasBorder={false}
+              hasBorder={true}
               onSearch={handleSearch}
               onClearFilters={handleClearFilters}
           />
@@ -394,9 +394,9 @@ const ApproveNGOMembers = () => {
                 emptyMessage="Nenhum Administrador Encontrado"
                 expandContainer={hideMemberFilter}
                 emptyState={showedMembers.length == 0}
+                
             />
 
-          
           <MemberCardsContainer>
 
             {showedMembers.length > 0 && showedMembers.map((member) => (

@@ -12,6 +12,7 @@ import ManageInfo from "./views/ManageInfo";
 import PetProfile from "./views/PetProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ManageNGOMembers from "./views/ManageNGOMembers";
+import ApproveNGOMembers from "./views/ApproveNGOMembers";
 import PublicRoute from "./components/PublicRoute";
 
 function App() {  

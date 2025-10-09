@@ -4,15 +4,16 @@ import styled from "styled-components";
 export const ContentContainer = styled.div`
     display: flex;
     padding: 0;
+    margin-left: 10%;
+    margin-right: 10%;
     justify-content: center;
-    gap: 24px;
-     align-items: flex-start;
+    gap: 14px;
 `;
 
 export const NGOCardsContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 14px 24px;
+    gap: 14px 0px;
 
 
 `
@@ -59,9 +60,11 @@ export const TopBarContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 160px;
+  scroll-margin-top: 80px;
 `;
 
 export const TopBarContent = styled.div`
+  
   display: flex;
   width: 80%;
   gap: 20px;

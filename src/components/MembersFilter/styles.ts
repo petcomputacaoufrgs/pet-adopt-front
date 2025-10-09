@@ -12,6 +12,7 @@ export const Container = styled.div<{$width: string; $hasBorder: boolean}>`
     border-radius: 20px;
     flex-grow: 0;
     flex-shrink: 0;
+    
 `
 
 export const FilterContainer = styled.div`

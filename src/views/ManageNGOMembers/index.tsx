@@ -26,7 +26,6 @@ import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MembersFilter from "../../components/MembersFilter";
-import EditMemberModal from '../../components/EditMemberModal/EditMemberModal';
 import { useAuth } from "../../hooks/useAuth";
 
 const ManageNGOMembers: React.FC = () => {
@@ -310,7 +309,7 @@ const ManageNGOMembers: React.FC = () => {
           <ContentContainer>
           
             
-            {!hideMembersFilter && showedMembers.length > 0 && (
+            {!hideMembersFilter && allMembers.length > 0 && (
               <MembersFilter
                 members={ngoMembers.map(member => member.name)}
                 name={name}
@@ -323,15 +322,15 @@ const ManageNGOMembers: React.FC = () => {
       
       
               <div style={{minWidth: hideMembersFilter? "60%" : "50%", width: hideMembersFilter? "80%" : "auto", display: "flex", flexDirection: "column", gap: "36px"}}>
-              
-              <SectionWithEmptyState 
-                title="Administradores"
-                subtitle="Veja quem está como administrador no momento"
-                emptyMessage="Nenhum Administrador Encontrado"
-                expandContainer={hideMembersFilter}
-                emptyState={showedMembers.length == 0}
+             
+                <SectionWithEmptyState 
+                  title="Administradores"
+                  subtitle="Veja quem está como administrador no momento"
+                  emptyMessage="Nenhum Administrador Encontrado"
+                  expandContainer={hideMembersFilter}
+                  emptyState={showedMembers.length == 0}
               />
-
+             
               
             
                 <NGOCardsContainer>
