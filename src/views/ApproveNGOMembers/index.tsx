@@ -41,6 +41,7 @@ interface MEMBER {
 const ApproveNGOMembers = () => {
 
   /*estados que guardam informações da ong*/
+  const { user, isLoggedIn} = useAuth();
   const ngoId = useAuth().user?.ngoId;
 
     
@@ -340,29 +341,10 @@ const ApproveNGOMembers = () => {
    */
   const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
 
-  /**
-   * Manipula ações do header com base na opção clicada
-   */
-  const handleHeaderAction = (selected: string) => {
-    switch (selected) {
-      case headerOptions[0]:
-        console.log("Sobre nós");
-        return;
-      case headerOptions[1]:
-        console.log("Animais Recém Adicionados");
-        return;
-      case headerOptions[2]:
-        console.log("Dicas");
-        return;
-      case headerOptions[3]:
-        console.log("Fale Conosco");
-        return;
-    }
-  };
 
   return (
     <>
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={HorizontalLogo}/>
+      <Header color="#FFF6E8" Logo={HorizontalLogo} user={user} isLoggedIn={isLoggedIn} />
       <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Gerencie sua equipe dos sonhos!" subTitle="Veja, organize e acompanhe sua equipe de um jeito simples e prático."   imageUrl={ManageMembersHamster}/>
            
       <TopBarContainer>
@@ -490,6 +472,7 @@ const ApproveNGOMembers = () => {
         buttonHeight="30px"
         buttonWidth="30px"
         containerHeight="160px"
+        scrollTo="top-bar"
       />
       
       <Footer />

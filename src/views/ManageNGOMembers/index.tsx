@@ -37,6 +37,7 @@ const ManageNGOMembers: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState<string>("");
+  const { user, isLoggedIn} = useAuth();
   const ngoId = useAuth().user?.ngoId;
 
   useEffect(() => {
@@ -267,7 +268,12 @@ const ManageNGOMembers: React.FC = () => {
 
   return (
     <div>
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={HorizontalLogo}/>
+      <Header
+        color="#FFF6E8"
+        Logo={HorizontalLogo}
+        isLoggedIn={isLoggedIn}
+        user={user}
+      />
       <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Gerencie sua equipe dos sonhos!" subTitle="Veja, organize e acompanhe sua equipe de um jeito simples e prático."   imageUrl={ManageMembersHamster}/>
            <Msg>{isLoading && <p>Carregando...</p>}
               {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}</Msg>
@@ -349,6 +355,7 @@ const ManageNGOMembers: React.FC = () => {
                 buttonHeight="30px"
                 buttonWidth="30px"
                 containerHeight="160px"
+                scrollTo="top-bar"
               />
               <Footer />
              {memberToDelete && (
