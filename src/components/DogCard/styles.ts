@@ -7,6 +7,25 @@ export const CardContainer = styled.div`
     margin-right: 16px;
     margin-left: 16px;
     margin-bottom: 32px;
+    max-width: 362px;
+`;
+
+export const LinkInfo = styled.div`
+    color: #553525;
+    font-weight: bold;
+    margin-bottom: 14px;
+
+    @media (min-width: 768px) {
+        font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 16px;
+    }
+        
+    display: flex;
+    align-items: center;
+    gap: 8px;
 `;
 
 export const Image = styled.img`
@@ -27,6 +46,13 @@ export const CardInfoContainer = styled.div`
   width: 100%;
   height: auto;
   box-sizing: border-box;
+
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    }
 `;
 
 export const CardCenteredContainer = styled.div`
@@ -44,7 +70,7 @@ export const CardTagsContainer = styled.div`
 
 export const AnimalName = styled.text`
     color: #553525;
-    font-weight: bold;
+    font-weight: 800;
     margin-bottom: 14px;
 
     @media (min-width: 768px) {

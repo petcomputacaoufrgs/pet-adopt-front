@@ -5,6 +5,7 @@ export const ContentContainer = styled.div`
     padding: 0;
     justify-content: center;
     gap: 24px;
+
 `;
 
 export const DogCardsContainer = styled.div`
@@ -21,7 +22,18 @@ export const DogCardsContainer = styled.div`
 
 
 `
-
+export const SectionAndDogCardsContainer = styled.div<{hideAnimalFilter: boolean}>`
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    width: ${props => props.hideAnimalFilter ? '80%' : 'auto'};
+    min-width: ${props => props.hideAnimalFilter ? '60%' : '50%'};
+    align-items: center;
+    
+    @media (max-width: 1239px) {
+        max-width: 890px;
+    }
+`
 
 export const Overlay = styled.div`
   position: fixed;
@@ -65,6 +77,7 @@ export const TopBarContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 160px;
+  scroll-margin-top: 80px;
 `;
 
 export const TopBarContent = styled.div`
@@ -73,6 +86,7 @@ export const TopBarContent = styled.div`
   gap: 20px;
   align-items: center;
   justify-content: center;
+
 `;
 
 export const PetCardWrapper = styled.div`
@@ -84,3 +98,12 @@ export const EditButtonWrapper = styled.div`
   top: 24px;
   left: 40px;
 `;
+
+export const SectionWithEmptyStateContainer = styled.div`
+  width: 100%;
+
+  @media (max-width: 1239px) {
+    max-width: 788px;
+  }
+
+`

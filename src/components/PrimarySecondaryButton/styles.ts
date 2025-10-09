@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 // --- Base Button Styles ---
-const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: boolean; $paddingV?: string; $paddingH?: string}>`
+const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: boolean; $paddingV?: string; $paddingH?: string; $fontSize?: string}>`
   font-family: "Nunito Sans", sans-serif;
   font-weight: 800;
-  font-size: clamp(14px, 1vw, 18px);
+  font-size: ${(props) => props.$fontSize || 'clamp(14px, 1vw, 18px)'};
   border-radius: 100px;
   padding-top: ${(props) => props.$paddingV || 'auto'};
   padding-bottom: ${(props) => props.$paddingV || 'auto'};
@@ -57,6 +57,7 @@ export const PrimaryButton = styled(BaseButton)<{$highlighted: boolean, $flex?: 
   border: ${({ $highlighted }) => ($highlighted ? "1px solid #553525" : "none")};
   color: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
 
+
   &:hover,
   &:active {
     background-color: #553525;
@@ -64,13 +65,11 @@ export const PrimaryButton = styled(BaseButton)<{$highlighted: boolean, $flex?: 
   }
 
   path {
-    fill: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
     stroke: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
   }
 
   &:hover path,
   &:active path {
-    fill: white;
     stroke: white;
   }
 `;
@@ -100,13 +99,11 @@ export const SecondaryButton = styled(BaseButton)<{$highlighted: boolean, $flex?
   }
 
   path {
-    fill: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
     stroke: ${({ $highlighted }) => ($highlighted ? "white" : "#553525")};
   }
 
   &:hover path,
   &:active path {
-    fill: white; 
     stroke: white;
   }  
 `;

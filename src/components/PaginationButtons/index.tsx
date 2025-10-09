@@ -10,21 +10,8 @@ import { IPaginationButtonsProps } from "./types";
 
 import LeftArrowIcon from "../../assets/LeftArrow.svg";
 import RightArrowIcon from "../../assets/RightArrow.svg";
+import { useEffect, useState } from "react";
 
-// A interface Pet foi mantida aqui apenas para referência,
-// mas o ideal é movê-la para um arquivo de tipos global (ex: src/types/common.d.ts)
-// e importá-la apenas onde for realmente utilizada.
-/*type Pet = {
-  imageUrl: string;
-  sex: string;
-  size: string;
-  name: string;
-  race: string;
-  age: string;
-  location: string;
-  heightMobile?: string;
-  to: string;
-};*/
 
 const PaginationButtons = ({
   buttonWidth,
@@ -34,9 +21,12 @@ const PaginationButtons = ({
   itemsPerPage,
   currentPage,
   setCurrentPage,
+  scrollTo
 }: IPaginationButtonsProps) => {
   const totalPages = (itemsLength == 0)? 1 : Math.ceil(itemsLength / itemsPerPage);
 
+  const [scrollAfterRender, setScrollAfterRender] = useState(false);
+  
   const getVisiblePages = (
     currentPageParam: number,
     totalPagesParam: number,
@@ -69,11 +59,24 @@ const PaginationButtons = ({
 
   const visiblePageNumbers = getVisiblePages(currentPage, totalPages);
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
-    setCurrentPage(newPage);
-    window.scrollTo({ top: 100, behavior: "smooth" });
-  };
+const handlePageChange = (newPage: number) => {
+  if (newPage < 1 || newPage > totalPages) return;
+  setCurrentPage(newPage);
+  setScrollAfterRender(true);
+};
+
+
+
+
+useEffect(() => {
+  if (scrollAfterRender) {
+    const element = document.getElementById(scrollTo);
+    element?.scrollIntoView({ behavior: "smooth" });
+    setScrollAfterRender(false); // reseta pra não repetir
+  }
+}, [currentPage, scrollAfterRender]);
+
+
 
   return (
     <PaginationContainer

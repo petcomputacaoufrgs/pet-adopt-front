@@ -19,12 +19,16 @@ import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 import BasicInput from "../../components/BasicInput";
 import PasswordInputField from "../../components/PasswordInput";
+import { useAuth } from "../../hooks/useAuth";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+
 
   // Verificar se há mensagem de erro de autenticação ao carregar
   useEffect(() => {
@@ -33,6 +37,8 @@ const Login: React.FC = () => {
       setErrorMessage(authError);
     }
   }, []);
+
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,16 +66,6 @@ const Login: React.FC = () => {
     }
   };
 
-  const headerOptions = [
-    "Sobre Nós",
-    "Animais Recém Adicionados",
-    "Dicas",
-    "Fale Conosco",
-  ];
-
-  const handleHeaderAction = (selected: string) => {
-    // Ação a ser definida
-  };
 
 // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
   
@@ -84,13 +80,45 @@ const Login: React.FC = () => {
         return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+// PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
+
+
+  function getScrollbarWidth() {
+    // Cria um div externo invisível
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll'; // Força o scroll
+    document.body.appendChild(outer);
+
+    // Cria um div interno
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    // Calcula a diferença
+    const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+
+    // Remove os divs da página
+    if (outer.parentNode) {
+      outer.parentNode.removeChild(outer);
+    }
+
+    return scrollbarWidth;
+  }
+
+
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
+  
+// ========================================================================================================
   return (
-    <Container>
+    <Container style={{ paddingRight: getScrollbarWidth() } }>
       <Header
-        options={headerOptions}
-        optionsToAction={handleHeaderAction}
         color="rgba(0, 0, 0, 0)"
         Logo={loginPageLogo}
+        isLoggedIn={isLoggedIn}
+        user={user}
       />
 
       <LoginContainer>
@@ -174,6 +202,7 @@ const Login: React.FC = () => {
         </LoginFormContainer>
       </LoginContainer>
     </Container>
+                
   );
 };
 

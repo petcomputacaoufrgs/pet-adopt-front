@@ -7,7 +7,7 @@ import dogLines from "../../../assets/HomePageDogLines.png"
 
 const About = () => {
   return (
-    <AboutContainer>
+    <AboutContainer id="about">
       <AboutDiv>
 
         <InfoContainer>

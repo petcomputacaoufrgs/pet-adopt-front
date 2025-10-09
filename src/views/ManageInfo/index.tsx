@@ -14,10 +14,12 @@ import {
     ContentContainer,
     UpdateButton
 } from "./styles"
+import { useAuth } from "../../hooks/useAuth";
 
 
 
 const ManageInfo: React.FC = () => {
+  
   const [role, setRole] = useState('membro');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -177,29 +179,25 @@ const ManageInfo: React.FC = () => {
     setEmailErrorMessage('');
 
   }
-  const headerOptions = [
-      "Gerenciar Animais", 
-      "Cadastrar Pet", 
-      "Gerenciar Ongs", 
-      "Validar Ongs",
-    ];
 
-  const handleHeaderAction = (selected: string) => {
-    // Ação a ser definida
-  };
 
   function Divider() {
     return <div style={{ height: '1px', width: '100%', backgroundColor: 'rgba(188, 175, 169, 1)', margin: '1em 0' }} />;
   }
 
 
+    const { isLoading, user, isLoggedIn} = useAuth();
+
+  if(isLoading)
+    return null;
+
   return (
     <>
         <Header 
-            options={headerOptions} 
-            optionsToAction={handleHeaderAction} 
             color="#FFF6E8"
             Logo={HorizontalLogo}
+            isLoggedIn={isLoggedIn}
+            user={user}
         />      
         
          {showToast && (

@@ -12,4 +12,6 @@ export interface IDropdownButtonProps {
     dropDownWidth?: string; // Tamanho do DropDown
     fontSize?: string; // Tamanho da fonte no botão e no DropDown
     buttonType?: string; // Tipo do botão (Primário = "Primário", Secundário = qualquer outra string)
-  }
+    paddingH?: string; 
+    paddingV?: string;
+}

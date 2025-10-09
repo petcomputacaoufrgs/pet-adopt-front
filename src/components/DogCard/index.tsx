@@ -9,6 +9,7 @@ import {
   CardInfoContainer,
   CardTagsContainer,
   Image,
+  LinkInfo,
   PinText,
 } from "./styles";
 import { ICard } from "./types";
@@ -17,13 +18,18 @@ import Tag from "../Tags";
 
 import LocationPin from "../../assets/LocationPin.png"; 
 import PawPin from "../../assets/PawPin.png"; 
+import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
+const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id }: ICard) => {
+
+  const navigate = useNavigate();
+
   return (
     <CardContainer>
       <Image src={imageUrl} />
 
-      <CardInfoContainer>
+      <CardInfoContainer onClick={() => navigate(`/petProfile/${id}`)}>
         <CardCenteredContainer>
           <CardTagsContainer>
             <Tag $text={sex} type={"light"} fontSize={"14px"} />
@@ -32,7 +38,7 @@ const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
 
           <AnimalName>{name}</AnimalName>
 
-          <AnimalRace>{race}</AnimalRace>
+          <AnimalRace>{race} {breed && `- ${breed}`}</AnimalRace>
 
           <AgeLocationContainer>
             <PinText style={{ marginBottom: "5px" }}>
@@ -45,8 +51,13 @@ const DogCard = ({ imageUrl, sex, size, name, race, age, location }: ICard) => {
               <span>{location}</span>
             </PinText>
           </AgeLocationContainer>
+
+        <LinkInfo>Saber mais <ArrowRight /></LinkInfo>
         </CardCenteredContainer>
+
+
       </CardInfoContainer>
+
     </CardContainer>
   );
 };

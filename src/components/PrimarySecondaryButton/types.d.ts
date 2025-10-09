@@ -9,4 +9,5 @@ export interface IButton {
     $flex?: boolean;
     paddingV?: string; 
     paddingH?: string;
+    fontSize?: string;
 }

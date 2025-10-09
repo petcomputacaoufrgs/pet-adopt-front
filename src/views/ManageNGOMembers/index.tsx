@@ -30,6 +30,8 @@ import EditMemberModal from '../../components/EditMemberModal/EditMemberModal';
 import { useAuth } from "../../hooks/useAuth";
 
 const ManageNGOMembers: React.FC = () => {
+
+  
   const [ngoMembers, setNgoMembers] = useState<User[]>([]);
   const [allMembers, setAllMembers] = useState<User[]>([]);
   const [errorMessage, setErrorMessage] = useState("");

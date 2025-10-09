@@ -23,12 +23,12 @@ const Info = ({ subTitle, title, subtitleFontSize = "clamp(1.2rem, 3vw, 32)", ti
       </InfoContent>
 
       <PrimarySecondaryButton
-        width={"clamp(100px, 60%, 275px)"}
+        width={"auto"}
         buttonType={"Primário"}
         isDisabled={false}
         content={buttonTitle}
         onClick={handleButtonClick}
-        paddingH="5px"
+        paddingH="20px"
         paddingV="10px"
       />
     </InfoContainer>

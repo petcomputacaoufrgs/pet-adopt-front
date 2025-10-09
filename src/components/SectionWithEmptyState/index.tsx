@@ -58,13 +58,6 @@ const SectionWithEmptyState: React.FC<SectionWithEmptyStateProps> = ({
 export default SectionWithEmptyState;
 // ===== styled-components =====
 
-const Container = styled.div<{ $expandContainer: boolean }>`
-  min-width: ${(p) => (p.$expandContainer ? "60%" : "50%")};
-  width: ${(p) => (p.$expandContainer ? "80%" : "auto")};
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
 
 const Header = styled.div`
   display: flex;

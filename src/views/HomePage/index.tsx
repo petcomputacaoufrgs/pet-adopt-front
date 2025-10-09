@@ -8,21 +8,43 @@ import Contact from "./5Contact";
 import Footer from "./6Footer";
 
 import logo from "../../assets/HorizontalLogo.png"
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import AuthorizationToast from '../../components/AuthorizationToast';
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const HomeView = () => {
   
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"]
+  const {isLoading, user, isLoggedIn} = useAuth();
+  
+  const location = useLocation();
+  const scrollToId = location.state?.scrollTo;
 
-  const handleHeaderAction = (selected: string) => {
-  };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && scrollToId) {
+      // tenta rodar o scroll após o browser pintar (garante DOM pronto)
+      requestAnimationFrame(() => {
+        const el = document.getElementById(scrollToId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+        // limpa o state substituindo a entrada atual
+        navigate(location.pathname, { replace: true, state: {} });
+      });
+    }
+  }, [isLoading, scrollToId, location.pathname, navigate]);
+
+  if (isLoading) {
+    return null; 
+  }
 
   return (
     <>
       <AuthorizationToast />
-      <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={logo} />
+      <Header color="#FFF6E8" Logo={logo} user={user} isLoggedIn={isLoggedIn} />
       <About />
       <ListAnimals />
       <Dicas />

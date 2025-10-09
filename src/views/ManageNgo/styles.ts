@@ -66,6 +66,8 @@ export const TopBarContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 160px;
+  scroll-margin-top: 80px;
+  
 `;
 
 export const TopBarContent = styled.div`

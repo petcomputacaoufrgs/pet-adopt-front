@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   // 1. Hook que fornece informações de autenticação
-  const { user, isLoading, isLoggedIn, hasRole } = useAuth();
+  const { isLoading, isLoggedIn, hasRole } = useAuth();
 
   // 2. Executa quando dados de autenticação mudam
   useEffect(() => {
@@ -26,6 +26,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
       window.location.href = '/';
       return;
     }
+
   }, [isLoading, isLoggedIn, hasRole, allowedRoles]);
 
   // 3. Renderiza o componente protegido

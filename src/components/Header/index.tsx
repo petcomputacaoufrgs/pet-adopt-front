@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   ButtonsContainer,
@@ -29,8 +29,17 @@ import OrangeFacebookPin from "../../assets/OrangeFacebookPin.png";
 import OrangeInstagramPin from "../../assets/OrangeInstagramPin.png";
 import OrangeTiktokPin from "../../assets/OrangeTiktokPin.png";
 import OrangeYoutubePin from "../../assets/OrangeYoutubePin.png";
+import { useAuth } from "../../hooks/useAuth";
+import { User } from "../../types/user";
+import { useHeaderOptions } from "./useHeaderOptions";
+import { ChevronDown, ChevronUp, Home, HomeIcon } from "lucide-react";
 
-const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
+
+const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
+
+  const { accountOptions, navigationOptions, handleAction } = useHeaderOptions();
+
+
   const socialMediaLinks = [
     {
       orange: OrangeInstagramPin,
@@ -58,22 +67,9 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     },
   ];
 
-  const navigate = useNavigate();
 
-  const handleUserAction = (selected: string) => {
-    if (selected === "Cadastrar ONG ou Membro") navigate("/signup");
-    else if (selected === "Fazer Login") navigate("/login");
-  };
 
-  const currentUserOptions = user
-    ? user.userOptions
-    : ["Cadastrar ONG ou Membro", "Fazer Login"];
-
-  const currentUserActions = user
-    ? user.userOptionsToActions
-    : handleUserAction;
-
-  const standardUserOptionsButtonWidth = ["284px", "151px"];
+  const standardUserOptionsButtonWidth = ["151px", "284px"];
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -86,9 +82,25 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
   type ResponsiveMode = "full" | "partial" | "compact";
 
   const getResponsiveMode = (): ResponsiveMode => {
-    if (windowWidth >= 1570) return "full";
-    if (windowWidth >= 1130) return "partial";
-    return "compact";
+    if(!isLoggedIn){
+      if (windowWidth >= 1560) return "full";
+      if (windowWidth >= 980) return "partial";
+      return "compact";
+    }
+
+    if(user){
+      if(user.role === "NGO_ADMIN"){
+        return windowWidth >= 1200 ? "full" : "compact";
+      }
+      if(user.role === "NGO_MEMBER"){
+        return windowWidth >= 1200 ? "full" : "compact";
+      }
+      if(user.role === "ADMIN"){
+        return windowWidth >= 1280 ? "full" : windowWidth >= 680 ? "partial" : "compact";
+      }
+    }
+
+    return windowWidth >= 1280 ? "full" : windowWidth >= 680 ? "partial" : "compact";
   };
 
   const responsiveMode = getResponsiveMode();
@@ -123,40 +135,55 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     </svg>
   );
 
+  const navigate = useNavigate();
+
+
   const renderCompactMenu = () => (
     <>
-      {user ? (
+      {/* Se o usuário estiver logado, mostra as opções de navegação e conta */}
+      {isLoggedIn ? (
         <CompactUserOptionsContainer>
-          {currentUserOptions.map((option) => (
-            <TextButton key={option} onClick={() => currentUserActions(option)}>
+          <TextButton key="home" onClick={() => navigate("/")}>
+            Home
+          </TextButton>
+
+          {navigationOptions.concat(accountOptions).map((option) => (
+            <TextButton key={option} onClick={() => handleAction(option)}>
               {option}
             </TextButton>
           ))}
         </CompactUserOptionsContainer>
+
+      
       ) : (
+      <>
+        {/* Se o usuário não estiver logado, mostra botões de login/cadastro e as opções de navegação */}
         <CompactLoginSignupButtonsContainer>
-          {currentUserOptions.map((option: string) => (
+          {accountOptions.map((option: string) => (
             <PrimarySecondaryButton
               key={option}
-              width={`${90 / currentUserOptions.length}%`}
+              width={`${90 / accountOptions.length}%`}
               buttonType="Primário"
               isDisabled={false}
               content={option}
-              onClick={() => currentUserActions(option)}
+              onClick={() => handleAction(option)}
               paddingH="5px"
               paddingV="10px"
             />
           ))}
         </CompactLoginSignupButtonsContainer>
-      )}
+      
 
       <CompactGeneralOptionsContainer>
-        {options.map((option) => (
-          <TextButton key={option} onClick={() => optionsToAction(option)}>
+        {navigationOptions.map((option) => (
+          <TextButton key={option} onClick={() => handleAction(option)}>
             {option}
           </TextButton>
         ))}
       </CompactGeneralOptionsContainer>
+
+      </>
+      )}
 
       <SocialIconsDiv>
         {socialMediaLinks.map((icon, index) => (
@@ -168,25 +195,42 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
     </>
   );
 
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
+
+
   const renderMenuButtons = () => {
+
+    // Se estiver no modo "full" 
     if (responsiveMode === "full") {
+
+      // Se o usuário estiver logado, mostra as opções de conta em um DropDown e as opções de navegação direto no Header
       return user ? (
+
         <DropdownButton
           buttonType="Secundário"
+          fontSize={"clamp(16px, 1.2vw, 18px)"}
           content={`Olá, ${user.name}`}
-          options={user.userOptions}
-          onClick={user.userOptionsToActions}
+          options={accountOptions}
+          paddingH="20px"
+          onClick={handleAction}
+          indicator={(isOpen: boolean) => isOpen ? (
+            <ChevronDown size={30} color="#553525"/>
+                    ) : (
+            <ChevronUp size={30} color="#553525" />
+          )}
         />
-      ) : (
+        
+      // Se o usuário não estiver logado, mostra as opções de conta como botões e as opções de navegação direto no Header
+        ) : (
         <>
-          {currentUserOptions.map((option: string, index) => (
+          {accountOptions.map((option: string, index) => (
             <PrimarySecondaryButton
               key={option}
               width={standardUserOptionsButtonWidth[index]}
               buttonType={index === 0 ? "Secundário" : "Primário"}
               isDisabled={false}
               content={option}
-              onClick={() => currentUserActions(option)}
+              onClick={() => handleAction(option)}
               paddingH="5px"
               paddingV="10px"
             />
@@ -195,21 +239,49 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
       );
     }
 
+    // Se estiver no modo "partial"
     if (responsiveMode === "partial") {
-      return (
+      // Se o usuário estiver logado e for ADMIN, mostra todas as opções no DropDown (navegação + conta)
+      return (user && user.role === "ADMIN") ? (
+
+          <DropdownButton
+          buttonType="Secundário"
+          fontSize={"clamp(16px, 1.2vw, 18px)"}
+          content={`Olá, ${user.name}`}
+          options={["Home"].concat(navigationOptions.concat(accountOptions))}
+          paddingH="20px"
+          onClick={handleAction}
+          indicator={(isOpen: boolean) => isOpen ? (
+            <ChevronDown size={30} color="#553525"/>
+                    ) : (
+            <ChevronUp size={30} color="#553525" />
+          )}
+          />
+
+        // Se o usuário não for ADMIN, mostra apenas as opções de conta no DropDown, e as opções de navegação direto no Header
+        ) : (
+        
         <DropdownButton
           buttonType={user ? "Secundário" : "Primário"}
+          fontSize={"clamp(16px, 1.2vw, 18px)"}
           content={user ? `Olá, ${user.name}` : MenuIcon}
-          onClick={currentUserActions}
-          options={currentUserOptions}
+          onClick={handleAction}
+          options={accountOptions}
+          paddingH="20px"
           dropDownWidth="250px"
+          indicator={isLoggedIn ? (isOpen: boolean) => isOpen ? (
+            <ChevronDown size={30} color="#553525"/>
+          ) : (
+            <ChevronUp size={30} color="#553525" />
+          ) : undefined}
         />
-      );
+        );
     }
+
 
     if (responsiveMode === "compact") {
       return (
-        <CompactedMenuButton onClick={handleClickOnCompactButton} $highlighted={showCompactMenu}>
+        <CompactedMenuButton ref={toggleButtonRef} onClick={handleClickOnCompactButton} $highlighted={showCompactMenu}>
           {MenuIcon}
         </CompactedMenuButton>
       );
@@ -217,23 +289,14 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
   };
 
   const [isScrolled, setScrolled] = useState(false);
-  const isScrolledRef = useRef(false);
 
-  useEffect(() => {
-    isScrolledRef.current = isScrolled;
-  }, [isScrolled]);
   
-
   const handleScroll = () => {
     const scrollY = window.pageYOffset;
-    const currentlyScrolled = isScrolledRef.current;
-
-    if (!currentlyScrolled && scrollY > 60) {
-      setScrolled(true);
-    } else if (currentlyScrolled && scrollY < 10) {
-      setScrolled(false);
-    }
+    if (scrollY > 60) setScrolled(true);
+    else if (scrollY < 10) setScrolled(false);
   };
+
 
   useEffect(() => {
       window.addEventListener('scroll', handleScroll);
@@ -241,6 +304,23 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
       return () => {
           window.removeEventListener('scroll', handleScroll);
       };
+  }, []);
+
+
+  const visibleOptionsOnHeader = (responsiveMode == "partial" && user && user.role === "ADMIN")? []: navigationOptions;
+
+  // Hook para detectar cliques fora do menu compacto quando ele está aberto e esconder ele de novo
+  const compactMenuRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+
+      if (compactMenuRef.current && !compactMenuRef.current.contains(e.target as Node) && toggleButtonRef.current && !toggleButtonRef.current.contains(e.target as Node))
+        setShowCompactMenu(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
 
@@ -252,19 +332,33 @@ const Header = ({ color, user, Logo, options, optionsToAction }: IHeader) => {
 
         <TextContainer>
           {responsiveMode !== "compact" &&
-            options.map((option) => (
-              <TextButton key={option} onClick={() => optionsToAction(option)}>
+          <>
+
+          {isLoggedIn && visibleOptionsOnHeader.length > 0 && (
+          <TextButton key={"home"} onClick={() => navigate("/")}>
+            Home
+          </TextButton>
+          )
+          }
+
+          {visibleOptionsOnHeader.map((option) => (
+              <TextButton key={option} onClick={() => handleAction(option)}>
                 {option}
               </TextButton>
             ))}
-        </TextContainer>
+          </>
+        }
+      </TextContainer>
 
         <ButtonsContainer>{renderMenuButtons()}</ButtonsContainer>
       </HeaderContainer>
 
-      <CompactMenu $visible={showCompactMenu}>
-        {showCompactMenu && renderCompactMenu()}
+    {showCompactMenu && responsiveMode === "compact" && (
+      <CompactMenu ref={compactMenuRef}>
+        {renderCompactMenu()}
+
       </CompactMenu>
+    )}
     </HeaderWrapper>
   );
 };

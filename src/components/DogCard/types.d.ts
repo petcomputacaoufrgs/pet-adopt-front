@@ -4,7 +4,8 @@ export interface ICard {
     size: string;
     name: string;
     race: string;
+    breed?: string;
     age: string;
     location: string;
-    to: string;
+    id: string;
   }

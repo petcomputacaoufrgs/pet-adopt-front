@@ -9,6 +9,8 @@ export const GridContainer = styled.div`
   grid-template-rows: 1fr;
   min-height: 505px;
   width: 100%;
+
+  scroll-margin-top: 80px;
 `;
 
 export const Image1Div = styled.header`

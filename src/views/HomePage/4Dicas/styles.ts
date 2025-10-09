@@ -43,6 +43,8 @@ export const HintsContainer = styled.div`
         padding-bottom: 20px;
     }
 
+    scroll-margin-top: 80px;
+
 `
 
 export const InfoDiv = styled.div`

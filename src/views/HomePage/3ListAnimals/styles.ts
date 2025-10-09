@@ -7,6 +7,8 @@ export const ListContainer = styled.div`
   margin-top: 100px;
   margin-bottom: 100px;
 
+  scroll-margin-top: 108px;
+
 `;
 
 export const TextContainer = styled.div`
@@ -15,7 +17,8 @@ export const TextContainer = styled.div`
   align-items: center;
   margin-bottom: 60px;
   font-weight: bold;
-  color: #553525
+  color: #553525;
+  text-align: center;
 `;
 
 export const TextTitle2 = styled.text`

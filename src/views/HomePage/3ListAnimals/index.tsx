@@ -59,12 +59,11 @@ const ListAnimals = () => {
   
 
   return (
-    <ListContainer>
+    <ListContainer id="listAnimals">
 
       <TextContainer>
         <TextTitle2>Não Perca os Animaizinhos</TextTitle2>
-        <TextTitle>Recém</TextTitle>
-        <TextTitle>Adicionados</TextTitle>
+        <TextTitle>Recém Adicionados</TextTitle>
       </TextContainer>
 
       <DogContainter>
@@ -79,14 +78,14 @@ const ListAnimals = () => {
               race={pet.race}
               age={pet.age}
               location={pet.location}
-              to={pet.to}
+              id={""}
             />
           ))}
         </DogCardsContainer>
       </DogContainter>
       
       <ButtonContainer>
-        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="5px" paddingV="10px"></PrimarySecondaryButton>
+        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="20px" paddingV="10px"></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>
