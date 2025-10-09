@@ -10,17 +10,8 @@ export const ContentContainer = styled.div`
 
 export const MemberCardsContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 14px 24px;
-
-    @media (max-width: 1612px) {
-        grid-template-columns: repeat(2, 1fr); 
-    }
-
-    @media (max-width: 800px) {
-      grid-template-columns: repeat(1, 1fr); 
-    }
-
 
 `
 

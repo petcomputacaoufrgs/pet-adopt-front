@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { userService } from "../../services";
+import { userService, UserFilters } from "../../services";
 import { useAuth } from "../../hooks/useAuth";
 import { AxiosError } from "axios";
 import {
@@ -61,6 +61,7 @@ const ApproveNGOMembers = () => {
 
   // Estado para armazenar as ONGs
   const [members, setMembers] = useState<MEMBER[]>([]);
+  const [allMembers, setAllMembers] = useState<MEMBER[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -83,7 +84,7 @@ const ApproveNGOMembers = () => {
   /**
    * Função para buscar todas as ONGs do backend
    */
-  const fetchMembers = async () => {
+  const fetchMembers = async (filters?: UserFilters) => {
     
     try {
       
@@ -94,7 +95,7 @@ const ApproveNGOMembers = () => {
       setIsLoading(true);
       setError("");
       
-      const response = await userService.getUnapprovedMembers(ngoId);
+       const response = await userService.getUnapprovedMembers(ngoId, filters);
       // Mapear os dados para garantir que tenham o campo 'id'
       const mappedMembers = response.data.map((member: any) => ({
         ...member,
@@ -102,6 +103,10 @@ const ApproveNGOMembers = () => {
       }));
       
       setMembers(mappedMembers);
+
+      if (!filters || Object.keys(filters).length === 0) {
+          setAllMembers(mappedMembers); // salva lista completa para autocomplete
+      }
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao carregar Membros.');
@@ -112,6 +117,30 @@ const ApproveNGOMembers = () => {
       setIsLoading(false);
     }
   };
+
+  /**
+       * Callback para quando o usuário pesquisar
+       */
+      const handleSearch = (filters: { name: string}) => {
+        const userFilters: UserFilters = {};
+        
+        if (filters.name) userFilters.name = filters.name;
+        
+        console.log('🔍 Aplicando filtros:', userFilters);
+        fetchMembers(userFilters);
+        setCurrentPage(1); // Resetar para primeira página
+      };
+    
+      /**
+       * Callback para quando o usuário limpar filtros
+       */
+      const handleClearFilters = () => {
+        console.log('🧹 Limpando filtros');
+        fetchMembers(); // Buscar sem filtros
+        setCurrentPage(1); // Resetar para primeira página
+      };
+    
+  
 
   /**
    * Função para aprovar ONG
@@ -357,17 +386,21 @@ const ApproveNGOMembers = () => {
             name={name}
             setName={setName}
             hasBorder={false}
+            onSearch={handleSearch}
+            onClearFilters={handleClearFilters}
           />
         </Overlay>
       )}
 
       <ContentContainer>
-         {!hideMemberFilter && (
+         {!hideMemberFilter && showedMembers.length > 0 && (
             <MembersFilter
               members={members.map(member => member.name)}
               name={name}
               setName={setName}
               hasBorder={false}
+              onSearch={handleSearch}
+              onClearFilters={handleClearFilters}
           />
           )}
 
@@ -375,7 +408,7 @@ const ApproveNGOMembers = () => {
         
            <SectionWithEmptyState 
                 title="Administradores"
-                subtitle="Veja quem está como administrador no momento"
+                subtitle="Escolha os administradores que farão parte da sua ONG"
                 emptyMessage="Nenhum Administrador Encontrado"
                 expandContainer={hideMemberFilter}
                 emptyState={showedMembers.length == 0}

@@ -2,13 +2,16 @@ import styled from "styled-components";
 
 export const Container = styled.div<{$width: string; $hasBorder: boolean}>`
     display: flex;
-    width: ${(props) => props.$width};
-    max-height: 420px;
     flex-direction: column;
-    gap: 24px;
+    align-items: flex-start;
+    width: ${(props) => props.$width};
+    height: fit-content;
     padding: 48px 32px;
+    gap: 24px;
     border: ${(props) => props.$hasBorder ? "1px solid #DEDEDE" : "none"};
     border-radius: 20px;
+    flex-grow: 0;
+    flex-shrink: 0;
 `
 
 export const FilterContainer = styled.div`
@@ -16,8 +19,6 @@ export const FilterContainer = styled.div`
     flex-direction: column;
     gap: 16px;
     width: 100%;
-
-
 `
 
 

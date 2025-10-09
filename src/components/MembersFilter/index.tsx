@@ -13,7 +13,9 @@ export default function MembersFilter({
   members,
   name,
   setName,
-  hasBorder = true
+  hasBorder = true,
+  onSearch,
+  onClearFilters
 }: IMembersFilter) {
 
   
@@ -23,6 +25,23 @@ export default function MembersFilter({
 
   const onCleanFilters = () => {
     setName("");
+  };
+
+  const handleSearch = () => {
+    const filters = {
+      name: name.trim(),
+
+    };
+    
+    console.log('🔍 Aplicando filtros:', filters);
+    onSearch?.(filters);
+  };
+
+  const handleClearFilters = () => {
+    setName("");
+    
+    console.log('🧹 Limpando filtros');
+    onClearFilters?.();
   };
 
   const inputsWidth = "298px";
@@ -49,7 +68,7 @@ export default function MembersFilter({
       </FilterContainer>
 
       <ButtonsContainer $width={inputsWidth}>
-        <PrimarySecondaryButton width="100%" content="Buscar" height="50px" onClick={() => {}}/>
+        <PrimarySecondaryButton width="100%" content="Buscar" height="50px" onClick={handleSearch}/>
         <ActionText width="100%" fontSize="1.125em" onClick={onCleanFilters} textColor="#553525" underlineOnHover>
           Limpar Filtros
         </ActionText>

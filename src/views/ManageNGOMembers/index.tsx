@@ -1,4 +1,4 @@
-import { userService } from "../../services";
+import { userService, UserFilters } from "../../services";
 import { AxiosError } from "axios";
 
 import Header from "../../components/Header";
@@ -11,6 +11,7 @@ import {
   Overlay,
   TopBarContainer,
   TopBarContent,
+  Msg
 } from "./styles";
 
 import BannerComponent from "../../components/BannerComponent";
@@ -30,6 +31,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const ManageNGOMembers: React.FC = () => {
   const [ngoMembers, setNgoMembers] = useState<User[]>([]);
+  const [allMembers, setAllMembers] = useState<User[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState<string>("");
@@ -41,12 +43,22 @@ const ManageNGOMembers: React.FC = () => {
     }
   }, [ngoId]);
 
-  const fetchNGOMembers = async () => {
+  const fetchNGOMembers = async (filters?: UserFilters) => {
     if (ngoId) {
       try {
         setIsLoading(true);
-        const response = await userService.getApprovedMembers(ngoId);
-        setNgoMembers(response.data);
+        const response = await userService.getApprovedMembers(ngoId, filters);
+
+        const mappedMembers= response.data.map((member: any) => ({
+          ...member,
+          id: member._id||member.id,
+        }));
+        setNgoMembers(mappedMembers);
+
+        if (!filters || Object.keys(filters).length === 0) {
+          setAllMembers(mappedMembers); // salva lista completa para autocomplete
+        }
+
       } catch (error) {
         console.error(error);
         if (error instanceof AxiosError && error.response) {
@@ -60,6 +72,30 @@ const ManageNGOMembers: React.FC = () => {
     }
   };
 
+
+  
+    /**
+     * Callback para quando o usuário pesquisar
+     */
+    const handleSearch = (filters: { name: string}) => {
+      const userFilters: UserFilters = {};
+      
+      if (filters.name) userFilters.name = filters.name;
+      
+      console.log('🔍 Aplicando filtros:', userFilters);
+      fetchNGOMembers(userFilters);
+      setCurrentPage(1); // Resetar para primeira página
+    };
+  
+    /**
+     * Callback para quando o usuário limpar filtros
+     */
+    const handleClearFilters = () => {
+      console.log('🧹 Limpando filtros');
+      fetchNGOMembers(); // Buscar sem filtros
+      setCurrentPage(1); // Resetar para primeira página
+    };
+  
 
 
 
@@ -146,11 +182,12 @@ const ManageNGOMembers: React.FC = () => {
   }, [showMembersFilterOnSide]);
 
   /**
-   * Função para deletar uma ONG
+   * Função para deletar um membro
    */
   const deleteMember = async (memberId: string) => {
     try {  
-  
+      console.log(memberId);
+      await userService.delete(memberId);
       // Remover a ONG da lista local
       setNgoMembers(prevMembers => prevMembers.filter(member => member.id !== memberId));
       
@@ -188,7 +225,6 @@ const ManageNGOMembers: React.FC = () => {
    */
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [memberBeingEdited, setMemberBeingEdited] = useState<User | null>(null);
   const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -216,6 +252,7 @@ const ManageNGOMembers: React.FC = () => {
 
     await deleteMember(memberToDelete.id);
     setMemberToDelete(null);
+    
    
   };
 
@@ -223,13 +260,6 @@ const ManageNGOMembers: React.FC = () => {
   useEffect(() => {
     document.body.style.overflow = isEditModalOpen ? "hidden" : "";
   }, [isEditModalOpen]);
-
-  const handleEditClick = (member: User) => {
-   if (!member) return;
-
-    setMemberBeingEdited(member);
-    setIsEditModalOpen(true);
-  };
   
 
 
@@ -237,10 +267,12 @@ const ManageNGOMembers: React.FC = () => {
     <div>
       <Header options={headerOptions} optionsToAction={handleHeaderAction} color="#FFF6E8" Logo={HorizontalLogo}/>
       <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Gerencie sua equipe dos sonhos!" subTitle="Veja, organize e acompanhe sua equipe de um jeito simples e prático."   imageUrl={ManageMembersHamster}/>
-           
+           <Msg>{isLoading && <p>Carregando...</p>}
+              {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}</Msg>
            <TopBarContainer>
               <TopBarContent>
-                {hideMembersFilter && (
+                
+                {hideMembersFilter  && (
                   <PrimarySecondaryButton 
                     onClick={() => setShowMembersFilterOnSide(true)} 
                     content="Filtros"  
@@ -249,6 +281,7 @@ const ManageNGOMembers: React.FC = () => {
                 )}
                 <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Gerenciar ONGs" },  ]} />
               </TopBarContent>
+              
             </TopBarContainer>
       
           {showMembersFilterOnSide && (
@@ -256,23 +289,27 @@ const ManageNGOMembers: React.FC = () => {
               <CloseButton onClick={() => setShowMembersFilterOnSide(false)}>x</CloseButton>
       
               <MembersFilter
-                members={ngoMembers.map(ngo => ngo.name)}
+                members={allMembers.map(member => member.name)}
                 name={name}
                 setName={setName}
-
                 hasBorder={false}
+                onSearch={handleSearch}
+                onClearFilters={handleClearFilters}
               />
             </Overlay>
           )}
       
           <ContentContainer>
-            {isLoading && <p>Carregando...</p>}
-            {errorMessage && <div style={{ color: 'red', margin: '10px 0' }}>{errorMessage}</div>}
-            {!hideMembersFilter && (
+          
+            
+            {!hideMembersFilter && showedMembers.length > 0 && (
               <MembersFilter
                 members={ngoMembers.map(member => member.name)}
                 name={name}
                 setName={setName}
+                hasBorder={true}
+                onSearch={handleSearch}
+                onClearFilters={handleClearFilters}
               />
             )}
       
@@ -295,7 +332,7 @@ const ManageNGOMembers: React.FC = () => {
                     key={member.id}
                     member={member}
                     showEditOptions = {true}
-                    onDeleteClick={() => handleDeleteClick(member)} // CORRETO
+                    onDeleteClick={() => handleDeleteClick(member)}
                   />
                   ))}
                 </NGOCardsContainer>
@@ -311,18 +348,6 @@ const ManageNGOMembers: React.FC = () => {
                 buttonWidth="30px"
                 containerHeight="160px"
               />
-
-              {isEditModalOpen && memberBeingEdited && (
-                  <EditMemberModal
-                    member={memberBeingEdited}
-                    onClose={() => setIsEditModalOpen(false)}
-                    onSave={(updatedMember) => {
-                      setNgoMembers(prev =>
-                        prev.map(m => (m.id === updatedMember.id ? updatedMember : m))
-                      );
-                    }}
-                  />
-                )}
               <Footer />
              {memberToDelete && (
                 <ConfirmModal

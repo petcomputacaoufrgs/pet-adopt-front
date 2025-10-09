@@ -20,7 +20,8 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
       : "1px solid rgba(0, 0, 0, 0.1)"};
   position: relative;
   transition: box-shadow 0.3s ease;
-   align-self: start;
+  align-self: start;
+  max-width: 280px;
 `;
 
 export const MemberName = styled.h3`
@@ -123,7 +124,8 @@ export const Icon = styled.div<{ $orange: string; $brown: string }>`
 export const Cabecalho = styled.div`
   position: relative;
   display: flex;
-  align-items: space-between;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px;
 `;
 
