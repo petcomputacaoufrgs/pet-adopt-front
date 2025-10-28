@@ -3,32 +3,32 @@ import { authService, getAuthError } from "../../services";
 
 import {
   Container,
-  LoginContainer,
-  LoginFormContainer,
-  LoginForm,
-  LoginFormTextContainer,
-  LoginFormInputsContainer,
-  LoginFormLinksContainer,
+  ForgotPasswordContainer,
+  ForgotPasswordFormContainer,
+  ForgotPasswordForm,
+  ForgotPasswordFormTextContainer,
+  ForgotPasswordFormInputsContainer,
+  ForgotPasswordFormLinksContainer,
   TextContainer,
 } from "./styles"; 
 
 import Header from "../../components/Header"; 
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
-import loginPageLogo from "../../assets/HorizontalLogo.png";
-import LoginDog from "../../assets/LoginDog.png";
+import ForgotPasswordPageLogo from "../../assets/HorizontalLogo.png";
+import ForgotPasswordDog from "../../assets/LoginDog.png";
 import BasicInput from "../../components/BasicInput";
 import PasswordInputField from "../../components/PasswordInput";
-import ActionText from "../../components/ActionText";
 import { useAuth } from "../../hooks/useAuth";
 import { Navigate, useNavigate } from "react-router-dom";
+import { Weight } from "lucide-react";
+import ActionText from "../../components/ActionText";
 
-const Login: React.FC = () => {
+const ForgotPassword1: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate();
 
 
 
@@ -42,36 +42,29 @@ const Login: React.FC = () => {
 
 
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    // e.preventDefault();
 
-    try {
-      const response = await authService.login(email, password);
-      
-      // Salvar dados do usuário se necessário
-      if (response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-      
-      setSuccessMessage("Login realizado com sucesso!");
-      
-      // Redirecionar para a página apropriada após login
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1500);
-      
-    } catch (err) {
-      console.error(err);
-      setErrorMessage("Login falhou. Verifique suas credenciais.");
-    }
+    // setErrorMessage("");
+    // setSuccessMessage("");
+
+    // try {
+    //   await authService.forgotPassword(email, password);
+    //   setSuccessMessage("Instruções para redefinir sua senha foram enviadas para o seu e-mail.");
+    // } catch (error: any) {
+    //   const errorMsg = error.response?.data?.message || "Ocorreu um erro ao tentar redefinir a senha.";
+    //   setErrorMessage(errorMsg);
+    // }
+
+    navigate('/forgotPassword2', { state: { from: '/forgotPassword1' } });
   };
 
 
 // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
   
   const [windowSize, setWindowSize] = useState(window.innerWidth);
+
+  const navigate = useNavigate();
     
   useEffect(() => {
         const handleResize = () => {
@@ -118,22 +111,22 @@ const Login: React.FC = () => {
     <Container style={{ paddingRight: getScrollbarWidth() } }>
       <Header
         color="rgba(0, 0, 0, 0)"
-        Logo={loginPageLogo}
+        Logo={ForgotPasswordPageLogo}
         isLoggedIn={isLoggedIn}
         user={user}
       />
 
-      <LoginContainer>
+      <ForgotPasswordContainer>
       {windowSize >= 1200 &&
-        <div style={{minHeight: "600px", maxWidth: "732.95px", backgroundImage: `url(${LoginDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
+        <div style={{minHeight: "600px", maxWidth: "732.95px", backgroundImage: `url(${ForgotPasswordDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
         } 
 
-        <LoginFormContainer>
-          <LoginForm onSubmit={handleLogin}>
-            <LoginFormTextContainer>
-              <h1>Fazer Login</h1>
-              <p>Representa uma ONG? Crie sua conta para começar</p>
-            </LoginFormTextContainer>
+        <ForgotPasswordFormContainer>
+          <ForgotPasswordForm onSubmit={handleForgotPassword}>
+            <ForgotPasswordFormTextContainer>
+              <h1>Esqueci a Senha</h1>
+              <p>Insira o email usado para criar sua conta. Nós enviaremos um "código de redefinição" para poder definir uma nova senha.</p>
+            </ForgotPasswordFormTextContainer>
 
             {errorMessage && (
               <div style={{ 
@@ -161,7 +154,7 @@ const Login: React.FC = () => {
               </div>
             )}
 
-            <LoginFormInputsContainer>
+            <ForgotPasswordFormInputsContainer>
               
               <BasicInput
                 title="E-mail"
@@ -172,36 +165,22 @@ const Login: React.FC = () => {
                 $width="100%"
                 onChange={(e) => setEmail(e.target.value)}
               />
-
-              <PasswordInputField
-                  title="Senha"
-                  required={false}
-                  isDisabled={false}
-                  $fontSize="1rem" 
-                  placeholder="Insira sua senha aqui"
-                  $width="100%"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  } }
-                  visible={false} 
-              />
               
-            </LoginFormInputsContainer>
+            </ForgotPasswordFormInputsContainer>
             
-            <PrimarySecondaryButton width="100%" buttonType="Primário" content="Entrar" onClick={handleLogin} paddingH="5px" paddingV="10px"/>
+            <PrimarySecondaryButton width="100%" buttonType="Primário" content="Próximo" onClick={handleForgotPassword} paddingH="5px" paddingV="10px"/>
 
-            <LoginFormLinksContainer>
+            <ForgotPasswordFormLinksContainer>
 
               <ActionText
-                key={"forgotPasswordActionText"}
+                key={"loginActionText"}
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => navigate("/forgotPassword1")}
+                onClick={() => navigate("/login")}
               >
-              <h3>Esqueci minha senha</h3>
-
+              <h3>Fazer Login</h3>
+    
               </ActionText>
 
               <TextContainer>
@@ -217,16 +196,16 @@ const Login: React.FC = () => {
                 textColor="#553525"
                 onClick={() => navigate("/signUp")}
               >
-              <h3>Criar conta</h3>
-
+              <h3>Criar Conta</h3>
+    
               </ActionText>
-            </LoginFormLinksContainer>
-          </LoginForm>
-        </LoginFormContainer>
-      </LoginContainer>
+            </ForgotPasswordFormLinksContainer>
+          </ForgotPasswordForm>
+        </ForgotPasswordFormContainer>
+      </ForgotPasswordContainer>
     </Container>
                 
   );
 };
 
-export default Login;
+export default ForgotPassword1;
