@@ -14,6 +14,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ManageNGOMembers from "./views/ManageNGOMembers";
 import ApproveNGOMembers from "./views/ApproveNGOMembers";
 import PublicRoute from "./components/PublicRoute";
+import ForgotPassword1 from "./views/ForgotPassword1";
+import ForgotPassword2 from "./views/ForgotPassword2";
+
 
 function App() {  
 
@@ -36,6 +39,13 @@ function App() {
             element={<PublicRoute><SignupView /></PublicRoute>}
           />
 
+          <Route path="/forgotPassword1" 
+          element={<PublicRoute> <ForgotPassword1/> </PublicRoute> } 
+          />
+
+          <Route path="/forgotPassword2" 
+          element={<PublicRoute> <ForgotPassword2/> </PublicRoute> } 
+          />
 
           {/* Rotas protegidas - Apenas ADMIN */}
           <Route 
