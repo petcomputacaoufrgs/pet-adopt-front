@@ -1,12 +1,19 @@
 import { useRef } from "react";
 import { ImageSlot } from "../ImageSlot";
 
+interface ImageSlotData {
+  id: string;
+  file?: File;
+  url?: string;
+  preview: string;
+}
 
 interface IImageSlotsGroup {
-    images: (string | null)[];
-    setImages: (images: (string | null)[]) => void;
+  images: (File | string | null)[];
+  setImages: (images: (File | string | null)[]) => void;
 }
-export default function ImageSlotsGroup({images, setImages} : IImageSlotsGroup) {
+
+export default function ImageSlotsGroup({ images, setImages }: IImageSlotsGroup) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -18,27 +25,26 @@ export default function ImageSlotsGroup({images, setImages} : IImageSlotsGroup) 
     if (!files) return;
 
     const fileArray = Array.from(files);
-    const readerPromises = fileArray.map(file => {
-      return new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.readAsDataURL(file);
-      });
+
+    // Encontrar slots vazios para adicionar os novos arquivos
+    const emptySlots = images
+      .map((img, index) => img === null ? index : -1)
+      .filter(index => index !== -1);
+
+    if (emptySlots.length === 0) return; // Não há slots vazios
+
+    const updated = [...images];
+
+    // Adicionar novos arquivos nos slots vazios
+    fileArray.forEach((file, i) => {
+      if (i < emptySlots.length) {
+        const slotIndex = emptySlots[i];
+        updated[slotIndex] = file;
+      }
     });
 
-    Promise.all(readerPromises).then((base64Images) => {
-      const queue = [...base64Images]; // evita alterar a original
-      const updated = images.map((img) => {
-        if (img === null && queue.length > 0) {
-          return queue.shift()!;
-        }
-        return img;
-      });
-
-      setImages(updated);
-    });
-
-    e.target.value = ""; // reseta input pra permitir reupload do mesmo arquivo
+    setImages(updated);
+    e.target.value = ""; // Reset input
   };
 
   const handleRemove = (index: number) => {
@@ -47,12 +53,35 @@ export default function ImageSlotsGroup({images, setImages} : IImageSlotsGroup) 
     setImages(updated);
   };
 
-  //console.log(images);
+  // Converter imagens para formato de exibição
+  const getImagePreview = (img: File | string | null): string | null => {
+    if (img === null) return null;
+
+    if (typeof img === 'string') {
+      // É uma URL do servidor - verificar se é uma URL completa ou relativa
+      if (img.startsWith('http://') || img.startsWith('https://')) {
+        // URL completa
+        return img;
+      } else {
+        // URL relativa - construir URL completa baseada na API
+        const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+        return `${baseURL}${img.startsWith('/') ? '' : '/'}${img}`;
+      }
+    } else {
+      // É um File - criar preview base64
+      return URL.createObjectURL(img);
+    }
+  };
 
   return (
     <>
       {images.map((img, i) => (
-        <ImageSlot key={i} image={img} onClick={handleClick} onRemove={() => handleRemove(i)} />
+        <ImageSlot 
+          key={i} 
+          image={getImagePreview(img)} 
+          onClick={handleClick} 
+          onRemove={() => handleRemove(i)} 
+        />
       ))}
 
       <input
@@ -61,8 +90,7 @@ export default function ImageSlotsGroup({images, setImages} : IImageSlotsGroup) 
         accept="image/*"
         multiple
         onChange={handleFileChange}
-        className="hidden"
-        style={{display: "none"}}
+        style={{ display: "none" }}
       />
     </>
   );

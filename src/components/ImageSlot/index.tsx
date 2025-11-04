@@ -13,14 +13,6 @@ type ImageSlotProps = {
 
 export function ImageSlot({ image, onClick, onRemove }: ImageSlotProps) {
 
-
-  useEffect(() => {
-  console.log("Imagem mudou:", image);
-}, [image]);
-
-
-
-
   return (
     <ImageSlotContainer
       onClick={image? () => {} : onClick}

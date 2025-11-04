@@ -44,11 +44,6 @@ interface NGO {
 }
 
 const ApproveNGO = () => {
-  
-
-
-
-  
   /**
    * Estados que representam os filtros aplicados às ONGs.
    * Cada um armazena uma característica diferente usada para filtrar as ONGs.

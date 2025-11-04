@@ -14,9 +14,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ManageNGOMembers from "./views/ManageNGOMembers";
 import ApproveNGOMembers from "./views/ApproveNGOMembers";
 import PublicRoute from "./components/PublicRoute";
+import EditAnimalWrapper from "./views/EditAnimal/EditAnimalWrapper";
 import ForgotPassword1 from "./views/ForgotPassword1";
 import ForgotPassword2 from "./views/ForgotPassword2";
-
 
 function App() {  
 
@@ -38,14 +38,13 @@ function App() {
             path="/signup"
             element={<PublicRoute><SignupView /></PublicRoute>}
           />
-
           <Route path="/forgotPassword1" 
           element={<PublicRoute> <ForgotPassword1/> </PublicRoute> } 
           />
-
           <Route path="/forgotPassword2" 
           element={<PublicRoute> <ForgotPassword2/> </PublicRoute> } 
           />
+
 
           {/* Rotas protegidas - Apenas ADMIN */}
           <Route 
@@ -113,13 +112,14 @@ function App() {
           />
 
           <Route 
-            path="/editAnimal" 
+            path="/editAnimal/:id" 
             element={
               <ProtectedRoute allowedRoles={['ALL']}>
-                <EditAnimal animalData={true}/>
+                <EditAnimalWrapper/>
               </ProtectedRoute>
             } 
           />
+
           <Route 
             path="/manageInfo" 
             element={
@@ -133,7 +133,7 @@ function App() {
             path="/createAnimal" 
             element={
               <ProtectedRoute allowedRoles={['ALL']}>
-                <EditAnimal animalData={false}/>
+                <EditAnimal/>
               </ProtectedRoute>
             } 
           />

@@ -47,11 +47,19 @@ export const petService = {
   getById: (petId: string) => 
     api.get(`/pets/${petId}`),
   
-  create: (petData: any) => 
-    api.post('/pets', petData),
+  create: (petData: FormData) => 
+    api.post('/pets', petData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }),
   
-  update: (petId: string, petData: any) => 
-    api.put(`/pets/${petId}`, petData),
+  update: (petId: string, petData: FormData) => 
+    api.patch(`/pets/${petId}`, petData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }),
   
   delete: (petId: string) => 
     api.delete(`/pets/${petId}`),
