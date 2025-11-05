@@ -12,7 +12,7 @@ export interface Pet {
   status: string;
   forTempHome: string;
   forAdoption: string;
-  photos: string;
+  photos: string[];
   city: string;
   state: string;
   observations?: string;

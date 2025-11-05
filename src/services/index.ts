@@ -43,9 +43,15 @@ export const petService = {
     const url = buildPetUrl('/pets', filters);
     return api.get(url);
   },
+
+  getImage: (imagePath: string) => 
+    api.get(`/pets/image/${imagePath}`, { responseType: 'blob' }),
   
   getById: (petId: string) => 
     api.get(`/pets/${petId}`),
+
+  getRecentPets: () =>
+    api.get('/pets/recent'),
   
   create: (petData: FormData) => 
     api.post('/pets', petData, {
@@ -89,6 +95,11 @@ export const userService = {
   delete: (memberId: string) => 
     api.delete(`/users/${memberId}`),
 };
+
+/* Serviços relacionados a estatísticas
+export const statisticsService = {
+  
+};*/
 
 // Funções utilitárias para verificar e limpar mensagens de erro
 export const getAuthError = (): string | null => {

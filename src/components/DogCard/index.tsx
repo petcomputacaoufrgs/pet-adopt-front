@@ -16,18 +16,24 @@ import { ICard } from "./types";
 
 import Tag from "../Tags";
 
+import DogForCard from "../../assets/HomePageCardDog.png";
 import LocationPin from "../../assets/LocationPin.png"; 
 import PawPin from "../../assets/PawPin.png"; 
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useImage } from "../../hooks/useImage";
 
 const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id }: ICard) => {
 
   const navigate = useNavigate();
+  const { imageUrl: processedImageUrl } = useImage({
+    imagePath: imageUrl,
+    fallbackImage: DogForCard
+  });
 
   return (
     <CardContainer>
-      <Image src={imageUrl} />
+      <Image src={processedImageUrl} />
 
       <CardInfoContainer onClick={() => navigate(`/petProfile/${id}`)}>
         <CardCenteredContainer>

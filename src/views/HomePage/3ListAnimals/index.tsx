@@ -13,31 +13,45 @@ import DogCard from "../../../components/DogCard";
 import DogForCard from "../../../assets/HomePageCardDog.png";
 import PrimarySecondaryButton from "../../../components/PrimarySecondaryButton";
 import { useNavigate } from "react-router-dom";
-
+import { petService } from "../../../services";
+import { useCallback } from "react";
+import { Pet } from "../../../types/pets"
 
 const ListAnimals = () => {
-  // Array com 8 objetos pet
-  const pets = [
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Mel", race: "Vira-lata", age: "2", location: "São Paulo, SP", to: "/pet1" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Rex", race: "Pastor Alemão", age: "4", location: "Rio de Janeiro, RJ", to: "/pet2" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Pequeno", name: "Luna", race: "Poodle", age: "1", location: "Belo Horizonte, MG", to: "/pet3" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Médio", name: "Thor", race: "Bulldog", age: "3", location: "Curitiba, PR", to: "/pet4" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Grande", name: "Bela", race: "Labrador", age: "5", location: "Porto Alegre, RS", to: "/pet5" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Pequeno", name: "Max", race: "Chihuahua", age: "2", location: "Salvador, BA", to: "/pet6" },
-    { image_url: DogForCard, sex: "Fêmea", size: "Porte Médio", name: "Nina", race: "Golden Retriever", age: "3", location: "Recife, PE", to: "/pet7" },
-    { image_url: DogForCard, sex: "Macho", size: "Porte Grande", name: "Bob", race: "Rottweiler", age: "4", location: "Fortaleza, CE", to: "/pet8" }
-  ];
+  const [pets, setPets] = useState<Pet[]>([]);
 
-  const getPetsToShow = () => {
+  const fetchRecentAnimals = useCallback(async () => {
+    try {
+      const response = await petService.getRecentPets();
+      const petsData = response.data;
+      console.log('Dados recebidos da API:', petsData);
+      setPets(petsData);
+    } catch (error) {
+      console.error('Error fetching recent animals:', error);
+    }
+  }, []); // array vazio aqui é ok pois a função não tem dependências externas
+  
+  useEffect(() => {
+    fetchRecentAnimals();
+  }, [fetchRecentAnimals]);
+
+  useEffect(() => {
+    console.log('Pets atualizados:', pets);
+    if (pets.length > 0) {
+      console.log('Primeira foto do primeiro pet:', pets[0].photos);
+    }
+  }, [pets]);
+
+  const getPetsToShow = useCallback(() => {
     if (window.innerWidth <= 1260) 
-      return pets.slice(0, 4); // Mostra apenas 4 cards    
+      return pets.slice(0, 4); // Mostra apenas 4 cards
     
     if(window.innerWidth <= 1612) 
       return pets.slice(0, 6); // Mostra apenas 6 cards
 
     return pets; // Mostra todos os 8 cards
     
-  };
+  }, [pets]);
   
   // Estado para controlar quantos cards são exibidos
   const [visiblePets, setVisiblePets] = useState(getPetsToShow());
@@ -48,12 +62,16 @@ const ListAnimals = () => {
       setVisiblePets(getPetsToShow());
     };
 
+    // Configura o estado inicial
+    handleResize();
+
     window.addEventListener("resize", handleResize);
-
-    // Remove o listener ao desmontar o componente
     return () => window.removeEventListener("resize", handleResize);
-  }, [pets]);
+  }, [getPetsToShow]);
 
+  useEffect(() => {
+    setVisiblePets(getPetsToShow());
+  }, [pets]);
 
   const navigate = useNavigate();
   
@@ -70,15 +88,15 @@ const ListAnimals = () => {
         <DogCardsContainer>
           {visiblePets.map((pet, index) => (
             <DogCard
-              key={index}
-              imageUrl={pet.image_url}
+              key={pet.id || index}
+              imageUrl={pet.photos && pet.photos.length > 0 ? pet.photos[0] : DogForCard}
               sex={pet.sex}
-              size={pet.size}
-              name={pet.name}
-              race={pet.race}
+              size={pet.size || ''}
+              name={pet.name }
+              race={pet.breed || ''}
               age={pet.age}
-              location={pet.location}
-              id={""}
+              location={pet.city}
+              id={pet.id || pet._id || ''}
             />
           ))}
         </DogCardsContainer>
