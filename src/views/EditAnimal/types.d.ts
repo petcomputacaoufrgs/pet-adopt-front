@@ -3,7 +3,7 @@ export interface Animal {
   name: string;
   age: string;
   breed: string;
-  NGO: string;
+  ngoId: string;
   city: string;
   state: string;
   specieIndex: number;

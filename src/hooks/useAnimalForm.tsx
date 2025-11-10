@@ -14,7 +14,7 @@ interface AnimalFormState {
   state: string;
   specie: string;
   specieIndex: number;
-  ong: string;
+  ngoId: string;
   windowSize: number;
 }
 
@@ -31,7 +31,7 @@ interface UseAnimalFormReturn extends AnimalFormState {
   setState: (value: string) => void;
   setSpecie: (value: string) => void;
   setSpecieIndex: (value: number) => void;
-  setOng: (value: string) => void;
+  setNgoId: (value: string) => void;
   resetForm: () => void;
 }
 
@@ -43,7 +43,7 @@ const mapAnimalDataToFormState = (animalData: Animal) => {
     breed: animalData.breed || "",
     city: animalData.city || "",
     state: animalData.state || "",
-    ong: animalData.NGO || "",
+    ngoId: animalData.ngoId || "",
     characteristics: animalData.characteristics || "",
     specieIndex: -1,
     animalSexIndex: -1,
@@ -107,7 +107,7 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
   const [state, setState] = useState("");
   const [specie, setSpecie] = useState("");
   const [specieIndex, setSpecieIndex] = useState(-1);
-  const [ong, setOng] = useState("");
+  const [ngoId, setNgoId] = useState("");
   const [windowSize, setWindowSize] = useState(window.innerWidth);
 
   // Função para resetar o formulário
@@ -124,7 +124,7 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
     setState("");
     setSpecie("");
     setSpecieIndex(-1);
-    setOng("");
+    setNgoId("");
   };
 
   // Efeito para atualizar windowSize
@@ -144,7 +144,7 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
       setBreed(formState.breed);
       setCity(formState.city);
       setState(formState.state);
-      setOng(formState.ong);
+      setNgoId(formState.ngoId);
       setCharacteristics(formState.characteristics);
       setSpecieIndex(formState.specieIndex);
       setAnimalSexIndex(formState.animalSexIndex);
@@ -187,8 +187,8 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
     setSpecie,
     specieIndex,
     setSpecieIndex,
-    ong,
-    setOng,
+    ngoId,
+    setNgoId,
     windowSize,
     resetForm
   };

@@ -34,7 +34,7 @@ export default function AnimalFormSection({
   name,
   age,
   breed,
-  ong,
+  ngoId,
   city,
   state,
   specieIndex,
@@ -47,7 +47,7 @@ export default function AnimalFormSection({
   setBreed,
   setCity,
   setState,
-  setOng,
+  setNgoId,
   setSpecieIndex,
   setAnimalSexIndex,
   setSizeIndex,
@@ -62,6 +62,7 @@ export default function AnimalFormSection({
   const [isCreatingPET, setIsCreatingPET] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [ngoOptions, setNgoOptions] = useState<{ id: string; name: string }[]>([]);
+  const [ngoName, setNgoName] = useState<string>();
 
   const fetchNgoOptions = async () => {
       try {
@@ -84,8 +85,8 @@ export default function AnimalFormSection({
     }, []);
 
   useEffect(() => {
-    console.log('ONG atual:', ong);
-  }, [ong]);
+    console.log('ONG atual:', ngoId);
+  }, [ngoId]);
   
   const validateForm = (): boolean => {
     setError("");
@@ -96,7 +97,7 @@ export default function AnimalFormSection({
       { field: age, message: "Idade é obrigatória" },
       { field: city.trim(), message: "Cidade é obrigatória" },
       { field: state, message: "Estado é obrigatório" },
-      { field: ong, message: "ONG é obrigatória" },
+      { field: ngoName, message: "ONG é obrigatória" },
       { field: characteristics.trim(), message: "Características e Observações são obrigatórias" },
       { field: specieIndex >= 0, message: "Espécie é obrigatória" },
       { field: animalSexIndex >= 0, message: "Sexo é obrigatório" },
@@ -140,7 +141,10 @@ export default function AnimalFormSection({
       formData.append("age", age);
       formData.append("breed", breed || ""); // Opcional
       formData.append("characteristics", characteristics);
-      formData.append("NGO", ong);
+
+      const ngoId = ngoOptions.find(ngo => ngo.name === ngoName);
+      formData.append("ngoId", ngoId?.id || '');
+
       formData.append("city", city);
       formData.append("state", state);
       formData.append("observations", ""); // Campo opcional, pode adicionar um estado se necessário
@@ -304,8 +308,8 @@ export default function AnimalFormSection({
                     title="Selecione a ONG"
                     required
                     placeholder="Insira a ONG responsável aqui"
-                    query={ong}
-                    setQuery={setOng}
+                    query={ngoName || ''}
+                    setQuery={setNgoName}
                     options={ngoOptions.map(ngo => ngo.name)}
                     width="100%"
                     fontSize="1rem"
@@ -441,8 +445,8 @@ export default function AnimalFormSection({
                     title="Selecione a ONG"
                     required
                     placeholder="Insira a ONG responsável aqui"
-                    query={ong}
-                    setQuery={setOng}
+                    query={ngoName || ''}
+                    setQuery={setNgoName}
                     options={ngoOptions.map(ngo => ngo.name)}
                     width="100%"
                     fontSize="1rem"

@@ -24,8 +24,8 @@ export interface IAnimalFormSection {
   setSpecie: (value: string) => void;
   specieIndex: number;
   setSpecieIndex: (value: number) => void;
-  ong: string;
-  setOng: (value: string) => void;
+  ngoId: string;
+  setNgoId: (value: string) => void;
   windowSize: number;
   animalData?: any;
 }
