@@ -38,7 +38,7 @@ interface NGO {
   cnpj: string;
   instagram?: string;
   facebook?: string;
-  youtube?: string;
+  x?: string;
   tiktok?: string;
   state?: string;
 }

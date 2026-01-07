@@ -27,6 +27,7 @@ import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MembersFilter from "../../components/MembersFilter";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ManageNGOMembers: React.FC = () => {
 
@@ -38,6 +39,7 @@ const ManageNGOMembers: React.FC = () => {
   const [name, setName] = useState<string>("");
   const { user, isLoggedIn} = useAuth();
   const ngoId = useAuth().user?.ngoId;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if(ngoId){

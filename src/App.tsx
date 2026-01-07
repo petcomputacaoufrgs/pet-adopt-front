@@ -17,6 +17,7 @@ import PublicRoute from "./components/PublicRoute";
 import EditAnimalWrapper from "./views/EditAnimal/EditAnimalWrapper";
 import ForgotPassword1 from "./views/ForgotPassword1";
 import ForgotPassword2 from "./views/ForgotPassword2";
+import NgoProfile from "./views/NGOProfile";
 
 function App() {  
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<HomeView />} />
           <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>} />
           <Route path="/petProfile/:id" element={<PetProfile />} />
+          <Route path="/NGOProfile/:id" element={<NgoProfile />} />
 
           {/* Rotas públicas - Apenas para não autenticados */}
           <Route 
