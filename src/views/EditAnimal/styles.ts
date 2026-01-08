@@ -51,27 +51,7 @@ export const LocationInputsContainer = styled.div`
     
   }
 `
-export const AnimalFormContainer = styled.div`
-  width: 1536px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #FFF6E8;
-  border-radius: 28px;
-  border: 1px solid #DEDEDE;
-  padding: 32px 0;
 
-  @media (max-width: 1600px) {
-    width: 90%;
-  
-  }
-
-  @media (max-width: 1000px) {
-    width: 95%;
-  }
-
-`
 
 export const InputsContainer = styled.div`
   display: flex;

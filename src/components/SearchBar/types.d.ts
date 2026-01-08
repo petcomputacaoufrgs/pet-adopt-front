@@ -14,4 +14,6 @@ export interface ISearchBar{
     readOnly?: boolean; // Se o input é apenas para leitura. Se for true, o usuário não pode digitar nada dele
     resetOption?: string; // Se definida, o usuário pode clicar na opção com o valor passado para limpar o input
     numOptionsShowed?: number; // Quantas opções devem ser mostradas no DropDown. Se não for definido, o padrão é 5
+    verticalPadding?: string; // Espaçamento vertical interno do input, ou seja, padding-top e padding-bottom
+    gapFromTitle?: string; // Espaçamento entre o título e o input
 }

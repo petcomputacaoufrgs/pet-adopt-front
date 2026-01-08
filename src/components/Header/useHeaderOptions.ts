@@ -3,6 +3,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { User } from "../../types/user";
 import { Role } from "./types";
 import { get } from "http";
+import { useTransition } from "react";
 
 
 
@@ -10,6 +11,14 @@ export const useHeaderOptions = () => {
   const { user, isLoggedIn, logout } = useAuth();
 
   const navigate = useNavigate();
+
+  const [isPending, startTransition] = useTransition();
+  const navigateWaitingForPendencies = (to: string, options?: {state: any}) => {
+    startTransition(() => {
+      navigate(to, options);
+    });
+  };
+  
   const location = useLocation();
   
   const optionsByRole: Record<Role, { accountOptions: string[]; navigationOptions: string[] }> = {
@@ -41,10 +50,11 @@ export const useHeaderOptions = () => {
         element?.scrollIntoView({ behavior: "smooth" });
       } else {
         // navega para home carregando state
-        navigate("/", { state: { scrollTo: path.substring(1) } });
+
+        navigateWaitingForPendencies("/", { state: { scrollTo: path.substring(1) } });
       }
     } else {
-      navigate(path);
+      navigateWaitingForPendencies(path);
     }
   };
 

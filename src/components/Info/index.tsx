@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useTransition } from "react";
 
 import { InfoContainer, InfoContent } from "./styles";
 import { IInfo } from "./types";
@@ -9,9 +9,12 @@ import { useNavigate } from "react-router-dom";
 const Info = ({ subTitle, title, subtitleFontSize = "clamp(1.2rem, 3vw, 32)", titleFontSize = "clamp(1.5rem, 4vw, 2em)", buttonTitle, to, position, children }: IInfo) => {
 
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
 
   const handleButtonClick = () => {
-    navigate(to);
+    startTransition(() => {
+      navigate(to);
+    });
   };
 
   return (

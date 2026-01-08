@@ -61,7 +61,7 @@ export default function AnimalFilter({
       overlayImage: catEffectImage,
     },
     {
-      label: "Pássaro",
+      label: "Outros",
       value: "bird",
       backgroundImage: birdImage,
       backgroundColor: "#FF9944",
@@ -70,13 +70,12 @@ export default function AnimalFilter({
   ];
 
   const states = {
-    options: ["Qualquer", "Rio Grande do Sul", "Santa Catarina", "Paraná"],
+    options: ["RS", "SC", "PR"],
     resetOption: "Qualquer",
   };
 
   const ages = {
     options: [
-      "Qualquer",
       "Abaixo de 3 meses",
       "3 a 11 meses",
       "1 ano",
@@ -90,12 +89,12 @@ export default function AnimalFilter({
   };
 
   const sizes = {
-    options: ["Qualquer", "Pequeno", "Médio", "Grande"],
+    options: ["Pequeno", "Médio", "Grande"],
     resetOption: "Qualquer",
   };
 
   const situations = {
-    options: ["Qualquer", "Em lar temporário", "Disponível"],
+    options: ["Em lar temporário", "Disponível"],
     resetOption: "Qualquer",
   };
 
@@ -144,8 +143,8 @@ export default function AnimalFilter({
             selectedValue={selectedSpecie}
             setSelectedValue={setSelectedSpecie}
             options={specieOptions}
-            width="92px"
-            height="81px"
+            width="85px"
+            height="75px"
             overlayImageWidth="81px"
             overlayImageHeight="51px"
             overlayImageLeft="4px"
@@ -153,71 +152,116 @@ export default function AnimalFilter({
           />
         </SpecieRadioGroup>
 
+        <div style={{display: "flex", width: inputsWidth}}>
         <BasicInput
           value={name}
           onChange={onChangeName}
-          $width={inputsWidth}
+          $width={"50%"}
           $fontSize={inputFontSize}
           $titleFontSize={titleFontSize}
-          placeholder="Insira o nome aqui"
+          $paddingVertical="6px"
+          placeholder="Insira o nome"
           title="Nome"
           required={false}
           $inputType="Secundário"
+          $gapFromTitle="4px"
         />
+
+        <SearchBar
+          query={selectedSize}
+          setQuery={setSelectedSize}
+          options={sizes.options}
+          resetOption={sizes.resetOption}
+          width={"50%"}
+          fontSize={inputFontSize}
+          titleFontSize={titleFontSize}
+          placeholder="P/M/G"
+          title="Porte"
+          required={false}
+          readOnly={true}
+          inputType="Secundário"
+          verticalPadding="6px"
+          gapFromTitle="4px"
+        />
+
+        </div>
+
+        <div style={{display: "flex", width: inputsWidth}}>
+
+        <BasicInput
+          value={city}
+          onChange={onChangeCity}
+          $width={"65%"}
+          $fontSize={inputFontSize}
+          $titleFontSize={titleFontSize}
+          placeholder="Insira a cidade aqui"
+          $paddingVertical="6px"
+          title="Cidade"
+          required={false}
+          $inputType="Secundário"
+          $gapFromTitle="4px"
+        />
+
 
         <SearchBar
           query={selectedState}
           setQuery={setSelectedState}
           options={states.options}
           resetOption={states.resetOption}
-          width={inputsWidth}
+          width={"35%"}
           fontSize={inputFontSize}
           titleFontSize={titleFontSize}
-          placeholder="Selecione o estado"
+          placeholder="UF"
           title="Estado"
           required={false}
           readOnly={false}
           inputType="Secundário"
+          verticalPadding="6px"
+          gapFromTitle="4px"
         />
 
-        <BasicInput
-          value={city}
-          onChange={onChangeCity}
-          $width={inputsWidth}
-          $fontSize={inputFontSize}
-          $titleFontSize={titleFontSize}
-          placeholder="Insira a cidade aqui"
-          title="Cidade"
-          required={false}
-          $inputType="Secundário"
-        />
 
+
+        </div>
+
+        <div style={{display: "flex", width: inputsWidth}}>
         <BasicInput
           value={breed}
           onChange={onChangeBreed}
-          $width={inputsWidth}
+          $width={"55%"}
           $fontSize={inputFontSize}
           $titleFontSize={titleFontSize}
-          placeholder="Insira a raça aqui"
+          placeholder="Insira a raça"
+          $paddingVertical="6px"
           title="Raça"
           required={false}
           $inputType="Secundário"
+          $gapFromTitle="4px"
         />
 
         <SearchBar
           query={selectedSex}
           setQuery={setSelectedSex}
-          options={["Ambos", "Macho", "Fêmea"]}
+          options={["Macho", "Fêmea"]}
           resetOption="Ambos"
-          width={inputsWidth}
+          width={"45%"}
           fontSize={inputFontSize}
           titleFontSize={titleFontSize}
-          placeholder="Selecione o sexo"
+          placeholder="M/F"
           title="Sexo"
           required={false}
           readOnly={true}
           inputType="Secundário"
+          verticalPadding="6px"
+          gapFromTitle="4px"
+
         />
+
+        </div>
+
+        
+
+
 
         <SearchBar
           query={selectedAge}
@@ -233,22 +277,11 @@ export default function AnimalFilter({
           required={false}
           readOnly={true}
           inputType="Secundário"
+          verticalPadding="6px"
+          gapFromTitle="4px"
         />
 
-        <SearchBar
-          query={selectedSize}
-          setQuery={setSelectedSize}
-          options={sizes.options}
-          resetOption={sizes.resetOption}
-          width={inputsWidth}
-          fontSize={inputFontSize}
-          titleFontSize={titleFontSize}
-          placeholder="Selecione o porte"
-          title="Porte"
-          required={false}
-          readOnly={true}
-          inputType="Secundário"
-        />
+
 
         <SearchBar
           query={selectedSituation}
@@ -263,6 +296,8 @@ export default function AnimalFilter({
           required={false}
           readOnly={true}
           inputType="Secundário"
+          verticalPadding="6px"
+          gapFromTitle="4px"
         />
       </FilterContainer>
 

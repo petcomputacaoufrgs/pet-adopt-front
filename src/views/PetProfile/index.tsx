@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useTransition } from "react";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -28,6 +28,7 @@ import {
     MainImageContainer,
     MainImage,
 } from "./styles";
+
 
 import { ChevronLeft, Info } from 'lucide-react';
 import { CircleCheck } from 'lucide-react';
@@ -67,7 +68,7 @@ import Image6 from "./images/mutano2.jpeg";
 import { useAuth } from "../../hooks/useAuth";
 import { Pet } from "../../types/pets";
 import { petService } from "../../services";
-
+import { useToast } from "../../contexts/ToastContext";
 
 type ModalAction = { tipo: "excluir"; petId: string } | null;
 type GalleryModalAction = { isOpen: boolean; imageIndex: number } | null;
@@ -76,6 +77,8 @@ const PetProfile: React.FC = () => {
 
     const { id } = useParams<{ id: string }>();
     const [pet, setPet] = useState<Pet | null>(null);
+    console.log(pet);
+    const { showToast } = useToast();
 
     const fetchPetById = async (id: string) => {
         try {
@@ -154,55 +157,57 @@ const PetProfile: React.FC = () => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
 
     const navigate = useNavigate();
+    const [isPending, startTransition] = useTransition();
+    const handleNavigation = (to: string) => {
+        startTransition(() => {
+        navigate(to);
+        });
+    }
 
     const handleUserAction = (selected: string) => {
-        if (selected === "Manage Infos") navigate("/manageInfo");
+        if (selected === "Manage Infos") handleNavigation("/manageInfo");
     };
 
     const currentUserOptions = ["Manage Infos"];
 
     const currentUserActions = handleUserAction;
 
-    const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
     const [modalAction, setModalAction] = useState<ModalAction>(null);
-    const [toastType, setToastType] = useState< "excluir" | null>(null);
-    const [showToast, setShowToast] = useState(false);
-    const [toastVisible, setToastVisible] = useState(false);
-
-    const resetToast = () => {
-        setToastVisible(false);
-
-        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-        if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-
-        setShowToast(false);
-        setToastType(null);
-    };
 
     // Abrir modal (e fechar toast se estiver aberto)
     const abrirModal = (tipo: "excluir", petId: string) => {
-        resetToast();
         setModalAction({ tipo, petId });
     };
 
     // Confirmar ação
     const handleConfirm = () => {
+
         if (!modalAction) return;
-        
 
-        resetToast();
-        setToastType(modalAction.tipo);
-        setShowToast(true);
+        petService.delete(modalAction.petId as string).then(
+            () => {
+            console.log("Pet excluído com sucesso");
 
-        showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-        hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-        fullCloseTimeoutRef.current = setTimeout(() => {
-        setShowToast(false);
-        setToastType(null);
-        }, 3500);
+            showToast({ 
+                success: true,
+                message: "Pet excluído com sucesso!",
+                description: "O pet foi removido do sistema."
+            }
+            );
+
+            handleNavigation("/manageAnimals");
+            },
+            (error) => {
+            console.error("Erro ao excluir pet:", error);
+            showToast({ 
+                success: false,
+                message: "Erro ao excluir pet",
+                description: error || "Ocorreu um erro ao tentar excluir o pet."
+            }
+            );
+            }
+        );
 
         setModalAction(null);
     };
@@ -225,6 +230,8 @@ const PetProfile: React.FC = () => {
     
     console.log(pet.NGO);
     console.log(user?.ngoId);
+    console.log(modalAction);
+
     return (
         <Container>
 
@@ -404,7 +411,7 @@ const PetProfile: React.FC = () => {
                                             marginLeft: 4,
                                             textDecoration: "underline"
                                             }}
-                                            onClick={() => navigate("/validateNgoProfile")}
+                                            onClick={() => handleNavigation("/validateNgoProfile")}
                                         >
                                             Saber Mais
                                         </span>
@@ -434,8 +441,8 @@ const PetProfile: React.FC = () => {
                         
 
                         <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet.id as string)} isDisabled={false}/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate(`/editAnimal/${pet.id}`)} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet._id as string)} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => handleNavigation(`/editAnimal/${pet._id}`)} isDisabled={false}/>
                         </Buttons>
                         }
 
@@ -449,17 +456,6 @@ const PetProfile: React.FC = () => {
                             onClose={() => setModalAction(null)}
                         />
 
-                        {showToast && toastType && (
-                            <SuccessToast
-                                message= "Pet excluído com sucesso!"
-                                description= "O pet foi removido do sistema."
-                                onClose={() => {
-                                    setToastVisible(false);
-                                    setTimeout(() => setShowToast(false), 300);
-                                }}
-                                isVisible={toastVisible}
-                            />
-                        )}
 
                     </InfosAction>
                 </PetProfileDiv>

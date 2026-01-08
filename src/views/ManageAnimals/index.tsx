@@ -4,13 +4,13 @@ import BannerComponent from "../../components/BannerComponent";
 
 import dog from "../../assets/ManageAnimalsDog.png";
 import logo from "../../assets/HorizontalLogo.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { petService, createPetFiltersFromState } from "../../services";
 import { formatAge, formatSize, formatString, formatSpecies } from "../../services";
 import { AxiosError } from "axios";
 import Footer from "../HomePage/6Footer";
 import { CloseButton, ContentContainer, DogCardsContainer, EditButtonWrapper, Overlay, PetCardWrapper, SectionAndDogCardsContainer, SectionWithEmptyStateContainer, TopBarContainer, TopBarContent } from "./styles";
-
+import { useToast } from "../../contexts/ToastContext";
 import DogCard from "../../components/DogCard";
 import DogForCard from "../../assets/HomePageCardDog.png";
 import EditButton from "../../components/EditButton";
@@ -22,9 +22,11 @@ import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Breadcrumb from "../../components/BreadCrumb";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
-import { IManageAnimals } from "./types";
+import { IManageAnimals, ModalAction } from "./types";
 import { Pet } from "../../types/pets";
 import { useAuth } from "../../hooks/useAuth";
+import ConfirmModal from "../../components/ConfirmModal";
+import SuccessToast from "../../components/Toast";
 
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   // Estados dos pets
@@ -43,6 +45,42 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const [breed, setBreed] = useState<string>("");
   const [selectedSex, setSelectedSex] = useState<string>("");
 
+  const { showToast } = useToast(); 
+
+  // Modais e toasts
+  const [modalAction, setModalAction] = useState<ModalAction>(null);
+
+
+    // Abrir modal (e fechar toast se estiver aberto)
+    const abrirModal = (tipo: "success", petId: string) => {
+        setModalAction({ tipo, petId });
+    };
+
+    // Confirmar ação
+const handleConfirm = () => {
+    if (!modalAction) return;
+    
+    deletePet(modalAction.petId)
+      .then(
+        () => {
+        console.log("Sucesso");
+        
+        showToast({ 
+            success: true,
+            message: "Pet excluído com sucesso!",
+            description: "O pet foi removido do sistema."
+        });
+      },
+       (errorMessage) => {
+        showToast({ 
+            success: false,
+            message: "Erro ao excluir pet.",
+            description: errorMessage || "Ocorreu um erro ao tentar excluir o pet."
+        });
+       });
+
+    setModalAction(null);
+  };
   // Layout e paginação
   const [hideAnimalFilter, setHideAnimalFilter] = useState(window.innerWidth < 1240);
   const [showAnimalFilterOnSide, setShowAnimalFilterOnSide] = useState(false);
@@ -134,11 +172,14 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
       }
       
     } catch (err) {
+      let errorMessage = 'Erro de conexão. Tente novamente mais tarde.';
       if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao deletar pet.');
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
+        errorMessage = err.response.data?.message || 'Erro ao deletar pet.';
+      } 
+
+      setError(errorMessage);
+
+      throw errorMessage;
     }
   };
 
@@ -146,16 +187,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
    * Função para lidar com o clique em deletar
    */
   const handleDeleteClick = (pet: Pet) => {
-    const petId = pet.id || pet._id;
-    if (!petId) return;
-    
-    const confirmDelete = window.confirm(
-      `Tem certeza que deseja excluir o pet "${pet.name}"? Esta ação não pode ser desfeita.`
-    );
-    
-    if (confirmDelete) {
-      deletePet(petId);
-    }
+    abrirModal("success", pet.id as string);
   };
 
   /**
@@ -179,8 +211,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   function getPetsPerPage(): number {
     if (window.innerWidth < 600) return 3;
     if (window.innerWidth < 900) return 4;
-    if (window.innerWidth < 1240) return 6;
-    return 8;
+    if (window.innerWidth < 1612) return 6;
+    return 9;
   }
 
   const [petsPerPage, setPetsPerPage] = useState<number>(getPetsPerPage());
@@ -236,8 +268,24 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     return null;
 
 
+  console.log(error);
+
+
   return (
     <>
+
+      <ConfirmModal
+          isOpen={modalAction !== null}
+          title= "Tem certeza que deseja excluir este pet?"
+          message="Esta ação não poderá ser desfeita. O pet será removido permanentemente do sistema."
+          confirmLabel="Sim, excluir"
+          cancelLabel="Cancelar"
+          onConfirm={handleConfirm}
+          onClose={() => setModalAction(null)}
+      />
+
+
+                        
       <Header
         color="#FFF6E8"
         Logo={logo}
@@ -362,29 +410,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
                     age={formatString(formatAge(pet.age))}
                     location={formatString(`${pet.city}, ${pet.state}`)}
                     id={getPetId(pet, index)}
+                    onDelete={allowEdit? () => handleDeleteClick(pet) : undefined}
+                    onEdit={allowEdit? () => handleEditClick(pet) : undefined}
                     
                   />
-
-                  {allowEdit &&
-                    <EditButtonWrapper>
-                      <EditButton
-                        width="34px"
-                        height="34px"
-                        options={[
-                          { 
-                            label: "Editar", 
-                            onClick: () => handleEditClick(pet), 
-                            iconSrc: PencilIcon 
-                          },
-                          { 
-                            label: "Excluir", 
-                            onClick: () => handleDeleteClick(pet), 
-                            iconSrc: DeleteIcon 
-                          },
-                        ]}
-                      />
-                    </EditButtonWrapper>
-                  }
                 </PetCardWrapper>
               ))}
             </DogCardsContainer>

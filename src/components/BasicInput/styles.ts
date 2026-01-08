@@ -4,6 +4,7 @@ export const StyledInput = styled.input<{
   $width: string;
   $fontSize: string;
   $paddingRight: string;
+  $paddingVertical: string;
   $readOnly: boolean;
   $inputType: string;
   $error: boolean;
@@ -16,8 +17,8 @@ export const StyledInput = styled.input<{
     $error ? "1px solid #FF3B30" : $inputType === "Primário" ? "1px solid #FFC99C" : "1px solid #BCAFA9"};
   color: #553525;
   background-color: ${({ $inputType }) => ($inputType === "Primário" ? "#FFF3DF" : "#FFFFFF")};
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: ${({ $paddingVertical }) => $paddingVertical};
+  padding-bottom: ${({ $paddingVertical }) => $paddingVertical};
   padding-right: ${({ $paddingRight }) => $paddingRight};
   padding-left: 24px;
   border-radius: 100px;

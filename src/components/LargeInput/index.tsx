@@ -10,6 +10,7 @@ const LargeInputField: React.FC<LargeInputProps> = ({
   $fontSize: fontSize, 
   placeholder,
   $width: inputWidth, 
+  $height: inputHeight,
   value,
   onChange,
   onClick,
@@ -52,6 +53,7 @@ const LargeInputField: React.FC<LargeInputProps> = ({
           $inputType={inputType}
           $error={hasError}
           maxLength={272}
+          $height={inputHeight}
         />
         {children}
         <InfoText $fontSize={fontSize}>Máximo de 272 caracteres.</InfoText>

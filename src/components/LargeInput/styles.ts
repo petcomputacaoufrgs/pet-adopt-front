@@ -34,6 +34,7 @@ export const Container = styled.div<ContainerProps>`
 interface StyledInputProps {
   $readOnly?: boolean;
   $width: string;
+  $height?: string;
   $fontSize: string;
   $paddingRight: string;
   $inputType: string;
@@ -44,7 +45,7 @@ export const StyledInput = styled.textarea<StyledInputProps>`
   width: ${({ $width }) => $width};
   font-size: ${({ $fontSize }) => $fontSize};
   box-sizing: border-box;
-  height: 104px;
+  height: ${({ $height }) => $height || "104px"};
   padding-top: 8px;
   padding-right: ${({ $paddingRight }) => $paddingRight};
   padding-left: 24px;

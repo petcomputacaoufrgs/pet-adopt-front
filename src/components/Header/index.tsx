@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
@@ -33,6 +33,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { User } from "../../types/user";
 import { useHeaderOptions } from "./useHeaderOptions";
 import { ChevronDown, ChevronUp, Home, HomeIcon } from "lucide-react";
+import { start } from "repl";
 
 
 const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
@@ -136,14 +137,20 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
   );
 
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
 
+  const handleNavigation = (to: string) => {
+    startTransition(() => {
+      navigate(to);
+    });
+  }
 
   const renderCompactMenu = () => (
     <>
       {/* Se o usuário estiver logado, mostra as opções de navegação e conta */}
       {isLoggedIn ? (
         <CompactUserOptionsContainer>
-          <TextButton key="home" onClick={() => navigate("/")}>
+          <TextButton key="home" onClick={() => handleNavigation("/")}>
             Home
           </TextButton>
 
@@ -335,7 +342,7 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
           <>
 
           {isLoggedIn && visibleOptionsOnHeader.length > 0 && (
-          <TextButton key={"home"} onClick={() => navigate("/")}>
+          <TextButton key={"home"} onClick={() => handleNavigation("/")}>
             Home
           </TextButton>
           )

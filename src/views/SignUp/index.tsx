@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { ngoService, authService } from "../../services";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
@@ -261,16 +261,17 @@ const SignUp: React.FC = () => {
   const isOngDisabled = !name || !email || !password || !confirmPassword || !doc || !instagram || !adoptionForm;   
 
 
-  // AÇÕES DE HEADER E NAVEGAÇÃO ============================================
-
-  const handleHeaderAction = (selected: string) => {
-    // Ação a ser definida
-  };
-
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
+  const handleNavigation = (to: string) => {
+    startTransition(() => {
+      navigate(to);
+    });
+  }
+  
 
   const handleUserAction = (selected: string) => {
-    if (selected === "Fazer Login") navigate("/login");
+    if (selected === "Fazer Login") handleNavigation("/login");
   };
 
   const currentUserOptions = ["Fazer Login"];

@@ -20,7 +20,7 @@ export const ToggleButton = styled.button`
   border: none;
   cursor: pointer;
   color: #553525;
-  padding: 8px 24px 8px 12px;
+  padding: 0 16px 0 10px;
   display: flex;
   align-items: center;
 `;

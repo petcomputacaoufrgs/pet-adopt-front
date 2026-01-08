@@ -6,7 +6,7 @@ export const InfoContent = styled.div`
   align-items: flex-start;
   justify-content: center;
   text-align: left;
-  gap: 16px;
+  gap: 8px;
   width: 100%;
 
   p {
@@ -20,7 +20,7 @@ export const InfoContent = styled.div`
   h1 {
     margin: 0;
     font-weight: bold;
-    font-size: 40px;
+    font-size: clamp(32px, 4vw, 40px);
     color: #553525;
   }
     
@@ -30,7 +30,7 @@ export const FormContainer = styled.div`
   width: 1305px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 12px;
 
   @media (max-width: 1600px) {
     width: 90%;
@@ -52,7 +52,7 @@ export const LocationInputsContainer = styled.div`
   }
 `
 export const AnimalFormContainer = styled.div`
-  width: 1536px;
+  width: 1460px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,7 +60,7 @@ export const AnimalFormContainer = styled.div`
   background-color: #FFF6E8;
   border-radius: 28px;
   border: 1px solid #DEDEDE;
-  padding: 32px 0;
+  padding: 16px 0;
 
   @media (max-width: 1600px) {
     width: 90%;
@@ -131,7 +131,6 @@ export const Wrapper = styled.div<{ $windowSize: number; AnimalFormPhoto: string
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   background-image: url(${({AnimalFormPhoto}) => AnimalFormPhoto});
   background-size: cover;
   background-position: center;
@@ -147,12 +146,12 @@ export const HalfColumn = styled.div<{ $windowSize: number }>`
   width: ${({ $windowSize }) => ($windowSize > 818 ? "50%" : "100%")};
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
 `;
 
 export const Row = styled.div`
   display: flex;
-  gap: 24px;
+  gap: 14px;
 `;
 
 export const SubmitContainer = styled.div`
