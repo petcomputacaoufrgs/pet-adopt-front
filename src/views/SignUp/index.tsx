@@ -11,6 +11,8 @@ import {
   SignUpFormTextContainer,
   SignUpFormInputsContainer,
   SignUpFormLinksContainer,
+  ModalOverlay,
+  ModalContent
 } from "./styles";
 
 import Header from "../../components/Header";
@@ -26,44 +28,65 @@ import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 import { useAuth } from "../../hooks/useAuth";
 
-// VIEW ==============================================================================
-// O componente SignUp é responsável por renderizar a página de cadastro de usuários
+import { isCPF, isCNPJ } from "validation-br";
+
 
 const SignUp: React.FC = () => {
 
-  
-  // ESTADOS =================================================
+// === ESTADOS =================================================
 
   interface NGO_ID {
     id: string;
     name: string;
   }
 
-  // Estados comum as duas roles (membro e ong)
+  // Estados de Dados
   const [role, setRole] = useState('membro');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [error, setError] = useState(false);
+  
+  // Estados de Erro (VALIDAÇÃO INLINE)
+  const [nameError, setNameError] = useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
 
-  // Estados para armazenar as ONGs disponíveis e o texto de busca
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
+
+  // Erros específicos de Membro
+  const [ngoError, setNgoError] = useState(false); // Para o SearchBar
+  const [ngoErrorMessage, setNgoErrorMessage] = useState('');
+
+  // Erros específicos de ONG
+  const [docError, setDocError] = useState(false);
+  const [docErrorMessage, setDocErrorMessage] = useState('');
+
+  const [adoptionFormError, setAdoptionFormError] = useState(false);
+  const [adoptionFormErrorMessage, setAdoptionFormErrorMessage] = useState('');
+
+  // Erro do grupo de contatos (se nenhum for preenchido)
+  const [contactError, setContactError] = useState(false); 
+
+  // Estados do Modal
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState<'success' | 'error'>('success');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+
+  // Outros Dados
   const [ngoOptions, setNgoOptions] = useState<NGO_ID[]>([]);
   const [ngoSearchText, setNgoSearchText] = useState('');
-
-  // Estado específico da role Membro
   const [ngo, setNgo] = useState<NGO_ID | null>(null); 
 
-  // Estados específicos da role Ong
-  const [doc, setdoc] = useState('');
+  // Dados ONG
+  const [doc, setDoc] = useState('');
   const [description, setDescription] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
@@ -75,18 +98,147 @@ const SignUp: React.FC = () => {
   const [temporaryHomeForm, setTemporaryHomeForm] = useState('');
   const [claimForm, setClaimForm] = useState('');
 
-  // FUNÇÕES DE INTEGRAÇÂO COM BACKEND ===========================
+  const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
+
+  // === FUNÇÕES DE HELPERS E MODAL ===========================
+
+  const openModal = (type: 'success' | 'error', title: string, message: string) => {
+    setModalType(type);
+    setModalTitle(title);
+    setModalMessage(message);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    if (modalType === 'success') {
+       handleNavigation('/');
+    }
+  };
+
+  const handleNavigation = (to: string) => {
+    startTransition(() => {
+      navigate(to);
+    });
+  }
+
+  // === VALIDAÇÕES LÓGICAS (VALIDATE FORM) ===========================
+
+  // Verifica campos básicos e retorna TRUE se estiver tudo certo
+  const validateForm = () => {
+    let isValid = true;
+
+    // Validar Nome
+    if (!name.trim()) {
+      setNameError(true);
+      setNameErrorMessage('Nome é obrigatório');
+      isValid = false;
+    }
+
+    // Validar Email (Vazio ou Formato)
+    if (!email.trim()) {
+      setEmailError(true);
+      setEmailErrorMessage('E-mail é obrigatório');
+      isValid = false;
+    } else {
+      // Se verifyEmail já rodou no onChange e setou erro, isValid deve ser false
+      if (emailError) isValid = false;
+    }
+
+    // Validar Senhas
+    if (!password) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Senha é obrigatória');
+      isValid = false;
+    } else if (passwordError) isValid = false;
+
+    if (!confirmPassword) {
+      setConfirmPasswordError(true);
+      setConfirmPasswordErrorMessage('Confirmação é obrigatória');
+      isValid = false;
+    } else if (confirmPasswordError) isValid = false;
+
+
+    // Validações Específicas de ROLE
+    if (role === 'membro') {
+      if (!ngo) {
+        setNgoError(true);
+        setNgoErrorMessage('Selecione uma ONG da lista');
+        isValid = false;
+      }
+    }
+
+    if (role === 'ong') {
+      // Documento
+      if (!doc.trim()) {
+        setDocError(true);
+        setDocErrorMessage('CPF ou CNPJ é obrigatório');
+        isValid = false;
+      } else if (!isCNPJ(doc) && !isCPF(doc)) {
+        setDocError(true);
+        setDocErrorMessage('Documento inválido');
+        isValid = false;
+      }
+
+      // Formulário de Adoção
+      if (!adoptionForm.trim()) {
+        setAdoptionFormError(true);
+        setAdoptionFormErrorMessage('Link do formulário é obrigatório');
+        isValid = false;
+      }
+
+      // Grupo de Contato (Pelo menos um)
+      if (!phone.trim() && !instagram.trim() && !facebook.trim()) {
+        setContactError(true);
+        isValid = false;
+      } else {
+        setContactError(false);
+      }
+    }
+
+    return isValid;
+  };
+
+  // Funções de verificação "on typing"
+  const verifyPassword = (pass: string) => {
+    if(pass.trim() === '') {
+       setPasswordError(false); setPasswordErrorMessage(''); return; 
+    }
+    // ... (Lógica de regex igual ao anterior)
+    if (pass.length < 6) { setPasswordError(true); setPasswordErrorMessage('Mínimo 6 caracteres'); return; }
+    if (!/[A-Z]/.test(pass)) { setPasswordError(true); setPasswordErrorMessage('Mínimo 1 letra maiúscula'); return; }
+    if (!/[0-9]/.test(pass)) { setPasswordError(true); setPasswordErrorMessage('Mínimo 1 número'); return; }
+    if (!/[!@#$%^&*]/.test(pass)) { setPasswordError(true); setPasswordErrorMessage('Mínimo 1 caractere especial'); return; }
+    
+    setPasswordError(false); setPasswordErrorMessage('');
+  };
+
+  const verifyConfirmPassword = (cPass: string) => {
+    if (cPass.trim() === '') { setConfirmPasswordError(false); setConfirmPasswordErrorMessage(''); return; }
+    if (cPass !== password) {
+      setConfirmPasswordError(true); setConfirmPasswordErrorMessage('As senhas não coincidem');
+    } else {
+      setConfirmPasswordError(false); setConfirmPasswordErrorMessage('');
+    }
+  };
+
+  const verifyEmail = (mail: string) => {
+    if(mail.trim() === '') { setEmailError(false); setEmailErrorMessage(''); return; }
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if(!emailRegex.test(mail)){ setEmailError(true); setEmailErrorMessage('E-mail inválido'); return; }
+    setEmailError(false); setEmailErrorMessage('');
+  }
+
+  // === HANDLERS DE SUBMIT ===========================
 
   const fetchNgoOptions = async () => {
     try {
       const response = await ngoService.getApproved();
-      
-      // Pega só nome e ID da NGO
       const mappedNgoOptions = response.data.map((ngo: any) => ({
-        id: ngo._id || ngo.id, // Lida com nomeclatura "_id" do MongoDB.
+        id: ngo._id || ngo.id,
         name: ngo.name
       }));
-      
       setNgoOptions(mappedNgoOptions);
     } catch (error) {
       console.error('Error fetching NGO options:', error);
@@ -97,302 +249,144 @@ const SignUp: React.FC = () => {
     fetchNgoOptions();
   }, []);
 
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Executa a validação completa
+    const isFormValid = validateForm();
+
+    
+    if (!isFormValid) {
+      // Se falhar, abre o modal avisando para verificar os campos
+      openModal('error', 'Atenção', 'Verifique os erros nos campos destacados e tente novamente.');
+      return;
+    }
+
+    // Se passou, prossegue para o envio
+    if (role === 'membro') {
+      await handleMemberSignUp();
+    } else if (role === 'ong') {
+      await handleOngSignUp();
+    }
+  }
+
   const handleMemberSignUp = async () => {
     try {
       await authService.signupRegular({
-        name,
-        email,
-        password,
-        confirmPassword,
-        ngoId: ngo?.id
+        name, email, password, confirmPassword, ngoId: ngo?.id
       });
-      setSuccessMessage('Cadastro realizado com sucesso!');
+      openModal('success', 'Cadastro Realizado!', 'Seu pedido foi enviado para aprovação.');
     } catch (err) {
-      console.error(err);
-      if (err instanceof AxiosError && err.response) {
-        setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
-      } else {
-        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
-      }
+      handleApiError(err);
     }
   };
 
   const handleOngSignUp = async () => {
     try {
       await authService.signupNgo({
-        user: {
-          name,
-          email,
-          password,
-          confirmPassword
-        },
+        user: { name, email, password, confirmPassword },
         ngo: {
-          name,
-          email,
-          doc,
-          description,
-          phone,
-          city,
-          website,
-          instagram,
-          facebook,
-          adoptionForm,
-          sponsorshipForm,
-          temporaryHomeForm,
-          claimForm,
+          name, email, doc, description, phone, city, website,
+          instagram, facebook, adoptionForm, sponsorshipForm,
+          temporaryHomeForm, claimForm,
         }
       });
-      setSuccessMessage('Cadastro realizado com sucesso!');
+      openModal('success', 'Solicitação Enviada!', 'O cadastro da sua ONG foi enviado para análise.');
     } catch (err) {
-      console.error(err);
-      if (err instanceof AxiosError && err.response) {
-        setErrorMessage(err.response.data.message || 'Erro no cadastro. Tente novamente.');
-      } else {
-        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
-      }
+      handleApiError(err);
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-
-    e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (role === 'membro' && (!name || !email || !password || !confirmPassword || !ngo)) {
-      setError(true);
-      setErrorMessage('Preencha todos campos obrigatórios');
-      return;
+  const handleApiError = (err: any) => {
+    console.error(err);
+    let msg = 'Erro de conexão. Tente novamente mais tarde.';
+    if (err instanceof AxiosError && err.response) {
+      msg = err.response.data.message || 'Erro no cadastro.';
     }
-
-    if (role === 'ong' && (!name || !email || !password || !confirmPassword || !doc || !instagram || !adoptionForm)) {
-      setError(true);
-      setErrorMessage('Preencha todos campos obrigatórios');
-      return;
-    }
-
-    if (passwordError || confirmPasswordError || emailError) {
-      setError(true);
-      setErrorMessage('Verifique os campos preenchidos');
-      return;
-    }
-
-    if (role === 'membro') {
-      await handleMemberSignUp();
-    }
-    else if (role === 'ong') {
-      await handleOngSignUp();
-    }
+    openModal('error', 'Algo deu errado', msg);
   }
 
-// FUNÇÕES DE VALIDAÇÃO ===========================================
-  const verifyPassword = (password: string) => {
-    if(password.trim() === '') {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-      return;
-    }
+  // === OUTROS HANDLERS =======================
 
-    if (password.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('A senha deve ter pelo menos 6 caracteres');
-      return;
-    }
-    if (!/[A-Z]/.test(password)) {
-      setPasswordError(true);
-      setPasswordErrorMessage('A senha deve ter pelo menos uma letra maiúscula');
-      return;
-    }
-    if (!/[0-9]/.test(password)) {
-      setPasswordError(true);
-      setPasswordErrorMessage('A senha deve ter pelo menos um número');
-      return;
-    }
-    if (!/[!@#$%^&*]/.test(password)) {
-      setPasswordError(true);
-      setPasswordErrorMessage('A senha deve ter pelo menos um caractere especial');
-      return;
-    }
-    setPasswordError(false);
-    setPasswordErrorMessage('');
-  };
-
-  const verifyConfirmPassword = (confirmPassword: string) => {
-
-    if (confirmPassword.trim() === '') {
-      setConfirmPasswordError(false);
-      setConfirmPasswordErrorMessage('');
-      return;
-    }
-    if (confirmPassword !== password) {
-      setConfirmPasswordError(true);
-      setConfirmPasswordErrorMessage('As senhas não coincidem');
-    } else {
-      setConfirmPasswordError(false);
-      setConfirmPasswordErrorMessage('');
-    }
-
-  };
-
-  const verifyEmail = (email: string) => {
-
-    if(email.trim() === '') {
-      setEmailError(false);
-      setEmailErrorMessage('');
-      return;
-    }
-    
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    
-    if(!emailRegex.test(email)){
-      setEmailError(true);
-      setEmailErrorMessage('Digite um endereço de e-mail válido');
-      return;
-    }
-
-    setEmailError(false);
-    setEmailErrorMessage('');
-
-  }
-
-  // Verifica se todos os campos obrigatórios estão preenchidos e se não há erros para habilitar o botão de cadastro. 
-  // Se houver erros, o botão de cadastro ficará desabilitado
-  const isMemberDisabled = !name || !email || !password || !confirmPassword || !ngo;
-  const isOngDisabled = !name || !email || !password || !confirmPassword || !doc || !instagram || !adoptionForm;   
-
-
-  const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
-  const handleNavigation = (to: string) => {
-    startTransition(() => {
-      navigate(to);
-    });
-  }
-  
-
-  const handleUserAction = (selected: string) => {
-    if (selected === "Fazer Login") handleNavigation("/login");
-  };
-
-  const currentUserOptions = ["Fazer Login"];
-
-  const currentUserActions = handleUserAction;
-
-  // Função para atualizar quando uma ONG é selecionada
   const handleNgoSelection = (searchText: string) => {
     setNgoSearchText(searchText);
-    
-    // Busca por correspondência exata
+    if(ngoError) { setNgoError(false); setNgoErrorMessage(''); } // Limpa erro ao digitar
+
     const exactMatch = ngoOptions.find(option => option.name === searchText);
-    
-    if (exactMatch) {
-      setNgo(exactMatch);
-    } else {
-      // Se não há correspondência exata, busca por correspondência parcial
-      const partialMatch = ngoOptions.find(option => 
-        option.name.toLowerCase().includes(searchText.toLowerCase())
-      );
-      
-      if (partialMatch && searchText.length > 0) {
-        // Não seleciona automaticamente, mas mantém como opção
-        setNgo(null);
-      } else {
-        setNgo(null);
-      }
-    }
+    setNgo(exactMatch || null);
   };
 
-
-  // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
-
   const [windowSize, setWindowSize] = useState(window.innerWidth);
-  
   useEffect(() => {
-      const handleResize = () => {
-        setWindowSize(window.innerWidth);
-      }
-  
+      const handleResize = () => setWindowSize(window.innerWidth);
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-// PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
+  
+
+  // OUTROS ============================================
+
+  const currentUserOptions = ["Fazer Login"];
 
   function getScrollbarWidth() {
-    // Cria um div externo invisível
     const outer = document.createElement('div');
-    outer.style.visibility = 'hidden';
-    outer.style.overflow = 'scroll'; // Força o scroll
+    outer.style.visibility = 'hidden'; outer.style.overflow = 'scroll';
     document.body.appendChild(outer);
-
-    // Cria um div interno
     const inner = document.createElement('div');
     outer.appendChild(inner);
-
-    // Calcula a diferença
     const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
-
-    // Remove os divs da página
-    if (outer.parentNode) {
-      outer.parentNode.removeChild(outer);
-    }
-
+    if (outer.parentNode) outer.parentNode.removeChild(outer);
     return scrollbarWidth;
   }
 
   // RENDERIZAÇÃO ============================================================
   
-    const {isLoading, user, isLoggedIn} = useAuth();
-    if(isLoading)
-        return null;
+  const {isLoading, user, isLoggedIn} = useAuth();
+  if(isLoading) return null;
       
-  return (
+return (
     <Container style={{ paddingRight: getScrollbarWidth() }}>
-      <Header 
-        color="rgba(0, 0, 0, 0)" 
-        Logo={loginPageLogo} 
-        isLoggedIn={isLoggedIn}
-        user={user}
-      />      
+      
+      {/* MODAL */}
+      {showModal && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <h2 style={{ color: modalType === 'error' ? '#FF3B30' : '#4CAF50' }}>{modalTitle}</h2>
+            <p>{modalMessage}</p>
+            <PrimarySecondaryButton 
+              width="100%" 
+              buttonType={modalType === 'error' ? "Secundário" : "Primário"} 
+              content={modalType === 'error' ? "Corrigir" : "Ok"} 
+              onClick={closeModal} 
+              isDisabled={false} 
+              paddingH="5px" paddingV="10px"
+            />
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      <Header Logo={loginPageLogo} isLoggedIn={isLoggedIn} user={user} color="rgba(0,0,0,0)"/>      
 
       <SignUpContainer>
-
         {windowSize >= 1200 &&
-        <div style={{maxWidth: "732.95px", backgroundImage: `url(${LoginDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
+          <div style={{maxWidth: "732.95px", backgroundImage: `url(${LoginDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
         } 
 
-
         <SignUpFormContainer role={role}>
-                  
           <SignUpForm onSubmit={handleSignUp} role={role}>
             
-            <SignUpToggle
-              selected={role}
-              onSelect={setRole}
-            />
+            <SignUpToggle selected={role} onSelect={setRole}/>
 
             <SignUpFormTextContainer>
               <h1>Cadastro de {role === 'membro' ? 'Membro' : 'ONG'} </h1>
             </SignUpFormTextContainer>
-
-            {errorMessage && (
-              <div style={{ color: "red"}}>
-                {errorMessage}
-              </div>
-            )}
-
-            {successMessage && (
-              <div style={{ color: "green"}}>
-                {successMessage}
-              </div>
-            )}
-
+            
             <SignUpFormInputsContainer>
               
-              {role==='ong' && (
-                <h2>Informações da ONG </h2>
-              )}
+              {role==='ong' && <h2>Informações da ONG </h2>}
 
+              {/* === INPUT NOME === */}
               <BasicInput
                 title= {role === 'ong' ? 'Nome da ONG' : 'Nome'}
                 required = {true} 
@@ -400,24 +394,32 @@ const SignUp: React.FC = () => {
                 value={name}
                 $fontSize="1rem"
                 $width="100%"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                   setName(e.target.value);
+                   // Limpa erro ao digitar
+                   if(nameError) { setNameError(false); setNameErrorMessage(''); }
+                }}
+                error={nameError}
+                errorMessage={nameErrorMessage}
               />
               
+              {/* === INPUT EMAIL === */}
               <BasicInput
                 title="E-mail"
                 required = {true} 
                 placeholder="Insira seu email aqui"
                 value={email}
-                      onChange={(e) => {
-                    setEmail(e.target.value);
-                    verifyEmail(e.target.value);
-                  } }
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  verifyEmail(e.target.value);
+                }}
                 $fontSize="1rem"
                 $width="100%"
                 error={emailError}
                 errorMessage={emailErrorMessage} 
               />
 
+              {/* === INPUT CPF/CNPJ (ONG) === */}
               {role === 'ong' && (
                   <BasicInput
                     title="CPF/CNPJ"
@@ -426,10 +428,16 @@ const SignUp: React.FC = () => {
                     value={doc}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setdoc(e.target.value)}
+                    onChange={(e) => {
+                        setDoc(e.target.value);
+                        if(docError) { setDocError(false); setDocErrorMessage(''); }
+                    }}
+                    error={docError}
+                    errorMessage={docErrorMessage}
                   />
               )}
 
+              {/* === SENHAS === */}
               <PasswordInput
                   title="Senha"
                   required={true}
@@ -438,10 +446,10 @@ const SignUp: React.FC = () => {
                   placeholder="Insira sua senha aqui"
                   $width="100%"
                   value={password}
-                      onChange={(e) => {
+                  onChange={(e) => {
                     setPassword(e.target.value);
                     verifyPassword(e.target.value);
-                  } }
+                  }}
                   error={passwordError}
                   errorMessage={passwordErrorMessage} 
                   visible={false}
@@ -455,33 +463,53 @@ const SignUp: React.FC = () => {
                   placeholder="Confirme sua senha aqui"
                   $width="100%"
                   value={confirmPassword}
-                      onChange={(e) => {
+                  onChange={(e) => {
                     setConfirmPassword(e.target.value);
                     verifyConfirmPassword(e.target.value);
-                  } }
+                  }}
                   error={confirmPasswordError}
                   errorMessage={confirmPasswordErrorMessage} 
                   visible={false}
               />
 
               {role === 'ong' && (
-                
-                <LargeInputField
-                  title="Descrição (Opcional)"
-                  required={false}
-                  $fontSize="1rem"
-                  placeholder="Escreva uma breve descrição aqui"
-                  $width="100%"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  error={false}
-                  visible={false}
-                  isDisabled={false}
-                  $inputType="Primário"
-                  maxLength={1000}
-                />
+                <>
+                  <LargeInputField
+                    title="Descrição (Opcional)"
+                    required={false}
+                    $fontSize="1rem"
+                    placeholder="Escreva uma breve descrição aqui"
+                    $width="100%"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    error={false}
+                    visible={false}
+                    isDisabled={false}
+                    $inputType="Primário"
+                    maxLength={1000}
+                  />
+                  <BasicInput
+                    title="Cidade (Opcional)"
+                    required={false}
+                    placeholder="Insira a cidade da sua ONG aqui"
+                    value={city}
+                    $fontSize="1rem"
+                    $width="100%"
+                    onChange={(e) => setCity(e.target.value)}
+                  />
+                  <BasicInput
+                    title="Link do WebSite (Opcional)"
+                    required={false}
+                    placeholder="Insira o link aqui"
+                    value={website}
+                    $fontSize="1rem"
+                    $width="100%"
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </>
               )}
 
+             {/* === SELEÇÃO DE ONG (MEMBRO) === */}
              {role === 'membro' && (
                 <SearchBar 
                   options={ngoOptions.map(ngo => ngo.name)}
@@ -494,75 +522,65 @@ const SignUp: React.FC = () => {
                   query={ngoSearchText}
                   setQuery={handleNgoSelection}
                   readOnly={false}
+                  // Passando propriedades de erro (Assumindo que SearchBar suporta ou você vai ajustar)
+                  error={ngoError}
+                  errorMessage={ngoErrorMessage}
                 />
               )}
 
             </SignUpFormInputsContainer>
 
             {role === 'ong' && (
-            
               <SignUpFormInputsContainer>
-                <h2>Contato</h2>
+                <div>
+                  <h2>Contato <span style={{color: "#F17D6E"}}>*</span></h2>
+                  <p style={{ 
+                      color: contactError ? '#FF3B30' : 'inherit', 
+                      fontWeight: contactError ? 'bold' : 'normal' 
+                  }}>
+                    {contactError ? "ERRO: Preencha ao menos um campo abaixo" : "Preencha ao menos um dos campos abaixo"}
+                  </p>
+                </div>
 
+                {/* Se contactError for true, destacamos todos os inputs do grupo para alertar */}
                 <BasicInput
-                    title="Número para Contato (Opcional)"
+                    title="Número para Contato"
                     required = {false}
-                    placeholder="Insira o contato da sua ONG aqui"
+                    placeholder="Insira o contato aqui"
                     value={phone}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => { setPhone(e.target.value); setContactError(false); }}
+                    error={contactError} 
                 />
-
                 <BasicInput
-                    title="Cidade (Opcional)"
-                    required = {false}
-                    placeholder="Insira a cidade da sua ONG aqui"
-                    value={city}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => setCity(e.target.value)}
-                  />
-
-                  <BasicInput
-                    title="Link do WebSite (Opcional)"
-                    required = {false}
-                    placeholder="Insira o link aqui"
-                    value={website}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => setWebsite(e.target.value)}
-                  />
-
-                  <BasicInput
                     title="Link do Instagram"
-                    required = {true}
+                    required = {false}
                     placeholder="Insira o link aqui"
                     value={instagram}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setInstagram(e.target.value)}
-                  />
-
-                  <BasicInput
-                    title="Link do Facebook (Opcional)"
+                    onChange={(e) => { setInstagram(e.target.value); setContactError(false); }}
+                    error={contactError}
+                />
+                <BasicInput
+                    title="Link do Facebook"
                     required = {false}
                     placeholder="Insira o link aqui"
                     value={facebook}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setFacebook(e.target.value)}
-                  />
-
+                    onChange={(e) => { setFacebook(e.target.value); setContactError(false); }}
+                    error={contactError}
+                />
               </SignUpFormInputsContainer>
-              
-              )}
+            )}
 
-              {role === 'ong' && (
-            
+            {role === 'ong' && (
               <SignUpFormInputsContainer>
                 <h2>Formulários</h2>
-
+                
+                {/* === FORM ADOÇÃO === */}
                 <BasicInput
                     title="Formulario de Adoção"
                     required = {true}
@@ -570,60 +588,62 @@ const SignUp: React.FC = () => {
                     value={adoptionForm}
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setAdoptionForm(e.target.value)}
+                    onChange={(e) => {
+                        setAdoptionForm(e.target.value);
+                        if(adoptionFormError) { setAdoptionFormError(false); setAdoptionFormErrorMessage(''); }
+                    }}
+                    error={adoptionFormError}
+                    errorMessage={adoptionFormErrorMessage}
                 />
-
+                {/* Outros forms opcionais... */}
                 <BasicInput
                     title="Formulario de Apadrinhamento (Opcional)"
-                    required = {false}
+                    required={false}
                     placeholder="Insira o link aqui"
                     value={sponsorshipForm}
-                    $fontSize="1rem"
-                    $width="100%"
+                    $fontSize="1rem" $width="100%"
                     onChange={(e) => setSponsorshipForm(e.target.value)}
                 />
-
                 <BasicInput
                     title="Formulario de Lar Temporário (Opcional)"
-                    required = {false}
+                    required={false}
                     placeholder="Insira o link aqui"
                     value={temporaryHomeForm}
-                    $fontSize="1rem"
-                    $width="100%"
+                    $fontSize="1rem" $width="100%"
                     onChange={(e) => setTemporaryHomeForm(e.target.value)}
                 />
-
                 <BasicInput
                     title="Formulario de Reivindicação (Opcional)"
-                    required = {false}
+                    required={false}
                     placeholder="Insira o link aqui"
                     value={claimForm}
-                    $fontSize="1rem"
-                    $width="100%"
+                    $fontSize="1rem" $width="100%"
                     onChange={(e) => setClaimForm(e.target.value)}
                 />
-
               </SignUpFormInputsContainer>
-              
-              )}
+            )}
                         
             <SignUpFormLinksContainer>
-
-              {role === 'membro' ? (
-                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isMemberDisabled} paddingH="5px" paddingV="10px"/>
-              ) : (
-                <PrimarySecondaryButton /*type="submit"*/ width="100%" buttonType="Primário" content="Criar Conta" onClick={handleSignUp} isDisabled={isOngDisabled} paddingH="5px" paddingV="10px"/>
-              )}
+              <PrimarySecondaryButton 
+                  width="100%" 
+                  buttonType="Primário" 
+                  content="Criar Conta" 
+                  onClick={handleSignUp} 
+                  isDisabled={false} 
+                  paddingH="5px" 
+                  paddingV="10px"
+              />
 
               <ActionText
                 key={currentUserOptions[0]}
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => currentUserActions(currentUserOptions[0])}
+                onClick={() => {
+                   startTransition(() => navigate("/login"));
+                }}
               >
                 <h3 style={{ marginBottom: '69px' }}>Fazer Login</h3>
-                
               </ActionText>
           
             </SignUpFormLinksContainer>

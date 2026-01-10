@@ -1,3 +1,6 @@
+import { useNavigate, useLocation } from "react-router-dom"; // 1. Importe os hooks
+import { useEffect } from "react";
+
 import {
   GridContainer,
   FooterGrid,
@@ -7,7 +10,8 @@ import {
   SocialIconsDiv,
   Image3,
   Rights,
-  Icon} from "./styles";
+  Icon
+} from "./styles";
 
 import Logo from "../../../assets/HorizontalLogo.png";
 import Insta from "../../../assets/OrangeInstagramPin.png";
@@ -21,17 +25,21 @@ import YoutubeB from "../../../assets/BrownYoutubePin.png";
 import TiktokB from "../../../assets/BrownTiktokPin.png";
 
 const Footer = () => {
+  const navigate = useNavigate(); // Hook para navegar
+  const location = useLocation(); // Hook para saber onde estamos
+
   const links1 = [
-    { label: "Sobre Nós", href: "/#about" },
-    { label: "Animais Recém Adicionados", href: "/#listAnimals" },
-    { label: "Dicas", href: "/#hints" },
-    { label: "Fale Conosco", href: "/#contact" },
+    { label: "Sobre Nós", href: "about" },
+    { label: "Animais Recém Adicionados", href: "listAnimals" },
+    { label: "Dicas", href: "hints" },
+    { label: "Fale Conosco", href: "contact" },
     { label: "Política de Privacidade", href: "#" }
   ];
 
+  // Corrigido para caminhos absolutos (com / na frente)
   const links2 = [
-    { label: "Ja sou um parceiro", href: "login" },
-    { label: "Ainda nao sou um parceiro", href: "signup" },
+    { label: "Ja sou um parceiro", href: "/login" }, 
+    { label: "Ainda nao sou um parceiro", href: "/signup" },
   ];
 
   const socialMediaLinks = [
@@ -60,6 +68,44 @@ const Footer = () => {
       href: "https://www.tiktok.com"
     }
   ];
+
+  // Efeito para rolar a tela quando a URL mudar (ex: ao chegar na home vindo de outra pág)
+  useEffect(() => {
+    if (location.hash) {
+      const elementId = location.hash.replace('#', '');
+      const element = document.getElementById(elementId);
+      if (element) {
+        // Um pequeno timeout garante que a página montou antes de rolar
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [location]); 
+
+
+  const handleScrollLink = (e: React.MouseEvent, targetId: string) => {
+    e.preventDefault();
+
+    if (targetId === "#") return;
+
+    if (location.pathname === "/") {
+      // Se já estamos na home, só rola até o elemento
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Se estamos em outra página, navega para a home com o hash
+      navigate(`/#${targetId}`);
+    }
+  };
+
+  const handlePageLink = (e: React.MouseEvent, path: string) => {
+      e.preventDefault();
+      navigate(path);
+      window.scrollTo(0, 0); // Garante que a nova página abra no topo
+  }
   
   return (
     <GridContainer id="footer">
@@ -75,14 +121,26 @@ const Footer = () => {
           <FooterSection>
             <p>Institucional</p>
             {links1.map((link, index) => (
-              <a key={index} href={link.href}><p>{link.label}</p></a>
+              <a 
+                key={index} 
+                href={`/#${link.href}`} 
+                onClick={(e) => handleScrollLink(e, link.href)}
+              >
+                <p>{link.label}</p>
+              </a>
             ))}
           </FooterSection>
 
           <FooterSection>
             <p>Login</p>
             {links2.map((link, index) => (
-              <a key={index} href={link.href}><p>{link.label}</p></a>
+              <a 
+                key={index} 
+                href={link.href}
+                onClick={(e) => handlePageLink(e, link.href)}
+              >
+                <p>{link.label}</p>
+              </a>
             ))}
           </FooterSection>
 

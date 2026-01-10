@@ -4,7 +4,7 @@ import BannerComponent from "../../components/BannerComponent";
 
 import dog from "../../assets/ManageAnimalsDog.png";
 import logo from "../../assets/HorizontalLogo.png";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { petService, createPetFiltersFromState } from "../../services";
 import { formatAge, formatSize, formatString, formatSpecies } from "../../services";
 import { AxiosError } from "axios";
@@ -27,6 +27,7 @@ import { Pet } from "../../types/pets";
 import { useAuth } from "../../hooks/useAuth";
 import ConfirmModal from "../../components/ConfirmModal";
 import SuccessToast from "../../components/Toast";
+import { useNavigate } from "react-router-dom";
 
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   // Estados dos pets
@@ -47,6 +48,14 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   const { showToast } = useToast(); 
 
+    const navigate = useNavigate();
+    const [isPending, startTransition] = useTransition();
+    const handleNavigation = (to: string) => {
+        startTransition(() => {
+        navigate(to);
+        });
+    }
+    
   // Modais e toasts
   const [modalAction, setModalAction] = useState<ModalAction>(null);
 
@@ -197,9 +206,9 @@ const handleConfirm = () => {
     const petId = pet.id || pet._id;
     if (!petId) return;
     
-    console.log("Editando pet:", pet); // Debug
-    // Aqui pode navegar para uma página de edição
-    // window.location.href = `/editAnimal?id=${petId}`;
+    handleNavigation(`/editAnimal/${petId}`);
+    
+  
   };
 
   // Função para gerar ID único caso não tenha
@@ -313,7 +322,10 @@ const handleConfirm = () => {
           )}
 
           <Breadcrumb
-            items={[
+            items={allowEdit? [
+              { label: "Home", to: "/" },
+              { label: "Gerenciar Animais" },
+            ] : [
               { label: "Home", to: "/" },
               { label: "Animais" },
             ]}
@@ -386,7 +398,7 @@ const handleConfirm = () => {
             emptyMessage="Nenhum Pet Encontrado"
             expandContainer={hideAnimalFilter}
             emptyState={showedPets.length === 0}
-            buttonText="+ Cadastrar Pet"
+            buttonText= {allowEdit? "+ Cadastrar Pet" : undefined}
             onButtonClick={() => {
               console.log("Navegando para criar pet");
             }}

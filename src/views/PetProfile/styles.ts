@@ -345,4 +345,8 @@ export const MainImage = styled.img`
   min-height: 320px;
   object-fit: cover;
   border-radius: 12px;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `;

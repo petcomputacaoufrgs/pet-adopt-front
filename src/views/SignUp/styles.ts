@@ -26,6 +26,46 @@ export const Image = styled.img`
   object-fit: cover;
 `;
 
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const ModalContent = styled.div`
+  background-color: #FFF6E8;
+  padding: 32px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  h2 {
+    font-family: 'Nunito Sans', sans-serif;
+    color: #553525;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-family: 'Nunito Sans', sans-serif;
+    color: rgb(85, 53, 37);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+`;
+
 export const SignUpFormContainer = styled.div  <{role: string}>`
   display: flex;
   justify-content: center;
