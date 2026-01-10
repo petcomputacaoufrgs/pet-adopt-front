@@ -78,6 +78,17 @@ export const TextButton = styled.button`
 `;
 
 
+export const StyledLink = styled.a`
+  text-decoration: none;
+  width: 100%;      
+  display: block;
+  
+  &:focus, &:active, &:visited, &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+`;
+
 
 export const Image = styled.img`
   max-width: 140px;

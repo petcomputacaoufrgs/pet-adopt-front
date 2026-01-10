@@ -478,6 +478,7 @@ const SignUp: React.FC = () => {
                   visible={false}
                   isDisabled={false}
                   $inputType="Primário"
+                  maxLength={1000}
                 />
               )}
 

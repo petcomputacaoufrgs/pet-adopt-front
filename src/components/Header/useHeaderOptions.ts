@@ -25,19 +25,19 @@ export const useHeaderOptions = () => {
 
   ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet", "Gerenciar ONGs", "Validar ONGs"],
+    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar ONGs", "Validar ONGs"],
   },
   NGO_MEMBER: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet"],
+    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet"],
   },
   NGO_ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
+    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
   },
   REGULAR: {
     accountOptions: ["Fazer Login", "Cadastrar ONG ou Membro"],
-    navigationOptions: ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"],
+    navigationOptions: ["Ver Animais", "Dicas", "Fale Conosco"],
   }
 };
 
@@ -78,7 +78,7 @@ export const useHeaderOptions = () => {
         "Home": () => handleNavigation("/"),
         "Sair": () => logout(),
 
-
+        "Ver Animais": () => handleNavigation("/searchAnimals"),
         "Sobre Nós": () => handleNavigation("#about"),
         "Animais Recém Adicionados": () => handleNavigation("#listAnimals"),
         "Dicas": () => handleNavigation("#hints"),

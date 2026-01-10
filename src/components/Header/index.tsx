@@ -13,6 +13,7 @@ import {
   Icon,
   Image,
   SocialIconsDiv,
+  StyledLink,
   TextButton,
   TextContainer,
 } from "./styles";
@@ -32,7 +33,7 @@ import OrangeYoutubePin from "../../assets/OrangeYoutubePin.png";
 import { useAuth } from "../../hooks/useAuth";
 import { User } from "../../types/user";
 import { useHeaderOptions } from "./useHeaderOptions";
-import { ChevronDown, ChevronUp, Home, HomeIcon } from "lucide-react";
+import { ChevronDown, ChevronUp} from "lucide-react";
 import { start } from "repl";
 
 
@@ -150,9 +151,6 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
       {/* Se o usuário estiver logado, mostra as opções de navegação e conta */}
       {isLoggedIn ? (
         <CompactUserOptionsContainer>
-          <TextButton key="home" onClick={() => handleNavigation("/")}>
-            Home
-          </TextButton>
 
           {navigationOptions.concat(accountOptions).map((option) => (
             <TextButton key={option} onClick={() => handleAction(option)}>
@@ -255,7 +253,7 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
           buttonType="Secundário"
           fontSize={"clamp(16px, 1.2vw, 18px)"}
           content={`Olá, ${user.name}`}
-          options={["Home"].concat(navigationOptions.concat(accountOptions))}
+          options={navigationOptions.concat(accountOptions)}
           paddingH="20px"
           onClick={handleAction}
           indicator={(isOpen: boolean) => isOpen ? (
@@ -335,18 +333,14 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
 
     <HeaderWrapper $shrink={isScrolled} $showCompactMenu={showCompactMenu} $color={color}>
       <HeaderContainer $shrink={isScrolled} $backgroundColor={"transparent"}>
-        <Image src={Logo} />
+        
+        <StyledLink href="/">
+          <Image src={Logo}/>
+        </StyledLink>
 
         <TextContainer>
           {responsiveMode !== "compact" &&
           <>
-
-          {isLoggedIn && visibleOptionsOnHeader.length > 0 && (
-          <TextButton key={"home"} onClick={() => handleNavigation("/")}>
-            Home
-          </TextButton>
-          )
-          }
 
           {visibleOptionsOnHeader.map((option) => (
               <TextButton key={option} onClick={() => handleAction(option)}>

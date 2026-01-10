@@ -315,7 +315,7 @@ const handleConfirm = () => {
           <Breadcrumb
             items={[
               { label: "Home", to: "/" },
-              { label: "Gerenciar Animais" },
+              { label: "Animais" },
             ]}
           />
         </TopBarContent>

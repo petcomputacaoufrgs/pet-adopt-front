@@ -17,4 +17,5 @@ export interface LargeInputProps {
   error?: boolean; // Indica erro
   errorMessage?: string; // Mensagem de erro
   children?: React.ReactNode; // Elementos extras ao lado do input
+  maxLength?: number; // Máximo de caracteres permitidos
 }

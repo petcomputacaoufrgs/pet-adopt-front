@@ -16,4 +16,5 @@ export interface Pet {
   city: string;
   state: string;
   observations?: string;
+  ngoId?: string;
 }

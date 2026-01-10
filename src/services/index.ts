@@ -35,6 +35,9 @@ export const ngoService = {
   
   delete: (ngoId: string) => 
     api.delete(`/ngos/${ngoId}`),
+
+  getById: (ngoId: string) => 
+    api.get(`/ngos/${ngoId}`),
 };
 
 // Serviços relacionados aos pets

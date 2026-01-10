@@ -85,7 +85,6 @@ export const TopBarContent = styled.div`
   width: 80%;
   gap: 20px;
   align-items: center;
-  justify-content: center;
 
 `;
 
