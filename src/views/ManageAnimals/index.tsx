@@ -401,7 +401,7 @@ const handleConfirm = () => {
               {showedPets.map((pet, index) => (
                 <PetCardWrapper key={getPetId(pet, index)}>
                   <DogCard
-                    imageUrl={DogForCard}
+                    imageUrl={pet.photos && pet.photos.length > 0 ? pet.photos[0] : DogForCard}
                     sex={formatString(pet.sex)}
                     size={formatString(formatSize(pet.size ?? ""))}
                     name={formatString(pet.name)}
