@@ -31,7 +31,6 @@ import {
 } from "./styles";
 
 
-import { ChevronLeft, Info } from 'lucide-react';
 import { CircleCheck } from 'lucide-react';
 import { PawPrint } from 'lucide-react';
 import { MapPin } from 'lucide-react';
@@ -41,24 +40,17 @@ import { Phone } from 'lucide-react';
 
 import Header from "../../components/Header";
 import Footer from "../HomePage/6Footer";
-import ActionText from "../../components/ActionText";
 import Tag from "../../components/Tags";
 import ConfirmModal from "../../components/ConfirmModal";
-import SuccessToast from "../../components/Toast";
 import GalleryModal from "../../components/GalleryModal";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import DogForCard from "../../assets/HomePageCardDog.png";
 import Insta from "../../assets/OrangeInstagramPin.png";
 import Facebook from "../../assets/OrangeFacebookPin.png";
-import Youtube from "../../assets/OrangeYoutubePin.png";
-import Tiktok from "../../assets/OrangeTiktokPin.png";
 import InstaB from "../../assets/BrownInstagramPin.png";
 import FacebookB from "../../assets/BrownFacebookPin.png";
-import YoutubeB from "../../assets/BrownYoutubePin.png";
-import TiktokB from "../../assets/BrownTiktokPin.png";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-
 
 import { useAuth } from "../../hooks/useAuth";
 import { Pet } from "../../types/pets";
@@ -72,10 +64,6 @@ type ModalAction = { tipo: "excluir"; petId: string } | null;
 type GalleryModalAction = { isOpen: boolean; imageIndex: number } | null;
 
 const PetProfile: React.FC = () => {
-
-
-
-
     const { id } = useParams<{ id: string }>();
     const [pet, setPet] = useState<Pet | null>(null);
     const [ngo, setNgo] = useState<any>(null);
@@ -158,14 +146,6 @@ const PetProfile: React.FC = () => {
         });
     }
 
-    const handleUserAction = (selected: string) => {
-        if (selected === "Manage Infos") handleNavigation("/manageInfo");
-    };
-
-    const currentUserOptions = ["Manage Infos"];
-
-    const currentUserActions = handleUserAction;
-
 
     const [modalAction, setModalAction] = useState<ModalAction>(null);
 
@@ -215,12 +195,10 @@ const PetProfile: React.FC = () => {
     };
 
     const {isLoading, user, isLoggedIn} = useAuth();
+
     if(isLoading)
         return null;
 
-    if (!pet) {
-        return <div>Carregando...</div>;
-    }
 
     const specieLookUpTable : Record<string, string> = {
         "DOG": "Cachorro",
@@ -256,11 +234,14 @@ const PetProfile: React.FC = () => {
 
             <Main>
 
+            {pet && ngo &&
+                <>
                 <BackButtonContainer>
                     <Breadcrumb items={breadcrumbItems} />
                 </BackButtonContainer>
 
-                <PetProfileDiv>
+            
+                  <PetProfileDiv>
 
                     <ViewerContainer>
                         <ThumbnailGallery>
@@ -361,8 +342,6 @@ const PetProfile: React.FC = () => {
                         </>
                         )}
 
-
-
                         </MainImageContainer>
 
                         <GalleryModal
@@ -373,12 +352,9 @@ const PetProfile: React.FC = () => {
                             activeIndex={currentPhotoIndex}
                             onIndicatorClick={setCurrentPhotoIndex}
                         />
-                        
-
-
-                        
+  
                     </ViewerContainer>
-
+                    
                     <InfosAction>
 
                         <Cards>
@@ -540,6 +516,9 @@ const PetProfile: React.FC = () => {
 
                     </InfosAction>
                 </PetProfileDiv>
+
+                </>
+            }
 
             </Main>
 

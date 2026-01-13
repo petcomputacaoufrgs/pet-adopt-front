@@ -36,9 +36,6 @@ export const FormContainer = styled.div`
     width: 90%;
   
   }
-
-
-
 `
 
 export const LocationInputsContainer = styled.div`
@@ -83,8 +80,6 @@ export const InputsContainer = styled.div`
   }
 
 `
-
-
 
 export const ImageSlotsContainer = styled.div`
     display: flex;

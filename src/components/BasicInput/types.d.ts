@@ -17,4 +17,5 @@ export interface BasicInputProps {
   error?: boolean;
   errorMessage?: string;
   children?: React.ReactNode;
+  disabled?: boolean;
 }

@@ -21,7 +21,7 @@ import BasicInput from "../../components/BasicInput";
 import PasswordInputField from "../../components/PasswordInput";
 import ActionText from "../../components/ActionText";
 import { useAuth } from "../../hooks/useAuth";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");

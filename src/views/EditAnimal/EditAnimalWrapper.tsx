@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { petService } from "../../services";
 import EditAnimal from "./index";
 import { Animal } from "./types";
+import { ngoService } from "../../services";
+
 
 export default function EditAnimalWrapper() {
   const { id } = useParams<{ id: string }>();
@@ -20,10 +22,11 @@ export default function EditAnimalWrapper() {
 
       try {
         setLoading(true);
-        console.log("Buscando dados do animal com ID:", id); // Debug
-        const response = await petService.getById(id);
-        console.log("Dados recebidos do backend:", response.data); // Debug
-        setAnimalData(response.data);
+        const responsePet = await petService.getById(id);
+        const responseNgo = await ngoService.getById(responsePet.data.ngoId);
+
+        setAnimalData({...responsePet.data, ngoStrId: `${responseNgo.data.name} - ${responseNgo.data.email}`});
+
       } catch (err) {
         console.error("Erro ao buscar dados do animal:", err);
         setError("Erro ao carregar dados do animal");
@@ -32,31 +35,12 @@ export default function EditAnimalWrapper() {
       }
     };
 
-    fetchAnimalData();
-  }, [id]);
 
-  useEffect(() => {
-    const fetchAnimalData = async () => {
-      if (!id) {
-        setError("ID do animal não encontrado");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const response = await petService.getById(id);
-        setAnimalData(response.data);
-      } catch (err) {
-        console.error("Erro ao buscar dados do animal:", err);
-        setError("Erro ao carregar dados do animal");
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchAnimalData();
   }, [id]);
+
+ 
 
   if (loading) {
     return <div>Carregando dados do animal...</div>;

@@ -24,7 +24,6 @@ const ListAnimals = () => {
     try {
       const response = await petService.getRecentPets();
       const petsData = response.data;
-      console.log('Dados recebidos da API:', petsData);
       setPets(petsData);
     } catch (error) {
       console.error('Error fetching recent animals:', error);
@@ -36,9 +35,7 @@ const ListAnimals = () => {
   }, [fetchRecentAnimals]);
 
   useEffect(() => {
-    console.log('Pets atualizados:', pets);
     if (pets.length > 0) {
-      console.log('Primeira foto do primeiro pet:', pets[0].photos);
     }
   }, [pets]);
 

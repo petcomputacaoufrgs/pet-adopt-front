@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   ButtonsContainer,

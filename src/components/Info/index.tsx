@@ -1,4 +1,4 @@
-import React, { useTransition } from "react";
+import { useTransition } from "react";
 
 import { InfoContainer, InfoContent } from "./styles";
 import { IInfo } from "./types";

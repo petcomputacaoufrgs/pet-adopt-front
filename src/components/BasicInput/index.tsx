@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
   Container,
   ErrorMessageContainer,
@@ -14,7 +12,6 @@ function BasicInput({
   title,
   required,
   $fontSize,
-  $titleFontSize = $fontSize,
   placeholder,
   $width,
   value,
@@ -28,6 +25,7 @@ function BasicInput({
   $inputType = "Primário",
   error = false,
   errorMessage,
+  disabled = false,
   children,
 }: BasicInputProps) {
   return (
@@ -56,6 +54,8 @@ function BasicInput({
           $paddingVertical={$paddingVertical}
           $inputType={$inputType}
           $error={error}
+          disabled={disabled} // Passa para o HTML input
+          $disabled={disabled} // Passa para o styled-component
 
         />
 

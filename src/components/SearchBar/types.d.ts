@@ -16,4 +16,6 @@ export interface ISearchBar{
     numOptionsShowed?: number; // Quantas opções devem ser mostradas no DropDown. Se não for definido, o padrão é 5
     verticalPadding?: string; // Espaçamento vertical interno do input, ou seja, padding-top e padding-bottom
     gapFromTitle?: string; // Espaçamento entre o título e o input
+    listMaxHeight?: string; // Altura máxima do dropdown antes de ativar o scroll (ex: "200px")
+    disabled?: boolean; // Se o componente está desabilitado (não abre dropdown, não digita)
 }

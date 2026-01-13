@@ -2,13 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import { Container, ToggleButton, DropDownWrapper } from './styles';
-import { ISearchBar } from './types';
+import { ISearchBar } from './types'; // Lembre de adicionar disabled e maxHeight na interface
 import DropDownCell from '../DropDownCell';
 import BasicInput from '../BasicInput';
 
+// Adicione na sua interface ISearchBar:
+// disabled?: boolean;
+// listMaxHeight?: string; (ex: "200px")
 
 export default function SearchBar({
-  options, // Assumimos que 'options' agora contém APENAS dados, não o reset
+  options,
   width,
   fontSize,
   titleFontSize = fontSize,
@@ -20,58 +23,57 @@ export default function SearchBar({
   inputType = 'Primário',
   error = false,
   errorMessage,
-  readOnly = false,
+  readOnly = false, // readOnly = Modo Seleção (abre dropdown, não digita)
+  disabled = false, // disabled = Modo Travado (não abre nada)
   resetOption,
   numOptionsShowed = 5,
   verticalPadding = '8px',
   gapFromTitle = '8px',
+  listMaxHeight, // Nova prop para controlar o scroll
 }: ISearchBar) {
   
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [showOptions, setShowOptions] = useState(false);
-  
-  // Controle de navegação
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const arrowSize = parseFloat(fontSize) + 10;
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Verifica se temos a opção de reset ativa nessa instância
   const hasReset = !!resetOption;
+
+
+  // O número de células a serem mostradas: se tiver um listMaxHeight, quer dizer que será colocado um scroll, então mostramos todas as opções filtradas
+  // senão, mostramos até numOptionsShowed
+  const numCellsShowed = listMaxHeight ? filteredOptions.length + (hasReset ? 1 : 0) : Math.min(filteredOptions.length + (hasReset ? 1 : 0), numOptionsShowed); 
 
   const filterOptions = (value: string) =>
     options.filter((opt: string) => 
       opt.toLowerCase().startsWith(value.toLowerCase()) && opt !== value
     );
 
-  // --- LÓGICA DE TECLADO ---
+  // LÓGICA DE TECLADO
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Calculamos o total de itens navegáveis (Reset + Opções Filtradas)
+
+
+    if (disabled) return; // Se estiver desabilitado, ignora teclado
+
     const totalItems = filteredOptions.length + (hasReset ? 1 : 0);
-    
     if (totalItems === 0) return;
 
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
       const change = e.key === 'ArrowDown' ? 1 : -1;
-
       setHighlightedIndex(prev => {
-        // Se for a primeira vez que aperta, vai para 0
         if (prev === -1) return change > 0 ? 0 : totalItems - 1;
-        
         const newIndex = (prev + change + totalItems) % totalItems;
         return newIndex;
       });
     }
 
     if (e.key === 'Enter' && highlightedIndex >= 0) {
-      e.preventDefault(); // Evita submit de form se houver
-      
-      // Lógica para selecionar baseado no índice corrigido
+      e.preventDefault();
       if (hasReset && highlightedIndex === 0) {
         handleOptionClick(resetOption!);
       } else {
-        // Se tem reset, o índice 1 do teclado equivale ao índice 0 do array filtrado
         const arrayIndex = hasReset ? highlightedIndex - 1 : highlightedIndex;
         if (filteredOptions[arrayIndex]) {
           selectOption(filteredOptions[arrayIndex]);
@@ -82,9 +84,11 @@ export default function SearchBar({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Se for readOnly ou disabled, não permite digitar
+    if (readOnly || disabled) return;
+
     const value = e.target.value;
     setQuery(value);
-
     const matches = filterOptions(value);
     setFilteredOptions(matches);
     setShowOptions(true);
@@ -97,36 +101,45 @@ export default function SearchBar({
 
   const handleOptionClick = (value: string) => {
     let newValue = value;
-
     if (resetOption && value === resetOption) {
       newValue = '';
     }
-
     setQuery(newValue);
     setShowOptions(false);
 
+    // Se for readOnly (Modo Seleção), não filtramos, mantemos tudo
     if (readOnly) return;
 
-    // Refazemos o filtro para a próxima vez
     setFilteredOptions(
       options.filter((opt: string) => opt.toLowerCase().startsWith(newValue.toLowerCase()))
     );
-
     setHighlightedIndex(-1);
   };
 
   const toggleOptions = () => {
+    if (disabled) return; // Não abre se estiver disabled
+
     if (!showOptions && !query) {
       setFilteredOptions(options);
     }
+    // Se for readOnly, sempre mostra todas as opções ao abrir
+    if (readOnly && !showOptions) {
+      setFilteredOptions(options);
+    }
+
     setShowOptions(prev => !prev);
     setHighlightedIndex(-1);
   };
 
   const handleClickOnEmptyInput = () => {
+    if (disabled) return;
+
+    // Se for readOnly, o clique no input funciona como o toggle
     if (query === '' || readOnly) {
+      if (!showOptions) {
+         setFilteredOptions(options);
+      }
       setShowOptions(!showOptions);
-      setFilteredOptions(options);
     }
   };
 
@@ -139,15 +152,17 @@ export default function SearchBar({
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+
+
   }, []);
 
-  // Define se o dropdown deve aparecer (se tiver opções OU se tiver botão de reset)
-  const shouldShowDropdown = showOptions && (filteredOptions.length > 0 || hasReset);
+  const shouldShowDropdown = !disabled && showOptions && (filteredOptions.length > 0 || hasReset);
 
   return (
     <Container ref={containerRef} width={width}>
       <BasicInput
         $readOnly={readOnly}
+        disabled={disabled}
         onKeyDown={handleKeyDown}
         error={error}
         errorMessage={errorMessage}
@@ -165,26 +180,28 @@ export default function SearchBar({
         $paddingVertical={verticalPadding}
         $gapFromTitle={gapFromTitle}
       >
-        <ToggleButton type="button" onClick={toggleOptions}>
-          {showOptions ? (
-            <ChevronDown size={arrowSize} color="#A39289" />
-          ) : (
-            <ChevronUp size={arrowSize} color="#A39289" />
-          )}
-        </ToggleButton>
+        {/* Só mostramos a seta se NÃO estiver disabled */}
+        {!disabled && (
+          <ToggleButton type="button" onClick={toggleOptions} disabled={disabled}>
+            {showOptions ? (
+              <ChevronDown size={arrowSize} color="#A39289" />
+            ) : (
+              <ChevronUp size={arrowSize} color="#A39289" />
+            )}
+          </ToggleButton>
+        )}
       </BasicInput>
 
       {shouldShowDropdown && (
-        <DropDownWrapper width={"100%"}>
-          
+        <DropDownWrapper width={"100%"} $maxHeight={listMaxHeight}>
           {filteredOptions.length > 0 && (
             <DropDownCell
-              highlight={hasReset ? highlightedIndex - 1 : highlightedIndex}
+              highlight={highlightedIndex}
               options={hasReset ? [resetOption, ...filteredOptions] : filteredOptions}
               onSelect={handleOptionClick}
               width={'100%'}
               fontSize={fontSize}
-              numCellsShowed={numOptionsShowed}
+              numCellsShowed={numCellsShowed}
             />
           )}
         </DropDownWrapper>
