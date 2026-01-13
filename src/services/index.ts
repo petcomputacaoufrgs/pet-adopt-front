@@ -16,6 +16,9 @@ export const authService = {
   
   manageInfo: (userData: any) => 
     api.post('/auth/manageInfo', userData),
+
+  updateNgo: (ngoId: string, ngoData: any) => 
+    api.patch(`/auth/${ngoId}`, ngoData),
 };
 
 // Serviços relacionados às ONGs
