@@ -92,12 +92,23 @@ export const BottomBar = styled.div`
 `;
 
 export const Image = styled.img`
-  width: 38.9583333vw; // 748px em vw utilizando 1920px como base
-  min-width: 350px;
-  height: 40vw; // 768px em vw utilizando 1920px como base
-  min-height: 350px;
-  object-fit: cover;
+  // LARGURA
+  width: 38.95vw; 
+  max-width: 800px; 
+  min-width: 300px;
+
+  aspect-ratio: 1 / 1; 
+  
+  object-fit: cover; 
+  object-position: center top;
+  
   border-radius: 12px;
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+  // PREVENÇÃO DE DISTORÇÃO (Fallback para browsers antigos)
+  height: auto; 
+
 `;
 
 export const CloseButtonStyled = styled.button<StyledCloseButtonProps>`

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { authService, getAuthError } from "../../services";
 
 import {
@@ -56,7 +56,7 @@ const ForgotPassword1: React.FC = () => {
     //   setErrorMessage(errorMsg);
     // }
 
-    navigate('/forgotPassword2', { state: { from: '/forgotPassword1' } });
+    handleNavigation('/forgotPassword2', { state: { from: '/forgotPassword1' } });
   };
 
 
@@ -65,6 +65,13 @@ const ForgotPassword1: React.FC = () => {
   const [windowSize, setWindowSize] = useState(window.innerWidth);
 
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
+
+  const handleNavigation = (to: string, options?: { state?: any }) => {
+    startTransition(() => {
+      navigate(to, options);
+    });
+  };
     
   useEffect(() => {
         const handleResize = () => {
@@ -177,7 +184,7 @@ const ForgotPassword1: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => navigate("/login")}
+                onClick={() => handleNavigation("/login")}
               >
               <h3>Fazer Login</h3>
     
@@ -194,7 +201,7 @@ const ForgotPassword1: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => navigate("/signUp")}
+                onClick={() => handleNavigation("/signUp")}
               >
               <h3>Criar Conta</h3>
     

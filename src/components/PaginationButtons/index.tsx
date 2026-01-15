@@ -7,11 +7,9 @@ import {
 } from "./styles";
 
 import { IPaginationButtonsProps } from "./types";
-
 import LeftArrowIcon from "../../assets/LeftArrow.svg";
 import RightArrowIcon from "../../assets/RightArrow.svg";
 import { useEffect, useState } from "react";
-
 
 const PaginationButtons = ({
   buttonWidth,
@@ -21,15 +19,16 @@ const PaginationButtons = ({
   itemsPerPage,
   currentPage,
   setCurrentPage,
-  scrollTo
+  scrollTo,
 }: IPaginationButtonsProps) => {
-  const totalPages = (itemsLength == 0)? 1 : Math.ceil(itemsLength / itemsPerPage);
+  // Garante pelo menos 1 página
+  const totalPages = itemsLength === 0 ? 1 : Math.ceil(itemsLength / itemsPerPage);
 
   const [scrollAfterRender, setScrollAfterRender] = useState(false);
-  
+
   const getVisiblePages = (
     currentPageParam: number,
-    totalPagesParam: number,
+    totalPagesParam: number
   ): number[] => {
     const visiblePagesArray: number[] = [];
     const maxVisible = 5;
@@ -45,13 +44,11 @@ const PaginationButtons = ({
       visiblePagesArray.push(i);
     }
 
-    // Adiciona reticências se a primeira página visível não for 1 ou 2
     if (visiblePagesArray[0] > 2) {
-      visiblePagesArray.unshift(-1); // -1 para representar a elipse
+      visiblePagesArray.unshift(-1);
     }
-    // Adiciona reticências se a última página visível não for a penúltima ou última
     if (visiblePagesArray[visiblePagesArray.length - 1] < totalPagesParam - 1) {
-      visiblePagesArray.push(-1); // -1 para representar a elipse
+      visiblePagesArray.push(-1);
     }
 
     return visiblePagesArray;
@@ -59,45 +56,51 @@ const PaginationButtons = ({
 
   const visiblePageNumbers = getVisiblePages(currentPage, totalPages);
 
-const handlePageChange = (newPage: number) => {
-  if (newPage < 1 || newPage > totalPages) return;
-  setCurrentPage(newPage);
-  setScrollAfterRender(true);
-};
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    setScrollAfterRender(true);
+  };
 
-
-
-
-useEffect(() => {
-  if (scrollAfterRender) {
-    const element = document.getElementById(scrollTo);
-    element?.scrollIntoView({ behavior: "smooth" });
-    setScrollAfterRender(false); // reseta pra não repetir
-  }
-}, [currentPage, scrollAfterRender]);
-
-
+  // CORREÇÃO DO SCROLL
+  useEffect(() => {
+    if (scrollAfterRender && scrollTo) {
+      const element = document.getElementById(scrollTo);
+      if (element) {
+        // Cálculo manual para garantir que pule o CSS global
+        const y = element.getBoundingClientRect().top + window.scrollY;
+        
+        // Tenta usar 'instant' (padrão novo), fallback para 'auto'
+        window.scrollTo({ 
+            top: y, 
+            behavior: 'instant' as any // Cast para evitar erro de TS em versões antigas
+        });
+      }
+      setScrollAfterRender(false);
+    }
+  }, [currentPage, scrollAfterRender, scrollTo]);
 
   return (
-    <PaginationContainer
-      $buttonWidth={buttonWidth}
-      $buttonHeight={buttonHeight}
-      $containerHeight={containerHeight}
-    >
+    <PaginationContainer $containerHeight={containerHeight}>
+      
+      {/* Botão ANTERIOR (Retangular com Texto) */}
       <PassPageButton
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
+        $buttonHeight={buttonHeight}
       >
-        <img src={LeftArrowIcon} alt="Página Anterior" />
+        <img src={LeftArrowIcon} alt="" />
+        <span>Anterior</span>
       </PassPageButton>
 
       <NumericPassPageButtons>
-        {/* Renderiza o botão da primeira página se não estiver visível */}
         {visiblePageNumbers[0] !== 1 && (
           <PaginationButton
             onClick={() => handlePageChange(1)}
             disabled={currentPage === 1}
             $highlighted={currentPage === 1}
+            $buttonWidth={buttonWidth}
+            $buttonHeight={buttonHeight}
           >
             1
           </PaginationButton>
@@ -114,30 +117,37 @@ useEffect(() => {
               onClick={() => handlePageChange(page)}
               disabled={currentPage === page}
               $highlighted={currentPage === page}
+              $buttonWidth={buttonWidth}
+              $buttonHeight={buttonHeight}
             >
               {page}
             </PaginationButton>
           );
         })}
 
-        {/* Renderiza o botão da última página se não estiver visível */}
         {visiblePageNumbers[visiblePageNumbers.length - 1] !== totalPages && (
           <PaginationButton
             onClick={() => handlePageChange(totalPages)}
             disabled={currentPage === totalPages}
             $highlighted={currentPage === totalPages}
+            $buttonWidth={buttonWidth}
+            $buttonHeight={buttonHeight}
           >
             {totalPages}
           </PaginationButton>
         )}
       </NumericPassPageButtons>
 
+      {/* Botão PRÓXIMO (Retangular com Texto) */}
       <PassPageButton
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
+        $buttonHeight={buttonHeight}
       >
-        <img src={RightArrowIcon} alt="Próxima Página" />
+        <span>Próximo</span>
+        <img src={RightArrowIcon} alt="" />
       </PassPageButton>
+      
     </PaginationContainer>
   );
 };

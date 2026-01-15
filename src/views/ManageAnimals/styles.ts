@@ -76,7 +76,7 @@ export const TopBarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 160px;
+  height: 100px;
   scroll-margin-top: 80px;
 `;
 
@@ -85,7 +85,6 @@ export const TopBarContent = styled.div`
   width: 80%;
   gap: 20px;
   align-items: center;
-  justify-content: center;
 
 `;
 

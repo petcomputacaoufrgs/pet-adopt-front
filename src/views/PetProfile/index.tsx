@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useTransition } from "react";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -27,9 +27,10 @@ import {
     Thumbnail,
     MainImageContainer,
     MainImage,
+    ButtonLink,
 } from "./styles";
 
-import { ChevronLeft, Info } from 'lucide-react';
+
 import { CircleCheck } from 'lucide-react';
 import { PawPrint } from 'lucide-react';
 import { MapPin } from 'lucide-react';
@@ -39,50 +40,61 @@ import { Phone } from 'lucide-react';
 
 import Header from "../../components/Header";
 import Footer from "../HomePage/6Footer";
-import ActionText from "../../components/ActionText";
 import Tag from "../../components/Tags";
 import ConfirmModal from "../../components/ConfirmModal";
-import SuccessToast from "../../components/Toast";
 import GalleryModal from "../../components/GalleryModal";
 
 import loginPageLogo from "../../assets/HorizontalLogo.png";
 import DogForCard from "../../assets/HomePageCardDog.png";
 import Insta from "../../assets/OrangeInstagramPin.png";
 import Facebook from "../../assets/OrangeFacebookPin.png";
-import Youtube from "../../assets/OrangeYoutubePin.png";
-import Tiktok from "../../assets/OrangeTiktokPin.png";
 import InstaB from "../../assets/BrownInstagramPin.png";
 import FacebookB from "../../assets/BrownFacebookPin.png";
-import YoutubeB from "../../assets/BrownYoutubePin.png";
-import TiktokB from "../../assets/BrownTiktokPin.png";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
-//importando fotos para galeria
-import Image1 from "./images/mel.jpeg";
-import Image2 from "./images/mutano1.jpeg";
-import Image3 from "./images/salem1.jpeg";
-import Image4 from "./images/salem2.jpeg";
-import Image5 from "./images/mel2.jpeg";
-import Image6 from "./images/mutano2.jpeg";
 import { useAuth } from "../../hooks/useAuth";
 import { Pet } from "../../types/pets";
 import { petService } from "../../services";
-
+import { ngoService } from "../../services";
+import { useToast } from "../../contexts/ToastContext";
+import { imageHelper } from '../../services/helpers/imageHelper';
+import Breadcrumb from "../../components/BreadCrumb";
 
 type ModalAction = { tipo: "excluir"; petId: string } | null;
 type GalleryModalAction = { isOpen: boolean; imageIndex: number } | null;
 
 const PetProfile: React.FC = () => {
-
     const { id } = useParams<{ id: string }>();
     const [pet, setPet] = useState<Pet | null>(null);
+    const [ngo, setNgo] = useState<any>(null);
+
+    const [finalImages, setFinalImages] = useState<string[]>([]); // Use State para a tela atualizar
+
+    console.log(pet);
+    const { showToast } = useToast();
+
+     const breadcrumbItems = [
+    { label: 'Home', to: '/' },
+    { label: 'Animais', to: '/searchAnimals' }, // O "Pai" oficial dessa página
+    { label: pet ? pet.name : 'Detalhes' }  // A página atual
+    ];
 
     const fetchPetById = async (id: string) => {
         try {
             const response = await petService.getById(id);
             setPet(response.data);
+
         } catch (error) {
             console.error("Erro ao buscar pet:", error);
+        }
+    };
+
+    const fetchNgoById = async (id: string) => {
+        try {
+            const response = await ngoService.getById(id);
+            setNgo(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar ong:", error);
         }
     };
 
@@ -92,117 +104,84 @@ const PetProfile: React.FC = () => {
         }
     }, [id]);
 
+    useEffect(() => {
+    if (pet && pet.ngoId && pet.photos && pet.photos.length > 0) {
+        
+        // Função auxiliar para checar uma única imagem (Lógica igual ao useImage, mas com Promise)
+        const checkImage = (photoPath: string): Promise<string> => {
+            return new Promise((resolve) => {
+                const fullUrl = imageHelper.getFullImageUrl(photoPath);
+                const img = new Image();
 
+                img.onload = () => resolve(fullUrl); // Sucesso: retorna URL completa
+                img.onerror = () => resolve(DogForCard); // Erro: retorna Fallback
+                
+                img.src = fullUrl;
+            });
+        };
 
+        // Processa todas as imagens em paralelo
+        const processAllImages = async () => {
+            const promises = pet.photos.map(photo => checkImage(photo));
+            const results = await Promise.all(promises);
+            
+            setFinalImages(results); // Atualiza o estado com as URLs válidas
+        };
 
+        processAllImages();
 
-
-    /* Dados temporários dos animais a serem exibidos na tela.
-    * Idealmente, no futuro devem ser carregados do backend conforme a página atual.
-    */
-
-
-    const ong = {
-        name: "ONG Adoção Feliz",
-        location: "São Paulo, SP",
-        contact: "(11) 1234-5678",
-        email: "contato@amorpetong.org",
-        description: "O Cão Sem Dono é uma ONG (Organização Não Governamental), sem fins lucrativos, e que nasceu de um grande sonho do seu atual presidente: tirar o maior número possível de animais das ruas, dar tratamento adequado e integrá-los a famílias que lhes deem amor, carinho e uma vida digna. /n/nFoi criada informalmente em 2005 na cidade de São Paulo. Seu estatuto foi lançado e registrado em 23 de Abril de 2008, mesmo dia em que obteve seu CNPJ./n/nAtualmente a ONG mantém 2 abrigos (a sede fica em Itapecerica da Serra, SP) com 450 animais que são constantemente tratados por veterinários, alimentados com ração de boa qualidade, bebem água potável, dormem em abrigos especialmente construídos e são tratados com muito amor e carinho por todos os funcionários e voluntários que estão sempre visitando as instalações onde ficam os cães./n/nSua equipe é formada por Presidente, Diretores e 33 colaboradores entre tratadores, veterinários, auxiliares de veterinária, equipe do Bazar, equipe de resgate e a equipe do escritório.",
-        social_media: {
-            facebook: "https://www.facebook.com",
-            instagram: "https://www.instagram.com",
-            twitter: "https://twitter.com",
-        }
+        fetchNgoById(pet.ngoId);
     }
+}, [pet]);
 
-    const petImages = [
-        Image1,
-        Image2,
-        Image3,
-        Image4,
-        Image5,
-        Image6,
-    ];
     
-    const socialMediaLinks = [
-        {
-        orange: Insta,
-        brown: InstaB,
-        alt: "Instagram",
-        href: "https://www.instagram.com"
-        },
-        {
-        orange: Facebook,
-        brown: FacebookB,
-        alt: "Facebook",
-        href: "https://www.facebook.com"
-        },
-        {
-        orange: Youtube,
-        brown: YoutubeB,
-        alt: "YouTube",
-        href: "https://www.youtube.com"
-        },
-        {
-        orange: Tiktok,
-        brown: TiktokB,
-        alt: "TikTok",
-        href: "https://www.tiktok.com"
-        }
-    ];
 
     const [activeImageIndex, setActiveImageIndex] = useState(0);
 
     const navigate = useNavigate();
+    const [isPending, startTransition] = useTransition();
+    const handleNavigation = (to: string) => {
+        startTransition(() => {
+        navigate(to);
+        });
+    }
 
-    const handleUserAction = (selected: string) => {
-        if (selected === "Manage Infos") navigate("/manageInfo");
-    };
 
-    const currentUserOptions = ["Manage Infos"];
-
-    const currentUserActions = handleUserAction;
-
-    const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [modalAction, setModalAction] = useState<ModalAction>(null);
-    const [toastType, setToastType] = useState< "excluir" | null>(null);
-    const [showToast, setShowToast] = useState(false);
-    const [toastVisible, setToastVisible] = useState(false);
-
-    const resetToast = () => {
-        setToastVisible(false);
-
-        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-        if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-
-        setShowToast(false);
-        setToastType(null);
-    };
 
     // Abrir modal (e fechar toast se estiver aberto)
     const abrirModal = (tipo: "excluir", petId: string) => {
-        resetToast();
         setModalAction({ tipo, petId });
     };
 
     // Confirmar ação
     const handleConfirm = () => {
+
         if (!modalAction) return;
-        
 
-        resetToast();
-        setToastType(modalAction.tipo);
-        setShowToast(true);
+        petService.delete(modalAction.petId as string).then(
+            () => {
+            console.log("Pet excluído com sucesso");
 
-        showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-        hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-        fullCloseTimeoutRef.current = setTimeout(() => {
-        setShowToast(false);
-        setToastType(null);
-        }, 3500);
+            showToast({ 
+                success: true,
+                message: "Pet excluído com sucesso!",
+                description: "O pet foi removido do sistema."
+            }
+            );
+
+            handleNavigation("/manageAnimals");
+            },
+            (error) => {
+            console.error("Erro ao excluir pet:", error);
+            showToast({ 
+                success: false,
+                message: "Erro ao excluir pet",
+                description: error || "Ocorreu um erro ao tentar excluir o pet."
+            }
+            );
+            }
+        );
 
         setModalAction(null);
     };
@@ -216,15 +195,33 @@ const PetProfile: React.FC = () => {
     };
 
     const {isLoading, user, isLoggedIn} = useAuth();
+
     if(isLoading)
         return null;
 
-    if (!pet) {
-        return <div>Carregando...</div>;
+
+    const specieLookUpTable : Record<string, string> = {
+        "DOG": "Cachorro",
+        "CAT": "Gato",
+        "OTHER": "Outro"
+    }
+
+    const sexLookUpTable : Record<string, string> = {
+        "M": "Macho",
+        "F": "Fêmea",
+        "O": "Outro"
+    }
+
+    const sizeLookUpTable : Record<string, string> = {
+        "P": "Pequeno",
+        "M": "Médio",
+        "G": "Grande"
     }
     
-    console.log(pet.NGO);
-    console.log(user?.ngoId);
+    console.log(pet);
+    console.log(ngo);
+
+
     return (
         <Container>
 
@@ -237,25 +234,18 @@ const PetProfile: React.FC = () => {
 
             <Main>
 
+            {pet && ngo &&
+                <>
                 <BackButtonContainer>
-                    <ActionText
-                        key={currentUserOptions[0]}
-                        fontSize="1rem"
-                        textColor="#553525"
-                        onClick={() => currentUserActions(currentUserOptions[0])}
-                        underlineOnHover={true}
-                    >
-                        <ChevronLeft size={20}/>
-                        <h2> Voltar </h2>
-
-                    </ActionText>
+                    <Breadcrumb items={breadcrumbItems} />
                 </BackButtonContainer>
 
-                <PetProfileDiv>
+            
+                  <PetProfileDiv>
 
                     <ViewerContainer>
                         <ThumbnailGallery>
-                            {petImages.map((image, index) => {
+                            {finalImages.map((image, index) => {
                                 if (index < 4) {
                                     return (
                                     <Thumbnail
@@ -269,7 +259,7 @@ const PetProfile: React.FC = () => {
                                     );
                                 }
                                 if (index === 4) {
-                                    const remaining = petImages.length - 4;
+                                    const remaining = finalImages.length - 4;
                                     return (
                                     <ThumbnailWrapper key={index}>
 
@@ -297,21 +287,74 @@ const PetProfile: React.FC = () => {
 
                         <MainImageContainer>
                             <MainImage
-                                src={petImages[activeImageIndex]}
+                                src={finalImages[activeImageIndex]}
+                                style={{cursor: 'pointer'}}
+                                onClick={() => {abrirGalleryModal(true, activeImageIndex); setCurrentPhotoIndex(activeImageIndex);}}
                             />
+
+
+
+                            {pet && ngo && (
+                        <>
+                            {(() => {
+                            // Condição para Adotar: Pet disponível E ONG tem formulário
+                            const showAdoptionBtn = pet.forAdoption && ngo.adoptionForm;
+                            
+                            // Condição para Lar Temporário: Pet disponível E ONG tem formulário
+                            const showTempHomeBtn = pet.forTempHome && ngo.temporaryHomeForm;
+
+                            // Se nenhum dos dois estiver disponível, não renderiza o container <Buttons>
+                            if (!showAdoptionBtn && !showTempHomeBtn) return null;
+
+                            // Função auxiliar para abrir o link externo
+                            const openForm = (url: string) => {
+                                if (url) window.open(url, '_blank');
+                            };
+
+                            return (
+                                <Buttons>
+                                {showAdoptionBtn && (
+                                    <ButtonLink href={ngo.adoptionForm} target="_blank" rel="noopener noreferrer">
+                                        <PrimarySecondaryButton 
+                                        width="100%" 
+                                        buttonType="Primário"
+                                        content="Quero Adotar" 
+                                        onClick={() => {}} 
+                                        isDisabled={false}
+                                        paddingV="10px"
+                                        />
+                                    </ButtonLink>
+                                )}
+
+                                {showTempHomeBtn && (
+                                    <PrimarySecondaryButton 
+                                    width="100%" 
+                                    buttonType="Secundario" 
+                                    content="Lar Temporário" 
+                                    onClick={() => openForm(ngo.temporaryHomeForm)} 
+                                    isDisabled={false}
+                                    paddingV="10px"
+                                    />
+                                )}
+                                </Buttons>
+                            );
+                            })()}
+                        </>
+                        )}
+
                         </MainImageContainer>
 
                         <GalleryModal
                             isOpen={GalleryModalAction !== null}
-                            image={petImages[currentPhotoIndex]}
+                            image={finalImages[currentPhotoIndex]}
                             onClose={() => setGalleryModalAction(null)}
-                            totalItems={petImages.length}
+                            totalItems={finalImages.length}
                             activeIndex={currentPhotoIndex}
                             onIndicatorClick={setCurrentPhotoIndex}
                         />
-                        
+  
                     </ViewerContainer>
-
+                    
                     <InfosAction>
 
                         <Cards>
@@ -325,11 +368,11 @@ const PetProfile: React.FC = () => {
 
                                         <TagsContainer>
 
-                                            <Tag $text={pet.species} type={"light"} fontSize={"14px"} />
+                                            <Tag $text={specieLookUpTable[pet.species]} type={"light"} fontSize={"14px"} />
 
-                                            <Tag $text={pet.sex} type={"light"} fontSize={"14px"} />
+                                            <Tag $text={sexLookUpTable[pet.sex]} type={"light"} fontSize={"14px"} />
 
-                                            {pet.size && <Tag $text={pet.size} type={"light"} fontSize={"14px"} />}
+                                            {pet.size && <Tag $text={sizeLookUpTable[pet.size]} type={"light"} fontSize={"14px"} />}
                                             {pet.breed && <Tag $text={pet.breed} type={"light"} fontSize={"14px"} />}
 
                                         </TagsContainer>
@@ -367,63 +410,82 @@ const PetProfile: React.FC = () => {
 
                                 <CardHeader>
                                     <Title>
-                                        <h2> {ong.name} </h2>
+                                        <h2> {ngo?.name} </h2>
                                     </Title>
 
                                     <InfoContainer>
                                         
                                         <InfoElement>
                                             <MapPin size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                            <h4> {ong.location} </h4>
+                                            <h4> {ngo?.location} </h4>
                                         </InfoElement>
 
                                         <InfoElement>
                                             <Mail size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                            <h4> {ong.email} </h4>
+                                            <h4> {ngo?.email} </h4>
                                         </InfoElement>
 
                                         <InfoElement>
                                             <Phone size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                            <h4> {ong.contact} </h4>
+                                            <h4> {ngo?.contact} </h4>
                                         </InfoElement>
 
                                     </InfoContainer>
 
-                                    <h3> 
-                                        
-                                        {ong.description.length > 280
-                                            ? ong.description.slice(0, 280) + "..."
-                                            : ong.description
-                                        } 
-
-                                        <span
-                                            style={{
-                                            color: "#563526",
-                                            fontWeight: 700,
-                                            cursor: "pointer",
-                                            marginLeft: 4,
-                                            textDecoration: "underline"
-                                            }}
-                                            onClick={() => navigate("/validateNgoProfile")}
-                                        >
-                                            Saber Mais
-                                        </span>
-                                        
-                                    </h3>
+                                    <h3>{ngo?.description}</h3>
                                         
                                 </CardHeader>  
-                                    
+                                
+                                {
                                 <SocialContainer>
                                     <h5> Acompanhe a ONG nas Redes Sociais: </h5>
                                     <SocialIconsDiv>
 
-                                        {socialMediaLinks.map((icon, index) => (
-                                            <a key={index} href={icon.href} target="_blank" rel="noopener noreferrer">
-                                            <Icon $orange={icon.orange} $brown={icon.brown} aria-label={icon.alt} />
-                                            </a>
-                                        ))}
+                                        {
+                                            ngo && (ngo.facebook || ngo.instagram) && (
+
+                                            <>
+                                            
+                                            {
+                                                ngo.instagram && (
+                                                    <a href={`${ngo.instagram}`} target="_blank" rel="noopener noreferrer">
+                                                        <Icon $orange={Insta} $brown={InstaB} aria-label="Instagram" />
+                                                    </a>
+                                                )
+                                            }
+
+                                            {
+                                                ngo.facebook && (
+                                                    <a href={`${ngo.facebook}`} target="_blank" rel="noopener noreferrer">
+                                                        <Icon $orange={Facebook} $brown={FacebookB} aria-label="Facebook" />
+                                                    </a>
+                                                )
+                                            }
+     
+                                            </>
+
+                                            )
+                                        }
+
                                     </SocialIconsDiv>
                                 </SocialContainer>
+                            }
+
+
+                                    <a
+                                        style={{
+                                        color: "#563526",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        marginLeft: 4,
+                                        textDecoration: "underline",
+                                        width: "fit-content"
+                                        }}
+
+                                        href={`/ngoProfile/${ngo?._id}`}
+                                    >
+                                        Saber Mais ➙
+                                    </a>
 
                             </InfoCard>
 
@@ -434,10 +496,12 @@ const PetProfile: React.FC = () => {
                         
 
                         <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet.id as string)} isDisabled={false}/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate(`/editAnimal/${pet.id}`)} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet._id as string)} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => handleNavigation(`/editAnimal/${pet._id}`)} isDisabled={false}/>
                         </Buttons>
                         }
+
+                        
 
                         <ConfirmModal
                             isOpen={modalAction !== null}
@@ -449,20 +513,12 @@ const PetProfile: React.FC = () => {
                             onClose={() => setModalAction(null)}
                         />
 
-                        {showToast && toastType && (
-                            <SuccessToast
-                                message= "Pet excluído com sucesso!"
-                                description= "O pet foi removido do sistema."
-                                onClose={() => {
-                                    setToastVisible(false);
-                                    setTimeout(() => setShowToast(false), 300);
-                                }}
-                                isVisible={toastVisible}
-                            />
-                        )}
 
                     </InfosAction>
                 </PetProfileDiv>
+
+                </>
+            }
 
             </Main>
 

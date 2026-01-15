@@ -10,6 +10,7 @@ const LargeInputField: React.FC<LargeInputProps> = ({
   $fontSize: fontSize, 
   placeholder,
   $width: inputWidth, 
+  $height: inputHeight,
   value,
   onChange,
   onClick,
@@ -21,6 +22,7 @@ const LargeInputField: React.FC<LargeInputProps> = ({
   errorMessage: errorText, 
   children,
   isDisabled,
+  maxLength = 272,
 }) => { const renderLabel = () =>
     title && (
       <Label $fontSize={fontSize} isDisabled={isDisabled}>
@@ -51,10 +53,11 @@ const LargeInputField: React.FC<LargeInputProps> = ({
           $paddingRight={paddingRight}
           $inputType={inputType}
           $error={hasError}
-          maxLength={272}
+          maxLength={maxLength}
+          $height={inputHeight}
         />
         {children}
-        <InfoText $fontSize={fontSize}>Máximo de 272 caracteres.</InfoText>
+        <InfoText $fontSize={fontSize}>Máximo de {maxLength} caracteres.</InfoText>
       </Container>
 
       {hasError && errorText && (

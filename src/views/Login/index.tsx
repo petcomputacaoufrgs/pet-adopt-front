@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { authService, getAuthError } from "../../services";
 
 import {
@@ -21,7 +21,7 @@ import BasicInput from "../../components/BasicInput";
 import PasswordInputField from "../../components/PasswordInput";
 import ActionText from "../../components/ActionText";
 import { useAuth } from "../../hooks/useAuth";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -29,6 +29,13 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  
+  const [isPending, startTransition] = useTransition();
+  const handleNavigation = (to: string) => {
+    startTransition(() => {
+      navigate(to);
+    });
+  }
 
 
 
@@ -198,7 +205,7 @@ const Login: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => navigate("/forgotPassword1")}
+                onClick={() => handleNavigation("/forgotPassword1")}
               >
               <h3>Esqueci minha senha</h3>
 
@@ -215,7 +222,7 @@ const Login: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => navigate("/signUp")}
+                onClick={() => handleNavigation("/signUp")}
               >
               <h3>Criar conta</h3>
 

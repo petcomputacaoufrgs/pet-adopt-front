@@ -16,6 +16,7 @@ interface AnimalFormState {
   specieIndex: number;
   ngoId: string;
   windowSize: number;
+  ngoStrId: string;
 }
 
 interface UseAnimalFormReturn extends AnimalFormState {
@@ -32,6 +33,7 @@ interface UseAnimalFormReturn extends AnimalFormState {
   setSpecie: (value: string) => void;
   setSpecieIndex: (value: number) => void;
   setNgoId: (value: string) => void;
+  setNgoStrId: (value: string) => void;
   resetForm: () => void;
 }
 
@@ -45,6 +47,7 @@ const mapAnimalDataToFormState = (animalData: Animal) => {
     state: animalData.state || "",
     ngoId: animalData.ngoId || "",
     characteristics: animalData.characteristics || "",
+    ngoStrId: animalData.ngoStrId || "",
     specieIndex: -1,
     animalSexIndex: -1,
     sizeIndex: -1,
@@ -109,6 +112,7 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
   const [specieIndex, setSpecieIndex] = useState(-1);
   const [ngoId, setNgoId] = useState("");
   const [windowSize, setWindowSize] = useState(window.innerWidth);
+  const [ngoStrId, setNgoStrId] = useState("");
 
   // Função para resetar o formulário
   const resetForm = () => {
@@ -125,6 +129,7 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
     setSpecie("");
     setSpecieIndex(-1);
     setNgoId("");
+    setNgoStrId("");
   };
 
   // Efeito para atualizar windowSize
@@ -151,6 +156,7 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
       setSizeIndex(formState.sizeIndex);
       setSituationIndex(formState.situationIndex);
       setSpecie(formState.specie);
+      setNgoStrId(formState.ngoStrId);
 
       if (animalData.photos) {
         const existingPhotos = animalData.photos.slice(0, 10);
@@ -189,6 +195,8 @@ export const useAnimalForm = (animalData?: Animal): UseAnimalFormReturn => {
     setSpecieIndex,
     ngoId,
     setNgoId,
+    ngoStrId,
+    setNgoStrId,
     windowSize,
     resetForm
   };

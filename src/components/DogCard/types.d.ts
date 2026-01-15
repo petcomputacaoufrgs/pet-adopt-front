@@ -8,4 +8,6 @@ export interface ICard {
     age: string;
     location: string;
     id: string;
+    onEdit?: () => void;
+    onDelete?: () => void;
   }

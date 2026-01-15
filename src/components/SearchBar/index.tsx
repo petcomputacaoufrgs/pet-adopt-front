@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import { Container, ToggleButton, DropDownWrapper } from './styles';
-import { ISearchBar } from './types';
-
+import { ISearchBar } from './types'; // Lembre de adicionar disabled e maxHeight na interface
 import DropDownCell from '../DropDownCell';
 import BasicInput from '../BasicInput';
 
-import { ChevronDown, ChevronUp } from 'lucide-react';
+// Adicione na sua interface ISearchBar:
+// disabled?: boolean;
+// listMaxHeight?: string; (ex: "200px")
 
 export default function SearchBar({
   options,
@@ -21,105 +23,126 @@ export default function SearchBar({
   inputType = 'Primário',
   error = false,
   errorMessage,
-  readOnly = false,
+  readOnly = false, // readOnly = Modo Seleção (abre dropdown, não digita)
+  disabled = false, // disabled = Modo Travado (não abre nada)
   resetOption,
   numOptionsShowed = 5,
+  verticalPadding = '8px',
+  gapFromTitle = '8px',
+  listMaxHeight, // Nova prop para controlar o scroll
 }: ISearchBar) {
-  // Estado para opções filtradas a partir do valor do input
+  
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
-  // Estado para controlar a visibilidade das opções
   const [showOptions, setShowOptions] = useState(false);
-  // Estado para qual opção está destacada pela navegação do teclado
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  // Tamanho do ícone da seta, 6px maior que a fonte base
-  const arrowSize = parseFloat(fontSize) + 20;
-
-  // Referência para o container principal para detecção de clique fora
+  const arrowSize = parseFloat(fontSize) + 10;
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasReset = !!resetOption;
 
-  // Função utilitária para filtrar opções que começam com o valor atual do input, mas que não sejam idênticas ao input
+
+  // O número de células a serem mostradas: se tiver um listMaxHeight, quer dizer que será colocado um scroll, então mostramos todas as opções filtradas
+  // senão, mostramos até numOptionsShowed
+  const numCellsShowed = listMaxHeight ? filteredOptions.length + (hasReset ? 1 : 0) : Math.min(filteredOptions.length + (hasReset ? 1 : 0), numOptionsShowed); 
+
   const filterOptions = (value: string) =>
-    options.filter((opt: string) => opt.toLowerCase().startsWith(value.toLowerCase()) && opt !== value);
+    options.filter((opt: string) => 
+      opt.toLowerCase().startsWith(value.toLowerCase()) && opt !== value
+    );
 
-  // Manipulador para eventos de teclado (setas para cima/baixo e Enter)
+  // LÓGICA DE TECLADO
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!filteredOptions.length) return;
+
+
+    if (disabled) return; // Se estiver desabilitado, ignora teclado
+
+    const totalItems = filteredOptions.length + (hasReset ? 1 : 0);
+    if (totalItems === 0) return;
 
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
       const change = e.key === 'ArrowDown' ? 1 : -1;
       setHighlightedIndex(prev => {
-        // O índice destacado cicla entre as opções visíveis
-        const newIndex = (prev + change + Math.min(filteredOptions.length, numOptionsShowed)) %
-          Math.min(filteredOptions.length, numOptionsShowed);
+        if (prev === -1) return change > 0 ? 0 : totalItems - 1;
+        const newIndex = (prev + change + totalItems) % totalItems;
         return newIndex;
       });
     }
 
     if (e.key === 'Enter' && highlightedIndex >= 0) {
-      // Enter seleciona a opção destacada
-      selectOption(filteredOptions[highlightedIndex]);
+      e.preventDefault();
+      if (hasReset && highlightedIndex === 0) {
+        handleOptionClick(resetOption!);
+      } else {
+        const arrayIndex = hasReset ? highlightedIndex - 1 : highlightedIndex;
+        if (filteredOptions[arrayIndex]) {
+          selectOption(filteredOptions[arrayIndex]);
+        }
+      }
       setShowOptions(false);
     }
   };
 
-  // Manipulador para mudança no input (digitação do usuário)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Se for readOnly ou disabled, não permite digitar
+    if (readOnly || disabled) return;
+
     const value = e.target.value;
     setQuery(value);
-
     const matches = filterOptions(value);
     setFilteredOptions(matches);
     setShowOptions(true);
     setHighlightedIndex(-1);
   };
 
-  // Seleção de uma opção, seja por clique ou por teclado
   const selectOption = (value: string) => {
     setQuery(value);
   };
 
-  // Manipulador para clique em uma opção da lista
   const handleOptionClick = (value: string) => {
     let newValue = value;
-
     if (resetOption && value === resetOption) {
       newValue = '';
     }
-
     setQuery(newValue);
     setShowOptions(false);
 
-    // Se for readOnly, não precisa filtrar as opções novamente no click
+    // Se for readOnly (Modo Seleção), não filtramos, mantemos tudo
     if (readOnly) return;
 
     setFilteredOptions(
-      options.filter((opt: string) => opt.toLowerCase().startsWith(value.toLowerCase()))
+      options.filter((opt: string) => opt.toLowerCase().startsWith(newValue.toLowerCase()))
     );
-
     setHighlightedIndex(-1);
   };
 
-  // Alterna a visibilidade das opções ao clicar na seta
   const toggleOptions = () => {
+    if (disabled) return; // Não abre se estiver disabled
+
     if (!showOptions && !query) {
-      // Se o input estiver vazio e as opções não estiverem visíveis, mostra todas
       setFilteredOptions(options);
     }
+    // Se for readOnly, sempre mostra todas as opções ao abrir
+    if (readOnly && !showOptions) {
+      setFilteredOptions(options);
+    }
+
     setShowOptions(prev => !prev);
     setHighlightedIndex(-1);
   };
 
-  // Manipulador de clique no input quando ele está vazio ou em modo readOnly
   const handleClickOnEmptyInput = () => {
+    if (disabled) return;
+
+    // Se for readOnly, o clique no input funciona como o toggle
     if (query === '' || readOnly) {
+      if (!showOptions) {
+         setFilteredOptions(options);
+      }
       setShowOptions(!showOptions);
-      setFilteredOptions(options); // Garante que todas as opções são mostradas
     }
   };
 
-  // Hook para detectar cliques fora do componente e esconder as opções
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -129,12 +152,17 @@ export default function SearchBar({
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+
+
   }, []);
+
+  const shouldShowDropdown = !disabled && showOptions && (filteredOptions.length > 0 || hasReset);
 
   return (
     <Container ref={containerRef} width={width}>
       <BasicInput
         $readOnly={readOnly}
+        disabled={disabled}
         onKeyDown={handleKeyDown}
         error={error}
         errorMessage={errorMessage}
@@ -148,27 +176,34 @@ export default function SearchBar({
         value={query}
         onChange={handleChange}
         onClick={handleClickOnEmptyInput}
-        $paddingRight={'3.5em'} 
+        $paddingRight={'3.5em'}
+        $paddingVertical={verticalPadding}
+        $gapFromTitle={gapFromTitle}
       >
-        <ToggleButton type="button" onClick={toggleOptions}>
-          {showOptions ? (
-            <ChevronDown size={arrowSize} color="#A39289" />
-          ) : (
-            <ChevronUp size={arrowSize} color="#A39289" />
-          )}
-        </ToggleButton>
+        {/* Só mostramos a seta se NÃO estiver disabled */}
+        {!disabled && (
+          <ToggleButton type="button" onClick={toggleOptions} disabled={disabled}>
+            {showOptions ? (
+              <ChevronDown size={arrowSize} color="#A39289" />
+            ) : (
+              <ChevronUp size={arrowSize} color="#A39289" />
+            )}
+          </ToggleButton>
+        )}
       </BasicInput>
 
-      {showOptions && filteredOptions.length > 0 && (
-        <DropDownWrapper width={"100%"}> 
-          <DropDownCell
-            highlight={highlightedIndex}
-            options={filteredOptions}
-            onSelect={handleOptionClick}
-            width={'100%'} 
-            fontSize={fontSize}
-            numCellsShowed={numOptionsShowed}
-          />
+      {shouldShowDropdown && (
+        <DropDownWrapper width={"100%"} $maxHeight={listMaxHeight}>
+          {filteredOptions.length > 0 && (
+            <DropDownCell
+              highlight={highlightedIndex}
+              options={hasReset ? [resetOption, ...filteredOptions] : filteredOptions}
+              onSelect={handleOptionClick}
+              width={'100%'}
+              fontSize={fontSize}
+              numCellsShowed={numCellsShowed}
+            />
+          )}
         </DropDownWrapper>
       )}
     </Container>

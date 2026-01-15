@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
   Container,
   ErrorMessageContainer,
@@ -14,7 +12,6 @@ function BasicInput({
   title,
   required,
   $fontSize,
-  $titleFontSize = $fontSize,
   placeholder,
   $width,
   value,
@@ -22,14 +19,17 @@ function BasicInput({
   onClick,
   onKeyDown,
   $paddingRight = "24px",
+  $paddingVertical = "8px",
+  $gapFromTitle = "8px",
   $readOnly = false,
   $inputType = "Primário",
   error = false,
   errorMessage,
+  disabled = false,
   children,
 }: BasicInputProps) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: $width }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: $gapFromTitle, width: $width }}>
       {title && (
         <Label $fontSize={$fontSize}>
           {title}
@@ -51,8 +51,12 @@ function BasicInput({
           onClick={onClick}
           onKeyDown={onKeyDown}
           $paddingRight={$paddingRight}
+          $paddingVertical={$paddingVertical}
           $inputType={$inputType}
           $error={error}
+          disabled={disabled} // Passa para o HTML input
+          $disabled={disabled} // Passa para o styled-component
+
         />
 
         {children}

@@ -1,5 +1,3 @@
-import React from "react";
-
 import { DropDownContainer } from "./styles";
 import { IDropDown } from "./types";
 

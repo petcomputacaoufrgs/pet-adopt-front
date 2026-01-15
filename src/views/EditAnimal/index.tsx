@@ -12,10 +12,15 @@ export default function EditAnimal({animalData}: IAnimalForm) {
 
   if(isLoading) return null;
 
+  // Previne perda de dados ao recarregar a página sem querer
+  window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+  });
+
   return (
     <div style={{display: "flex", flexDirection: "column"}}>
       <Header color="#FFF6E8" Logo={logo} isLoggedIn={isLoggedIn} user={user} />
-      <AnimalFormSection {...formState} animalData={animalData} />
+      <AnimalFormSection {...formState} animalData={animalData} user={user}/>
       <Footer />
     </div>
   );

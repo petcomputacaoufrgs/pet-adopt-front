@@ -3,10 +3,10 @@ import styled from "styled-components";
 export const Container = styled.div<{$width: string; $hasBorder: boolean}>`
     display: flex;
     width: ${(props) => props.$width};
-    max-height: 1024px;
+    max-height: 636px;
     flex-direction: column;
-    gap: 24px;
-    padding: 48px 32px;
+    gap: 12px;
+    padding: 32px;
     border: ${(props) => props.$hasBorder ? "1px solid #DEDEDE" : "none"};
     border-radius: 20px;
 `
@@ -14,7 +14,7 @@ export const Container = styled.div<{$width: string; $hasBorder: boolean}>`
 export const FilterContainer = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
     width: 100%;
 
 

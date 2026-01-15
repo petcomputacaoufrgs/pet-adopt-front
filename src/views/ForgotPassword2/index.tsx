@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { authService, getAuthError } from "../../services";
 
 import {
@@ -32,6 +32,7 @@ import { wait } from "@testing-library/user-event/dist/utils";
 const ForgotPassword2: React.FC = () => {
 
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
   const location = useLocation();
 
   const [password, setPassword] = useState("");
@@ -58,6 +59,11 @@ const ForgotPassword2: React.FC = () => {
     }
   }, []);
 
+  const handleNavigation = (to: string, options?: { state?: any }) => {
+    startTransition(() => {
+      navigate(to, options);
+    });
+  };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     // e.preventDefault();
@@ -282,7 +288,7 @@ const ForgotPassword2: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => navigate("/login")}
+                onClick={() => handleNavigation("/login")}
               >
               <h3>Fazer Login</h3>
     
@@ -299,7 +305,7 @@ const ForgotPassword2: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => navigate("/signUp")}
+                onClick={() => handleNavigation("/signUp")}
               >
               <h3>Criar Conta</h3>
     

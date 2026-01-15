@@ -4,6 +4,7 @@ export interface Animal {
   age: string;
   breed: string;
   ngoId: string;
+  ngoStrId: string;
   city: string;
   state: string;
   specieIndex: number;
@@ -23,6 +24,7 @@ export interface Animal {
   updatedAt?: string;
   userId?: string;
   isActive?: boolean;
+
 }
 
 export interface IAnimalForm {

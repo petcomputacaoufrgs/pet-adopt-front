@@ -121,7 +121,7 @@ export const BackButtonContainer = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
-    padding: 53px 0;
+    padding: 30px 0;
     box-sizing: border-box;
 `
 
@@ -157,7 +157,7 @@ export const TagsContainer = styled.div`
     flex-direction: row;
     gap: 12px;
 
-    @media (max-width: 900px) {
+    @media (max-width: 650px) {
         flex-direction: column;
         align-items: flex-start;
         justify-content: center;
@@ -236,6 +236,17 @@ export const SocialIconsDiv = styled.div`
 
   gap: 16px;
 
+`;
+
+export const ButtonLink = styled.a`
+  text-decoration: none;
+  width: 100%;      
+  display: block;
+  
+  &:focus, &:active, &:visited, &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
 `;
 
 // Interface for the Thumbnail's props
@@ -322,7 +333,9 @@ export const Thumbnail = styled.img<ThumbnailProps>`
 `;
 
 export const MainImageContainer = styled.div`
-  /* This container can be used for additional styling around the image */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 `;
 
 export const MainImage = styled.img`
@@ -332,4 +345,8 @@ export const MainImage = styled.img`
   min-height: 320px;
   object-fit: cover;
   border-radius: 12px;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `;

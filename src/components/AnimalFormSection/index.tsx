@@ -21,20 +21,24 @@ import RadioGroup from "../RadioGroup";
 import SearchBar from "../SearchBar";
 import ImageSlotsGroup from "../ImageSlotsGroup";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useTransition, memo } from "react"; 
 import AnimalFormPhoto from "../../assets/AnimalFormPhoto.png";
-
 import { IAnimalFormSection } from "./types";
 import { petService, ngoService } from "../../services/index";
 import { AxiosError } from "axios";
+import { useToast } from "../../contexts/ToastContext";
+import { useNavigate } from "react-router-dom";
+
+// Criamos uma versão memorizada do componente de imagens FORA da função principal.
+// Isso impede que ele renderize quando props não relacionadas do formulário mudem, fazendo com que não fique re-renderizando as imagens desnecessariamente
+const MemoizedImageSlotsGroup = memo(ImageSlotsGroup);
 
 export default function AnimalFormSection({
   windowSize,
   name,
   age,
   breed,
-  ngoId,
+  ngoStrId,
   city,
   state,
   specieIndex,
@@ -47,7 +51,7 @@ export default function AnimalFormSection({
   setBreed,
   setCity,
   setState,
-  setNgoId,
+  setNgoStrId,
   setSpecieIndex,
   setAnimalSexIndex,
   setSizeIndex,
@@ -57,21 +61,40 @@ export default function AnimalFormSection({
   setCharacteristics,
   images,
   setImages,
-  animalData
+  animalData,
+  user
 }: IAnimalFormSection) {
   const [isCreatingPET, setIsCreatingPET] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [ngoOptions, setNgoOptions] = useState<{ id: string; name: string }[]>([]);
-  const [ngoName, setNgoName] = useState<string>();
+  const [ngoOptions, setNgoOptions] = useState<{ id: string; name: string; email: string }[]>([]);
+
+
+   
+  const ngoOptionsMap : Map<string, string> = ngoOptions.reduce((acc, ngo) => {
+    acc.set(`${ngo.name} - ${ngo.email}`, ngo.id);
+    return acc;
+
+  }, new Map<string, string>());
+
+
+  const navigate = useNavigate();
+    const [isPending, startTransition] = useTransition();
+    const handleNavigation = (to: string) => {
+      startTransition(() => {
+        navigate(to);
+      });
+    }
+
+  const { showToast } = useToast();
 
   const fetchNgoOptions = async () => {
       try {
         const response = await ngoService.getApproved();
         
-        // Pega só nome e ID da NGO
         const mappedNgoOptions = response.data.map((ngo: any) => ({
-          id: ngo._id || ngo.id, // Lida com nomeclatura "_id" do MongoDB.
-          name: ngo.name
+          id: ngo._id || ngo.id,
+          name: ngo.name,
+          email: ngo.email
         }));
         
         setNgoOptions(mappedNgoOptions);
@@ -85,27 +108,40 @@ export default function AnimalFormSection({
     }, []);
 
   useEffect(() => {
-    console.log('ONG atual:', ngoId);
-  }, [ngoId]);
+    if (ngoOptions.length > 0 && user) {
+      if (user.role === 'NGO_ADMIN' && user.ngoId) {
+        
+        const userNgo = ngoOptions.find(ngo => ngo.id === user.ngoId);
+        
+        if (userNgo) {
+          const formattedNgoString = `${userNgo.name} - ${userNgo.email}`;
+          
+          if (ngoStrId !== formattedNgoString) {
+            setNgoStrId(formattedNgoString);
+          }
+        }
+      }
+    }
+  }, [user, ngoOptions, setNgoStrId, ngoStrId]); 
+
   
   const validateForm = (): boolean => {
     setError("");
     
-    // Lista de campos obrigatórios e suas validações
     const validations = [
       { field: name.trim(), message: "Nome é obrigatório" },
       { field: age, message: "Idade é obrigatória" },
       { field: city.trim(), message: "Cidade é obrigatória" },
       { field: state, message: "Estado é obrigatório" },
-      { field: ngoName, message: "ONG é obrigatória" },
+      { field: ngoStrId, message: "ONG é obrigatória" },
       { field: characteristics.trim(), message: "Características e Observações são obrigatórias" },
       { field: specieIndex >= 0, message: "Espécie é obrigatória" },
       { field: animalSexIndex >= 0, message: "Sexo é obrigatório" },
       { field: sizeIndex >= 0, message: "Porte é obrigatório" },
       { field: situationIndex >= 0, message: "Situação é obrigatória" },
+      { field: ngoOptionsMap.has(ngoStrId), message: "ONG inválida" },
     ];
 
-    // Verificar se há pelo menos uma imagem (File novo ou URL existente)
     const validImages = images.filter(img => img !== null);
     if (validImages.length < 1) {
       setError("Adicione pelo menos 1 foto do pet");
@@ -116,7 +152,6 @@ export default function AnimalFormSection({
       return false;
     }
 
-    // Verifica cada campo obrigatório
     for (const validation of validations) {
       if (!validation.field) {
         setError(validation.message);
@@ -126,137 +161,155 @@ export default function AnimalFormSection({
     return true;
   };
 
-  const editPet = async () => {
+const editPet = async () => {
     if (!validateForm()) {
       return;
     }
+
     try {
       setIsCreatingPET(true);
       setError("");
 
       const formData = new FormData();
 
-      // Campos básicos
       formData.append("name", name);
       formData.append("age", age);
-      formData.append("breed", breed || ""); // Opcional
+      formData.append("breed", breed || ""); 
       formData.append("characteristics", characteristics);
 
-      const ngoId = ngoOptions.find(ngo => ngo.name === ngoName);
-      formData.append("ngoId", ngoId?.id || '');
+      const resolvedNgoId = ngoOptionsMap.get(ngoStrId);
+
+      formData.append("ngoId", resolvedNgoId || '');
 
       formData.append("city", city);
       formData.append("state", state);
-      formData.append("observations", ""); // Campo opcional, pode adicionar um estado se necessário
+      formData.append("observations", ""); 
 
-      // Sexo: converter índice para formato esperado
-      const sexValue = animalSexIndex === 0 ? "M" : "F"; // 0=Macho=M, 1=Fêmea=F
+      const sexValue = animalSexIndex === 0 ? "M" : "F";
       formData.append("sex", sexValue);
 
-      // Espécie: converter índice para enum
       let speciesValue: string;
       let otherSpeciesValue = "";
       
-      if (specieIndex === 0) {
-        speciesValue = "DOG"; // Cachorro
-      } else if (specieIndex === 1) {
-        speciesValue = "CAT"; // Gato  
-      } else if (specieIndex === 2) {
-        speciesValue = "OTHER"; // Outro
-        otherSpeciesValue = specie; // Valor digitado pelo usuário
-      } else {
-        throw new Error("Espécie deve ser selecionada");
-      }
+      if (specieIndex === 0) speciesValue = "DOG"; 
+      else if (specieIndex === 1) speciesValue = "CAT";
+      else if (specieIndex === 2) {
+        speciesValue = "OTHER";
+        otherSpeciesValue = specie;
+      } else throw new Error("Espécie deve ser selecionada");
       
       formData.append("species", speciesValue);
-      if (otherSpeciesValue) {
-        formData.append("otherSpecies", otherSpeciesValue);
-      }
+      if (otherSpeciesValue) formData.append("otherSpecies", otherSpeciesValue);
 
-      // Porte: apenas para cachorros, converter índice para formato esperado
       if (speciesValue === "DOG") {
         let sizeValue: string;
-        if (sizeIndex === 0) sizeValue = "P"; // Pequeno
-        else if (sizeIndex === 1) sizeValue = "M"; // Médio
-        else if (sizeIndex === 2) sizeValue = "G"; // Grande
+        if (sizeIndex === 0) sizeValue = "P";
+        else if (sizeIndex === 1) sizeValue = "M";
+        else if (sizeIndex === 2) sizeValue = "G";
         else throw new Error("Porte deve ser selecionado para cachorros");
-        
         formData.append("size", sizeValue);
       }
 
-      // Status: converter índice para formato esperado
       let statusValue: string;
       let forAdoption = false;
       let forTempHome = false;
 
       if (situationIndex === 0) {
-        statusValue = "Available"; // Disponível
+        statusValue = "Available";
         forAdoption = true;
         forTempHome = true;
       } else if (situationIndex === 1) {
-        statusValue = "TempHome"; // Lar Temporário
+        statusValue = "TempHome";
         forAdoption = true;
         forTempHome = false;
       } else if (situationIndex === 2) {
-        statusValue = "Adopted"; // Adotado
+        statusValue = "Adopted";
         forAdoption = false;
         forTempHome = false;
-      } else {
-        throw new Error("Situação deve ser selecionada");
-      }
+      } else throw new Error("Situação deve ser selecionada");
 
       formData.append("status", statusValue);
       formData.append("forAdoption", forAdoption.toString());
       formData.append("forTempHome", forTempHome.toString());
 
-      // Adicionar apenas novos arquivos (File) ao FormData
-      images.forEach((image) => {
-        if (image instanceof File) {
-          formData.append('photos', image);
+      const validImages = images.filter(img => img !== null);
+
+      // Estamos usando um mapa de ordem para garantir que a ordem das fotos seja mantida no back
+      // Vamos criar um array que indica a ordem das fotos, onde URLs existentes permanecem e novos arquivos são marcados com "NEW_FILE_MARKER"
+      const photoOrder = validImages.map(img => {
+        if (typeof img === 'string') {
+          return img; // Mantém a URL existente na posição correta
+        } else if (img instanceof File) {
+          return "NEW_FILE_MARKER"; // Marcador onde a foto nova deve entrar
+        }
+        return null;
+      });
+
+      // Anexamos a ordem como JSON string
+      formData.append('photoOrder', JSON.stringify(photoOrder));
+
+      // Anexamos os arquivos FÍSICOS (eles já vão em fila certinho)
+      validImages.forEach((img) => {
+        if (img instanceof File) {
+          formData.append('photos', img);
         }
       });
 
-      // Se estiver editando, enviar também as URLs existentes que devem ser mantidas
+
       if (animalData) {
         const petId = animalData.id || animalData._id;
-        if (!petId) {
-          setError("ID do animal não encontrado para edição");
-          return;
-        }
+        if (!petId) throw new Error("ID do animal não encontrado para edição");
 
-        const existingUrls = images
-          .filter((img): img is string => typeof img === 'string')
-          .map(url => url);
+        await petService.update(petId, formData);
         
-        console.log("URLs existentes a serem mantidas:", existingUrls);
-        existingUrls.forEach((url) => {
-          formData.append('existingPhotos[]', url);
+        showToast({
+            success: true,
+            message: "Pet atualizado!",
+            description: "As alterações foram salvas com sucesso."
         });
 
-        console.log("Editando pet com ID:", petId);
+        handleNavigation(`/petProfile/${petId}`);
 
-        // Para edição, usar o serviço update
-        const response = await petService.update(petId, formData);
-        console.log("Pet editado com sucesso!", response);
+
       } else {
-        // Para criação, usar o serviço create
         const response = await petService.create(formData);
-        console.log("Pet criado com sucesso!", response);
-      }
+        const newId = response.data.id || response.data._id;
+
+
+        showToast({
+            success: true,
+            message: "Pet criado!",
+            description: "O novo pet foi adicionado ao sistema."
+        });
+
+        if(newId){
+          handleNavigation(`/petProfile/${newId}`);
+        }
       
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao processar pet.');
-      } else if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
       }
-      throw err;
+
+    } catch (err) {
+      
+      let errorMessage = 'Erro de conexão. Tente novamente mais tarde.';
+
+      if (err instanceof AxiosError && err.response) {
+        errorMessage = err.response.data?.message || 'Erro ao processar pet.';
+      }
+
+      setError(errorMessage);
+
+      showToast({
+        success: false,
+        message: animalData ? "Erro ao atualizar" : "Erro ao criar",
+        description: errorMessage
+      });
+      
     } finally {
       setIsCreatingPET(false);
     }
   };
+
+  const isNgoAdmin = user?.role === 'NGO_ADMIN';
 
   return (
     <Wrapper $windowSize={windowSize} AnimalFormPhoto={AnimalFormPhoto}>
@@ -275,11 +328,13 @@ export default function AnimalFormSection({
                   required
                   placeholder="Insira o nome do pet aqui"
                   value={name}
-                  $fontSize="1rem"
+                  $fontSize="16px"
                   $width="100%"
                   onChange={(e) => setName(e.target.value)}
+                  $paddingVertical="4px"
                 />
 
+              <LocationInputsContainer>
                 <SearchBar
                   title="Idade"
                   required
@@ -287,10 +342,12 @@ export default function AnimalFormSection({
                   placeholder="Insira a idade do pet aqui"
                   query={age}
                   setQuery={setAge}
-                  fontSize="1rem"
+                  fontSize="16px"
                   width="100%"
-                  numOptionsShowed={8}
+                  numOptionsShowed={9}
                   options={["Abaixo de 3 meses", "3 a 11 meses", "1 ano", "2 anos", "3 anos", "4 anos", "5 anos", "6 anos e acima"]}
+                  resetOption="Qualquer"
+                  verticalPadding="4px"
                 />
 
                 <BasicInput
@@ -298,39 +355,62 @@ export default function AnimalFormSection({
                   required={false}
                   placeholder="Insira a raça do pet aqui"
                   value={breed}
-                  $fontSize="1rem"
+                  $fontSize="16px"
                   $width="100%"
                   onChange={(e) => setBreed(e.target.value)}
+                  $paddingVertical="4px"
                 />
 
-                {windowSize <= 1280 && windowSize >= 932 && (
+                </LocationInputsContainer>
+
+                
+                <LocationInputsContainer>
+                  <BasicInput
+                    title="Cidade"
+                    required
+                    placeholder="Cidade do pet"
+                    value={city}
+                    $fontSize="16px"
+                    $width={windowSize > 1180 ? "55%" : "100%"}
+                    onChange={(e) => setCity(e.target.value)}
+                    $paddingVertical="4px"
+                  />
+
+                  <SearchBar
+                    title="Estado"
+                    required
+                    placeholder="Estado do pet"
+                    query={state}
+                    setQuery={setState}
+                    options={[
+                      "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT",
+                      "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO",
+                      "RR", "SC", "SP", "SE", "TO",
+                    ]}
+                    resetOption="Qualquer"
+                    width={windowSize > 1180 ? "45%" : "100%"}
+                    fontSize="16px"
+                    verticalPadding="4px"
+                    listMaxHeight="200px"
+                  />
+                </LocationInputsContainer>
+
+                {windowSize <= 1280 && windowSize >= 1180 && (
                   <SearchBar
                     title="Selecione a ONG"
                     required
                     placeholder="Insira a ONG responsável aqui"
-                    query={ngoName || ''}
-                    setQuery={setNgoName}
-                    options={ngoOptions.map(ngo => ngo.name)}
+                    query={ngoStrId}
+                    setQuery={setNgoStrId}
+                    options={ngoOptions.map(ngo => `${ngo.name} - ${ngo.email}`)}
+                    resetOption={isNgoAdmin ? undefined : "Qualquer"}
                     width="100%"
-                    fontSize="1rem"
+                    fontSize="16px"
+                    verticalPadding="4px"
+                    readOnly={isNgoAdmin}
                   />
                 )}
 
-                {windowSize < 932 && (
-                  <LargeInputField
-                    title="Características e Observações"
-                    required
-                    $fontSize="1rem"
-                    placeholder="Escreva uma breve descrição aqui"
-                    $width="100%"
-                    value={characteristics}
-                    onChange={(e) => setCharacteristics(e.target.value)}
-                    error={false}
-                    visible={false}
-                    isDisabled={false}
-                    $inputType="Primário"
-                  />
-                )}
               </VerticalColumn>
 
               <Row>
@@ -344,7 +424,7 @@ export default function AnimalFormSection({
                   ]}
                   onChange={(value) => setSpecie(value)}
                   userFillOptionLabel="Outro"
-                  fontSize="1rem"
+                  fontSize="16px"
                   name="specie"
                   toggleIndex={specieIndex}
                   onSelectToggle={setSpecieIndex}
@@ -357,7 +437,7 @@ export default function AnimalFormSection({
                     { label: "Macho", value: "M" },
                     { label: "Fêmea", value: "F" },
                   ]}
-                  fontSize="1rem"
+                  fontSize="16px"
                   name="animalSex"
                   toggleIndex={animalSexIndex}
                   onSelectToggle={setAnimalSexIndex}
@@ -373,7 +453,7 @@ export default function AnimalFormSection({
                     { label: "Médio", value: "M" },
                     { label: "Grande", value: "G" },
                   ]}
-                  fontSize="1rem"
+                  fontSize="16px"
                   name="size"
                   toggleIndex={sizeIndex}
                   onSelectToggle={setSizeIndex}
@@ -387,7 +467,7 @@ export default function AnimalFormSection({
                     { label: "Lar Temporário", value: "temporary home" },
                     { label: "Adotado", value: "adopted" },
                   ]}
-                  fontSize="1rem"
+                  fontSize="16px"
                   name="situation"
                   toggleIndex={situationIndex}
                   onSelectToggle={setSituationIndex}
@@ -397,13 +477,14 @@ export default function AnimalFormSection({
 
             <HalfColumn $windowSize={windowSize}>
               <VerticalColumn>
-                {windowSize >= 923 && (
+
                   <LargeInputField
                     title="Características e Observações"
                     required
-                    $fontSize="1rem"
+                    $fontSize="16px"
                     placeholder="Escreva uma breve descrição aqui"
                     $width="100%"
+                    $height="86px"
                     value={characteristics}
                     onChange={(e) => setCharacteristics(e.target.value)}
                     error={false}
@@ -411,50 +492,29 @@ export default function AnimalFormSection({
                     isDisabled={false}
                     $inputType="Primário"
                   />
-                )}
 
-                <LocationInputsContainer>
-                  <BasicInput
-                    title="Cidade"
-                    required
-                    placeholder="Cidade do pet"
-                    value={city}
-                    $fontSize="1rem"
-                    $width={windowSize > 1180 ? "55%" : "100%"}
-                    onChange={(e) => setCity(e.target.value)}
-                  />
+                
 
-                  <SearchBar
-                    title="Estado"
-                    required
-                    placeholder="Estado do pet"
-                    query={state}
-                    setQuery={setState}
-                    options={[
-                      "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT",
-                      "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO",
-                      "RR", "SC", "SP", "SE", "TO",
-                    ]}
-                    width={windowSize > 1180 ? "45%" : "100%"}
-                    fontSize="1rem"
-                  />
-                </LocationInputsContainer>
 
-                {(windowSize > 1280 || windowSize < 932) && (
+                {(windowSize > 1280 || windowSize < 1180) && (
                   <SearchBar
                     title="Selecione a ONG"
                     required
                     placeholder="Insira a ONG responsável aqui"
-                    query={ngoName || ''}
-                    setQuery={setNgoName}
-                    options={ngoOptions.map(ngo => ngo.name)}
+                    query={ngoStrId}
+                    setQuery={setNgoStrId}
+                    options={ngoOptions.map(ngo => `${ngo.name} - ${ngo.email}`)}
+                    resetOption={isNgoAdmin ? undefined : "Qualquer"}
                     width="100%"
-                    fontSize="1rem"
+                    fontSize="16px"
+                    verticalPadding="4px"
+                    readOnly={isNgoAdmin}
+                    disabled={isNgoAdmin}
                   />
                 )}
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <Label $fontSize={"1rem"}>
+                  <Label $fontSize={"16px"}>
                     {"Fotos do Pet"}
                     <RequiredAsterisk>*</RequiredAsterisk>
                   </Label>
@@ -465,13 +525,13 @@ export default function AnimalFormSection({
                 </div>
 
                 <ImageSlotsContainer>
-                  <ImageSlotsGroup images={images} setImages={setImages} />
+                  {/* 3. Substituímos o uso normal pelo componente memorizado */}
+                  <MemoizedImageSlotsGroup images={images} setImages={setImages} />
                 </ImageSlotsContainer>
               </VerticalColumn>
             </HalfColumn>
           </InputsContainer>
 
-          <hr style={{ width: "100%" }} />
 
           {error && (
             <div style={{

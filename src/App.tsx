@@ -17,12 +17,14 @@ import PublicRoute from "./components/PublicRoute";
 import EditAnimalWrapper from "./views/EditAnimal/EditAnimalWrapper";
 import ForgotPassword1 from "./views/ForgotPassword1";
 import ForgotPassword2 from "./views/ForgotPassword2";
+import { ToastProvider } from "./contexts/ToastContext";
 import NgoProfile from "./views/NGOProfile";
 
 function App() {  
 
   return (
     <div className="App">
+      <ToastProvider>
       <BrowserRouter>
         <Routes>
           {/* Rotas públicas */}
@@ -142,6 +144,7 @@ function App() {
           
         </Routes>
       </BrowserRouter>
+      </ToastProvider>
     </div>
   );
 }

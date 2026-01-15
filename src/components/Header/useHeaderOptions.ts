@@ -3,6 +3,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { User } from "../../types/user";
 import { Role } from "./types";
 import { get } from "http";
+import { useTransition } from "react";
 
 
 
@@ -10,21 +11,29 @@ export const useHeaderOptions = () => {
   const { user, isLoggedIn, logout } = useAuth();
 
   const navigate = useNavigate();
+
+  const [isPending, startTransition] = useTransition();
+  const navigateWaitingForPendencies = (to: string, options?: {state: any}) => {
+    startTransition(() => {
+      navigate(to, options);
+    });
+  };
+  
   const location = useLocation();
   
   const optionsByRole: Record<Role, { accountOptions: string[]; navigationOptions: string[] }> = {
 
   ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet", "Gerenciar ONGs", "Validar ONGs"],
+    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar ONGs", "Validar ONGs"],
   },
   NGO_MEMBER: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet"],
+    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet"],
   },
   NGO_ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
+    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
   },
   NGO_ADMIN_PENDING: {
     accountOptions: ["Sair"],
@@ -32,7 +41,7 @@ export const useHeaderOptions = () => {
   },
   REGULAR: {
     accountOptions: ["Fazer Login", "Cadastrar ONG ou Membro"],
-    navigationOptions: ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"],
+    navigationOptions: ["Ver Animais", "Dicas", "Fale Conosco"],
   }
 };
 
@@ -45,10 +54,11 @@ export const useHeaderOptions = () => {
         element?.scrollIntoView({ behavior: "smooth" });
       } else {
         // navega para home carregando state
-        navigate("/", { state: { scrollTo: path.substring(1) } });
+
+        navigateWaitingForPendencies("/", { state: { scrollTo: path.substring(1) } });
       }
     } else {
-      navigate(path);
+      navigateWaitingForPendencies(path);
     }
   };
 
@@ -72,7 +82,7 @@ export const useHeaderOptions = () => {
         "Home": () => handleNavigation("/"),
         "Sair": () => logout(),
 
-
+        "Ver Animais": () => handleNavigation("/searchAnimals"),
         "Sobre Nós": () => handleNavigation("#about"),
         "Animais Recém Adicionados": () => handleNavigation("#listAnimals"),
         "Dicas": () => handleNavigation("#hints"),

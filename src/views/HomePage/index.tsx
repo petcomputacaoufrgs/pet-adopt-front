@@ -8,7 +8,7 @@ import Contact from "./5Contact";
 import Footer from "./6Footer";
 
 import logo from "../../assets/HorizontalLogo.png"
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useTransition } from "react";
 
 import AuthorizationToast from '../../components/AuthorizationToast';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -22,6 +22,12 @@ const HomeView = () => {
   const scrollToId = location.state?.scrollTo;
 
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
+  const handleNavigation = (to: string, options?: { state?: any, replace?: boolean }) => {
+    startTransition(() => {
+      navigate(to, options);
+    });
+  };
 
   useEffect(() => {
     if (!isLoading && scrollToId) {
@@ -32,10 +38,10 @@ const HomeView = () => {
           el.scrollIntoView({ behavior: "smooth" });
         }
         // limpa o state substituindo a entrada atual
-        navigate(location.pathname, { replace: true, state: {} });
+        handleNavigation(location.pathname, { replace: true, state: {} });
       });
     }
-  }, [isLoading, scrollToId, location.pathname, navigate]);
+  }, [isLoading, scrollToId, location.pathname, handleNavigation]);
 
   if (isLoading) {
     return null; 

@@ -6,6 +6,7 @@ export interface LargeInputProps {
   $fontSize: string; // Tamanho da fonte do input
   placeholder: string; // Placeholder do input
   $width: string; // Largura do input
+  $height?: string; // Altura do input
   value: string; // Valor atual do input
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; // Função para mudança do valor
   onClick?: () => void; // Função para clique (opcional)
@@ -16,4 +17,5 @@ export interface LargeInputProps {
   error?: boolean; // Indica erro
   errorMessage?: string; // Mensagem de erro
   children?: React.ReactNode; // Elementos extras ao lado do input
+  maxLength?: number; // Máximo de caracteres permitidos
 }

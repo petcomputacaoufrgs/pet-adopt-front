@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   ButtonsContainer,
@@ -13,6 +13,7 @@ import {
   Icon,
   Image,
   SocialIconsDiv,
+  StyledLink,
   TextButton,
   TextContainer,
 } from "./styles";
@@ -32,7 +33,8 @@ import OrangeYoutubePin from "../../assets/OrangeYoutubePin.png";
 import { useAuth } from "../../hooks/useAuth";
 import { User } from "../../types/user";
 import { useHeaderOptions } from "./useHeaderOptions";
-import { ChevronDown, ChevronUp, Home, HomeIcon } from "lucide-react";
+import { ChevronDown, ChevronUp} from "lucide-react";
+import { start } from "repl";
 
 
 const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
@@ -139,16 +141,19 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
   );
 
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
 
+  const handleNavigation = (to: string) => {
+    startTransition(() => {
+      navigate(to);
+    });
+  }
 
   const renderCompactMenu = () => (
     <>
       {/* Se o usuário estiver logado, mostra as opções de navegação e conta */}
       {isLoggedIn ? (
         <CompactUserOptionsContainer>
-          <TextButton key="home" onClick={() => navigate("/")}>
-            Home
-          </TextButton>
 
           {navigationOptions.concat(accountOptions).map((option) => (
             <TextButton key={option} onClick={() => handleAction(option)}>
@@ -251,7 +256,7 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
           buttonType="Secundário"
           fontSize={"clamp(16px, 1.2vw, 18px)"}
           content={`Olá, ${user.name}`}
-          options={["Home"].concat(navigationOptions.concat(accountOptions))}
+          options={navigationOptions.concat(accountOptions)}
           paddingH="20px"
           onClick={handleAction}
           indicator={(isOpen: boolean) => isOpen ? (
@@ -331,18 +336,14 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
 
     <HeaderWrapper $shrink={isScrolled} $showCompactMenu={showCompactMenu} $color={color}>
       <HeaderContainer $shrink={isScrolled} $backgroundColor={"transparent"}>
-        <Image src={Logo} />
+        
+        <StyledLink href="/">
+          <Image src={Logo}/>
+        </StyledLink>
 
         <TextContainer>
           {responsiveMode !== "compact" &&
           <>
-
-          {isLoggedIn && visibleOptionsOnHeader.length > 0 && (
-          <TextButton key={"home"} onClick={() => navigate("/")}>
-            Home
-          </TextButton>
-          )
-          }
 
           {visibleOptionsOnHeader.map((option) => (
               <TextButton key={option} onClick={() => handleAction(option)}>
