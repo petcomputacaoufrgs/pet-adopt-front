@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { AxiosError } from "axios";
-import { ngoService } from "../../services";
+import { ngoService, authService } from "../../services";
 import BasicInput from "../BasicInput";
 import PasswordInput from "../PasswordInput";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
@@ -88,7 +88,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
     }
 
     try {
-      await ngoService.update(ngoId, {
+      await authService.updateNgo(ngoId, {
         name,
         email,
         description,

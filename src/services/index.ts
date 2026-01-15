@@ -13,9 +13,6 @@ export const authService = {
   
   signupNgo: (userData: any) => 
     api.post('/auth/signup/ngo', userData),
-  
-  manageInfo: (userData: any) => 
-    api.post('/auth/manageInfo', userData),
 
   updateNgo: (ngoId: string, ngoData: any) => 
     api.patch(`/auth/${ngoId}`, ngoData),
@@ -44,9 +41,6 @@ export const ngoService = {
 
   isApproved:(id: string) => 
     api.get(`/ngos/${id}/is-approved`),
-  
-  update: (ngoId: string, updateData: any) => 
-    api.patch(`/ngos/${ngoId}`, updateData),
   
 };
 
@@ -107,6 +101,9 @@ export const userService = {
 
   delete: (memberId: string) => 
     api.delete(`/users/${memberId}`),
+
+  update: (userId: string, userData: any) => 
+    api.patch(`/users/${userId}`, userData),
 };
 
 /* Serviços relacionados a estatísticas

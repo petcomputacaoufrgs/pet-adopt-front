@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { authService } from "../../services";
+import { userService } from "../../services";
 import { AxiosError } from "axios";
 import HorizontalLogo from "../../assets/HorizontalLogo.png"
 
@@ -20,9 +20,10 @@ import { useAuth } from "../../hooks/useAuth";
 
 const ManageInfo: React.FC = () => {
   
-  const [role, setRole] = useState('membro');
+  const { isLoading, user, isLoggedIn} = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -36,10 +37,18 @@ const ManageInfo: React.FC = () => {
   const [error, setError] = useState(false);
   /*const [nameError, setNameError] = useState(false);*/
 
+
+ 
+      
   useEffect(() => {
-      setName("Amanda Silva");
-      setEmail("amandasilva@gmail.com");
-    }, []);
+    if (!user) return;
+
+    setName(user.name || '');
+    setEmail(user.email || '');
+    setRole(user.role || '');
+  }, [user]);
+
+
 
   //Mensagem de Sucesso
   const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -65,12 +74,12 @@ const ManageInfo: React.FC = () => {
 
 
   const handleUpdate = async (e: React.FormEvent) => {
-
+    if(!user) return;
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (role ==='membro' && (!name || !email || !password || !confirmPassword)) {
+    if (role ==='NGO_MEMBER' && (!name || !email || !password || !confirmPassword)) {
       setError(true);
       setErrorMessage('Preencha todos campos obrigatórios');
       return;
@@ -83,14 +92,16 @@ const ManageInfo: React.FC = () => {
     }
 
     try {
-      await authService.manageInfo({
+      await userService.update(user?.id, {
         name,
         email,
         password,
         confirmPassword,
         role,
       });
-
+      user.name = name;
+      user.email = email;
+      
       setSuccessMessage('Informações atualizadas com sucesso!');
       resetToast();
       setShowToast(true);
@@ -186,7 +197,6 @@ const ManageInfo: React.FC = () => {
   }
 
 
-    const { isLoading, user, isLoggedIn} = useAuth();
 
   if(isLoading)
     return null;

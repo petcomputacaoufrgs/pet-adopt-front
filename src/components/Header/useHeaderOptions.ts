@@ -76,7 +76,7 @@ export const useHeaderOptions = () => {
         "Validar ONGs": () => handleNavigation("/approveNgo"),
         "Gerenciar ONGs": () => handleNavigation("/manageNgo"),
         "Gerenciar Membros": () => handleNavigation("/manageNgoMembers"),
-        "Gerenciar Conta": () => handleNavigation("/manageInfo"),
+        "Gerenciar Conta": () => (user?.role==="NGO_ADMIN")? handleNavigation(`/NGOProfile/${user.ngoId}`):user ? handleNavigation(`/manageInfo/`) : handleNavigation("/"),
         "Gerenciar Animais": () => handleNavigation("/manageAnimals"),
         "Cadastrar Pet": () => handleNavigation("/createAnimal"),
         "Home": () => handleNavigation("/"),
