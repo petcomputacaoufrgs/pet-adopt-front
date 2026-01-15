@@ -21,7 +21,7 @@ export interface IHeader {
 
 }
 
-export type Role = 'ADMIN' | 'NGO_ADMIN' | 'NGO_MEMBER' | 'REGULAR';
+export type Role = 'ADMIN' | 'NGO_ADMIN' | 'NGO_ADMIN_PENDING' | 'NGO_MEMBER' | 'REGULAR';
 
 export type HeaderOptions = {
   accountOptions: string[];

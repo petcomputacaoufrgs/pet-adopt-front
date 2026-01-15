@@ -3,7 +3,8 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { NGO } from "../../types/ngos";
-import { ngoService } from "../../services";
+import { ngoService, userService } from "../../services";
+import { AxiosError } from "axios";
 
  
 
@@ -12,13 +13,17 @@ import {
     NgoNameContainer, TextsContainer, ButtonsContainer,
     NgoInformationsContainer, InformationsContainer, SocialIconsDiv, Icon,
     NgoDescriptionContainer, NgoTextsContainer, FormsContainer, NgoFormsContainer,
-    SectionWithEmptyStateContainer,
+    SectionWithEmptyStateContainer,EditModalContainer,
+    Backdrop, Wrapper
 } from "./styles";
 
 import Header from "../../components/Header";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Footer from "../HomePage/6Footer";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
+import Toast from "../../components/Toast";
+import ConfirmModal from "../../components/ConfirmModal";
+import ManageInfoForm from "../../components/ManageNGOInfoForm";
 
 
 
@@ -34,6 +39,8 @@ import TiktokIcon from "../../assets/OrangeTiktokPin.png";
 import TiktokBrownIcon from "../../assets/BrownTiktokPin.png"; 
 import XIcon from "../../assets/XIcon.png"
 import XBrownIcon from "../../assets/XBrownIcon.png"
+import CloseButton from "../../components/CloseButton";
+import { height } from "@mui/system";
 
 // component
 const NgoProfile = () => {
@@ -41,8 +48,16 @@ const NgoProfile = () => {
     const [ngo, setNgo] = useState<NGO | null>(null);
     const [isApprovedNGO, setIsApprovedNGO] = useState<boolean | null>(null);
     const navigate = useNavigate();
-      
-    
+    const [error, setError] = useState<string>("");
+    const {isLoading, user, isLoggedIn, logout} = useAuth();
+    const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [ModalType, setModalType] =  useState<"excluir" | "recusar" | "aprovar" | null>(null);
+    const [toastType, setToastType] = useState<"excluir" | "recusar" | "aprovar" | null>(null);
+    const [showToast, setShowToast] = useState(false);
+    const [toastVisible, setToastVisible] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen]=useState(false);
 
     const fetchNgoById = async (id: string) => {
         try {
@@ -57,21 +72,152 @@ const NgoProfile = () => {
         }
     };
 
-    const handleAccept = async (id:string) =>{
-
+    const handleApprove = async (id:string) =>{
+        setModalType("aprovar");
     }
+    const approveNGO = async (ngoId: string) => {
+        try {
+            const response = await ngoService.approve(ngoId);
+            setIsApprovedNGO(true);
+
+        } catch (err) {
+            if (err instanceof AxiosError && err.response) {
+                setError(err.response.data?.message || 'Erro ao aprovar ONG.');
+        } else {
+            setError('Erro de conexão. Tente novamente mais tarde.');
+        }
+        throw err; //Propagar o erro
+        }
+    };
+    const handleApproveConfirm = async () => {
+        if (!id) return;
+        await approveNGO(id);
+        setModalType(null);
+        setToastType("aprovar");
+    };
+
+
+
 
     const handleReject= async (id:string) =>{
-
+        setModalType("recusar");
     }
+    const rejectNGO = async (ngoId: string) => {
+        try {
+            await ngoService.delete(ngoId);
+            setNgo(null);
+        // Atualiza a lista de ONGs removendo a ONG rejeitada
+        } catch (err) {
+            if (err instanceof AxiosError && err.response) {
+                setError(err.response.data?.message || 'Erro ao rejeitar ONG.');
+        } else {
+            setError('Erro de conexão. Tente novamente mais tarde.');
+        }
+            throw err; // Propagar o erro
+        }
+    };
+    const handleRejectConfirm = async () => {
+        if (!id) return;
+        await rejectNGO(id);
+        setModalType(null);
+        setToastType("recusar");
+    };
 
-    const handleEdit = async (id:string) =>{
 
+    const handleDelete = () => {
+        setModalType("excluir");
+    };
+    const deleteNGO = async (ngoId: string) => {
+        try {  
+          if(user!=null&&id==user.ngoId){
+            
+            const id_user = user.id;
+            await ngoService.delete(ngoId);
+            logout()
+          }else{
+            await ngoService.delete(ngoId);
+          }
+          
+          resetToast();
+          setShowToast(true);
+          setToastType("excluir");
+    
+          showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+          hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+          fullCloseTimeoutRef.current = setTimeout(() => {
+            setShowToast(false);
+          }, 3500);
+          
+          
+        } catch (err) {
+          if (err instanceof AxiosError && err.response) {
+            setError(err.response.data?.message || 'Erro ao deletar ONG.');
+          } else {
+            setError('Erro de conexão. Tente novamente mais tarde.');
+          }
+        }
+    };
+    const handleDeleteConfirm = async () => {
+        if (!id) return;
+        await deleteNGO(id);
+        setModalType(null);
+        setNgo(null);
+        setToastType("excluir");
+       
+    };
+
+    const handleEdit =() =>{
+        setIsEditModalOpen(false);
+        if(!id) return;
+        fetchNgoById(id);
     }
+    
+      
+    // Fecha toast com animação
+    const resetToast = () => {
+        setToastVisible(false);
+    
+        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+        if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
+    
+        setShowToast(false);
+        setToastType(null)
+    };
+      
+      
+   
+    
+    useEffect(() => {
+    document.body.style.overflow = isEditModalOpen ? "hidden" : "";
+    }, [isEditModalOpen]);
+    const modalMessages = {
+        excluir: {
+            title: "Só confirmando, deseja mesmo excluir esse administrador?",
+            message: "Tem certeza? Ao excluir, o administrador será removido do sistema permanentemente.",
+            confirmLabel: "Sim, excluir",
+            onConfirm: handleDeleteConfirm,
+        },
+        aprovar: {
+            title: "Que bom que gostou! Deseja aprovar esta ONG?",
+            message: "Tem certeza de que deseja aprovar esta ONG? Caso mude de ideia, você poderá removê-la depois na área de gerenciamento de ONGs.",
+            confirmLabel: "Sim, aprovar",
+            onConfirm: handleApproveConfirm,
+        },
+        recusar: {
+            title: "Poxa, tem certeza que deseja recusar essa ONG?",
+            message: "Tem certeza que quer recusar esta ONG? Após essa ação, não será mais possível visualizá-la.",
+            confirmLabel: "Sim, recusar",
+            onConfirm: handleRejectConfirm,
+        },
+        null: {
+            title:"",
+            message: "",
+            confirmLabel:""
+        }
 
-    const handleDelete = async (id:string) =>{
-
-    }
+    };
+    
 
 
 
@@ -83,13 +229,13 @@ const NgoProfile = () => {
     }, [id]);
 
 
-    const {isLoading, user, isLoggedIn} = useAuth();
+   
     console.log(user);
     if(isLoading)
         return null;
     
 
-      // Configurar links das redes sociais baseado nos dados da ONG
+    // Configurar links das redes sociais baseado nos dados da ONG
     const socialMediaLinks = [
         {
         orange: InstagramPin,
@@ -163,7 +309,7 @@ const NgoProfile = () => {
                                                     paddingH="25px"
                                                     buttonType="Primário"
                                                     content="Editar ONG"
-                                                    onClick={handleEdit}
+                                                    onClick={() => {setIsEditModalOpen(true)}}
                                                 />
                                             )}
                                         </ButtonsContainer>
@@ -176,7 +322,7 @@ const NgoProfile = () => {
                                                     paddingH="25px"
                                                     buttonType="Secundário"
                                                     content="Aceitar ONG"
-                                                    onClick={handleAccept}
+                                                    onClick={handleApprove}
                                                 />
                                             
                                                 <PrimarySecondaryButton
@@ -307,7 +453,43 @@ const NgoProfile = () => {
 
         ) }
         </MiddleContainer>
+
             <Footer />
+            {ModalType && (
+                <ConfirmModal
+                    isOpen={true}
+                    title={modalMessages[ModalType].title}
+                    message={modalMessages[ModalType].message}
+                    confirmLabel={modalMessages[ModalType].confirmLabel}
+                    cancelLabel="Cancelar"
+                    onConfirm={modalMessages[ModalType].onConfirm}
+                    onClose={() => setModalType(null)}
+                />
+            )}
+            
+            {showToast && toastType && (
+            <Toast
+                message={`${toastType === "excluir" ? "Administrador excluído com sucesso!" : "Alterações salvas com sucesso"}`}
+                description= {`${toastType === "excluir" ? "O administrador foi removido do sistema." : "Os dados do administrador foram atualizados."}`}
+                onClose={() => {
+                setToastVisible(false);
+                setTimeout(() => setShowToast(false), 300);
+                }}
+                isVisible={toastVisible}
+            />
+            )}
+            {isEditModalOpen && id && (
+                
+                    <Backdrop>
+                    <Wrapper>
+                        <EditModalContainer>
+                            <ManageInfoForm ngoId={id} onClose={handleEdit} />
+                        </EditModalContainer>
+                    </Wrapper>
+                    </Backdrop>
+                )}
+
+            
         </Container>
     );
 };

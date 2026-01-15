@@ -39,10 +39,12 @@ export const ngoService = {
   getById: (ngoId: string) => 
     api.get(`/ngos/${ngoId}`),
 
-  isApproved(id: string) {
-    return api.get(`/ngos/${id}/is-approved`);
-  }
-
+  isApproved:(id: string) => 
+    api.get(`/ngos/${id}/is-approved`),
+  
+  update: (ngoId: string, updateData: any) => 
+    api.patch(`/ngos/${ngoId}`, updateData),
+  
 };
 
 // Serviços relacionados aos pets

@@ -2,8 +2,9 @@ export type LinkType = "primary" | "secondary"
 
 export interface ILink {
   children: React.ReactNode;
-  href: string;
+  href?: string;
   link_type: LinkType;
   disabled?: boolean;
   fontsize?: string;
+  onClick?: () => void;
 }

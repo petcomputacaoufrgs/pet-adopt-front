@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import {
   CardContainer,
   InfoSection,
@@ -46,6 +48,7 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
   selected = false,
 }) => {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
 
   // Criar array com informações da ONG baseado nos dados recebidos
   const ngoInfo = [
@@ -78,20 +81,6 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
       href: ngo?.facebook,
       available: !!ngo?.facebook
     },
-    {
-      orange: YoutubePin,
-      brown: YoutubeBrownPin,
-      alt: "YouTube",
-      href: ngo?.youtube,
-      available: !!ngo?.youtube
-    },
-    {
-      orange: TiktokIcon,
-      brown: TiktokBrownIcon,
-      alt: "TikTok",
-      href: ngo?.tiktok,
-      available: !!ngo?.tiktok
-    }
   ].filter(social => social.available); // Mostrar apenas redes sociais disponíveis
 
   return (
@@ -148,7 +137,7 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
         )}
         
         <div>
-          <ButtonLink href="#" link_type="primary" fontsize="15px">
+          <ButtonLink onClick={() => navigate(`/NGOProfile/${ngo?.id}`)} link_type="primary" fontsize="15px">
             Saiba Mais
           </ButtonLink>
         </div>

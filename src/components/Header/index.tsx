@@ -92,6 +92,9 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
       if(user.role === "NGO_ADMIN"){
         return windowWidth >= 1200 ? "full" : "compact";
       }
+      if(user.role === "NGO_ADMIN_PENDING"){
+        return windowWidth >= 1200 ? "full" : "compact";
+      }
       if(user.role === "NGO_MEMBER"){
         return windowWidth >= 1200 ? "full" : "compact";
       }
