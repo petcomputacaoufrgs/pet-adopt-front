@@ -116,7 +116,7 @@ export const ButtonsContainer = styled.div`
     }
 
     @media(max-width: 768px){
-        flex-direction: row;
+        flex-direction: column;
         gap: 30px;
     } 
 `;
