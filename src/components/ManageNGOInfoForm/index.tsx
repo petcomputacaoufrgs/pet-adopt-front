@@ -88,7 +88,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
     }
 
     try {
-      await authService.updateNgo(ngoId, {
+      await ngoService.update(ngoId, {
         name,
         email,
         description,

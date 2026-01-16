@@ -41,6 +41,10 @@ export const ngoService = {
 
   isApproved:(id: string) => 
     api.get(`/ngos/${id}/is-approved`),
+
+
+  update: (ngoId: string, ngoData: any) =>
+    api.patch(`/ngos/${ngoId}`, ngoData),
   
 };
 

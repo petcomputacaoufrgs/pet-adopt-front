@@ -15,11 +15,10 @@ export interface NGO {
 export interface OngInfoCardProps {
   ngo?: NGO;
   showApproveButtons?: boolean;
-  showEditOptions?: boolean;
+  showDeleteOptions?: boolean;
 
   onApproveClick?: (ngo: NGO) => void;
   onRejectClick?: (ngo: NGO) => void;
-  onEditClick?: (ngo: NGO) => void;
   onDeleteClick?: (ngo: NGO) => void;
 
   selected?: boolean;

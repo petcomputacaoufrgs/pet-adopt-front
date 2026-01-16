@@ -32,6 +32,7 @@ function App() {
           <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>} />
           <Route path="/petProfile/:id" element={<PetProfile />} />
           <Route path="/NGOProfile/:id" element={<NgoProfile />} />
+          <Route path="/listNGOs" element={<ManageNgo />} />
 
           {/* Rotas públicas - Apenas para não autenticados */}
           <Route 
@@ -48,7 +49,7 @@ function App() {
           <Route path="/forgotPassword2" 
           element={<PublicRoute> <ForgotPassword2/> </PublicRoute> } 
           />
-
+  
 
           {/* Rotas protegidas - Apenas ADMIN */}
           <Route 
@@ -59,34 +60,7 @@ function App() {
               </ProtectedRoute>
             } 
           />
-
-          <Route 
-            path="/validateNgoProfile" 
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <ValidateNgoProfile />
-              </ProtectedRoute>
-            } 
-          />
-
-          <Route 
-            path="/manageNgo" 
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <ManageNgo />
-              </ProtectedRoute>
-            } 
-          />
-
-          {/* Rotas protegidas - Apenas NGO_ADMIN */}
-          <Route 
-            path="/manageNgoProfile" 
-            element={
-              <ProtectedRoute allowedRoles={['NGO_ADMIN']}>
-                <ManageNgoProfile />
-              </ProtectedRoute>
-            } 
-          />
+          
           <Route 
             path="/manageNgoMembers" 
             element={
@@ -125,7 +99,7 @@ function App() {
           />
 
           <Route 
-            path="/manageInfo" 
+            path="/manageInfo/:id" 
             element={
               <ProtectedRoute allowedRoles={['ALL']}>
                 <ManageInfo />

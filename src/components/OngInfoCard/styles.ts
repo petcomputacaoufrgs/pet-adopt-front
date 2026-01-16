@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const CardContainer = styled.div<{ $estado: "default" | "hover" | "selected"; $modo: "edit" | "approve" | "none"}>`
+export const CardContainer = styled.div<{ $estado: "default" | "hover" | "selected"; $modo: "delete" | "approve" | "none"}>`
   width: 90%;
   background-color: white;
   border-radius: 15px;
@@ -19,7 +19,7 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
       ? "0px solid rgba(222, 222, 222, 1)"
       : "1px solid rgba(0, 0, 0, 0.1)"};
   position: relative;
-  cursor: ${({ $modo }) => ($modo === "edit" ? "pointer" : "default")};
+  cursor: ${({ $modo }) => ($modo === "delete" ? "pointer" : "default")};
   transition: box-shadow 0.3s ease;
    align-self: start;
 `;

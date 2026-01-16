@@ -60,6 +60,8 @@ const ManageNgo = () => {
   const [hideNGOFilter, sethideNGOFilter] = useState(window.innerWidth < 1240);
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
+  const[showDeleteButton, setShowDeleteButton] = useState<boolean>(false)
+
   /**
    * Função para buscar ONGs com filtros
    */
@@ -67,8 +69,7 @@ const ManageNgo = () => {
     try {
       setIsLoadingNGOs(true);
       setError("");
-      
-      console.log('📡 Buscando ONGs aprovadas com filtros:', filters);
+
       
       const response = await ngoService.getApproved(filters);
       
@@ -85,7 +86,7 @@ const ManageNgo = () => {
         setAllNgos(mappedNgos);
       }
       
-      console.log('✅ ONGs carregadas:', mappedNgos.length);
+      
       
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -107,8 +108,7 @@ const ManageNgo = () => {
     if (filters.name) ngoFilters.name = filters.name;
     if (filters.city) ngoFilters.city = filters.city;
     if (filters.state && filters.state !== 'Qualquer') ngoFilters.state = filters.state;
-    
-    console.log('🔍 Aplicando filtros:', ngoFilters);
+
     fetchNGOs(ngoFilters);
     setCurrentPage(1); // Resetar para primeira página
   };
@@ -117,9 +117,10 @@ const ManageNgo = () => {
    * Callback para quando o usuário limpar filtros
    */
   const handleClearFilters = () => {
-    console.log('🧹 Limpando filtros');
+
     fetchNGOs(); // Buscar sem filtros
     setCurrentPage(1); // Resetar para primeira página
+    
   };
 
   /**
@@ -137,13 +138,23 @@ const ManageNgo = () => {
   // Define as ONGs que serão mostradas com base na página atual
   const startIndexShowedNGOs = ngosPerPage * (currentPage - 1);
   const showedNGOs = ngos.slice(startIndexShowedNGOs, startIndexShowedNGOs + ngosPerPage);
-
+  const { isLoading, user, isLoggedIn} = useAuth();
   /**
    * Efeito para buscar ONGs quando o componente for montado
    */
   useEffect(() => {
+    
     fetchNGOs(); // Buscar todas as ONGs inicialmente
+
   }, []);
+
+  useEffect(() => {
+    if (user?.role === "ADMIN") {
+      setShowDeleteButton(true);
+    } else {
+      setShowDeleteButton(false);
+    }
+  }, [user]);
 
   /**
    * Atualiza o estado do layout e quantidade de ONGs por página ao redimensionar a tela.
@@ -243,18 +254,7 @@ const ManageNgo = () => {
     }
   };
 
-  /**
-   * Função para lidar com o clique em editar
-   */
-  const handleEditClick = (ngo?: NGO) => {
-    if (!ngo) return;
     
-    console.log("Editando ONG:", ngo); // Debug
-    // Aqui pode navegar para uma página de edição
-  };
-
-
-    const { isLoading, user, isLoggedIn} = useAuth();
 
   if(isLoading)
     return null;
@@ -318,7 +318,7 @@ const ManageNgo = () => {
       <ContentContainer>
         {!hideNGOFilter && (
           <NGOsFilter
-            ngos={allNgos.map(ngo => ngo.name)} // Lista completa para autocomplete
+            ngos={allNgos.map(ngo => ngo.name)}
             selectedState={selectedState}
             setSelectedState={setSelectedState}
             city={city}
@@ -349,8 +349,7 @@ const ManageNgo = () => {
               <OngInfoCard
                 key={ngo.id || index}
                 ngo={ngo}
-                showEditOptions={true}
-                onEditClick={handleEditClick}
+                showDeleteOptions={showDeleteButton}
                 onDeleteClick={handleDeleteClick}
               />
             ))}

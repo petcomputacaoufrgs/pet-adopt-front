@@ -23,9 +23,11 @@ import Email from "../../assets/email.svg";
 import DeleteIcon from "../../assets/DeleteIcon.svg";
 import PencilIcon from "../../assets/PencilIcon.svg";
 
+
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
 import EditButton from "../EditButton";
 import ButtonLink from "../ButtonLink/ButtonLink";
+import DeleteButton from "../DeleteButton";
 
 // social icons
 import FacebookIcon from "../../assets/OrangeFacebookPin.png"; 
@@ -40,10 +42,9 @@ import YoutubeBrownPin from "../../assets/BrownYoutubePin.png";
 const OngInfoCard: React.FC<OngInfoCardProps> = ({
   ngo,
   showApproveButtons = false,
-  showEditOptions = false,
+  showDeleteOptions = false,
   onApproveClick,
   onRejectClick,
-  onEditClick,
   onDeleteClick,
   selected = false,
 }) => {
@@ -88,7 +89,7 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       $estado={selected ? "selected" : hovered ? "hover" : "default"}
-      $modo={showApproveButtons ? "approve" : showEditOptions ? "edit" : "none"}
+      $modo={showApproveButtons ? "approve" : showDeleteOptions ? "delete" : "none"}
     >
       <Cabecalho>
         <OngTextGroup>
@@ -96,24 +97,13 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
           <OngType>ONG</OngType>
         </OngTextGroup>
 
-        {showEditOptions && ngo &&(
+        {showDeleteOptions && ngo &&(
           <EditButtonWrapper>
-            <EditButton
-              width="34px"
-              height="34px"
-              options={[
-                { 
-                  label: "Editar", 
-                  onClick: () => onEditClick?.(ngo), 
-                  iconSrc: PencilIcon 
-                },
-                { 
-                  label: "Excluir", 
-                  onClick: () => onDeleteClick?.(ngo), 
-                  iconSrc: DeleteIcon 
-                },
-              ]}
-            />
+            <DeleteButton
+                width="34px"
+                height="34px"
+                onClick={() => onDeleteClick?.(ngo)}
+              />
           </EditButtonWrapper>
         )}
       </Cabecalho>
