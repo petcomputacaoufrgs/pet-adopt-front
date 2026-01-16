@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ngoService, NGOFilters } from "../../services";
 import { AxiosError } from "axios";
 
@@ -19,6 +19,8 @@ import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import OngInfoCard from "../../components/OngInfoCard";
 import Footer from "../HomePage/6Footer";
+import ConfirmModal from "../../components/ConfirmModal";
+import Toast from "../../components/Toast";
 
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
@@ -55,6 +57,7 @@ const ManageNgo = () => {
   const [allNgos, setAllNgos] = useState<NGO[]>([]); // Para manter lista completa para autocomplete
   const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [ngoToDeleteId, setNgoToDeleteId] = useState<string|null>(null);
 
   // Controla a exibição do filtro
   const [hideNGOFilter, sethideNGOFilter] = useState(window.innerWidth < 1240);
@@ -122,6 +125,8 @@ const ManageNgo = () => {
     setCurrentPage(1); // Resetar para primeira página
     
   };
+
+  
 
   /**
    * Retorna a quantidade de ONGs que devem ser mostrados por página, de acordo com a largura atual da janela.
@@ -217,6 +222,24 @@ const ManageNgo = () => {
   /**
    * Função para deletar uma ONG
    */
+  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [ModalType, setModalType] =  useState<"excluir" | "recusar" | "aprovar" | null>(null);
+  const [toastType, setToastType] = useState<"excluir" | "recusar" | "aprovar" | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+
+  
+
+  const handleDeleteConfirm = async (ngoId: string) => {
+      if (!ngoId) return;
+      await deleteNGO(ngoId);
+      setModalType(null);
+      setToastType("excluir");
+      
+  };
+
   const deleteNGO = async (ngoId: string) => {
     try {  
       await ngoService.delete(ngoId);
@@ -229,6 +252,16 @@ const ManageNgo = () => {
       if (ngosPerPage * currentPage > updatedNgos.length && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
+
+      resetToast();
+      setShowToast(true);
+      setToastType("excluir");
+
+      showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
+      hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
+      fullCloseTimeoutRef.current = setTimeout(() => {
+        setShowToast(false);
+      }, 3500);
       
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -244,16 +277,23 @@ const ManageNgo = () => {
    */
   const handleDeleteClick = (ngo?: NGO) => {
     if (!ngo) return;
-    
-    const confirmDelete = window.confirm(
-      `Tem certeza que deseja excluir a ONG "${ngo.name}"? Esta ação não pode ser desfeita.`
-    );
-    
-    if (confirmDelete) {
-      deleteNGO(ngo.id);
-    }
+    setNgoToDeleteId(ngo.id)
+    setModalType("excluir");
   };
 
+
+  // Fecha toast com animação
+  const resetToast = () => {
+      setToastVisible(false);
+  
+      if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+      if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
+  
+      setShowToast(false);
+      setToastType(null)
+  };
+    
     
 
   if(isLoading)
@@ -371,6 +411,32 @@ const ManageNgo = () => {
       />
 
       <Footer />
+
+       {ModalType && ngoToDeleteId && (
+            <ConfirmModal
+                isOpen={true}
+                title="Só confirmando, deseja mesmo excluir essa ONG?"
+                message= "Tem certeza? Ao excluir, a ONG será removida do sistema permanentemente."
+                confirmLabel="Sim, excluir"
+                cancelLabel="Cancelar"
+                onConfirm={() => {handleDeleteConfirm(ngoToDeleteId)}}
+                onClose={() => {setModalType(null); setNgoToDeleteId(null)}}
+            />
+          )}
+            
+            {showToast && toastType && (
+            <Toast
+                type="success"
+                message="ONG excluída com sucesso!"
+                description= "A ONG foi removido do sistema."
+                onClose={() => {
+                setToastVisible(false);
+                setTimeout(() => setShowToast(false), 300);
+                }}
+                isVisible={toastVisible}
+            />
+            )}
+      
     </>
   );
 };

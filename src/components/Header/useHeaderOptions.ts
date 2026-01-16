@@ -25,23 +25,23 @@ export const useHeaderOptions = () => {
 
   ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar ONGs", "Validar ONGs"],
+    navigationOptions: ["Ver Animais", "Ver ONGs", "Gerenciar Animais", "Cadastrar Pet", "Validar ONGs"],
   },
   NGO_MEMBER: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet"],
+    navigationOptions: ["Ver Animais", "Ver ONGs", "Gerenciar Animais", "Cadastrar Pet"],
   },
   NGO_ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Ver Animais", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
+    navigationOptions: ["Ver Animais", "Ver ONGs", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
   },
   NGO_ADMIN_PENDING: {
     accountOptions: ["Sair"],
-    navigationOptions: ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"],
+    navigationOptions: ["Sobre Nós", "Ver Animais", "Ver ONGs", "Dicas", "Fale Conosco"],
   },
   REGULAR: {
     accountOptions: ["Fazer Login", "Cadastrar ONG ou Membro"],
-    navigationOptions: ["Ver Animais", "Dicas", "Fale Conosco"],
+    navigationOptions: ["Ver Animais", "Ver ONGs", "Dicas", "Fale Conosco"],
   }
 };
 
@@ -74,7 +74,7 @@ export const useHeaderOptions = () => {
         "Fazer Login": () => handleNavigation("/login"),
         "Gerenciar Pets" : () => handleNavigation("/searchAnimals"),
         "Validar ONGs": () => handleNavigation("/approveNgo"),
-        "Gerenciar ONGs": () => handleNavigation("/manageNgo"),
+        "Ver ONGs": () => handleNavigation("/listNGOs"),
         "Gerenciar Membros": () => handleNavigation("/manageNgoMembers"),
         "Gerenciar Conta": () => (user?.role==="NGO_ADMIN")? handleNavigation(`/NGOProfile/${user.ngoId}`):user ? handleNavigation(`/manageInfo/`) : handleNavigation("/"),
         "Gerenciar Animais": () => handleNavigation("/manageAnimals"),
