@@ -5,17 +5,26 @@ import AnimalFormSection from "../../components/AnimalFormSection";
 import logo from "../../assets/HorizontalLogo.png"
 import { IAnimalForm } from "./types";
 import { useAuth } from "../../hooks/useAuth";
+import { useEffect } from 'react';
 
 export default function EditAnimal({animalData}: IAnimalForm) {
   const { isLoading, user, isLoggedIn } = useAuth();
   const formState = useAnimalForm(animalData);
 
+  useEffect(() => {
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+    });
+    return () => {
+      window.removeEventListener("beforeunload", function (e) {
+        e.preventDefault();
+      });
+    };
+  }, []);
+  
   if(isLoading) return null;
 
-  // Previne perda de dados ao recarregar a página sem querer
-  window.addEventListener("beforeunload", function (e) {
-    e.preventDefault();
-  });
+
 
   return (
     <div style={{display: "flex", flexDirection: "column"}}>
