@@ -184,7 +184,10 @@ const ForgotPassword1: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => handleNavigation("/login")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigation("/login")
+                }}
               >
               <h3>Fazer Login</h3>
     
@@ -201,7 +204,10 @@ const ForgotPassword1: React.FC = () => {
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => handleNavigation("/signUp")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigation("/signup")
+                }}
               >
               <h3>Criar Conta</h3>
     

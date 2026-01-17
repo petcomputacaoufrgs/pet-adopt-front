@@ -8,8 +8,8 @@ export const authService = {
   login: (email: string, password: string) => 
     api.post('/auth/login', { email, password }),
   
-  signupRegular: (userData: any) => 
-    api.post('/auth/signup/regular', userData),
+  signupNgoMember: (userData: any) => 
+    api.post('/auth/signup/ngo-member', userData),
   
   signupNgo: (userData: any) => 
     api.post('/auth/signup/ngo', userData),
@@ -41,7 +41,6 @@ export const ngoService = {
 
   isApproved:(id: string) => 
     api.get(`/ngos/${id}/is-approved`),
-
 
   update: (ngoId: string, ngoData: any) =>
     api.patch(`/ngos/${ngoId}`, ngoData),
@@ -98,7 +97,6 @@ export const userService = {
     const url = buildUserUrl('/users/unapprovedMembers/', ngoId, filters);
     return api.get(url);
   },
-
 
   approve: (memberId: string) => 
     api.patch(`/users/${memberId}/approve`),

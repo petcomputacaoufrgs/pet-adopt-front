@@ -44,9 +44,16 @@ export const useAuth = (): AuthState & {
 
   // 3. VERIFICAÇÃO DE PERMISSÕES
   const hasRole = (requiredRoles: string[]): boolean => {
-    if (!user) return false;                               // Não logado = sem permissão
-    if (requiredRoles.includes('ALL')) return true;        // requiredRoles 'ALL' permite qualquer conta logada
-    return requiredRoles.includes(user.role);              // Verifica role específico
+    // Não logado = sem permissão
+    if (!user) return false;
+    // requiredRoles 'ALL' permite qualquer conta aprovada
+    if (requiredRoles.includes('ALL') && 
+    ( user.role === 'NGO_ADMIN' || 
+      user.role === 'NGO_MEMBER' || 
+      user.role === 'ADMIN'))
+        return true;        
+    // Verifica role específico
+    return requiredRoles.includes(user.role);             
   };
 
   // 4. LOGOUT

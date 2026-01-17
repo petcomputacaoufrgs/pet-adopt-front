@@ -272,7 +272,7 @@ const SignUp: React.FC = () => {
 
   const handleMemberSignUp = async () => {
     try {
-      await authService.signupRegular({
+      await authService.signupNgoMember({
         name, email, password, confirmPassword, ngoId: ngo?.id
       });
       openModal('success', 'Cadastro Realizado!', 'Seu pedido foi enviado para aprovação.');
@@ -639,7 +639,8 @@ return (
                 width="100%"
                 fontSize="1rem"
                 textColor="#553525"
-                onClick={() => {
+                onClick={(e) => {
+                   e.preventDefault();
                    startTransition(() => navigate("/login"));
                 }}
               >
