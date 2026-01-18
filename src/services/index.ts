@@ -16,6 +16,12 @@ export const authService = {
 
   updateNgo: (ngoId: string, ngoData: any) => 
     api.patch(`/auth/${ngoId}`, ngoData),
+
+  requestPasswordReset: (email: string) => 
+    api.post('/auth/password/request-reset', { email }),
+
+  resetPassword: (token: string, newPassword: string) => 
+    api.post('/auth/password/reset', { token, newPassword }),
 };
 
 // Serviços relacionados às ONGs

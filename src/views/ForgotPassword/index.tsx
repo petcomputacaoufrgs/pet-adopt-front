@@ -26,11 +26,8 @@ import ActionText from "../../components/ActionText";
 
 const ForgotPassword1: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
-
 
   // Verificar se há mensagem de erro de autenticação ao carregar
   useEffect(() => {
@@ -40,23 +37,19 @@ const ForgotPassword1: React.FC = () => {
     }
   }, []);
 
-
-
   const handleForgotPassword = async (e: React.FormEvent) => {
-    // e.preventDefault();
+    e.preventDefault();
 
-    // setErrorMessage("");
-    // setSuccessMessage("");
+    setErrorMessage("");
+    setSuccessMessage("");
 
-    // try {
-    //   await authService.forgotPassword(email, password);
-    //   setSuccessMessage("Instruções para redefinir sua senha foram enviadas para o seu e-mail.");
-    // } catch (error: any) {
-    //   const errorMsg = error.response?.data?.message || "Ocorreu um erro ao tentar redefinir a senha.";
-    //   setErrorMessage(errorMsg);
-    // }
-
-    handleNavigation('/forgotPassword2', { state: { from: '/forgotPassword1' } });
+    try {
+      await authService.requestPasswordReset(email);
+      setSuccessMessage("Instruções para redefinir sua senha foram enviadas para o seu e-mail.");
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || "Ocorreu um erro ao tentar redefinir a senha.";
+      setErrorMessage(errorMsg);
+    }
   };
 
 
@@ -83,7 +76,6 @@ const ForgotPassword1: React.FC = () => {
   }, []);
 
 // PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
-
 
   function getScrollbarWidth() {
     // Cria um div externo invisível

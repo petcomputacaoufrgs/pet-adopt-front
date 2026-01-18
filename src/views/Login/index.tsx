@@ -207,7 +207,7 @@ const Login: React.FC = () => {
                 textColor="#553525"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavigation("/forgotPassword1");
+                  handleNavigation("/forgotPassword");
                 }}
               >
               <h3>Esqueci minha senha</h3>

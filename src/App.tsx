@@ -15,8 +15,8 @@ import ManageNGOMembers from "./views/ManageNGOMembers";
 import ApproveNGOMembers from "./views/ApproveNGOMembers";
 import PublicRoute from "./components/PublicRoute";
 import EditAnimalWrapper from "./views/EditAnimal/EditAnimalWrapper";
-import ForgotPassword1 from "./views/ForgotPassword1";
-import ForgotPassword2 from "./views/ForgotPassword2";
+import ForgotPassword from "./views/ForgotPassword";
+import ResetPassword from "./views/ResetPassword";
 import { ToastProvider } from "./contexts/ToastContext";
 import NgoProfile from "./views/NGOProfile";
 
@@ -43,11 +43,11 @@ function App() {
             path="/signup"
             element={<PublicRoute><SignupView /></PublicRoute>}
           />
-          <Route path="/forgotPassword1" 
-          element={<PublicRoute> <ForgotPassword1/> </PublicRoute> } 
+          <Route path="/forgotPassword" 
+          element={<PublicRoute> <ForgotPassword/> </PublicRoute> } 
           />
-          <Route path="/forgotPassword2" 
-          element={<PublicRoute> <ForgotPassword2/> </PublicRoute> } 
+          <Route path="/resetPassword" 
+          element={<PublicRoute> <ResetPassword/> </PublicRoute> } 
           />
   
 

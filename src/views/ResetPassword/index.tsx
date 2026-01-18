@@ -20,29 +20,27 @@ import ForgotPasswordDog from "../../assets/LoginDog.png";
 import BasicInput from "../../components/BasicInput";
 import PasswordInputField from "../../components/PasswordInput";
 import PasswordInput from "../../components/PasswordInput";
-import verifyPassword from "../SignUp";
-import setConfirmPassword from "../SignUp";
-import verifyConfirmPassword from "../SignUp";
 import { useAuth } from "../../hooks/useAuth";
-import { Navigate, useNavigate, useLocation} from "react-router-dom";
+import { Navigate, useNavigate, useLocation, useSearchParams} from "react-router-dom";
 import { Weight } from "lucide-react";
 import ActionText from "../../components/ActionText";
 import { wait } from "@testing-library/user-event/dist/utils";
 
-const ForgotPassword2: React.FC = () => {
+const ResetPassword: React.FC = () => {
 
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
   const location = useLocation();
 
-  const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
+  const [searchParams] = useSearchParams();
+  const [newPassword, setNewPassword] = useState("");
+  const token = searchParams.get("token");
 
   const [isWaiting, setIsWaiting] = useState(false);
   const [countdown, setCountdown] = useState(60);
 
-  const [codeError, setCodeError] = useState(false);
-  const [codeErrorMessage, setCodeErrorMessage] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -51,6 +49,11 @@ const ForgotPassword2: React.FC = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
 
+  // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
+
+  const { isLoading, user, isLoggedIn} = useAuth();
+
   // Verificar se há mensagem de erro de autenticação ao carregar
   useEffect(() => {
     const authError = getAuthError();
@@ -58,89 +61,15 @@ const ForgotPassword2: React.FC = () => {
       setErrorMessage(authError);
     }
   }, []);
-
-  const handleNavigation = (to: string, options?: { state?: any }) => {
-    startTransition(() => {
-      navigate(to, options);
-    });
-  };
-
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    // e.preventDefault();
-
-    // setErrorMessage("");
-    // setSuccessMessage("");
-
-    // try {
-    //   await authService.forgotPassword(email, password);
-    //   setSuccessMessage("Instruções para redefinir sua senha foram enviadas para o seu e-mail.");
-    // } catch (error: any) {
-    //   const errorMsg = error.response?.data?.message || "Ocorreu um erro ao tentar redefinir a senha.";
-    //   setErrorMessage(errorMsg);
-    // }
-  };
-
-
- // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
-  
-  const [windowSize, setWindowSize] = useState(window.innerWidth);
     
   useEffect(() => {
-        const handleResize = () => {
-          setWindowSize(window.innerWidth);
-        }
-    
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+    const handleResize = () => {
+      setWindowSize(window.innerWidth);
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-
- // PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
-
-
-  function getScrollbarWidth() {
-    // Cria um div externo invisível
-    const outer = document.createElement('div');
-    outer.style.visibility = 'hidden';
-    outer.style.overflow = 'scroll'; // Força o scroll
-    document.body.appendChild(outer);
-
-    // Cria um div interno
-    const inner = document.createElement('div');
-    outer.appendChild(inner);
-
-    // Calcula a diferença
-    const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
-
-    // Remove os divs da página
-    if (outer.parentNode) {
-      outer.parentNode.removeChild(outer);
-    }
-
-    return scrollbarWidth;
-  }
-
-  const verifyCode = (codeToVerify: string) => {
-    // Exemplo simples: o código deve ter exatamente 6 caracteres
-    if (codeToVerify.length !== 6) {
-      setCodeError(true);
-      setCodeErrorMessage("O código deve ter exatamente 6 caracteres.");
-      return false;
-    } else {
-      setCodeError(false);
-      setCodeErrorMessage("");
-      return true;
-    }
-  }
-
-  // Função para ser chamada quando o botão é clicado
-  const handleSendCode = () => {
-
-    //logica do BACKEND para reenvio do código
-    console.log("Enviando código...");
-
-    // Ativa o modo de espera
-    setIsWaiting(true);
-  };
 
   // useEffect para gerenciar o timer do contador
   useEffect(() => {
@@ -168,16 +97,74 @@ const ForgotPassword2: React.FC = () => {
 
   }, [isWaiting, countdown]); // O efeito roda novamente se `isWaiting` or `countdown` mudar
 
-  const { isLoading, user, isLoggedIn} = useAuth();
+  // Functions
+  const handleNavigation = (to: string, options?: { state?: any }) => {
+    startTransition(() => {
+      navigate(to, options);
+    });
+  };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (newPassword !== confirmPassword) {
+        setError('As senhas não coincidem');
+        return;
+    }
+
+    if (!token) {
+        setError('Token inválido ou ausente');
+        return;
+    }
+
+    try {
+        await authService.resetPassword(token, newPassword);
+        
+        setSuccess(true);
+        setTimeout(() => navigate('/login'), 3000);
+        
+    } catch (err: any) {
+        setError(err.response?.data?.message || 'Erro ao resetar senha');
+    }
+  };
+
+  // Conditional returns (after all hooks)
   if(isLoading)
     return null;
 
-  if (location.state?.from !== '/forgotPassword1') {
-    return <Navigate to="/forgotPassword1" replace />;
+  // Validar se token existe
+  if (!token) {
+    return <div>Token inválido ou ausente</div>;
   }
 
-  
+  if (success) {
+    return <div>Senha atualizada! Redirecionando...</div>;
+  }
+
+ // PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
+
+  function getScrollbarWidth() {
+    // Cria um div externo invisível
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll'; // Força o scroll
+    document.body.appendChild(outer);
+
+    // Cria um div interno
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    // Calcula a diferença
+    const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+
+    // Remove os divs da página
+    if (outer.parentNode) {
+      outer.parentNode.removeChild(outer);
+    }
+
+    return scrollbarWidth;
+  }
+
  // ========================================================================================================
   return (
     <Container style={{ paddingRight: getScrollbarWidth() } }>
@@ -194,10 +181,10 @@ const ForgotPassword2: React.FC = () => {
         } 
 
         <ForgotPasswordFormContainer>
-          <ForgotPasswordForm onSubmit={handleForgotPassword}>
+          <ForgotPasswordForm onSubmit={handleResetPassword}>
             <ForgotPasswordFormTextContainer>
-              <h1>Esqueci a Senha</h1>
-              <p>Você receberá um e-mail com um "código de redefinição". Digite este código aqui, e então digite sua nova senha.</p>
+              <h1>Redefinir Senha</h1>
+              <p>Digite sua nova senha.</p>
             </ForgotPasswordFormTextContainer>
 
             {errorMessage && (
@@ -227,21 +214,6 @@ const ForgotPassword2: React.FC = () => {
             )}
 
             <ForgotPasswordFormInputsContainer>
-
-              <BasicInput
-                title="Código de Redefinição"
-                required = {false} 
-                placeholder="XXX-XXX"
-                value={code}
-                $fontSize="1rem"
-                $width="100%"
-                error = {codeError}
-                errorMessage={codeErrorMessage}
-                onChange={(e) => {
-                  setCode(e.target.value)
-                  verifyCode(e.target.value);
-                }}
-              />
               
               <PasswordInput
                   title="Senha"
@@ -250,11 +222,8 @@ const ForgotPassword2: React.FC = () => {
                   $fontSize="1rem" 
                   placeholder="Insira sua senha aqui"
                   $width="100%"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    verifyPassword(e.target.value);
-                  } }
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   error={passwordError}
                   errorMessage={passwordErrorMessage} 
                   visible={false}
@@ -268,10 +237,7 @@ const ForgotPassword2: React.FC = () => {
                   placeholder="Confirme sua senha aqui"
                   $width="100%"
                   value={confirmPassword}
-                      onChange={(e) => {
-                    setConfirmPassword(e.target.value);
-                    verifyConfirmPassword(e.target.value);
-                  } }
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   error={confirmPasswordError}
                   errorMessage={confirmPasswordErrorMessage} 
                   visible={false}
@@ -279,7 +245,7 @@ const ForgotPassword2: React.FC = () => {
               
             </ForgotPasswordFormInputsContainer>
             
-            <PrimarySecondaryButton width="100%" buttonType="Primário" content={isWaiting ? `Aguarde ${countdown}s para reenviar o código` : "Reenviar Código"} onClick={handleSendCode} isDisabled={isWaiting} paddingH="5px" paddingV="10px"/>
+            <PrimarySecondaryButton width="100%" buttonType="Primário" content={"Redefinir Senha"} onClick={handleResetPassword} isDisabled={isWaiting} paddingH="5px" paddingV="10px"/>
 
             <ForgotPasswordFormLinksContainer>
 
@@ -325,4 +291,4 @@ const ForgotPassword2: React.FC = () => {
   );
 };
 
-export default ForgotPassword2;
+export default ResetPassword;
