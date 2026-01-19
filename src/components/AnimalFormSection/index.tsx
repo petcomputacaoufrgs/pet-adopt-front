@@ -66,7 +66,7 @@ export default function AnimalFormSection({
 }: IAnimalFormSection) {
   const [isCreatingPET, setIsCreatingPET] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [ngoOptions, setNgoOptions] = useState<{ id: string; name: string; email: string }[]>([]);
+  const [ngoOptions, setNgoOptions] = useState<{ id: string; name: string; email: string; city: string; state: string }[]>([]);
 
 
    
@@ -94,7 +94,9 @@ export default function AnimalFormSection({
         const mappedNgoOptions = response.data.map((ngo: any) => ({
           id: ngo._id || ngo.id,
           name: ngo.name,
-          email: ngo.email
+          email: ngo.email,
+          city: ngo.city,
+          state: ngo.state
         }));
         
         setNgoOptions(mappedNgoOptions);
@@ -118,6 +120,11 @@ export default function AnimalFormSection({
           
           if (ngoStrId !== formattedNgoString) {
             setNgoStrId(formattedNgoString);
+          }
+
+          if(!city && !state){ 
+            setCity(userNgo.city || "");
+            setState(userNgo.state || "");
           }
         }
       }
@@ -161,6 +168,19 @@ export default function AnimalFormSection({
     return true;
   };
 
+
+  const ageMap: Record<string, string> = {
+    "Abaixo de 3 meses": "newborn",
+    "3 a 11 meses": "baby",
+    "1 ano": "1y",
+    "2 anos": "2y",
+    "3 anos": "3y",
+    "4 anos": "4y",
+    "5 anos": "5y",
+    "6 anos e acima": "6y+"
+  }
+
+
 const editPet = async () => {
     if (!validateForm()) {
       return;
@@ -173,7 +193,7 @@ const editPet = async () => {
       const formData = new FormData();
 
       formData.append("name", name);
-      formData.append("age", age);
+      formData.append("age", ageMap[age] || age);
       formData.append("breed", breed || ""); 
       formData.append("characteristics", characteristics);
 
@@ -191,17 +211,17 @@ const editPet = async () => {
       let speciesValue: string;
       let otherSpeciesValue = "";
       
-      if (specieIndex === 0) speciesValue = "DOG"; 
-      else if (specieIndex === 1) speciesValue = "CAT";
+      if (specieIndex === 0) speciesValue = "dog"; 
+      else if (specieIndex === 1) speciesValue = "cat";
       else if (specieIndex === 2) {
-        speciesValue = "OTHER";
+        speciesValue = "other";
         otherSpeciesValue = specie;
       } else throw new Error("Espécie deve ser selecionada");
       
       formData.append("species", speciesValue);
       if (otherSpeciesValue) formData.append("otherSpecies", otherSpeciesValue);
 
-      if (speciesValue === "DOG") {
+      if (speciesValue === "dog") {
         let sizeValue: string;
         if (sizeIndex === 0) sizeValue = "P";
         else if (sizeIndex === 1) sizeValue = "M";
@@ -261,6 +281,7 @@ const editPet = async () => {
         if (!petId) throw new Error("ID do animal não encontrado para edição");
 
         await petService.update(petId, formData);
+        
         
         showToast({
             success: true,
@@ -371,7 +392,7 @@ const editPet = async () => {
                     placeholder="Cidade do pet"
                     value={city}
                     $fontSize="16px"
-                    $width={windowSize > 1180 ? "55%" : "100%"}
+                    $width={windowSize > 1180 ? "50%" : "100%"}
                     onChange={(e) => setCity(e.target.value)}
                     $paddingVertical="4px"
                   />
@@ -388,7 +409,7 @@ const editPet = async () => {
                       "RR", "SC", "SP", "SE", "TO",
                     ]}
                     resetOption="Qualquer"
-                    width={windowSize > 1180 ? "45%" : "100%"}
+                    width={windowSize > 1180 ? "50%" : "100%"}
                     fontSize="16px"
                     verticalPadding="4px"
                     listMaxHeight="200px"
@@ -418,9 +439,9 @@ const editPet = async () => {
                   title="Espécie"
                   required
                   options={[
-                    { label: "Cachorro", value: "DOG" },
-                    { label: "Gato", value: "CAT" },
-                    { label: "Outro", value: "" },
+                    { label: "Cachorro", value: "dog" },
+                    { label: "Gato", value: "cat" },
+                    { label: "Outro", value: "other" },
                   ]}
                   onChange={(value) => setSpecie(value)}
                   userFillOptionLabel="Outro"

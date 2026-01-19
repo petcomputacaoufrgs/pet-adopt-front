@@ -57,13 +57,13 @@ const mapAnimalDataToFormState = (animalData: Animal) => {
 
   // Mapear espécie
   const speciesMap: Record<string, number> = {
-    "DOG": 0,
-    "CAT": 1,
-    "OTHER": 2
+    "dog": 0,
+    "cat": 1,
+    "other": 2
   };
   formState.specieIndex = speciesMap[animalData.species] ?? -1;
   
-  if (animalData.species === "OTHER") {
+  if (animalData.species === "other") {
     formState.specie = animalData.otherSpecies || "";
   }
 
@@ -75,7 +75,7 @@ const mapAnimalDataToFormState = (animalData: Animal) => {
   formState.animalSexIndex = sexMap[animalData.sex] ?? -1;
 
   // Mapear porte (apenas para cachorros)
-  if (animalData.species === "DOG" && animalData.size) {
+  if (animalData.size) {
     const sizeMap: Record<string, number> = {
       "P": 0,
       "M": 1,

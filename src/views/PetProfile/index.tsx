@@ -195,6 +195,9 @@ const PetProfile: React.FC = () => {
     };
 
     const {isLoading, user, isLoggedIn} = useAuth();
+    console.log(isLoggedIn);
+
+    console.log(user);
 
     if(isLoading)
         return null;
@@ -222,6 +225,7 @@ const PetProfile: React.FC = () => {
     console.log(ngo);
 
 
+    console.log(((user?.role === "NGO_MEMBER" || user?.role === "NGO_ADMIN") && user.ngoId == pet?.ngoId) || user?.role === "ADMIN");
     return (
         <Container>
 
@@ -491,7 +495,7 @@ const PetProfile: React.FC = () => {
 
                         </Cards>
 
-                        {(((user?.role === "NGO_MEMBER" || user?.role === "NGO_ADMIN") && user.ngoId == pet.NGO) || user?.role === "ADMIN") &&
+                        {(((user?.role === "NGO_MEMBER" || user?.role === "NGO_ADMIN") && user.ngoId == pet.ngoId) || user?.role === "ADMIN") &&
 
                         
 

@@ -6,6 +6,7 @@ export interface NGO {
   phone?: string;
   document?: string;
   city?: string;
+  state?: string;
   website?: string;
   instagram?: string;
   facebook?: string;

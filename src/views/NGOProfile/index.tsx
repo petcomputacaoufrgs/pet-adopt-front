@@ -25,9 +25,6 @@ import Toast from "../../components/Toast";
 import ConfirmModal from "../../components/ConfirmModal";
 import ManageInfoForm from "../../components/ManageNGOInfoForm";
 
-
-
-
 import logo from "../../assets/HorizontalLogo.png";
 
 // social icons
@@ -39,8 +36,6 @@ import TiktokIcon from "../../assets/OrangeTiktokPin.png";
 import TiktokBrownIcon from "../../assets/BrownTiktokPin.png"; 
 import XIcon from "../../assets/XIcon.png"
 import XBrownIcon from "../../assets/XBrownIcon.png"
-import CloseButton from "../../components/CloseButton";
-import { height } from "@mui/system";
 
 // component
 const NgoProfile = () => {
@@ -63,6 +58,7 @@ const NgoProfile = () => {
         try {
             const response = await ngoService.getById(id);
             setNgo(response.data);
+            console.log(response.data);
 
             const approvedResponse = await ngoService.isApproved(id);
             setIsApprovedNGO(approvedResponse.data.approved);
@@ -341,7 +337,7 @@ const NgoProfile = () => {
                                 
                                 <NgoInformationsContainer>
                                     <InformationsContainer>
-                                        <p>{ngo.city}</p>
+                                        <p>{ngo.city},{ngo.state}</p>
                                         <p>{ngo.email}</p>
                                         <p>{ngo.phone}</p>
                                         <p>{ngo.document}</p>

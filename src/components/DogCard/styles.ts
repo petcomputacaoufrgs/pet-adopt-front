@@ -14,7 +14,7 @@ export const CardContainer = styled.div<CardContainerProps>`
     display: flex;
     flex-direction: column;
     margin: 0 16px 32px 16px;
-    max-width: 362px;
+    width: 362px;
     
     transition: all 0.3s ease;
     transform: ${({ $isHovered }) => $isHovered ? 'translateY(-4px)' : 'translateY(0)'};

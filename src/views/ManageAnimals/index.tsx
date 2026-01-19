@@ -24,10 +24,29 @@ import { Pet } from "../../types/pets";
 import { useAuth } from "../../hooks/useAuth";
 import ConfirmModal from "../../components/ConfirmModal";
 import { useNavigate } from "react-router-dom";
-
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
+
+  const CACHE_KEY = '@Meau:PetsCache';
+
+
   // Estados dos pets
-  const [pets, setPets] = useState<Pet[]>([]);
+  // Inicialização "Lazy" com LocalStorage
+  // Isso roda antes do primeiro render visual, garantindo que se tiver cache, ele já aparece.
+  const [pets, setPets] = useState<Pet[]>(() => {
+    try {
+      const saved = localStorage.getItem(CACHE_KEY);
+      console.log("Carregando pets do cache:");
+      console.log(saved);
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.log("Erro ao carregar pets do cache:", error);
+      console.log("Nenhum cache encontrado ou erro ao carregar.");
+      return [];
+    }
+  });
+
+
+
   const [isLoadingPets, setIsLoadingPets] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -47,6 +66,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
   
+
   const handleNavigation = (to: string) => {
     startTransition(() => {
       navigate(to);
@@ -94,7 +114,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
    */
   const fetchPets = async () => {
     try {
-      setIsLoadingPets(true);
+      if (pets.length === 0) setIsLoadingPets(true);
       setError("");
       
       const filters = createPetFiltersFromState({
@@ -111,11 +131,27 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             
       const response = await petService.getAll(filters);
       
+
       const mappedPets = response.data.map((pet: any) => ({
         ...pet,
         id: pet._id || pet.id,
       }));
       
+      
+      const isDefaultView = (selectedSpecie === -1) && !selectedState && !city && !name; // adicione os outros filtros aqui
+
+      console.log("isDefaultView:", isDefaultView);
+      if(isDefaultView){
+        console.log("Salvando pets no cache:");
+        try{
+          localStorage.setItem(CACHE_KEY, JSON.stringify(mappedPets.slice(0, 12))); // Só o suficiente pra encher a primeira página
+          console.log("Pets salvos no cache:");
+          console.log(mappedPets.slice(0, 12));
+        } catch (error){
+          console.log("Erro ao salvar pets no cache:", error);
+          // Falha ao salvar no localStorage, pode ignorar ou logar se quiser
+        }
+      }
       setPets(mappedPets);
             
     } catch (err) {
@@ -385,12 +421,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             subtitle={allowEdit? "Visualize e gerencie os pets disponíveis" : "Visualize os pets disponíveis"}
             emptyMessage="Nenhum Pet Encontrado"
             expandContainer={hideAnimalFilter}
-            // AQUI ESTÁ A CORREÇÃO:
             // Só mostra vazio se: NÃO está carregando E NÃO deu erro E lista está vazia
             emptyState={!isLoadingPets && !error && pets.length === 0}
             buttonText= {allowEdit? "+ Cadastrar Pet" : undefined}
             onButtonClick={() => {
-               // Adicionei a rota de cadastro aqui (ajuste se a rota for diferente)
                handleNavigation("/createAnimal"); 
             }}
           />

@@ -73,6 +73,9 @@ const SignUp: React.FC = () => {
   const [adoptionFormError, setAdoptionFormError] = useState(false);
   const [adoptionFormErrorMessage, setAdoptionFormErrorMessage] = useState('');
 
+  const [stateError, setStateError] = useState(false);
+  const [stateErrorMessage, setStateErrorMessage] = useState('');
+
   // Erro do grupo de contatos (se nenhum for preenchido)
   const [contactError, setContactError] = useState(false); 
 
@@ -99,6 +102,7 @@ const SignUp: React.FC = () => {
   const [sponsorshipForm, setSponsorshipForm] = useState('');
   const [temporaryHomeForm, setTemporaryHomeForm] = useState('');
   const [claimForm, setClaimForm] = useState('');
+  const [state, setState] = useState('');
 
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
@@ -183,6 +187,13 @@ const SignUp: React.FC = () => {
         isValid = false;
       }
 
+      // Estado
+      if (!state.trim()) {
+        setStateError(true);
+        setStateErrorMessage('Estado é obrigatório');
+        isValid = false;
+      }
+
       // Formulário de Adoção
       if (!adoptionForm.trim()) {
         setAdoptionFormError(true);
@@ -213,6 +224,10 @@ const SignUp: React.FC = () => {
   const verifyConfirmPassword = (cPass: string) => {
     verifyConfirmPasswordHelper(password, cPass);
   };
+
+  const verifyConfirmPasswordFromStandard = (pass: string) => {
+    verifyConfirmPasswordHelper(pass, confirmPassword);
+  }
 
   const verifyEmail = (mail: string) => {
     if(mail.trim() === '') { setEmailError(false); setEmailErrorMessage(''); return; }
@@ -277,7 +292,7 @@ const SignUp: React.FC = () => {
       await authService.signupNgo({
         user: { name, email, password, confirmPassword },
         ngo: {
-          name, email, doc, description, phone, city, website,
+          name, email, doc, description, phone, city, state, website,
           instagram, facebook, adoptionForm, sponsorshipForm,
           temporaryHomeForm, claimForm,
         }
@@ -437,6 +452,7 @@ return (
                   onChange={(e) => {
                     setPassword(e.target.value);
                     verifyPassword(e.target.value);
+                    verifyConfirmPasswordFromStandard(e.target.value);
                   }}
                   error={passwordError}
                   errorMessage={passwordErrorMessage} 
@@ -485,6 +501,24 @@ return (
                     $width="100%"
                     onChange={(e) => setCity(e.target.value)}
                   />
+
+                  <SearchBar
+                    title="Estado"
+                    required
+                    placeholder="Insira o estado sede da ONG aqui"
+                    query={state}
+                    setQuery={setState}
+                    options={[
+                      "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT",
+                      "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO",
+                      "RR", "SC", "SP", "SE", "TO",
+                    ]}
+                    resetOption="Qualquer"
+                    width="100%"
+                    fontSize="16px"
+                    listMaxHeight="200px"
+                  />
+
                   <BasicInput
                     title="Link do WebSite (Opcional)"
                     required={false}
