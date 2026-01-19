@@ -52,6 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@types/axios": "^0.14.4"
+    "@types/axios": "^0.14.4",
+    "@types/styled-components": "^5.1.36"
   }
 }

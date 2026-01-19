@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { PUBLIC_PATHS } from "./constants/routes";
 import HomeView from "./views/HomePage";
 import LoginView from "./views/Login";
 import SignupView from "./views/SignUp"
@@ -28,25 +29,25 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Rotas públicas */}
-          <Route path="/" element={<HomeView />} />
-          <Route path="/searchAnimals" element={<ManageAnimals allowEdit={false}/>} />
-          <Route path="/petProfile/:id" element={<PetProfile />} />
-          <Route path="/NGOProfile/:id" element={<NgoProfile />} />
-          <Route path="/listNGOs" element={<ManageNgo />} />
+          <Route path={PUBLIC_PATHS.HOME} element={<HomeView />} />
+          <Route path={PUBLIC_PATHS.SEARCH_ANIMALS} element={<ManageAnimals allowEdit={false}/>} />
+          <Route path={PUBLIC_PATHS.PET_PROFILE} element={<PetProfile />} />
+          <Route path={PUBLIC_PATHS.NGO_PROFILE} element={<NgoProfile />} />
+          <Route path={PUBLIC_PATHS.LIST_NGOS} element={<ManageNgo />} />
 
           {/* Rotas públicas - Apenas para não autenticados */}
           <Route 
-            path="/login" 
+            path={PUBLIC_PATHS.LOGIN} 
             element={<PublicRoute><LoginView /></PublicRoute>}
           />
           <Route
-            path="/signup"
+            path={PUBLIC_PATHS.SIGNUP}
             element={<PublicRoute><SignupView /></PublicRoute>}
           />
-          <Route path="/forgotPassword" 
+          <Route path={PUBLIC_PATHS.FORGOT_PASSWORD} 
           element={<PublicRoute> <ForgotPassword/> </PublicRoute> } 
           />
-          <Route path="/resetPassword" 
+          <Route path={PUBLIC_PATHS.RESET_PASSWORD} 
           element={<PublicRoute> <ResetPassword/> </PublicRoute> } 
           />
   

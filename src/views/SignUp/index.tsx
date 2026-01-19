@@ -2,6 +2,8 @@ import { useEffect, useState, useTransition } from "react";
 import { ngoService, authService } from "../../services";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import { getErrorMessage } from "../../services/helpers/errorHandlers";
+import { createPasswordValidators } from "../../services/helpers/passwordValidation";
 
 import { 
   Container,
@@ -200,27 +202,16 @@ const SignUp: React.FC = () => {
     return isValid;
   };
 
-  // Funções de verificação "on typing"
-  const verifyPassword = (pass: string) => {
-    if(pass.trim() === '') {
-       setPasswordError(false); setPasswordErrorMessage(''); return; 
-    }
-    // ... (Lógica de regex igual ao anterior)
-    if (pass.length < 6) { setPasswordError(true); setPasswordErrorMessage('Mínimo 6 caracteres'); return; }
-    if (!/[A-Z]/.test(pass)) { setPasswordError(true); setPasswordErrorMessage('Mínimo 1 letra maiúscula'); return; }
-    if (!/[0-9]/.test(pass)) { setPasswordError(true); setPasswordErrorMessage('Mínimo 1 número'); return; }
-    if (!/[!@#$%^&*]/.test(pass)) { setPasswordError(true); setPasswordErrorMessage('Mínimo 1 caractere especial'); return; }
-    
-    setPasswordError(false); setPasswordErrorMessage('');
-  };
+  // Funções de verificação "on typing" (usando helper reutilizável)
+  const { verifyPassword, verifyConfirmPassword: verifyConfirmPasswordHelper } = createPasswordValidators(
+    setPasswordError,
+    setPasswordErrorMessage,
+    setConfirmPasswordError,
+    setConfirmPasswordErrorMessage
+  );
 
   const verifyConfirmPassword = (cPass: string) => {
-    if (cPass.trim() === '') { setConfirmPasswordError(false); setConfirmPasswordErrorMessage(''); return; }
-    if (cPass !== password) {
-      setConfirmPasswordError(true); setConfirmPasswordErrorMessage('As senhas não coincidem');
-    } else {
-      setConfirmPasswordError(false); setConfirmPasswordErrorMessage('');
-    }
+    verifyConfirmPasswordHelper(password, cPass);
   };
 
   const verifyEmail = (mail: string) => {
@@ -299,10 +290,7 @@ const SignUp: React.FC = () => {
 
   const handleApiError = (err: any) => {
     console.error(err);
-    let msg = 'Erro de conexão. Tente novamente mais tarde.';
-    if (err instanceof AxiosError && err.response) {
-      msg = err.response.data.message || 'Erro no cadastro.';
-    }
+    const msg = getErrorMessage(err, 'Erro de conexão. Tente novamente mais tarde.');
     openModal('error', 'Algo deu errado', msg);
   }
 

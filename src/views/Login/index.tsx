@@ -1,5 +1,6 @@
 import { useEffect, useState, useTransition } from "react";
 import { authService, getAuthError } from "../../services";
+import { getErrorMessage } from "../../services/helpers/errorHandlers";
 
 import {
   Container,
@@ -69,9 +70,9 @@ const Login: React.FC = () => {
         window.location.href = '/';
       }, 1500);
       
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setErrorMessage("Login falhou. Verifique suas credenciais.");
+      setErrorMessage(getErrorMessage(err, "Login falhou. Verifique suas credenciais."));
     }
   };
 
@@ -133,7 +134,7 @@ const Login: React.FC = () => {
       <LoginContainer>
       {windowSize >= 1200 &&
         <div style={{minHeight: "600px", maxWidth: "732.95px", backgroundImage: `url(${LoginDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
-        } 
+        }
 
         <LoginFormContainer>
           <LoginForm onSubmit={handleLogin}>

@@ -1,5 +1,6 @@
 import { useEffect, useState, useTransition } from "react";
 import { authService, getAuthError } from "../../services";
+import { getErrorMessage } from "../../services/helpers/errorHandlers";
 
 import {
   Container,
@@ -47,8 +48,7 @@ const ForgotPassword1: React.FC = () => {
       await authService.requestPasswordReset(email);
       setSuccessMessage("Instruções para redefinir sua senha foram enviadas para o seu e-mail.");
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "Ocorreu um erro ao tentar redefinir a senha.";
-      setErrorMessage(errorMsg);
+      setErrorMessage(getErrorMessage(error, "Ocorreu um erro ao tentar redefinir a senha."));
     }
   };
 

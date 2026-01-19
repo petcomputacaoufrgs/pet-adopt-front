@@ -1,5 +1,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { authService, getAuthError } from "../../services";
+import { getErrorMessage } from "../../services/helpers/errorHandlers";
+import { createPasswordValidators } from "../../services/helpers/passwordValidation";
 
 import {
   Container,
@@ -71,32 +73,6 @@ const ResetPassword: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // useEffect para gerenciar o timer do contador
-  useEffect(() => {
-    // Só ativamos o intervalo se estivermos no modo de espera
-    if (!isWaiting) {
-      return;
-    }
-
-    // Se o contador chegar a zero, paramos de esperar
-    if (countdown <= 0) {
-      setIsWaiting(false);
-      setCountdown(60); // Reseta o contador para a próxima vez
-      return;
-    }
-
-    // Configura o intervalo para decrementar o contador a cada segundo
-    const intervalId = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
-    }, 1000);
-
-    //Função de limpeza:
-    // O React executa esta função quando o componente é desmontado
-    // ou antes de o efeito rodar novamente. Isso previne memory leaks.
-    return () => clearInterval(intervalId);
-
-  }, [isWaiting, countdown]); // O efeito roda novamente se `isWaiting` or `countdown` mudar
-
   // Functions
   const handleNavigation = (to: string, options?: { state?: any }) => {
     startTransition(() => {
@@ -104,42 +80,81 @@ const ResetPassword: React.FC = () => {
     });
   };
 
+  // Funções de verificação de senha forte (usando helper reutilizável)
+  const { verifyPassword, verifyConfirmPassword: verifyConfirmPasswordHelper } = createPasswordValidators(
+    setPasswordError,
+    setPasswordErrorMessage,
+    setConfirmPasswordError,
+    setConfirmPasswordErrorMessage
+  );
+
+  const verifyConfirmPassword = (cPass: string) => {
+    verifyConfirmPasswordHelper(newPassword, cPass);
+  };
+
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (newPassword !== confirmPassword) {
-        setError('As senhas não coincidem');
+    setErrorMessage("");
+    setSuccessMessage("");
+    setError("");
+
+    // Validações
+    let hasError = false;
+
+    if (!token) {
+        setErrorMessage('Link inválido ou expirado. Solicite um novo link de redefinição de senha.');
         return;
     }
 
-    if (!token) {
-        setError('Token inválido ou ausente');
-        return;
+    if (!newPassword.trim()) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Senha é obrigatória');
+      hasError = true;
+    } else if (passwordError) {
+      hasError = true;
+    }
+
+    if (!confirmPassword.trim()) {
+      setConfirmPasswordError(true);
+      setConfirmPasswordErrorMessage('Confirmação é obrigatória');
+      hasError = true;
+    } else if (confirmPasswordError) {
+      hasError = true;
+    }
+
+    if (newPassword !== confirmPassword) {
+        setConfirmPasswordError(true);
+        setConfirmPasswordErrorMessage('As senhas não coincidem');
+        hasError = true;
+    }
+
+    if (hasError) {
+      setErrorMessage('Por favor, corrija os erros nos campos antes de continuar.');
+      return;
     }
 
     try {
         await authService.resetPassword(token, newPassword);
         
-        setSuccess(true);
-        setTimeout(() => navigate('/login'), 3000);
+        setSuccessMessage('Senha redefinida com sucesso! Redirecionando para o login...');
+        setTimeout(() => navigate('/login'), 2000);
         
     } catch (err: any) {
-        setError(err.response?.data?.message || 'Erro ao resetar senha');
+        const errorMsg = getErrorMessage(err, 'Erro ao resetar senha');
+        
+        // Verificar se o erro é de token expirado/inválido
+        if (err.response?.status === 400 || err.response?.status === 401) {
+          setErrorMessage('Link de redefinição expirado ou inválido. Por favor, solicite um novo link.');
+        } else {
+          setErrorMessage(errorMsg);
+        }
     }
   };
 
   // Conditional returns (after all hooks)
   if(isLoading)
     return null;
-
-  // Validar se token existe
-  if (!token) {
-    return <div>Token inválido ou ausente</div>;
-  }
-
-  if (success) {
-    return <div>Senha atualizada! Redirecionando...</div>;
-  }
 
  // PADDING PARA EVITAR SALTO DE COM SCROLL BAR E SEM SCROLL BAR ============================================
 
@@ -165,7 +180,7 @@ const ResetPassword: React.FC = () => {
     return scrollbarWidth;
   }
 
- // ========================================================================================================
+ // ===============================================================================
   return (
     <Container style={{ paddingRight: getScrollbarWidth() } }>
       <Header
@@ -213,31 +228,54 @@ const ResetPassword: React.FC = () => {
               </div>
             )}
 
+            {error && (
+              <div style={{ 
+                color: "red", 
+                margin: "10px 0", 
+                padding: "10px",
+                backgroundColor: "#ffeaea",
+                border: "1px solid #ffcdd2",
+                borderRadius: "4px"
+              }}>
+                {error}
+              </div>
+            )}
+
             <ForgotPasswordFormInputsContainer>
               
               <PasswordInput
-                  title="Senha"
+                  title="Nova Senha"
                   required={true}
                   isDisabled={false}
                   $fontSize="1rem" 
-                  placeholder="Insira sua senha aqui"
+                  placeholder="Insira sua nova senha aqui"
                   $width="100%"
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    verifyPassword(e.target.value);
+                    // Revalidar confirmação se já foi preenchida
+                    if (confirmPassword) {
+                      verifyConfirmPassword(confirmPassword);
+                    }
+                  }}
                   error={passwordError}
                   errorMessage={passwordErrorMessage} 
                   visible={false}
               />
 
               <PasswordInput
-                  title="Confirmar Senha"
+                  title="Confirmar Nova Senha"
                   required={true}
                   isDisabled={false}
                   $fontSize="1rem" 
-                  placeholder="Confirme sua senha aqui"
+                  placeholder="Confirme sua nova senha aqui"
                   $width="100%"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    verifyConfirmPassword(e.target.value);
+                  }}
                   error={confirmPasswordError}
                   errorMessage={confirmPasswordErrorMessage} 
                   visible={false}
@@ -245,7 +283,15 @@ const ResetPassword: React.FC = () => {
               
             </ForgotPasswordFormInputsContainer>
             
-            <PrimarySecondaryButton width="100%" buttonType="Primário" content={"Redefinir Senha"} onClick={handleResetPassword} isDisabled={isWaiting} paddingH="5px" paddingV="10px"/>
+            <PrimarySecondaryButton 
+              width="100%" 
+              buttonType="Primário" 
+              content="Redefinir Senha" 
+              onClick={handleResetPassword} 
+              isDisabled={false} 
+              paddingH="5px" 
+              paddingV="10px"
+            />
 
             <ForgotPasswordFormLinksContainer>
 

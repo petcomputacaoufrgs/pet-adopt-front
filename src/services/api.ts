@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { isPublicApiEndpoint } from '../constants/routes';
 
 // Configuração base da API
 const api = axios.create({
@@ -41,7 +42,7 @@ api.interceptors.response.use(
     const errorMessage = error.response?.data?.message || 'Erro interno do servidor';
 
     // Se o erro for 401 e não for uma tentativa de refresh e não foi já tentado refresh
-    if (statusCode === 401 && !originalRequest._retry && !originalRequest.url?.includes('/auth/refresh')) {
+    if (statusCode === 401 && !originalRequest._retry && !isPublicApiEndpoint(originalRequest.url)) {
       
       // Se já estamos fazendo refresh, adicionar à fila
       if (isRefreshing) {
@@ -95,8 +96,14 @@ api.interceptors.response.use(
       }
     }
 
-    // Se é erro 401 e já tentou refresh, ou é erro 401 na própria rota de refresh
+    // Se é erro 401 e já tentou refresh, ou é erro 401 em rota pública
     if (statusCode === 401) {
+      // Para rotas públicas, apenas rejeitar sem redirecionar para login
+      if (isPublicApiEndpoint(originalRequest.url)) {
+        return Promise.reject(error);
+      }
+      
+      // Para rotas privadas, limpar sessão e redirecionar
       localStorage.removeItem('user');
       
       if (window.location.pathname !== '/login') {
