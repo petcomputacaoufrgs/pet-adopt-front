@@ -44,6 +44,7 @@ export const formatSpecies = (species: string): string => {
     case "dog": return "Cão";
     case "cat": return "Gato";
     case "bird": return "Pássaro";
+    case "other": return "Outro";
     default: return formatString(species);
   }
 };

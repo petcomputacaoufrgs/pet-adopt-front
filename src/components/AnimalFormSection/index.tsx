@@ -111,7 +111,7 @@ export default function AnimalFormSection({
 
   useEffect(() => {
     if (ngoOptions.length > 0 && user) {
-      if (user.role === 'NGO_ADMIN' && user.ngoId) {
+      if ((user.role === 'NGO_ADMIN' || user.role === "NGO_MEMBER") && user.ngoId) {
         
         const userNgo = ngoOptions.find(ngo => ngo.id === user.ngoId);
         
@@ -180,6 +180,12 @@ export default function AnimalFormSection({
     "6 anos e acima": "6y+"
   }
 
+  const situationMap: Record<string, string> = {
+    "Disponível": "Available",
+    "Lar Temporário": "TempHome",
+    "Adotado": "Adopted"
+  }
+ 
 
 const editPet = async () => {
     if (!validateForm()) {
@@ -330,7 +336,7 @@ const editPet = async () => {
     }
   };
 
-  const isNgoAdmin = user?.role === 'NGO_ADMIN';
+  const isNgoAdmin = user?.role === 'NGO_ADMIN' || user?.role === "NGO_MEMBER";
 
   return (
     <Wrapper $windowSize={windowSize} AnimalFormPhoto={AnimalFormPhoto}>

@@ -57,14 +57,14 @@ export const ButtonsContainer = styled.div`
 
 `;
 
-export const TextButton = styled.button`
+export const TextButton = styled.button<{ $fontSize?: string }>`
   display: inline-block;
   border: none;
   background: transparent;
   font-family: 'Nunito Sans', sans-serif;
   font-weight: 800;
 
-  font-size: clamp(16px, 1.2vw, 18px);
+  font-size: ${({ $fontSize }) => $fontSize || "clamp(16px, 1.2vw, 18px)"};
   line-height: 1.2;
 
   color: #553525;

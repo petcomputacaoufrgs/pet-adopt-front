@@ -337,7 +337,7 @@ const NgoProfile = () => {
                                 
                                 <NgoInformationsContainer>
                                     <InformationsContainer>
-                                        <p>{ngo.city},{ngo.state}</p>
+                                        <p>{ngo.city ? `${ngo.city}, ` : ''} {ngo.state}</p>
                                         <p>{ngo.email}</p>
                                         <p>{ngo.phone}</p>
                                         <p>{ngo.document}</p>

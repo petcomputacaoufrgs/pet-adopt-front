@@ -46,8 +46,8 @@ export default function MembersFilter({
 
   const inputsWidth = "298px";
   const containerWidth = inputsWidth;
-  const inputFontSize = "1em"; // Converted from 16px
-  const titleFontSize = "1.125em"; // Converted from 18px
+  const inputFontSize = "16px"; // Converted from 16px
+  const titleFontSize = "18px"; // Converted from 18px
 
   return (
     <Container $width={containerWidth} $hasBorder={hasBorder}>

@@ -204,9 +204,9 @@ const PetProfile: React.FC = () => {
 
 
     const specieLookUpTable : Record<string, string> = {
-        "DOG": "Cachorro",
-        "CAT": "Gato",
-        "OTHER": "Outro"
+        "dog": "Cachorro",
+        "cat": "Gato",
+        "other": "Outro"
     }
 
     const sexLookUpTable : Record<string, string> = {

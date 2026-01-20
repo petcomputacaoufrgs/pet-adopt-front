@@ -33,7 +33,7 @@ export const useHeaderOptions = () => {
   },
   NGO_ADMIN: {
     accountOptions: ["Gerenciar Conta", "Sair"],
-    navigationOptions: ["Ver Animais", "Ver ONGs", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros"],
+    navigationOptions: ["Ver Animais", "Ver ONGs", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros", "Validar Membros"],
   },
   NGO_ADMIN_PENDING: {
     accountOptions: ["Sair"],
@@ -74,6 +74,7 @@ export const useHeaderOptions = () => {
         "Fazer Login": () => handleNavigation("/login"),
         "Gerenciar Pets" : () => handleNavigation("/searchAnimals"),
         "Validar ONGs": () => handleNavigation("/approveNgo"),
+        "Validar Membros": () => handleNavigation("/approveNgoMembers"),
         "Ver ONGs": () => handleNavigation("/listNGOs"),
         "Gerenciar Membros": () => handleNavigation("/manageNgoMembers"),
         "Gerenciar Conta": () => (user?.role==="NGO_ADMIN")? handleNavigation(`/NGOProfile/${user.ngoId}`):user ? handleNavigation(`/manageInfo/`) : handleNavigation("/"),

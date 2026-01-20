@@ -356,7 +356,7 @@ const ApproveNGOMembers = () => {
               height = {"48px"} 
               paddingH= {"26px"} />
           )}
-          <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Aprovar Membros" }]} />
+          <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Validar Membros" }]} />
         </TopBarContent>
       </TopBarContainer>
 

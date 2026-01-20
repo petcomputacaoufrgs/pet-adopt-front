@@ -62,7 +62,7 @@ export default function AnimalFilter({
     },
     {
       label: "Outros",
-      value: "bird",
+      value: "other",
       backgroundImage: birdImage,
       backgroundColor: "#FF9944",
       overlayImage: birdEffectImage,

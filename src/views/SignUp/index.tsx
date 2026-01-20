@@ -40,6 +40,7 @@ const SignUp: React.FC = () => {
   interface NGO_ID {
     id: string;
     name: string;
+    email: string;
   }
 
   // Estados de Dados
@@ -168,7 +169,9 @@ const SignUp: React.FC = () => {
 
     // Validações Específicas de ROLE
     if (role === 'membro') {
-      if (!ngo) {
+      const ngoId = ngoOptionsMap.get(ngoSearchText) || '';
+      if (ngoId === '') {
+        console.log('Erro de ONG');
         setNgoError(true);
         setNgoErrorMessage('Selecione uma ONG da lista');
         isValid = false;
@@ -238,12 +241,22 @@ const SignUp: React.FC = () => {
 
   // === HANDLERS DE SUBMIT ===========================
 
+
+  const ngoOptionsMap : Map<string, string> = ngoOptions.reduce((acc, ngo) => {
+    acc.set(`${ngo.name} - ${ngo.email}`, ngo.id);
+    return acc;
+
+  }, new Map<string, string>());
+
+  console.log(ngoOptionsMap);
+
   const fetchNgoOptions = async () => {
     try {
       const response = await ngoService.getApproved();
       const mappedNgoOptions = response.data.map((ngo: any) => ({
         id: ngo._id || ngo.id,
-        name: ngo.name
+        name: ngo.name,
+        email: ngo.email
       }));
       setNgoOptions(mappedNgoOptions);
     } catch (error) {
@@ -278,8 +291,9 @@ const SignUp: React.FC = () => {
 
   const handleMemberSignUp = async () => {
     try {
+      const ngoId = ngoOptionsMap.get(ngoSearchText) || '';
       await authService.signupNgoMember({
-        name, email, password, confirmPassword, ngoId: ngo?.id
+        name, email, password, confirmPassword, ngoId: ngoId
       });
       openModal('success', 'Cadastro Realizado!', 'Seu pedido foi enviado para aprovação.');
     } catch (err) {
@@ -314,9 +328,6 @@ const SignUp: React.FC = () => {
   const handleNgoSelection = (searchText: string) => {
     setNgoSearchText(searchText);
     if(ngoError) { setNgoError(false); setNgoErrorMessage(''); } // Limpa erro ao digitar
-
-    const exactMatch = ngoOptions.find(option => option.name === searchText);
-    setNgo(exactMatch || null);
   };
 
   const [windowSize, setWindowSize] = useState(window.innerWidth);
@@ -533,20 +544,18 @@ return (
 
              {/* === SELEÇÃO DE ONG (MEMBRO) === */}
              {role === 'membro' && (
-                <SearchBar 
-                  options={ngoOptions.map(ngo => ngo.name)}
-                  width="100%"
-                  fontSize="1rem"
-                  titleFontSize="1rem"
-                  placeholder="Encontre ou selecione uma ONG"
+                <SearchBar
                   title="Selecione sua ONG"
-                  required={true}
+                  required
+                  placeholder="Encontre e selecione sua ONG aqui"
                   query={ngoSearchText}
                   setQuery={handleNgoSelection}
+                  options={ngoOptions.map(ngo => `${ngo.name} - ${ngo.email}`)}
+                  resetOption={"Qualquer"}
+                  width="100%"
+                  fontSize="16px"
                   readOnly={false}
-                  // Passando propriedades de erro (Assumindo que SearchBar suporta ou você vai ajustar)
-                  error={ngoError}
-                  errorMessage={ngoErrorMessage}
+                  listMaxHeight="200px"
                 />
               )}
 

@@ -92,7 +92,7 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
 
     if(user){
       if(user.role === "NGO_ADMIN"){
-        return windowWidth >= 1200 ? "full" : "compact";
+        return windowWidth >= 1680 ? "full" : windowWidth >= 680 ? "partial" : "compact";
       }
       if(user.role === "NGO_ADMIN_PENDING"){
         return windowWidth >= 1200 ? "full" : "compact";
@@ -143,11 +143,6 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
 
-  const handleNavigation = (to: string) => {
-    startTransition(() => {
-      navigate(to);
-    });
-  }
 
   const renderCompactMenu = () => (
     <>
@@ -249,8 +244,8 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
 
     // Se estiver no modo "partial"
     if (responsiveMode === "partial") {
-      // Se o usuário estiver logado e for ADMIN, mostra todas as opções no DropDown (navegação + conta)
-      return (user && user.role === "ADMIN") ? (
+      // Se o usuário estiver logado e for ADMIN ou NGO_ADMIN, mostra todas as opções no DropDown (navegação + conta)
+      return (user && (user.role === "ADMIN" || user.role === "NGO_ADMIN")) ? (
 
           <DropdownButton
           buttonType="Secundário"
@@ -315,7 +310,7 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
   }, []);
 
 
-  const visibleOptionsOnHeader = (responsiveMode == "partial" && user && user.role === "ADMIN")? []: navigationOptions;
+  const visibleOptionsOnHeader = (responsiveMode == "partial" && user && (user.role === "ADMIN" || user.role === "NGO_ADMIN"))? []: navigationOptions;
 
   // Hook para detectar cliques fora do menu compacto quando ele está aberto e esconder ele de novo
   const compactMenuRef = useRef<HTMLDivElement>(null);
@@ -346,7 +341,7 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
           <>
 
           {visibleOptionsOnHeader.map((option) => (
-              <TextButton key={option} onClick={() => handleAction(option)}>
+              <TextButton key={option} onClick={() => handleAction(option)} $fontSize={(user && user.role === "NGO_ADMIN")? "clamp(14px, 0.92vw, 18px)" : undefined}>
                 {option}
               </TextButton>
             ))}

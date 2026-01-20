@@ -69,6 +69,21 @@ const mapSizeToBackend = (size: string): string => {
 };
 
 /**
+ * Mapeia sexo do frontend para códigos do backend
+ */
+
+const mapSexToBackend = (sex: string): string => {
+  switch (sex) {
+    case "Macho": 
+      return 'M';
+    case "Fêmea": 
+      return 'F';
+    default:
+      return '';
+  }
+}
+
+/**
  * Mapeia espécies por índice para strings
  */
 export const mapSpeciesIndexToString = (speciesIndex: number): string | null => {
@@ -78,7 +93,7 @@ export const mapSpeciesIndexToString = (speciesIndex: number): string | null => 
     case 1: 
       return "cat";
     case 2: 
-      return "bird";
+      return "other";
     default:
       return null;
   }
@@ -122,7 +137,7 @@ export const buildPetQueryParams = (filters?: PetFilters): string => {
   
   // Sexo
   if (filters.sex) {
-    params.append('sex', filters.sex);
+    params.append('sex', mapSexToBackend(filters.sex));
   }
   
   // Idade
