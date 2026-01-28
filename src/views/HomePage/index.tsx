@@ -50,7 +50,6 @@ const HomeView = () => {
   return (
     <>
       <AuthorizationToast />
-      <Header color="#FFF6E8" Logo={logo} user={user} isLoggedIn={isLoggedIn} />
       <About />
       <ListAnimals />
       <Dicas />

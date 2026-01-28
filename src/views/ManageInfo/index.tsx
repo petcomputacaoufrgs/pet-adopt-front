@@ -202,13 +202,7 @@ const ManageInfo: React.FC = () => {
     return null;
 
   return (
-    <>
-        <Header 
-            color="#FFF6E8"
-            Logo={HorizontalLogo}
-            isLoggedIn={isLoggedIn}
-            user={user}
-        />      
+    <>   
         
          {showToast && (
           <SuccessToast

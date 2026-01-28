@@ -14,12 +14,15 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
 
   border: ${({ $estado }) =>
     $estado === "hover"
-      ? "0px solid rgba(222, 222, 222, 1)"
+      ? "1px solid transparent"
       : $estado === "selected"
-      ? "0px solid rgba(222, 222, 222, 1)"
+      ? "1px solid transparent"
       : "1px solid rgba(0, 0, 0, 0.1)"};
   position: relative;
-  transition: box-shadow 0.3s ease;
+  z-index: ${({ $estado }) => ($estado === "hover" ? "2" : "1")};
+  transform: ${({ $estado }) => ($estado === "hover" ? "translateY(-3px)" : "translateY(0)")};
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+
   align-self: start;
   max-width: 280px;
 `;

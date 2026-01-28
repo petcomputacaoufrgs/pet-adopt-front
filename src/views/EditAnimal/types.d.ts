@@ -16,7 +16,7 @@ export interface Animal {
   
   species: string; // "DOG", "CAT", "OTHER"
   sex: string; // "M", "F"
-  size?: string; // "P", "M", "G" (apenas para cachorros)
+  size: string; // "P", "M", "G"
   status: string; // "Available", "TempHome", "Adopted"
   otherSpecies?: string; // Para quando species === "OTHER"
   

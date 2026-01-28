@@ -108,12 +108,6 @@ const ForgotPassword1: React.FC = () => {
 // ========================================================================================================
   return (
     <Container style={{ paddingRight: getScrollbarWidth() } }>
-      <Header
-        color="rgba(0, 0, 0, 0)"
-        Logo={ForgotPasswordPageLogo}
-        isLoggedIn={isLoggedIn}
-        user={user}
-      />
 
       <ForgotPasswordContainer>
       {windowSize >= 1200 &&

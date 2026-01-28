@@ -4,7 +4,7 @@ export const ContentContainer = styled.div`
     display: flex;
     padding: 0;
     justify-content: center;
-    gap: 14px;
+    gap: 24px;
 `;
 
 export const NGOCardsContainer = styled.div`
@@ -75,7 +75,7 @@ export const TopBarContent = styled.div`
   width: 80%;
   gap: 20px;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 `;
 
 export const NGOCardWrapper = styled.div`

@@ -1,6 +1,6 @@
 import React, { useTransition } from "react";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 
 import {
     Container,
@@ -64,13 +64,11 @@ type ModalAction = { tipo: "excluir"; petId: string } | null;
 type GalleryModalAction = { isOpen: boolean; imageIndex: number } | null;
 
 const PetProfile: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [pet, setPet] = useState<Pet | null>(null);
-    const [ngo, setNgo] = useState<any>(null);
 
-    const [finalImages, setFinalImages] = useState<string[]>([]); // Use State para a tela atualizar
+    const {pet, ngo, finalImages} = useLoaderData() as {pet: Pet, ngo: any, finalImages: string[]};
 
-    console.log(pet);
+    console.log(ngo);
+
     const { showToast } = useToast();
 
      const breadcrumbItems = [
@@ -79,62 +77,6 @@ const PetProfile: React.FC = () => {
     { label: pet ? pet.name : 'Detalhes' }  // A página atual
     ];
 
-    const fetchPetById = async (id: string) => {
-        try {
-            const response = await petService.getById(id);
-            setPet(response.data);
-
-        } catch (error) {
-            console.error("Erro ao buscar pet:", error);
-        }
-    };
-
-    const fetchNgoById = async (id: string) => {
-        try {
-            const response = await ngoService.getById(id);
-            setNgo(response.data);
-        } catch (error) {
-            console.error("Erro ao buscar ong:", error);
-        }
-    };
-
-    useEffect(() => {
-        if (id) {
-            fetchPetById(id);
-        }
-    }, [id]);
-
-    useEffect(() => {
-    if (pet && pet.ngoId && pet.photos && pet.photos.length > 0) {
-        
-        // Função auxiliar para checar uma única imagem (Lógica igual ao useImage, mas com Promise)
-        const checkImage = (photoPath: string): Promise<string> => {
-            return new Promise((resolve) => {
-                const fullUrl = imageHelper.getFullImageUrl(photoPath);
-                const img = new Image();
-
-                img.onload = () => resolve(fullUrl); // Sucesso: retorna URL completa
-                img.onerror = () => resolve(DogForCard); // Erro: retorna Fallback
-                
-                img.src = fullUrl;
-            });
-        };
-
-        // Processa todas as imagens em paralelo
-        const processAllImages = async () => {
-            const promises = pet.photos.map(photo => checkImage(photo));
-            const results = await Promise.all(promises);
-            
-            setFinalImages(results); // Atualiza o estado com as URLs válidas
-        };
-
-        processAllImages();
-
-        fetchNgoById(pet.ngoId);
-    }
-}, [pet]);
-
-    
 
     const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -195,12 +137,14 @@ const PetProfile: React.FC = () => {
     };
 
     const {isLoading, user, isLoggedIn} = useAuth();
-    console.log(isLoggedIn);
 
-    console.log(user);
+   
 
     if(isLoading)
         return null;
+
+
+
 
 
     const specieLookUpTable : Record<string, string> = {
@@ -229,12 +173,6 @@ const PetProfile: React.FC = () => {
     return (
         <Container>
 
-            <Header
-                color="#FFF6E8"
-                Logo={loginPageLogo}
-                user={user}
-                isLoggedIn={isLoggedIn}
-            />
 
             <Main>
 
@@ -421,7 +359,7 @@ const PetProfile: React.FC = () => {
                                         
                                         <InfoElement>
                                             <MapPin size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                            <h4> {ngo?.location} </h4>
+                                            <h4> {(ngo?.city)? `${ngo.city}, ${ngo.state}` : ngo.state} </h4>
                                         </InfoElement>
 
                                         <InfoElement>
@@ -431,23 +369,27 @@ const PetProfile: React.FC = () => {
 
                                         <InfoElement>
                                             <Phone size={20} color="#FFFFFF" fill = "#FF9944"/>
-                                            <h4> {ngo?.contact} </h4>
+                                            <h4> {ngo?.phone} </h4>
                                         </InfoElement>
 
                                     </InfoContainer>
 
-                                    <h3>{ngo?.description}</h3>
+
                                         
                                 </CardHeader>  
                                 
+                            
                                 {
+                                   
+                                    ngo?.description
+                                }
+
+
+                                
+                                { ngo && (ngo.facebook || ngo.instagram) &&
                                 <SocialContainer>
                                     <h5> Acompanhe a ONG nas Redes Sociais: </h5>
                                     <SocialIconsDiv>
-
-                                        {
-                                            ngo && (ngo.facebook || ngo.instagram) && (
-
                                             <>
                                             
                                             {
@@ -468,12 +410,13 @@ const PetProfile: React.FC = () => {
      
                                             </>
 
-                                            )
-                                        }
+                                            
+                                        
 
                                     </SocialIconsDiv>
                                 </SocialContainer>
                             }
+
 
 
                                     <a

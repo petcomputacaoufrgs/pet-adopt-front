@@ -37,7 +37,9 @@ import { ChevronDown, ChevronUp} from "lucide-react";
 import { start } from "repl";
 
 
-const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
+const Header = ({ color, Logo }: IHeader) => {
+
+  const {user, isLoggedIn, isLoading} = useAuth();
 
   const { accountOptions, navigationOptions, handleAction } = useHeaderOptions();
 
@@ -94,9 +96,6 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
       if(user.role === "NGO_ADMIN"){
         return windowWidth >= 1680 ? "full" : windowWidth >= 680 ? "partial" : "compact";
       }
-      if(user.role === "NGO_ADMIN_PENDING"){
-        return windowWidth >= 1200 ? "full" : "compact";
-      }
       if(user.role === "NGO_MEMBER"){
         return windowWidth >= 1200 ? "full" : "compact";
       }
@@ -139,9 +138,6 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
       />
     </svg>
   );
-
-  const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
 
 
   const renderCompactMenu = () => (
@@ -203,6 +199,7 @@ const Header = ({ color, Logo, user, isLoggedIn }: IHeader) => {
 
   const renderMenuButtons = () => {
 
+    if (isLoading) return null;
     // Se estiver no modo "full" 
     if (responsiveMode === "full") {
 

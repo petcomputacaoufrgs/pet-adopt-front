@@ -20,12 +20,7 @@ export default function NGOsFilter({
   onClearFilters
 }: INGOsFilter) {
   const states = {
-    options: [
-      "Qualquer",
-      "Rio Grande do Sul",
-      "Santa Catarina",
-      "Paraná"
-    ],
+    options: ["AM", "AC", "AL", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"],
     resetOption: "Qualquer"
   };
 
@@ -83,14 +78,17 @@ export default function NGOsFilter({
           setQuery={setSelectedState}
           options={states.options}
           resetOption={states.resetOption}
-          width={inputsWidth}
+          width={"100%"}
           fontSize={inputFontSize}
           titleFontSize={titleFontSize}
-          placeholder="Selecione o estado"
+          placeholder="Insira o estado aqui"
           title="Estado"
           required={false}
           readOnly={false}
           inputType="Secundário"
+          verticalPadding="6px"
+          gapFromTitle="4px"
+          listMaxHeight="200px"
         />
 
         <BasicInput

@@ -70,7 +70,7 @@ export default function AnimalFilter({
   ];
 
   const states = {
-    options: ["RS", "SC", "PR"],
+    options: ["AM", "AC", "AL", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"],
     resetOption: "Qualquer",
   };
 
@@ -218,6 +218,7 @@ export default function AnimalFilter({
           inputType="Secundário"
           verticalPadding="6px"
           gapFromTitle="4px"
+          listMaxHeight="200px"
         />
 
 

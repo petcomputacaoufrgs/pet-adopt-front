@@ -124,12 +124,6 @@ const Login: React.FC = () => {
 // ========================================================================================================
   return (
     <Container style={{ paddingRight: getScrollbarWidth() } }>
-      <Header
-        color="rgba(0, 0, 0, 0)"
-        Logo={loginPageLogo}
-        isLoggedIn={isLoggedIn}
-        user={user}
-      />
 
       <LoginContainer>
       {windowSize >= 1200 &&

@@ -1,43 +1,32 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   CardContainer,
+  ClickableArea,
+  ContentWrapper,
   InfoSection,
   OngName,
   OngType,
   DataItem,
-  EditButtonWrapper,
-  NGOApproveButtonWrapper,
-  SocialIconsDiv,
-  Icon,
+  ActionsBox,
   Cabecalho,
   OngTextGroup,
 } from "./styles";
 import { OngInfoCardProps } from "./types";
 
+// Assets Gerais
 import Location from "../../assets/location.svg";
 import Id from "../../assets/id.svg";
 import Phone from "../../assets/phone.svg";
 import Email from "../../assets/email.svg";
-import DeleteIcon from "../../assets/DeleteIcon.svg";
-import PencilIcon from "../../assets/PencilIcon.svg";
 
-
-import PrimarySecondaryButton from "../PrimarySecondaryButton";
-import EditButton from "../EditButton";
-import ButtonLink from "../ButtonLink/ButtonLink";
-import DeleteButton from "../DeleteButton";
-
-// social icons
+// Assets Social (Usando os Pins laranjas para combinar com os ícones SVG coloridos, ou marrons se preferir)
 import FacebookIcon from "../../assets/OrangeFacebookPin.png"; 
-import FacebookBrownIcon from "../../assets/BrownFacebookPin.png"; 
 import InstagramPin from "../../assets/OrangeInstagramPin.png"; 
-import InstagramBrownPin from "../../assets/BrownInstagramPin.png"; 
-import TiktokIcon from "../../assets/OrangeTiktokPin.png"; 
-import TiktokBrownIcon from "../../assets/BrownTiktokPin.png"; 
-import YoutubePin from "../../assets/OrangeYoutubePin.png"; 
-import YoutubeBrownPin from "../../assets/BrownYoutubePin.png"; 
+
+// Components
+import PrimarySecondaryButton from "../PrimarySecondaryButton";
 
 const OngInfoCard: React.FC<OngInfoCardProps> = ({
   ngo,
@@ -46,114 +35,144 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
   onApproveClick,
   onRejectClick,
   onDeleteClick,
-  selected = false,
 }) => {
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
 
-  // Criar array com informações da ONG baseado nos dados recebidos
-  const ngoInfo = [
-    ngo?.city || "",
-    ngo?.email || "",
-    ngo?.phone || "",
-    ngo?.cnpj || ""
-  ];
+  // Função auxiliar para deixar o link da rede social mais bonito (ex: @usuario)
+  const formatSocialHandle = (url: string, platform: 'instagram' | 'facebook') => {
+    try {
+      // Remove protocolo e www
+      let clean = url.replace(/(?:https?:\/\/)?(?:www\.)?/i, "");
+      // Remove o domínio da plataforma
+      if (platform === 'instagram') {
+        clean = clean.replace(/instagram\.com\//i, "@").replace(/\/$/, "");
+        return clean.startsWith("@") ? clean : `@${clean}`;
+      }
+      if (platform === 'facebook') {
+        clean = clean.replace(/facebook\.com\//i, "/").replace(/\/$/, "");
+        return clean.startsWith("/") ? clean.substring(1) : clean;
+      }
+      return url;
+    } catch (e) {
+      return platform === 'instagram' ? "Instagram" : "Facebook";
+    }
+  };
 
-  const ngoIcons = [
-    Location,
-    Email,
-    Phone,
-    Id
-  ];
+  // Lógica de Prioridade de Contato
+  // 1. Telefone -> 2. Instagram -> 3. Facebook
+  const getContactInfo = () => {
+    if (ngo?.phone) {
+      return { type: 'phone', icon: Phone, text: ngo.phone, link: null };
+    }
+    if (ngo?.instagram) {
+      return { 
+        type: 'instagram', 
+        icon: InstagramPin, 
+        text: formatSocialHandle(ngo.instagram, 'instagram'), 
+        link: ngo.instagram 
+      };
+    }
+    if (ngo?.facebook) {
+      return { 
+        type: 'facebook', 
+        icon: FacebookIcon, 
+        text: formatSocialHandle(ngo.facebook, 'facebook'), 
+        link: ngo.facebook 
+      };
+    }
+    return null;
+  };
 
-  // Configurar links das redes sociais baseado nos dados da ONG
-  const socialMediaLinks = [
-    {
-      orange: InstagramPin,
-      brown: InstagramBrownPin,
-      alt: "Instagram",
-      href: ngo?.instagram,
-      available: !!ngo?.instagram
-    },
-    {
-      orange: FacebookIcon,
-      brown: FacebookBrownIcon,
-      alt: "Facebook",
-      href: ngo?.facebook,
-      available: !!ngo?.facebook
-    },
-  ].filter(social => social.available); // Mostrar apenas redes sociais disponíveis
+  const contactItem = getContactInfo();
+
+  // Montagem da lista final de exibição
+  const displayItems = [
+    { icon: Location, text: ngo?.city ? `${ngo?.city}, ${ngo?.state}` : ngo?.state, link: null },
+    { icon: Email, text: ngo?.email, link: null },
+    contactItem, // Insere o item de contato decidido acima
+    { icon: Id, text: ngo?.cnpj, link: null }
+  ].filter(item => item && item.text); // Remove itens nulos ou sem texto
+
+  // Determina se exibe a barra de ações
+  const showActions = showApproveButtons || showDeleteOptions;
 
   return (
-    <CardContainer
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      $estado={selected ? "selected" : hovered ? "hover" : "default"}
-      $modo={showApproveButtons ? "approve" : showDeleteOptions ? "delete" : "none"}
-    >
-      <Cabecalho>
-        <OngTextGroup>
-          <OngName>{ngo?.name || "Nome não informado"}</OngName>
-          <OngType>ONG</OngType>
-        </OngTextGroup>
+    <CardContainer $isHovered={hovered}>
+      
+      <ClickableArea
+        onClick={() => navigate(`/NGOProfile/${ngo?._id}`)}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <ContentWrapper>
+          <Cabecalho>
+            <OngTextGroup>
+              <OngName>{ngo?.name || "Nome não informado"}</OngName>
+              <OngType>ONG</OngType>
+            </OngTextGroup>
+          </Cabecalho>
 
-        {showDeleteOptions && ngo &&(
-          <EditButtonWrapper>
-            <DeleteButton
-                width="34px"
-                height="34px"
-                onClick={() => onDeleteClick?.(ngo)}
+          <InfoSection>
+            {displayItems.map((item, index) => {
+              if (!item) return null;
+
+              // Se tiver link (Rede Social), renderiza clicável
+              if (item.link) {
+                return (
+                  
+                    <DataItem>
+                      <img src={item.icon} alt="Social Icon" />
+                      <p>{item.text}</p>
+                    </DataItem>
+                  
+                );
+              }
+
+              // Item normal (Telefone, Email, etc)
+              return (
+                <DataItem key={index}>
+                  <img src={item.icon} alt="Icon" />
+                  <p>{item.text}</p>
+                </DataItem>
+              );
+            })}
+          </InfoSection>
+        </ContentWrapper>
+      </ClickableArea>
+
+      {/* ÁREA DE AÇÕES */}
+      {showActions && (
+        <ActionsBox>
+          {showApproveButtons && (
+            <>
+              <PrimarySecondaryButton
+                buttonType="Secundário"
+                content="Recusar"
+                onClick={() => onRejectClick?.(ngo)}
+                height="40px"
+                $flex
               />
-          </EditButtonWrapper>
-        )}
-      </Cabecalho>
+              <PrimarySecondaryButton
+                buttonType="Primário"
+                content="Aceitar"
+                onClick={() => onApproveClick?.(ngo)}
+                height="40px"
+                $flex
+              />
+            </>
+          )}
 
-      <InfoSection>
-        {ngoInfo.map((info, i) => (
-          info != "" && (<DataItem key={i}>
-            <img src={ngoIcons[i]} alt="" />
-            <p>{info}</p>
-          </DataItem>)
-        ))}
-
-        {socialMediaLinks.length > 0 && (
-          <SocialIconsDiv>
-            {socialMediaLinks.map(({ href, orange, brown, alt }, index) => (
-              <a key={index} href={href} target="_blank" rel="noopener noreferrer">
-                <Icon $orange={orange} $brown={brown} aria-label={alt} />
-              </a>
-            ))}
-          </SocialIconsDiv>
-        )}
-        
-        <div>
-          <ButtonLink onClick={() => navigate(`/NGOProfile/${ngo?.id}`)} link_type="primary" fontsize="15px">
-            Saiba Mais
-          </ButtonLink>
-        </div>
-      </InfoSection>
-
-      {showApproveButtons && ngo &&(
-        <NGOApproveButtonWrapper>
-          <PrimarySecondaryButton
-            buttonType="Secundário"
-            content="Recusar"
-            onClick={() => onRejectClick?.(ngo)}
-            height="40px"
-            paddingV=""
-            paddingH=""
-            $flex
-          />
-          <PrimarySecondaryButton
-            buttonType="Primário"
-            content="Aceitar"
-            onClick={() => onApproveClick?.(ngo)}
-            height="40px"
-            paddingV=""
-            paddingH=""
-            $flex
-          />
-        </NGOApproveButtonWrapper>
+          {showDeleteOptions && (
+            <PrimarySecondaryButton
+                buttonType="Secundário"
+                content="Excluir"
+                onClick={() => onDeleteClick?.(ngo)}
+                height="40px"
+                width="100%"
+            />
+          )}
+        </ActionsBox>
       )}
     </CardContainer>
   );

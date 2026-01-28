@@ -23,31 +23,24 @@ import { IManageAnimals, ModalAction } from "./types";
 import { Pet } from "../../types/pets";
 import { useAuth } from "../../hooks/useAuth";
 import ConfirmModal from "../../components/ConfirmModal";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { set } from "react-hook-form";
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
-
-  const CACHE_KEY = '@Meau:PetsCache';
 
 
   // Estados dos pets
   // Inicialização "Lazy" com LocalStorage
   // Isso roda antes do primeiro render visual, garantindo que se tiver cache, ele já aparece.
+
+  const petsData = useLoaderData() as Pet[];
+
+
+  console.log("Pets data from loader:", petsData);
   const [pets, setPets] = useState<Pet[]>(() => {
-    try {
-      const saved = localStorage.getItem(CACHE_KEY);
-      console.log("Carregando pets do cache:");
-      console.log(saved);
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.log("Erro ao carregar pets do cache:", error);
-      console.log("Nenhum cache encontrado ou erro ao carregar.");
-      return [];
-    }
+    return petsData || [];
   });
 
-
-
-  const [isLoadingPets, setIsLoadingPets] = useState<boolean>(true);
+  const [isLoadingPets, setIsLoadingPets] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   // Estados dos filtros
@@ -136,22 +129,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
         ...pet,
         id: pet._id || pet.id,
       }));
-      
-      
-      const isDefaultView = (selectedSpecie === -1) && !selectedState && !city && !name; // adicione os outros filtros aqui
 
-      console.log("isDefaultView:", isDefaultView);
-      if(isDefaultView){
-        console.log("Salvando pets no cache:");
-        try{
-          localStorage.setItem(CACHE_KEY, JSON.stringify(mappedPets.slice(0, 12))); // Só o suficiente pra encher a primeira página
-          console.log("Pets salvos no cache:");
-          console.log(mappedPets.slice(0, 12));
-        } catch (error){
-          console.log("Erro ao salvar pets no cache:", error);
-          // Falha ao salvar no localStorage, pode ignorar ou logar se quiser
-        }
-      }
       setPets(mappedPets);
             
     } catch (err) {
@@ -234,10 +212,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const showedPets = pets.slice(startIndexShowedPets, startIndexShowedPets + petsPerPage);
 
   useEffect(() => {
-    fetchPets();
-  }, []);
-
-  useEffect(() => {
     const handleResize = () => {
       const isWindowSmall = window.innerWidth < 1240;
       const newPetsPerPage = getPetsPerPage();
@@ -262,9 +236,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     document.body.style.overflow = showAnimalFilterOnSide ? "hidden" : "";
   }, [showAnimalFilterOnSide]);
 
-  const { isLoading, user, isLoggedIn} = useAuth();
-
-  if(isLoading) return null;
 
   return (
     <>
@@ -278,12 +249,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
           onClose={() => setModalAction(null)}
       />
 
-      <Header
-        color="#FFF6E8"
-        Logo={logo}
-        isLoggedIn={isLoggedIn}
-        user={user}
-      />
+
 
       <BannerComponent
         limitWidthForImage="850px"

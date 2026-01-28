@@ -25,12 +25,13 @@ import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import { useAuth } from "../../hooks/useAuth";
+import { useLoaderData } from "react-router";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
 
 // Interface para definir a estrutura da ONG
 interface NGO {
-  id: string;
+  _id: string;
   name: string;
   city: string;
   email: string;
@@ -63,8 +64,9 @@ const ApproveNGO = () => {
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
   // Estado para armazenar as ONGs
-  const [ngos, setNgos] = useState<NGO[]>([]);
-  const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(true);
+  const ngoData = useLoaderData() as NGO[];
+  const [ngos, setNgos] = useState<NGO[]>(ngoData || []);
+  const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   // Estados para modais e toasts
@@ -122,7 +124,7 @@ const ApproveNGO = () => {
       const response = await ngoService.approve(ngoId);
 
       // Atualiza a lista de ONGs removendo a ONG aprovada
-      setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+      setNgos(prevNgos => prevNgos.filter(ngo => ngo._id !== ngoId));
 
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -147,7 +149,7 @@ const ApproveNGO = () => {
       await ngoService.delete(ngoId);
 
       // Atualiza a lista de ONGs removendo a ONG rejeitada
-      setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+      setNgos(prevNgos => prevNgos.filter(ngo => ngo._id !== ngoId));
 
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -261,12 +263,6 @@ const ApproveNGO = () => {
     }
   };
 
-  /**
-   * Efeito para buscar ONGs quando o componente for montado
-   */
-  useEffect(() => {
-    fetchNGOs();
-  }, []);
 
   /**
    * Atualiza o estado do layout e quantidade de ONGs por página ao redimensionar a tela
@@ -310,7 +306,6 @@ const ApproveNGO = () => {
 
   return (
     <>
-      <Header color="#FFF6E8" Logo={HorizontalLogo} user={user} isLoggedIn={isLoggedIn} />
 
       <BannerComponent 
         limitWidthForImage="850px" 
@@ -364,11 +359,11 @@ const ApproveNGO = () => {
 
             {showedNGOs.length > 0 && showedNGOs.map((ngo) => (
               <OngInfoCard
-                key={ngo.id}
+                key={ngo._id}
                 ngo={ngo}
                 showApproveButtons={true}
-                onApproveClick={() => openModal("aprovar", ngo.id)}
-                onRejectClick={() => openModal("recusar", ngo.id)}
+                onApproveClick={() => openModal("aprovar", ngo._id)}
+                onRejectClick={() => openModal("recusar", ngo._id)}
               />
             ))}
           </NGOCardsContainer>

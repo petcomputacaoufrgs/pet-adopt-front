@@ -134,7 +134,7 @@ export const InfoCard = styled.div`
 
     padding: 40px;
 
-    gap: 32px;
+    gap: 20px;
 
     box-sizing: border-box;
 

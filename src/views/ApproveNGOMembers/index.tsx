@@ -26,13 +26,14 @@ import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
 import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
+import { useLoaderData } from "react-router-dom";
 
 
 type ModalAction = { tipo: "aprovar" | "recusar"; membroId: string } | null;
 
 // Interface para definir a estrutura do membro
 interface MEMBER {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   ngoId?: string;
@@ -40,9 +41,12 @@ interface MEMBER {
 
 const ApproveNGOMembers = () => {
 
+
+  const {members: membersData, user: userData} = useLoaderData() as {members: MEMBER[], user: any};
+
+
   /*estados que guardam informações da ong*/
-  const { user, isLoggedIn} = useAuth();
-  const ngoId = useAuth().user?.ngoId;
+  const ngoId = userData?.ngoId;
 
     
   /**
@@ -61,9 +65,9 @@ const ApproveNGOMembers = () => {
   const [showMembersFilter, setshowMembersFilter] = useState(false);
 
   // Estado para armazenar as ONGs
-  const [members, setMembers] = useState<MEMBER[]>([]);
-  const [allMembers, setAllMembers] = useState<MEMBER[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [members, setMembers] = useState<MEMBER[]>(membersData || []);
+  const [allMembers, setAllMembers] = useState<MEMBER[]>(membersData || []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   // Estados para modais e toasts
@@ -100,7 +104,7 @@ const ApproveNGOMembers = () => {
       // Mapear os dados para garantir que tenham o campo 'id'
       const mappedMembers = response.data.map((member: any) => ({
         ...member,
-        id: member._id || member.id,
+        _id: member._id || member.id,
       }));
       
       setMembers(mappedMembers);
@@ -151,10 +155,12 @@ const ApproveNGOMembers = () => {
       setIsLoading(true);
       setError("");
 
+      console.log(members);
+      console.log("Aprovando membro com ID:", memberId);
       const response = await userService.approve(memberId);
 
       // Atualiza a lista de ONGs removendo a ONG aprovada
-      setMembers(prevMembers => prevMembers.filter(member => member.id !== memberId));
+      setMembers(prevMembers => prevMembers.filter(member => member._id !== memberId));
 
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -179,7 +185,7 @@ const ApproveNGOMembers = () => {
       await userService.delete(memberId);
 
       // Atualiza a lista de membros removendo o membro rejeitado
-      setMembers(prevMembers => prevMembers.filter(member => member.id !== memberId));
+      setMembers(prevMembers => prevMembers.filter(member => member._id !== memberId));
 
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -209,6 +215,7 @@ const ApproveNGOMembers = () => {
   // Define os membros que serão mostradas com base na página atual
   const startIndexShowedMembers = membersPerPage * (currentPage - 1);
   const showedMembers = members.slice(startIndexShowedMembers, startIndexShowedMembers + membersPerPage);
+  console.log("Membros para mostrar na página atual:", showedMembers);
 
   /**
    * Função para resetar toast de sucesso
@@ -258,6 +265,9 @@ const ApproveNGOMembers = () => {
     }, 3500);
   };
 
+
+  console.log(modalAction);
+
   /**
    * Abrir modal (e fechar toast se estiver aberto)
    */
@@ -295,13 +305,6 @@ const ApproveNGOMembers = () => {
     }
   };
 
-  /**
-   * Efeito para buscar ONGs quando o componente for montado
-   */
-   useEffect(() => {
-    console.log(ngoId);
-    if (ngoId) fetchMembers();
-  }, [ngoId]);
 
   /**
    * Atualiza o estado do layout e quantidade de ONGs por página ao redimensionar a tela
@@ -342,9 +345,11 @@ const ApproveNGOMembers = () => {
   const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
 
 
+  console.log("Renderizando ApproveNGOMembers");
+  console.log(userData);
+
   return (
     <>
-      <Header color="#FFF6E8" Logo={HorizontalLogo} user={user} isLoggedIn={isLoggedIn} />
       <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Gerencie sua equipe dos sonhos!" subTitle="Veja, organize e acompanhe sua equipe de um jeito simples e prático."   imageUrl={ManageMembersHamster}/>
            
       <TopBarContainer>
@@ -401,12 +406,12 @@ const ApproveNGOMembers = () => {
 
             {showedMembers.length > 0 && showedMembers.map((member) => (
               <MemberInfoCard
-                key={member.id}
+                key={member._id}
                 member={member}
                 showApproveButtons={true}
                 showEditOptions = {false}
-                onApproveClick={() => openModal("aprovar", member.id)}
-                onRejectClick={() => openModal("recusar", member.id)}
+                onApproveClick={() => openModal("aprovar", member._id)}
+                onRejectClick={() => openModal("recusar", member._id)}
               />
             ))}
           </MemberCardsContainer>

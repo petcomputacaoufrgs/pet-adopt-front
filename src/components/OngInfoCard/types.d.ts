@@ -1,5 +1,5 @@
 export interface NGO {
-  id: string;
+  _id: string;
   name: string;
   city: string;
   email: string;
@@ -13,7 +13,7 @@ export interface NGO {
 }
 
 export interface OngInfoCardProps {
-  ngo?: NGO;
+  ngo: NGO;
   showApproveButtons?: boolean;
   showDeleteOptions?: boolean;
 

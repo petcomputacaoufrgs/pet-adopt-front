@@ -380,7 +380,6 @@ return (
         </ModalOverlay>
       )}
 
-      <Header Logo={loginPageLogo} isLoggedIn={isLoggedIn} user={user} color="rgba(0,0,0,0)"/>      
 
       <SignUpContainer>
         {windowSize >= 1200 &&

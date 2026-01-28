@@ -58,6 +58,7 @@ const ManageNGOMembers: React.FC = () => {
           id: member._id||member.id,
         }));
         setNgoMembers(mappedMembers);
+        console.log(mappedMembers);
 
         if (!filters || Object.keys(filters).length === 0) {
           setAllMembers(mappedMembers); // salva lista completa para autocomplete

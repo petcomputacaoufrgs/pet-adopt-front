@@ -26,10 +26,14 @@ import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import { useAuth } from "../../hooks/useAuth";
+import { useLoaderData } from "react-router-dom";
+
+import { useToast } from "../../contexts/ToastContext";
+
 
 // Interface para definir a estrutura da ONG
 interface NGO {
-  id: string;
+  _id: string;
   name: string;
   city: string;
   email: string;
@@ -53,9 +57,11 @@ const ManageNgo = () => {
   const [name, setName] = useState<string>("");
 
   // Estado para armazenar as ONGs
-  const [ngos, setNgos] = useState<NGO[]>([]);
-  const [allNgos, setAllNgos] = useState<NGO[]>([]); // Para manter lista completa para autocomplete
-  const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(true);
+  const ngosData = useLoaderData() as NGO[];
+
+  const [ngos, setNgos] = useState<NGO[]>(ngosData);
+  const [allNgos, setAllNgos] = useState<NGO[]>(ngosData); // Para manter lista completa para autocomplete
+  const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [ngoToDeleteId, setNgoToDeleteId] = useState<string|null>(null);
 
@@ -65,6 +71,7 @@ const ManageNgo = () => {
 
   const[showDeleteButton, setShowDeleteButton] = useState<boolean>(false)
 
+  const { showToast } = useToast();
   /**
    * Função para buscar ONGs com filtros
    */
@@ -79,7 +86,7 @@ const ManageNgo = () => {
       // Mapear os dados para garantir que tenham o campo 'id'
       const mappedNgos = response.data.map((ngo: any) => ({
         ...ngo,
-        id: ngo._id || ngo.id,
+        _id: ngo._id || ngo.id,
       }));
       
       setNgos(mappedNgos);
@@ -144,14 +151,7 @@ const ManageNgo = () => {
   const startIndexShowedNGOs = ngosPerPage * (currentPage - 1);
   const showedNGOs = ngos.slice(startIndexShowedNGOs, startIndexShowedNGOs + ngosPerPage);
   const { isLoading, user, isLoggedIn} = useAuth();
-  /**
-   * Efeito para buscar ONGs quando o componente for montado
-   */
-  useEffect(() => {
-    
-    fetchNGOs(); // Buscar todas as ONGs inicialmente
 
-  }, []);
 
   useEffect(() => {
     if (user?.role === "ADMIN") {
@@ -222,22 +222,14 @@ const ManageNgo = () => {
   /**
    * Função para deletar uma ONG
    */
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [ModalType, setModalType] =  useState<"excluir" | "recusar" | "aprovar" | null>(null);
-  const [toastType, setToastType] = useState<"excluir" | "recusar" | "aprovar" | null>(null);
-  const [showToast, setShowToast] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
 
   
 
   const handleDeleteConfirm = async (ngoId: string) => {
       if (!ngoId) return;
       await deleteNGO(ngoId);
-      setModalType(null);
-      setToastType("excluir");
-      
+      setModalType(null);    
   };
 
   const deleteNGO = async (ngoId: string) => {
@@ -245,29 +237,41 @@ const ManageNgo = () => {
       await ngoService.delete(ngoId);
       
       // Remover a ONG da lista local
-      setNgos(prevNgos => prevNgos.filter(ngo => ngo.id !== ngoId));
+      setNgos(prevNgos => prevNgos.filter(ngo => ngo._id !== ngoId));
       
       // Ajustar página atual se necessário
-      const updatedNgos = ngos.filter(ngo => ngo.id !== ngoId);
+      const updatedNgos = ngos.filter(ngo => ngo._id !== ngoId);
       if (ngosPerPage * currentPage > updatedNgos.length && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
 
-      resetToast();
-      setShowToast(true);
-      setToastType("excluir");
+      showToast(
+        { success: true,
+          message: "ONG excluída com sucesso!",
+          description: "A ONG foi removida do sistema."
 
-      showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-      hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-      fullCloseTimeoutRef.current = setTimeout(() => {
-        setShowToast(false);
-      }, 3500);
+        }
+      )
       
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         setError(err.response.data?.message || 'Erro ao deletar ONG.');
+
+        showToast(
+          { success: false,
+            message: "Erro ao deletar ONG.",
+            description: err.response.data?.message || 'Erro ao deletar ONG.'
+          }
+        )
+
       } else {
         setError('Erro de conexão. Tente novamente mais tarde.');
+        showToast(
+          { success: false,
+            message: "Erro ao deletar ONG.",
+            description: 'Erro de conexão. Tente novamente mais tarde.'
+          }
+        )
       }
     }
   };
@@ -277,36 +281,19 @@ const ManageNgo = () => {
    */
   const handleDeleteClick = (ngo?: NGO) => {
     if (!ngo) return;
-    setNgoToDeleteId(ngo.id)
+    setNgoToDeleteId(ngo._id)
     setModalType("excluir");
   };
 
-
-  // Fecha toast com animação
-  const resetToast = () => {
-      setToastVisible(false);
-  
-      if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-      if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-  
-      setShowToast(false);
-      setToastType(null)
-  };
     
     
 
   if(isLoading)
     return null;
   
+  console.log(showedNGOs);
   return (
     <>
-      <Header
-        color="#FFF6E8"
-        Logo={HorizontalLogo}
-        isLoggedIn={isLoggedIn}
-        user={user}
-      />
 
       <BannerComponent
         limitWidthForImage="850px"
@@ -318,6 +305,15 @@ const ManageNgo = () => {
 
       <TopBarContainer id="top-bar">
         <TopBarContent>
+
+          <Breadcrumb
+            items={[
+              { label: "Home", to: "/" },
+              { label: "Gerenciar ONGs" },
+            ]}
+          />
+
+
           {hideNGOFilter && (
             <PrimarySecondaryButton
               onClick={() => setshowNGOsFilter(true)}
@@ -327,12 +323,7 @@ const ManageNgo = () => {
             />
           )}
 
-          <Breadcrumb
-            items={[
-              { label: "Home", to: "/" },
-              { label: "Gerenciar ONGs" },
-            ]}
-          />
+
         </TopBarContent>
       </TopBarContainer>
 
@@ -387,7 +378,7 @@ const ManageNgo = () => {
             
             {!isLoadingNGOs && !error && showedNGOs.map((ngo, index) => (
               <OngInfoCard
-                key={ngo.id || index}
+                key={ngo._id || index}
                 ngo={ngo}
                 showDeleteOptions={showDeleteButton}
                 onDeleteClick={handleDeleteClick}
@@ -423,20 +414,6 @@ const ManageNgo = () => {
                 onClose={() => {setModalType(null); setNgoToDeleteId(null)}}
             />
           )}
-            
-            {showToast && toastType && (
-            <Toast
-                type="success"
-                message="ONG excluída com sucesso!"
-                description= "A ONG foi removido do sistema."
-                onClose={() => {
-                setToastVisible(false);
-                setTimeout(() => setShowToast(false), 300);
-                }}
-                isVisible={toastVisible}
-            />
-            )}
-      
     </>
   );
 };

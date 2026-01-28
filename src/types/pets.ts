@@ -5,7 +5,7 @@ export interface Pet {
   age: string;
   sex: string;
   species: string;
-  size?: string;
+  size: string;
   breed?: string;
   characteristics: string;
   NGO: string;

@@ -1,12 +1,13 @@
 // imports
 import { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { NGO } from "../../types/ngos";
 import { ngoService, userService } from "../../services";
 import { AxiosError } from "axios";
 
  
+import { useToast } from "../../contexts/ToastContext";
 
 import {
     Container, MiddleContainer, ProfileContainer, NgoCardContainer,
@@ -40,18 +41,16 @@ import XBrownIcon from "../../assets/XBrownIcon.png"
 // component
 const NgoProfile = () => {
     const { id } = useParams<{ id: string }>();
-    const [ngo, setNgo] = useState<NGO | null>(null);
-    const [isApprovedNGO, setIsApprovedNGO] = useState<boolean | null>(null);
+    const {ngo: ngoData, isApproved}= useLoaderData() as { ngo: NGO | null, isApproved: boolean | null };
+
+
+    const {showToast} = useToast();
+
+    const [ngo, setNgo] = useState<NGO | null>(ngoData);
     const navigate = useNavigate();
     const [error, setError] = useState<string>("");
     const {isLoading, user, isLoggedIn, logout} = useAuth();
-    const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [ModalType, setModalType] =  useState<"excluir" | "recusar" | "aprovar" | null>(null);
-    const [toastType, setToastType] = useState<"excluir" | "recusar" | "aprovar" | null>(null);
-    const [showToast, setShowToast] = useState(false);
-    const [toastVisible, setToastVisible] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen]=useState(false);
 
     const fetchNgoById = async (id: string) => {
@@ -61,8 +60,6 @@ const NgoProfile = () => {
             console.log(response.data);
 
             const approvedResponse = await ngoService.isApproved(id);
-            setIsApprovedNGO(approvedResponse.data.approved);
-            console.log(isApprovedNGO)
         } catch (error) {
             console.error("Erro ao buscar ngo:", error);
         }
@@ -74,7 +71,6 @@ const NgoProfile = () => {
     const approveNGO = async (ngoId: string) => {
         try {
             const response = await ngoService.approve(ngoId);
-            setIsApprovedNGO(true);
 
         } catch (err) {
             if (err instanceof AxiosError && err.response) {
@@ -89,7 +85,6 @@ const NgoProfile = () => {
         if (!id) return;
         await approveNGO(id);
         setModalType(null);
-        setToastType("aprovar");
     };
 
 
@@ -116,7 +111,6 @@ const NgoProfile = () => {
         if (!id) return;
         await rejectNGO(id);
         setModalType(null);
-        setToastType("recusar");
     };
 
 
@@ -134,22 +128,29 @@ const NgoProfile = () => {
             await ngoService.delete(ngoId);
           }
           
-          resetToast();
-          setShowToast(true);
-          setToastType("excluir");
-    
-          showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-          hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-          fullCloseTimeoutRef.current = setTimeout(() => {
-            setShowToast(false);
-          }, 3500);
+          showToast({
+            success: true,
+            message: "ONG excluída com sucesso!",
+            description: "A ONG foi removida do sistema.",
+          })
           
           
         } catch (err) {
           if (err instanceof AxiosError && err.response) {
             setError(err.response.data?.message || 'Erro ao deletar ONG.');
+            showToast({
+                success: false,
+                message: "Erro ao excluir ONG",
+                description: err.response.data?.message || 'Erro ao deletar ONG.',
+              })
+
           } else {
             setError('Erro de conexão. Tente novamente mais tarde.');
+            showToast({
+                success: false,
+                message: "Erro ao excluir ONG",
+                description: 'Erro de conexão. Tente novamente mais tarde.',
+              })
           }
         }
     };
@@ -158,7 +159,6 @@ const NgoProfile = () => {
         await deleteNGO(id);
         setModalType(null);
         setNgo(null);
-        setToastType("excluir");
        
     };
 
@@ -168,21 +168,7 @@ const NgoProfile = () => {
         fetchNgoById(id);
     }
     
-      
-    // Fecha toast com animação
-    const resetToast = () => {
-        setToastVisible(false);
-    
-        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-        if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-    
-        setShowToast(false);
-        setToastType(null)
-    };
-      
-      
-   
+  
     
     useEffect(() => {
     document.body.style.overflow = isEditModalOpen ? "hidden" : "";
@@ -215,17 +201,6 @@ const NgoProfile = () => {
     };
     
 
-
-
-
-    useEffect(() => {
-        if (id) {
-            fetchNgoById(id);
-        }
-    }, [id]);
-
-
-   
     console.log(user);
     if(isLoading)
         return null;
@@ -266,29 +241,22 @@ const NgoProfile = () => {
 
     return (
         <Container>
-            <Header
-                color="#FFF6E8"
-                Logo={logo}
-                isLoggedIn={isLoggedIn}
-                user={user}
-            />
             <MiddleContainer>
             {!isLoading && ngo && (
                     <div>
-                    {(isApprovedNGO||(user!==null&&user.role==="ADMIN")) &&(
                         <ProfileContainer>
                             <NgoCardContainer>
                                 <NgoNameContainer>
                                     <TextsContainer>
                                         {window.innerWidth > 768 && <p>ONG</p>}
                                         <h1>{ngo?.name}</h1>
-                                        {ngo.website &&(<a href="{ngo.website}">Ver Site Institucional da ONG</a>)}
+                                        {ngo.website &&(<a href={ngo.website}>Ver Site Institucional da ONG</a>)}
                                     </TextsContainer>
                                     
                                     
-                                    {isApprovedNGO && (
+                                    
                                         <ButtonsContainer>
-                                            {user !== null && ((user.role === "NGO_ADMIN" && user.ngoId===ngo._id) || user.role==="ADMIN")&& (
+                                            {user !== null && ((user.role === "NGO_ADMIN" && user.ngoId===ngo._id) || user.role==="ADMIN") && isApproved && (
                                                 <PrimarySecondaryButton
                                                     width="100%"
                                                     paddingV="8px"
@@ -298,7 +266,7 @@ const NgoProfile = () => {
                                                     onClick={handleDelete}
                                                 />
                                             )}
-                                            {user !== null && user.role === "NGO_ADMIN" && user.ngoId===ngo._id &&(
+                                            {user !== null && user.role === "NGO_ADMIN" && user.ngoId===ngo._id && isApproved && (
                                                 <PrimarySecondaryButton
                                                     width="100%"
                                                     paddingV="8px"
@@ -309,8 +277,8 @@ const NgoProfile = () => {
                                                 />
                                             )}
                                         </ButtonsContainer>
-                                    )}
-                                    {!isApprovedNGO && (
+
+                                    { user !== null && user.role === "ADMIN" && !isApproved &&
                                         <ButtonsContainer>
                                                 <PrimarySecondaryButton
                                                     width="100%"
@@ -331,7 +299,8 @@ const NgoProfile = () => {
                                                 />
                                             
                                         </ButtonsContainer>
-                                    )}
+
+                                    }
                                                                      
                                 </NgoNameContainer>
                                 
@@ -427,10 +396,10 @@ const NgoProfile = () => {
                                 </NgoFormsContainer>
                             </NgoDescriptionContainer>
                         </ProfileContainer>
-                    )}
+
                 </div>
         )}
-        { !isLoading && (!ngo || (!isApprovedNGO && (user!== null && user.role!=="ADMIN"))) &&(
+        { !isLoading && !ngo &&(
             <div>
             <SectionWithEmptyStateContainer>
                 <SectionWithEmptyState 
@@ -462,18 +431,7 @@ const NgoProfile = () => {
                     onClose={() => setModalType(null)}
                 />
             )}
-            
-            {showToast && toastType && (
-            <Toast
-                message={`${toastType === "excluir" ? "Administrador excluído com sucesso!" : "Alterações salvas com sucesso"}`}
-                description= {`${toastType === "excluir" ? "O administrador foi removido do sistema." : "Os dados do administrador foram atualizados."}`}
-                onClose={() => {
-                setToastVisible(false);
-                setTimeout(() => setShowToast(false), 300);
-                }}
-                isVisible={toastVisible}
-            />
-            )}
+
             {isEditModalOpen && id && (
                 
                     <Backdrop>

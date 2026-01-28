@@ -21,3 +21,16 @@ export interface IAnimalFilter {
   onSearch?: () => void;
   onClearFilters?: () => void;
 }
+
+
+export interface FilterFormSchema {
+  specie: string; // ou 'dog' | 'cat' | 'other'
+  name: string;
+  size: string;
+  city: string;
+  state: string;
+  breed: string;
+  sex: string;
+  age: string;
+  situation: string;
+}

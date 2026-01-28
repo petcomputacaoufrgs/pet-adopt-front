@@ -9,6 +9,7 @@ import LargeInputField from "../LargeInput";
 import { Container, ContentContainer, UpdateButton, TopBar, InputsContainer, ButtonGroup, ButtonWrapper } from "./styles";
 import { useAuth } from "../../hooks/useAuth";
 import CloseButton from "../CloseButton";
+import SearchBar from "../SearchBar";
 
 
 type Props = { ngoId: string; onClose?: () => void };
@@ -19,6 +20,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
   const [description, setDescription] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
+  const [state, setState] = useState('');
   const [website, setWebsite] = useState('');
   const [instagram, setInstagram] = useState('');
   const [facebook, setFacebook] = useState('');
@@ -49,6 +51,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
         setDescription(response.data.description || '');
         setPhone(response.data.phone || '');
         setCity(response.data.city || '');
+        setState(response.data.state || '');
         setWebsite(response.data.website || '');
         setInstagram(response.data.instagram || '');
         setFacebook(response.data.facebook || '');
@@ -94,6 +97,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
         description,
         phone,
         city,
+        state,
         website,
         instagram,
         facebook,
@@ -153,7 +157,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
           <CloseButton themeMode="dark" onClick={onClose} />
         </TopBar>
 
-        {errorMessage && <div style={{ color: "red", marginBottom: "1rem" }}>{errorMessage}</div>}
+        {errorMessage && <div style={{ color: "red", marginBottom: "16px" }}>{errorMessage}</div>}
           
         <InputsContainer>
           <h2>Informações da ONG</h2>
@@ -162,7 +166,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={true}
             placeholder="Insira o nome da ONG"
             value={name}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setName(e.target.value)}
           />
@@ -173,10 +177,11 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             placeholder="Insira o email"
             value={email}
             onChange={(e) => { setEmail(e.target.value); verifyEmail(e.target.value); }}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             error={emailError}
             errorMessage={emailErrorMessage}
+            disabled={true}
           />
 
           <BasicInput
@@ -184,7 +189,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira o CPF/CNPJ"
             value={doc}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setDoc(e.target.value)}
           />
@@ -192,7 +197,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
           <LargeInputField
             title="Descrição (Opcional)"
             required={false}
-            $fontSize="1rem"
+            $fontSize="16px"
             placeholder="Escreva uma breve descrição aqui"
             $width="100%"
             value={description}
@@ -201,6 +206,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             visible={false}
             isDisabled={false}
             $inputType="Primário"
+            maxLength={1000}
           />
         </InputsContainer>
 
@@ -211,7 +217,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira o contato da ONG"
             value={phone}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setPhone(e.target.value)}
           />
@@ -221,9 +227,20 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira a cidade"
             value={city}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setCity(e.target.value)}
+          />
+
+          <SearchBar
+            title="Estado"
+            required={true}
+            placeholder="Selecione o estado"
+            query={state}
+            setQuery={(selectedState: string) => setState(selectedState)}
+            fontSize="16px"
+            width="100%"
+            options={["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]}
           />
 
           <BasicInput
@@ -231,7 +248,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira o link aqui"
             value={website}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setWebsite(e.target.value)}
           />
@@ -241,7 +258,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={true}
             placeholder="Insira o link aqui"
             value={instagram}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setInstagram(e.target.value)}
           />
@@ -251,7 +268,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira o link aqui"
             value={facebook}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setFacebook(e.target.value)}
           />
@@ -264,7 +281,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={true}
             placeholder="Insira o link aqui"
             value={adoptionForm}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setAdoptionForm(e.target.value)}
           />
@@ -274,7 +291,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira o link aqui"
             value={sponsorshipForm}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setSponsorshipForm(e.target.value)}
           />
@@ -284,7 +301,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira o link aqui"
             value={temporaryHomeForm}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setTemporaryHomeForm(e.target.value)}
           />
@@ -294,7 +311,7 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             required={false}
             placeholder="Insira o link aqui"
             value={claimForm}
-            $fontSize="1rem"
+            $fontSize="16px"
             $width="100%"
             onChange={(e) => setClaimForm(e.target.value)}
           />
