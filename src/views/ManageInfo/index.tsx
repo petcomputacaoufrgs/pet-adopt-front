@@ -92,7 +92,7 @@ const ManageInfo: React.FC = () => {
     }
 
     try {
-      await userService.update(user?.id, {
+      await userService.update(user?._id, {
         name,
         email,
         password,

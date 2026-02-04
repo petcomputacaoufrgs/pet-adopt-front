@@ -23,25 +23,13 @@ import {
 import { User } from "../../types/user";
 import { useToast } from "../../contexts/ToastContext";
 
-// Tipagem do Loader Data
-interface LoaderData {
-  members: User[];
-  user: User;
-  totalItems: number;
-  error?: string;
-  meta: {
-    total: number;
-    lastPage: number;
-    page: number;
-    limit: number;
-  };
 
-}
+
 
 const ManageNGOMembers: React.FC = () => {
 
   // DADOS: Vêm do Loader
-  const { members: membersData, user: userData, meta } = useLoaderData() as LoaderData;
+  const { items: membersData, user: userData, meta } = useLoaderData() as { items: User[]; user: User | null; meta: any };
 
   // HOOKS DO ROUTER
   const [searchParams, setSearchParams] = useSearchParams();
@@ -53,7 +41,7 @@ const ManageNGOMembers: React.FC = () => {
   const isDeleting = fetcher.state !== "idle";
 
   // LÓGICA DE PAGINAÇÃO & RESPONSIVIDADE
-  const currentPage = Number(searchParams.get("page") || "1");
+  const currentPage = meta.page;
 
   // State local apenas para controlar layout UI
   const [hideMembersFilter, setHideMembersFilter] = useState(window.innerWidth < 1240);
@@ -112,8 +100,11 @@ const ManageNGOMembers: React.FC = () => {
   const handleDeleteConfirm = () => {
     if (!memberToDelete) return;
     // Dispara o POST para a action
+
+    console.log("Confirmando deleção do administrador:", memberToDelete);
+
     fetcher.submit(
-      { intent: "delete", memberId: memberToDelete.id }, 
+      { intent: "delete", id: memberToDelete._id }, 
       { method: "post" }
     );
   };
@@ -178,7 +169,7 @@ const ManageNGOMembers: React.FC = () => {
            <NGOCardsContainer>
              {membersData.map((member) => (
                <MemberInfoCard
-                 key={member.id}
+                 key={member._id}
                  member={member}
                  showEditOptions={true}
                  onDeleteClick={() => setMemberToDelete(member)}

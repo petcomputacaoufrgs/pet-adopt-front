@@ -1,3 +1,5 @@
+import api from "../api";
+
 export interface PetFilters {
   species?: string;
   name?: string;
@@ -201,6 +203,9 @@ const toBackendSituation = (situation: string) => {
 // --- A FUNÇÃO MÁGICA EXPORTADA ---
 export const normalizeFiltersForApi = (frontFilters: any) => {
   const apiFilters: any = {};
+
+  apiFilters.page = frontFilters.page || 1;
+  apiFilters.limit = frontFilters.limit || 12;
 
   if (frontFilters.name) apiFilters.name = frontFilters.name;
   if (frontFilters.city) apiFilters.city = frontFilters.city;

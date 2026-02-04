@@ -42,6 +42,12 @@ export const ngoService = {
     const url = buildNGOUrl('/ngos/unapproved', filters);
     return api.get(url);
   },
+
+  getUnapprovedPage: (filters?: NGOFilters) => {
+    return api.get('/ngos/unapproved/page', {
+      params: filters
+    }); 
+  },
   
   approve: (ngoId: string) => 
     api.patch(`/ngos/${ngoId}/approve`),
@@ -67,14 +73,11 @@ export const petService = {
     return api.get(url);
   },
 
-  getPage: (page: number, filters?: PetFilters) => {
-    const limit = 3;
+  getPage: (filters?: PetFilters) => {
     const apiFilters = normalizeFiltersForApi(filters || {});
     return api.get('/pets/page', {
-      params: {
-        page,
-        limit,
-        ...apiFilters,}});
+      params: apiFilters
+    });
 
   },
 
@@ -127,6 +130,13 @@ export const userService = {
     const url = buildUserUrl('/users/unapprovedMembers/', ngoId, filters);
     return api.get(url);
   },
+
+  getUnapprovedMembersPage: (ngoId: string, filters?: UserFilters) => {    
+    return api.get(`/users/unapprovedMembers/page/${ngoId}`, {
+      params: filters
+    });
+  },
+
 
   approve: (memberId: string) => 
     api.patch(`/users/${memberId}/approve`),

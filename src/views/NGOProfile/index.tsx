@@ -121,7 +121,7 @@ const NgoProfile = () => {
         try {  
           if(user!=null&&id==user.ngoId){
             
-            const id_user = user.id;
+            const id_user = user._id;
             await ngoService.delete(ngoId);
             logout()
           }else{

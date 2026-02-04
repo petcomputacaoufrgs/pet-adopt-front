@@ -51,7 +51,7 @@ const ManageNgo = () => {
 
   // Estado para armazenar as ONGs
 
-  const {ngos, user, meta, error} = useLoaderData() as {ngos: NGO[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }, error: string | null;};
+  const {items: ngos, user, meta, error} = useLoaderData() as {items: NGO[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }, error: string | null;};
 
   const [searchParams, setSearchParams] = useSearchParams();
   

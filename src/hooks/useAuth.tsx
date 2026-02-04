@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 interface User {
-  id: string;
+  _id: string;
   email: string;
   role: 'ADMIN' | 'NGO_ADMIN' | 'NGO_MEMBER' | 'REGULAR';
   ngoId: string;

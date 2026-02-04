@@ -25,7 +25,9 @@ import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import { useAuth } from "../../hooks/useAuth";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useNavigation } from "react-router";
+import { useFetcher, useSearchParams } from "react-router-dom";
+import { useToast } from "../../contexts/ToastContext";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
 
@@ -55,177 +57,66 @@ const ApproveNGO = () => {
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
   // Estado para armazenar as ONGs
-  const ngoData = useLoaderData() as NGO[];
-  const [ngos, setNgos] = useState<NGO[]>(ngoData || []);
-  const [isLoadingNGOs, setIsLoadingNGOs] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const {items: ngos, meta, error} = useLoaderData() as {items: NGO[], meta: any, error?: string};
+  
 
-  // Estados para modais e toasts
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [modalAction, setModalAction] = useState<ModalAction>(null);
-  
-  // Toast de sucesso
-  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
-  const [showToast, setShowToast] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
-  
-  // Toast de erro
-  const [errorToast, setErrorToast] = useState<string | null>(null);
-  const [showErrorToast, setShowErrorToast] = useState(false);
-  const [errorToastVisible, setErrorToastVisible] = useState(false);
 
 
-  /**
-   * Função para aprovar ONG
-   */
-  const approveNGO = async (ngoId: string) => {
-    try {
-      setIsLoadingNGOs(true);
-      setError("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const fetcher = useFetcher();
+  const navigation = useNavigation();
 
-      const response = await ngoService.approve(ngoId);
+  const { showToast } = useToast();
 
-      // Atualiza a lista de ONGs removendo a ONG aprovada
-      setNgos(prevNgos => prevNgos.filter(ngo => ngo._id !== ngoId));
 
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao aprovar ONG.');
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
-      throw err; //Propagar o erro
-    } finally {
-      setIsLoadingNGOs(false);
-    }
-  };
-
-  /**
-   * Função para rejeitar ONG
-   */
-  const rejectNGO = async (ngoId: string) => {
-    try {
-      setIsLoadingNGOs(true);
-      setError("");
-
-      await ngoService.delete(ngoId);
-
-      // Atualiza a lista de ONGs removendo a ONG rejeitada
-      setNgos(prevNgos => prevNgos.filter(ngo => ngo._id !== ngoId));
-
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao rejeitar ONG.');
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
-      throw err; // Propagar o erro
-    } finally {
-      setIsLoadingNGOs(false);
-    }
-  };
-
-  /**
-   * Retorna a quantidade de pets que devem ser mostrados por página, de acordo com a largura atual da janela.
-   */
-  const getNGOsPerPage = () => {
-    if (window.innerWidth >= 1612) return 9;
-    else if (window.innerWidth >= 800) return 6;
-    else return 5;
-  };
-
-  const [ngosPerPage, setPetsPerPage] = useState<number>(getNGOsPerPage());
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Define as ONGs que serão mostradas com base na página atual
-  const startIndexShowedNGOs = ngosPerPage * (currentPage - 1);
-  const showedNGOs = ngos.slice(startIndexShowedNGOs, startIndexShowedNGOs + ngosPerPage);
-
-  /**
-   * Função para resetar toast de sucesso
-   */
-  const resetToast = () => {
-    setToastVisible(false);
-
-    if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-    if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-
-    setShowToast(false);
-    setToastType(null);
-  };
-
-  /**
-   * Função para mostrar toast de erro
-   */
-  const showErrorToastMessage = (message: string) => {
-    setErrorToast(message);
-    setShowErrorToast(true);
-    setErrorToastVisible(true);
-
-    // Auto-hide após 4 segundos
-    setTimeout(() => {
-      setErrorToastVisible(false);
-      setTimeout(() => {
-        setShowErrorToast(false);
-        setErrorToast(null);
-      }, 300);
-    }, 4000);
-  };
-
-  /**
-   * Função para mostrar toast de sucesso
-   */
-  const showSuccessToast = (tipo: "aprovar" | "recusar") => {
-    resetToast();
-    setToastType(tipo);
-    setShowToast(true);
-
-    showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-    hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-    fullCloseTimeoutRef.current = setTimeout(() => {
-      setShowToast(false);
-      setToastType(null);
-    }, 3500);
-  };
 
   /**
    * Abrir modal (e fechar toast se estiver aberto)
    */
   const openModal = (tipo: "aprovar" | "recusar", ngoId: string) => {
-    resetToast();
     setModalAction({ tipo, ngoId: ngoId });
   };
 
-  /**
-   * Confirmar ação - VERSÃO CORRIGIDA
-   */
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!modalAction) return;
 
-    try {
-      if (modalAction.tipo === "aprovar") {
-        await approveNGO(modalAction.ngoId);
-      } else if (modalAction.tipo === "recusar") {
-        await rejectNGO(modalAction.ngoId);
-      }
-      showSuccessToast(modalAction.tipo);
-
-    } catch (error) {
-      // Se der erro, mostra toast de erro
-      console.error("Erro na operação:", error);
-      
-      const errorMessage = modalAction.tipo === "aprovar" 
-        ? "Erro ao aprovar ONG. Tente novamente." 
-        : "Erro ao rejeitar ONG. Tente novamente.";
-      
-      showErrorToastMessage(errorMessage);
-    } finally {
-      setModalAction(null);
-    }
+    // Dispara a Action via Fetcher (sem reload de página)
+    fetcher.submit(
+      { intent: modalAction.tipo, id: modalAction.ngoId }, 
+      { method: "post" }
+    );
   };
+
+
+  useEffect(() => {
+      if (fetcher.state === "idle" && fetcher.data) {
+        if (fetcher.data.success) {
+          const type = fetcher.data.type; // "aprovar" ou "recusar" (ou "delete")
+          
+          showToast({
+             success: true,
+             message: `ONG ${type === "aprovar" ? "aprovada" : "recusada"}!`,
+             description: type === "aprovar" 
+               ? "Você pode ver essa ONG em Gerenciar ONGs." 
+               : "A ONG foi removida da lista."
+          });
+             
+          setModalAction(null); // Fecha modal
+  
+        } else if (fetcher.data.error) {
+          showToast({
+             success: false,
+             message: "Erro na operação.",
+             description: fetcher.data.error
+          });
+
+          setModalAction(null); // Fecha modal
+        }
+      }
+    }, [fetcher.state, fetcher.data]);
+  
 
 
   /**
@@ -234,15 +125,8 @@ const ApproveNGO = () => {
   useEffect(() => {
     const handleResize = () => {
       const isWindowSmall = window.innerWidth < 1240;
-      const newNGOsPerPage = getNGOsPerPage();
 
-      setPetsPerPage(newNGOsPerPage);
       sethideNGOFilter(isWindowSmall);
-
-      // Corrige página atual se necessário
-      if (showedNGOs.length > 0 && newNGOsPerPage * currentPage > ngos.length) {
-        setCurrentPage(Math.ceil(ngos.length / newNGOsPerPage));
-      }
 
       // Fecha o filtro no lado da tela se a janela for redimensionada para modo desktop
       if (!isWindowSmall && showNGOsFilter) {
@@ -252,7 +136,7 @@ const ApproveNGO = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [showNGOsFilter, currentPage, ngos.length]);
+  }, [showNGOsFilter]);
 
   /**
    * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda
@@ -261,11 +145,6 @@ const ApproveNGO = () => {
     document.body.style.overflow = showNGOsFilter ? "hidden" : "";
   }, [showNGOsFilter]);
 
-
-    const { isLoading, user, isLoggedIn} = useAuth();
-
-  if(isLoading)
-    return null;
 
 
   return (
@@ -309,12 +188,12 @@ const ApproveNGO = () => {
             subtitle="Escolha as ONGs que farão parte do projeto"
             emptyMessage="Nenhuma ONG Encontrada"
             expandContainer={hideNGOFilter}
-            emptyState={showedNGOs.length === 0}
+            emptyState={ngos.length === 0 && !error}
           />
           
           <NGOCardsContainer>
 
-            {showedNGOs.length > 0 && showedNGOs.map((ngo) => (
+            {ngos.length > 0 && ngos.map((ngo) => (
               <OngInfoCard
                 key={ngo._id}
                 ngo={ngo}
@@ -346,42 +225,12 @@ const ApproveNGO = () => {
           onClose={() => setModalAction(null)}
         />
 
-        {/* Toast de Sucesso */}
-        {showToast && toastType && (
-          <Toast
-            type="success"
-            message={`ONG ${toastType === "aprovar" ? "aprovada" : "recusada"} com sucesso!`}
-            description={`${toastType === "aprovar" ? "Você pode ver essa ONG em Gerenciar ONGs." : "A ONG foi removida da sua lista de validação."}`}
-            onClose={() => {
-              setToastVisible(false);
-              setTimeout(() => setShowToast(false), 300);
-            }}
-            isVisible={toastVisible}
-          />
-        )}
-
-        {/* Toast de Erro */}
-        {showErrorToast && errorToast && (
-          <Toast
-            type="error"
-            message="Erro na operação"
-            description={errorToast}
-            onClose={() => {
-              setErrorToastVisible(false);
-              setTimeout(() => {
-                setShowErrorToast(false);
-                setErrorToast(null);
-              }, 300);
-            }}
-            isVisible={errorToastVisible}
-          />
-        )}
       </ContentContainer>
 
       <PaginationButtons
-        currentPage={currentPage}
-        itemsLength={ngos.length}
-        itemsPerPage={ngosPerPage}
+        currentPage={meta.page}
+        itemsLength={meta.total}
+        itemsPerPage={meta.limit}
         buttonHeight="30px"
         buttonWidth="30px"
         containerHeight="160px"

@@ -22,9 +22,7 @@ import { ngoService, petService, userService } from "./services";
 import Header from "./components/Header";
 import logo from "./assets/HorizontalLogo.png"
 import { petProfileLoader } from "./views/PetProfile/petProfileLoader";
-import { petsAction, petsLoader } from "./views/ManageAnimals/petsLoader";
-import { membersAction, membersLoader } from "./views/ManageNGOMembers/ngoMembersLoader";
-import { ngosAction, ngosLoader } from "./views/ManageNgo/ngosLoader";
+import { createCrudAction, createPaginatedLoader } from "./services/helpers/loaderCreator";
 
 const RootLayout = () => {
   return (
@@ -50,9 +48,21 @@ const router = createBrowserRouter([
       // ROTAS PÚBLICAS
       { path: PUBLIC_PATHS.HOME, element: <HomeView /> },
       { path: PUBLIC_PATHS.SEARCH_ANIMALS, element: <ManageAnimals allowEdit={false} />,
-        loader: petsLoader,
-        action: petsAction
-    },
+        loader: createPaginatedLoader({
+          isPublic: true,
+          // Lista todos os filtros que a URL suporta
+          filterKeys: ["name", "species", "age", "size", "color", "city", "state", "sex"],
+  
+          fetchData: (filters, user) => {
+            // Não precisamos do 'user' aqui pois é busca pública
+            return petService.getPage(filters); // Certifique-se que o service suporta paginação
+          }}),
+
+        action: createCrudAction({
+          deleteFn: (id) => petService.delete(id)
+        })
+     },
+    
       { path: PUBLIC_PATHS.PET_PROFILE, element: <PetProfile />, loader: petProfileLoader },
 
       { path: PUBLIC_PATHS.NGO_PROFILE, element: <NgoProfile />, 
@@ -73,8 +83,15 @@ const router = createBrowserRouter([
        },
       
       { path: PUBLIC_PATHS.LIST_NGOS, element: <ManageNgo />,
-        loader: ngosLoader,
-        action: ngosAction
+        loader: createPaginatedLoader({
+          isPublic: true,
+          fetchData: (filters, user) => {
+            return ngoService.getApprovedPage(filters);
+          }
+        }),
+        action: createCrudAction({
+          deleteFn: (id) => ngoService.delete(id)
+        })
       },
 
       { path: PUBLIC_PATHS.LOGIN, element: <PublicRoute><LoginView /></PublicRoute> },
@@ -92,10 +109,16 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
 
-        loader: async ({ params } ) => {
-          const response = await ngoService.getUnapproved();
-          return response.data;
-        }
+        loader: createPaginatedLoader({
+          isPublic: true,
+          fetchData: (filters, user) => {
+            return ngoService.getUnapprovedPage(filters);
+          }
+        }),
+        action: createCrudAction({
+          deleteFn: (id) => ngoService.delete(id),
+          approveFn: (id) => ngoService.approve(id)
+        })
       },
 
       {
@@ -105,8 +128,24 @@ const router = createBrowserRouter([
             <ManageNGOMembers />
           </ProtectedRoute>
         ),
-        loader: membersLoader,
-        action: membersAction
+
+          loader: createPaginatedLoader({
+          isPublic: false,
+          // Lista todos os filtros que a URL suporta
+          filterKeys: ["name"],
+  
+          fetchData: (filters, user) => {
+
+            if(!user || !user.ngoId) {
+              throw new Error("Usuário não autenticado ou sem ONG associada");
+            }
+
+            return userService.getApprovedMembersPage(user.ngoId, filters); // Certifique-se que o service suporta paginação
+          }}),
+
+        action: createCrudAction({
+          deleteFn: (id) => userService.delete(id)
+        })
       },
 
       {
@@ -117,14 +156,24 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
 
-        loader: async ({ params } ) => {
-          const user = localStorage.getItem('user');
-          if(!user) return [];
-          const userData = JSON.parse(user);
-          const ngoId = userData.ngoId;
-          const response = await userService.getUnapprovedMembers(ngoId, {});
-          return {members: response.data, user: userData };
-        }
+        loader: createPaginatedLoader({
+          isPublic: false,
+          // Lista todos os filtros que a URL suporta
+          filterKeys: ["name"],
+  
+          fetchData: (filters, user) => {
+
+            if(!user || !user.ngoId) {
+              throw new Error("Usuário não autenticado ou sem ONG associada");
+            }
+
+            return userService.getUnapprovedMembersPage(user.ngoId, filters); // Certifique-se que o service suporta paginação
+          }}),
+
+        action: createCrudAction({
+          deleteFn: (id) => userService.delete(id),
+          approveFn: (id) => userService.approve(id)
+        })
       },
 
       {
@@ -134,9 +183,19 @@ const router = createBrowserRouter([
             <ManageAnimals allowEdit={true} />
           </ProtectedRoute>
         ),
+        loader: createPaginatedLoader({
+          isPublic: false,
+          // Lista todos os filtros que a URL suporta
+          filterKeys: ["name", "species", "age", "size", "color", "city", "state", "sex"],
+  
+          fetchData: (filters, user) => {
+            // Não precisamos do 'user' aqui pois é busca pública
+            return petService.getPage(filters); // Certifique-se que o service suporta paginação
+          }}),
 
-        loader: petsLoader,
-        action: petsAction
+        action: createCrudAction({
+          deleteFn: (id) => petService.delete(id)
+        })
       },
 
       {

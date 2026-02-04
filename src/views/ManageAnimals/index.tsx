@@ -30,7 +30,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
 
   // Estados dos pets
-  const {data: petsData, meta} = useLoaderData() as { data: Pet[]; meta: any };
+  const {items: petsData, meta} = useLoaderData() as { items: Pet[]; meta: any };
 
   const currentPage = meta?.page || 1;
   const petsPerPage = meta?.limit || 12;

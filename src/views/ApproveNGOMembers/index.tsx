@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { userService, UserFilters } from "../../services";
-import { useAuth } from "../../hooks/useAuth";
+import { userService } from "../../services";
 import { AxiosError } from "axios";
 import {
   CloseButton,
@@ -13,7 +12,6 @@ import {
 
 import BannerComponent from "../../components/BannerComponent";
 import Breadcrumb from "../../components/BreadCrumb";
-import Header from "../../components/Header";
 import MembersFilter from "../../components/MembersFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
@@ -24,9 +22,9 @@ import MemberInfoCard from "../../components/MemberInfoCard";
 
 import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
-import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
-import { useLoaderData } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
+import { useToast } from "../../contexts/ToastContext";
 
 
 type ModalAction = { tipo: "aprovar" | "recusar"; membroId: string } | null;
@@ -42,12 +40,9 @@ interface MEMBER {
 const ApproveNGOMembers = () => {
 
 
-  const { members: membersData, user: userData, meta } = useLoaderData() as { members: MEMBER[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }; error?: string };
+  const { items: members, user: userData, meta } = useLoaderData() as { items: MEMBER[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }; error?: string };
 
-  console.log("Dados do Loader:", { membersData, userData, meta });
 
-  /*estados que guardam informações da ong*/
-  const ngoId = userData?.ngoId;
 
   // Controla a exibição do filtro. Se for `true`, o filtro será ocultado (versões menores da tela) e o botão "filtros" deve ser apertado para mostrá-lo no lado da tela.
   // Se for false ele aparecerá na tela mesmo.
@@ -57,156 +52,18 @@ const ApproveNGOMembers = () => {
   // Define quando o filtro deve se mostrado no lado da tela (modo mobile ao clicar no botão "filtros").
   const [showMembersFilter, setshowMembersFilter] = useState(false);
 
-  // Estado para armazenar as ONGs
-  const [members, setMembers] = useState<MEMBER[]>(membersData || []);
-  const [allMembers, setAllMembers] = useState<MEMBER[]>(membersData || []);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
-  // Estados para modais e toasts
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [modalAction, setModalAction] = useState<ModalAction>(null);
+  const fetcher = useFetcher();
   
-  // Toast de sucesso
-  const [toastType, setToastType] = useState<"aprovar" | "recusar" | null>(null);
-  const [showToast, setShowToast] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
+  const { showToast } = useToast();
   
-  // Toast de erro
-  const [errorToast, setErrorToast] = useState<string | null>(null);
-  const [showErrorToast, setShowErrorToast] = useState(false);
-  const [errorToastVisible, setErrorToastVisible] = useState(false);
-
- 
-
-  /**
-   * Função para aprovar ONG
-   */
-  const ApproveMember = async (memberId: string) => {
-    try {
-      setIsLoading(true);
-      setError("");
-
-      console.log(members);
-      console.log("Aprovando membro com ID:", memberId);
-      const response = await userService.approve(memberId);
-
-      // Atualiza a lista de ONGs removendo a ONG aprovada
-      setMembers(prevMembers => prevMembers.filter(member => member._id !== memberId));
-
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao aprovar Membro.');
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
-      throw err; //Propagar o erro
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /**
-   * Função para rejeitar membro
-   */
-  const rejectMember = async (memberId: string) => {
-    try {
-      setIsLoading(true);
-      setError("");
-
-      await userService.delete(memberId);
-
-      // Atualiza a lista de membros removendo o membro rejeitado
-      setMembers(prevMembers => prevMembers.filter(member => member._id !== memberId));
-
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao rejeitar Membro.');
-        console.log(err);
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
-      throw err; // Propagar o erro
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /**
-   * Retorna a quantidade de membros que devem ser mostrados por página, de acordo com a largura atual da janela.
-   */
-  const getMembersPerPage = () => {
-    if (window.innerWidth >= 1612) return 9;
-    else if (window.innerWidth >= 800) return 6;
-    else return 5;
-  };
-
-  const [membersPerPage, setPetsPerPage] = useState<number>(getMembersPerPage());
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Define os membros que serão mostradas com base na página atual
-  const startIndexShowedMembers = membersPerPage * (currentPage - 1);
-  const showedMembers = members.slice(startIndexShowedMembers, startIndexShowedMembers + membersPerPage);
-  console.log("Membros para mostrar na página atual:", showedMembers);
-
-  /**
-   * Função para resetar toast de sucesso
-   */
-  const resetToast = () => {
-    setToastVisible(false);
-
-    if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-    if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-
-    setShowToast(false);
-    setToastType(null);
-  };
-
-  /**
-   * Função para mostrar toast de erro
-   */
-  const showErrorToastMessage = (message: string) => {
-    setErrorToast(message);
-    setShowErrorToast(true);
-    setErrorToastVisible(true);
-
-    // Auto-hide após 4 segundos
-    setTimeout(() => {
-      setErrorToastVisible(false);
-      setTimeout(() => {
-        setShowErrorToast(false);
-        setErrorToast(null);
-      }, 300);
-    }, 4000);
-  };
-
-  /**
-   * Função para mostrar toast de sucesso
-   */
-  const showSuccessToast = (tipo: "aprovar" | "recusar") => {
-    resetToast();
-    setToastType(tipo);
-    setShowToast(true);
-
-    showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-    hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-    fullCloseTimeoutRef.current = setTimeout(() => {
-      setShowToast(false);
-      setToastType(null);
-    }, 3500);
-  };
-
-
   console.log(modalAction);
 
   /**
    * Abrir modal (e fechar toast se estiver aberto)
    */
   const openModal = (tipo: "aprovar" | "recusar", membroId: string) => {
-    resetToast();
     setModalAction({ tipo, membroId: membroId });
   };
 
@@ -217,27 +74,39 @@ const ApproveNGOMembers = () => {
   const handleConfirm = async () => {
     if (!modalAction) return;
 
-    try {
-      if (modalAction.tipo === "aprovar") {
-        await ApproveMember(modalAction.membroId);
-      } else if (modalAction.tipo === "recusar") {
-        await rejectMember(modalAction.membroId);
-      }
-      showSuccessToast(modalAction.tipo);
-
-    } catch (error) {
-      // Se der erro, mostra toast de erro
-      console.error("Erro na operação:", error);
-      
-      const errorMessage = modalAction.tipo === "aprovar" 
-        ? "Erro ao aprovar Membro. Tente novamente." 
-        : "Erro ao rejeitar Membro. Tente novamente.";
-      
-      showErrorToastMessage(errorMessage);
-    } finally {
-      setModalAction(null);
-    }
+    fetcher.submit(
+      { id: modalAction.membroId, intent: modalAction.tipo },
+      { method: "post" }
+    )
   };
+
+ useEffect(() => {
+      if (fetcher.state === "idle" && fetcher.data) {
+        if (fetcher.data.success) {
+          const type = fetcher.data.type; // "aprovar" ou "recusar" (ou "delete")
+
+          showToast({
+             success: true,
+             message: `Administrador ${type === "aprovar" ? "aprovado" : "recusado"}!`,
+              description: type === "aprovar"
+                ? "Você pode ver esse Administrador em Gerenciar Administradores."
+                : "O Administrador foi removido da sua lista de validação."
+          });
+          setModalAction(null); // Fecha modal
+
+        }
+
+          else if (fetcher.data.error) {
+          showToast({
+             success: false,
+             message: "Erro na operação.",
+             description: fetcher.data.error
+          });
+          setModalAction(null); // Fecha modal
+
+        }
+      }
+    }, [fetcher.state, fetcher.data]);
 
 
   /**
@@ -246,15 +115,9 @@ const ApproveNGOMembers = () => {
   useEffect(() => {
     const handleResize = () => {
       const isWindowSmall = window.innerWidth < 1240;
-      const newmembersPerPage = getMembersPerPage();
 
-      setPetsPerPage(newmembersPerPage);
       sethideMemberFilter(isWindowSmall);
 
-      // Corrige página atual se necessário
-      if (allMembers.length > 0 && newmembersPerPage * currentPage > members.length) {
-        setCurrentPage(Math.ceil(members.length / newmembersPerPage));
-      }
 
       // Fecha o filtro no lado da tela se a janela for redimensionada para modo desktop
       if (!isWindowSmall && showMembersFilter) {
@@ -264,7 +127,7 @@ const ApproveNGOMembers = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [showMembersFilter, currentPage, members.length]);
+  }, [showMembersFilter]);
 
   /**
    * Efeito que desativa o scroll do `body` quando o filtro estiver ocupando a tela toda
@@ -304,7 +167,7 @@ const ApproveNGOMembers = () => {
       )}
 
       <ContentContainer>
-         {!hideMemberFilter && allMembers.length > 0 && (
+         {!hideMemberFilter && members.length > 0 && (
             <MembersFilter
               hasBorder={true}
           />
@@ -317,13 +180,13 @@ const ApproveNGOMembers = () => {
                 subtitle="Escolha os administradores que farão parte da sua ONG"
                 emptyMessage="Nenhum Administrador Encontrado"
                 expandContainer={hideMemberFilter}
-                emptyState={showedMembers.length == 0}
+                emptyState={members.length == 0}
                 
             />
 
           <MemberCardsContainer>
 
-            {showedMembers.length > 0 && showedMembers.map((member) => (
+            {members.length > 0 && members.map((member) => (
               <MemberInfoCard
                 key={member._id}
                 member={member}
@@ -356,42 +219,13 @@ const ApproveNGOMembers = () => {
           onClose={() => setModalAction(null)}
         />
 
-        {/* Toast de Sucesso */}
-        {showToast && toastType && (
-          <Toast
-            type="success"
-            message={`Administrador ${toastType === "aprovar" ? "aprovado" : "recusado"} com sucesso!`}
-            description={`${toastType === "aprovar" ? "Você pode ver esse Administrador em Gerenciar Administradores." : "O Administrador foi removido da sua lista de validação."}`}
-            onClose={() => {
-              setToastVisible(false);
-              setTimeout(() => setShowToast(false), 300);
-            }}
-            isVisible={toastVisible}
-          />
-        )}
 
-        {/* Toast de Erro */}
-        {showErrorToast && errorToast && (
-          <Toast
-            type="error"
-            message="Erro na operação"
-            description={errorToast}
-            onClose={() => {
-              setErrorToastVisible(false);
-              setTimeout(() => {
-                setShowErrorToast(false);
-                setErrorToast(null);
-              }, 300);
-            }}
-            isVisible={errorToastVisible}
-          />
-        )}
       </ContentContainer>
 
       <PaginationButtons
-        currentPage={currentPage}
-        itemsLength={members.length}
-        itemsPerPage={membersPerPage}
+        currentPage={meta.page}
+        itemsLength={meta.total}
+        itemsPerPage={meta.limit}
         buttonHeight="30px"
         buttonWidth="30px"
         containerHeight="160px"
