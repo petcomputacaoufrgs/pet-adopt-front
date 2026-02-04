@@ -13,11 +13,30 @@ export const CardContainer = styled.div<CardContainerProps>`
     font-family: 'Nunito Sans', sans-serif;
     display: flex;
     flex-direction: column;
-    margin: 0 16px 32px 16px;
-    width: 362px;
+    margin: 0;
+    max-width: 362px;
+    width: 100%;
+
+
+
+
+
+
     
     transition: all 0.3s ease;
     transform: ${({ $isHovered }) => $isHovered ? 'translateY(-4px)' : 'translateY(0)'};
+
+
+        @media (max-width: 1615px) {
+        max-width: 320px; /* Encolhe um pouco em telas médias */
+    }
+
+    @media (max-width: 768px) {
+        max-width: 100%; /* Ocupa largura disponível em tablets/mobile */
+        margin: 0 0 24px 0; /* Remove margem lateral se o pai já tiver padding */
+    }
+
+    
 
 `;
 
@@ -35,6 +54,10 @@ export const Image = styled.img<CardContainerProps>`
   height: 240px; 
   object-fit: cover;
   border-radius: 20px 20px 0 0; 
+
+  @media (max-width: 1200px) {
+      height: 220px;
+  }
   
 `;
 

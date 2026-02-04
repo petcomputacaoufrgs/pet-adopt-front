@@ -99,6 +99,130 @@ export const mapSpeciesIndexToString = (speciesIndex: number): string | null => 
   }
 };
 
+
+
+export const mapBackendToAge = (backendCode: string): string => {
+  switch (backendCode) {
+    case 'newborn': return "Abaixo de 3 meses";
+    case 'baby': return "3 a 11 meses";
+    case '1y': return "1 ano";
+    case '2y': return "2 anos";
+    case '3y': return "3 anos";
+    case '4y': return "4 anos";
+    case '5y': return "5 anos";
+    case '6y+': return "6 anos e acima";
+    default: return backendCode; // Fallback
+  }
+};
+
+export const mapBackendToSize = (backendCode: string): string => {
+  switch (backendCode) {
+    case 'P': return "Pequeno";
+    case 'M': return "Médio";
+    case 'G': return "Grande";
+    default: return backendCode;
+  }
+};
+
+export const mapBackendToSex = (backendCode: string): string => {
+  switch (backendCode) {
+    case 'M': return "Macho";
+    case 'F': return "Fêmea";
+    default: return ""; // Ou "Ambos"
+  }
+};
+
+
+export const mapSpeciesStringToIndex = (species: string): number => {
+  switch (species) {
+    case "dog": return 0;
+    case "cat": return 1;
+    case "other": return 2;
+    default: return -1;
+  }
+};
+
+
+
+
+// utils/petFilters.ts
+
+// Mappers unitários (privados/internos dessa lógica)
+const toBackendAge = (age: string) => {
+  const map: Record<string, string> = {
+    "Abaixo de 3 meses": "newborn",
+    "3 a 11 meses": "baby",
+    "1 ano": "1y",
+    "2 anos": "2y",
+    "3 anos": "3y",
+    "4 anos": "4y",
+    "5 anos": "5y",
+    "6 anos e acima": "6y+"
+  };
+  return map[age] || age; // Retorna o original se não achar
+};
+
+const toBackendSize = (size: string) => {
+  const map: Record<string, string> = { "Pequeno": "P", "Médio": "M", "Grande": "G" };
+  return map[size] || size;
+};
+
+const toBackendSex = (sex: string) => {
+  const map: Record<string, string> = { "Macho": "M", "Fêmea": "F" };
+  return map[sex] || sex;
+};
+
+const toBackendState = (uf: string) => {
+    return uf; 
+}
+
+const toBackendSpecies = (specieLabel: string) => {
+    const map: Record<string, string> = {
+        "Cachorro": "dog",
+        "Gato": "cat",
+        "Outros": "other"
+    };
+    return map[specieLabel] || null;
+}
+
+const toBackendSituation = (situation: string) => {
+  switch (situation) {
+    case "Disponível":
+      return "Available";
+    case "Em lar temporário":
+      return "TempHome";
+    case "Adotado":
+      return "Adopted";
+  }
+  return situation; // Fallback
+}
+
+
+// --- A FUNÇÃO MÁGICA EXPORTADA ---
+export const normalizeFiltersForApi = (frontFilters: any) => {
+  const apiFilters: any = {};
+
+  if (frontFilters.name) apiFilters.name = frontFilters.name;
+  if (frontFilters.city) apiFilters.city = frontFilters.city;
+  if (frontFilters.breed) apiFilters.breed = frontFilters.breed;
+  
+  // Aplica os mappers
+  if (frontFilters.state) apiFilters.state = toBackendState(frontFilters.state);
+  if (frontFilters.age) apiFilters.age = toBackendAge(frontFilters.age);
+  if (frontFilters.size) apiFilters.size = toBackendSize(frontFilters.size);
+  if (frontFilters.sex) apiFilters.sex = toBackendSex(frontFilters.sex);
+  if (frontFilters.situation) apiFilters.status = toBackendSituation(frontFilters.situation); // Se for igual
+  
+  console.log("Mapeando situação:", frontFilters.situation, "->", apiFilters.status);
+
+  if (frontFilters.specie) apiFilters.species = toBackendSpecies(frontFilters.specie);
+
+  return apiFilters;
+};
+
+
+
+
 /**
  * Constrói query parameters para filtros de Pet
  */

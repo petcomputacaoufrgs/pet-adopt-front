@@ -2,6 +2,8 @@ export interface NGOFilters {
   name?: string;
   city?: string;
   state?: string;
+  page?: number;
+  limit?: number;
 }
 
 /**

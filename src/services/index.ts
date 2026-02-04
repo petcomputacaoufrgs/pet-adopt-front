@@ -1,6 +1,6 @@
 import api from './api';
 import { NGOFilters, buildNGOUrl } from './filters/ngoFilters';
-import { PetFilters, buildPetUrl } from './filters/petFilters';
+import { PetFilters, buildPetUrl, normalizeFiltersForApi } from './filters/petFilters';
 import { UserFilters, buildUserUrl } from './filters/userFilters';
 
 // Serviços relacionados à autenticação
@@ -30,6 +30,13 @@ export const ngoService = {
     const url = buildNGOUrl('/ngos', filters);
     return api.get(url);
   },
+
+  getApprovedPage: (filters?: NGOFilters) => {
+    return api.get('/ngos/page', {
+      params: filters
+    }); 
+  },
+
   
   getUnapproved: (filters?: NGOFilters) => {
     const url = buildNGOUrl('/ngos/unapproved', filters);
@@ -58,6 +65,17 @@ export const petService = {
   getAll: (filters?: PetFilters) => {
     const url = buildPetUrl('/pets', filters);
     return api.get(url);
+  },
+
+  getPage: (page: number, filters?: PetFilters) => {
+    const limit = 3;
+    const apiFilters = normalizeFiltersForApi(filters || {});
+    return api.get('/pets/page', {
+      params: {
+        page,
+        limit,
+        ...apiFilters,}});
+
   },
 
   getImage: (imagePath: string) => 
@@ -97,6 +115,12 @@ export const userService = {
     const url = buildUserUrl('/users/approvedMembers/', ngoId, filters);
     return api.get(url);
   },
+
+  getApprovedMembersPage: (ngoId: string, filters?: UserFilters) => {    
+    return api.get(`/users/approvedMembers/page/${ngoId}`, {
+      params: filters
+    });
+},
 
   getUnapprovedMembers: (ngoId: string, filters?: UserFilters) => {
     

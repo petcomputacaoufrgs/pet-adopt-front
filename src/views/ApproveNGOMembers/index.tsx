@@ -42,19 +42,12 @@ interface MEMBER {
 const ApproveNGOMembers = () => {
 
 
-  const {members: membersData, user: userData} = useLoaderData() as {members: MEMBER[], user: any};
+  const { members: membersData, user: userData, meta } = useLoaderData() as { members: MEMBER[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }; error?: string };
 
+  console.log("Dados do Loader:", { membersData, userData, meta });
 
   /*estados que guardam informações da ong*/
   const ngoId = userData?.ngoId;
-
-    
-  /**
-   * Estados que representam os filtros aplicados às ONGs.
-   * Cada um armazena uma característica diferente usada para filtrar as ONGs.
-   */
-  const [name, setName] = useState<string>("");
-
 
   // Controla a exibição do filtro. Se for `true`, o filtro será ocultado (versões menores da tela) e o botão "filtros" deve ser apertado para mostrá-lo no lado da tela.
   // Se for false ele aparecerá na tela mesmo.
@@ -86,66 +79,7 @@ const ApproveNGOMembers = () => {
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [errorToastVisible, setErrorToastVisible] = useState(false);
 
-  /**
-   * Função para buscar todas as ONGs do backend
-   */
-  const fetchMembers = async (filters?: UserFilters) => {
-    
-    try {
-      
-      if (!ngoId) {
-        setError("ID da ONG não encontrado");
-        return;
-      }
-      setIsLoading(true);
-      setError("");
-      
-       const response = await userService.getUnapprovedMembers(ngoId, filters);
-      // Mapear os dados para garantir que tenham o campo 'id'
-      const mappedMembers = response.data.map((member: any) => ({
-        ...member,
-        _id: member._id || member.id,
-      }));
-      
-      setMembers(mappedMembers);
-
-      if (!filters || Object.keys(filters).length === 0) {
-          setAllMembers(mappedMembers); // salva lista completa para autocomplete
-      }
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao carregar Membros.');
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /**
-       * Callback para quando o usuário pesquisar
-       */
-      const handleSearch = (filters: { name: string}) => {
-        const userFilters: UserFilters = {};
-        
-        if (filters.name) userFilters.name = filters.name;
-        
-        console.log('🔍 Aplicando filtros:', userFilters);
-        fetchMembers(userFilters);
-        setCurrentPage(1); // Resetar para primeira página
-      };
-    
-      /**
-       * Callback para quando o usuário limpar filtros
-       */
-      const handleClearFilters = () => {
-        console.log('🧹 Limpando filtros');
-        fetchMembers(); // Buscar sem filtros
-        setCurrentPage(1); // Resetar para primeira página
-      };
-    
-  
+ 
 
   /**
    * Função para aprovar ONG
@@ -339,11 +273,6 @@ const ApproveNGOMembers = () => {
     document.body.style.overflow = showMembersFilter ? "hidden" : "";
   }, [showMembersFilter]);
 
-  /**
-   * Opções exibidas no header da aplicação
-   */
-  const headerOptions = ["Sobre Nós", "Animais Recém Adicionados", "Dicas", "Fale Conosco"];
-
 
   console.log("Renderizando ApproveNGOMembers");
   console.log(userData);
@@ -369,12 +298,7 @@ const ApproveNGOMembers = () => {
         <Overlay>
           <CloseButton onClick={() => setshowMembersFilter(false)}>x</CloseButton>
           <MembersFilter
-            members={members.map(member => member.name)}
-            name={name}
-            setName={setName}
             hasBorder={false}
-            onSearch={handleSearch}
-            onClearFilters={handleClearFilters}
           />
         </Overlay>
       )}
@@ -382,12 +306,7 @@ const ApproveNGOMembers = () => {
       <ContentContainer>
          {!hideMemberFilter && allMembers.length > 0 && (
             <MembersFilter
-              members={members.map(member => member.name)}
-              name={name}
-              setName={setName}
               hasBorder={true}
-              onSearch={handleSearch}
-              onClearFilters={handleClearFilters}
           />
           )}
 
@@ -471,7 +390,6 @@ const ApproveNGOMembers = () => {
 
       <PaginationButtons
         currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
         itemsLength={members.length}
         itemsPerPage={membersPerPage}
         buttonHeight="30px"

@@ -52,6 +52,8 @@ export const DogCardsContainer = styled.div`
   display: grid;
   margin-bottom: 28px;
 
+  gap: 21px;
+  
   @media (min-width: 1612px) {
     grid-template-rows: repeat(2, auto); 
     grid-template-columns: repeat(4, 1fr); 

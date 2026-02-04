@@ -5,6 +5,5 @@ export interface IPaginationButtonsProps {
   itemsLength: number;
   itemsPerPage: number;
   currentPage: number;
-  setCurrentPage: (newPage: number) => void;
   scrollTo: string;
 }

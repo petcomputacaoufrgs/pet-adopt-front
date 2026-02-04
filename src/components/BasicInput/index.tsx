@@ -9,6 +9,7 @@ import {
 import { BasicInputProps } from "./types";
 
 function BasicInput({
+  name,
   title,
   required,
   $fontSize,
@@ -39,6 +40,7 @@ function BasicInput({
 
       <Container $width={"100%"}>
         <StyledInput
+          name={name}
           id={title}
           readOnly={$readOnly}
           $readOnly={$readOnly}

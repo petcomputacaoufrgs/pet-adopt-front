@@ -18,13 +18,11 @@ const PaginationButtons = ({
   itemsLength,
   itemsPerPage,
   currentPage,
-  setCurrentPage,
   scrollTo,
 }: IPaginationButtonsProps) => {
   // Garante pelo menos 1 página
   const totalPages = itemsLength === 0 ? 1 : Math.ceil(itemsLength / itemsPerPage);
 
-  const [scrollAfterRender, setScrollAfterRender] = useState(false);
 
   const getVisiblePages = (
     currentPageParam: number,
@@ -58,32 +56,29 @@ const PaginationButtons = ({
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
-    setCurrentPage(newPage);
-    setScrollAfterRender(true);
   };
 
-  // CORREÇÃO DO SCROLL
+  // TO DO: Verificar correção do scroll. Ele corrige mesmo ao dar refresh na página?
   useEffect(() => {
-    if (scrollAfterRender && scrollTo) {
+    if (scrollTo) {
       const element = document.getElementById(scrollTo);
       if (element) {
-        // Cálculo manual para garantir que pule o CSS global
         const y = element.getBoundingClientRect().top + window.scrollY;
         
-        // Tenta usar 'instant' (padrão novo), fallback para 'auto'
-        window.scrollTo({ 
-            top: y, 
-            behavior: 'instant' as any // Cast para evitar erro de TS em versões antigas
-        });
+        // Pequeno timeout para garantir que o DOM já atualizou com os novos cards
+        setTimeout(() => {
+             window.scrollTo({ 
+              top: y, 
+              behavior: 'instant' as ScrollBehavior 
+            });
+        }, 0);
       }
-      setScrollAfterRender(false);
     }
-  }, [currentPage, scrollAfterRender, scrollTo]);
+  }, [currentPage, scrollTo]);
 
   return (
     <PaginationContainer $containerHeight={containerHeight}>
       
-      {/* Botão ANTERIOR (Retangular com Texto) */}
       <PassPageButton
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}

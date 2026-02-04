@@ -1,4 +1,5 @@
 export interface BasicInputProps {
+  name?: string;
   title: string;
   required: boolean;
   $fontSize: string;

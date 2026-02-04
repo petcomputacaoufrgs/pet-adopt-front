@@ -45,15 +45,6 @@ interface NGO {
 }
 
 const ApproveNGO = () => {
-  /**
-   * Estados que representam os filtros aplicados às ONGs.
-   * Cada um armazena uma característica diferente usada para filtrar as ONGs.
-   */
-
-  const [selectedState, setSelectedState] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [name, setName] = useState<string>("");
-
 
   // Controla a exibição do filtro. Se for `true`, o filtro será ocultado (versões menores da tela) e o botão "filtros" deve ser apertado para mostrá-lo no lado da tela.
   // Se for false ele aparecerá na tela mesmo.
@@ -85,33 +76,6 @@ const ApproveNGO = () => {
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [errorToastVisible, setErrorToastVisible] = useState(false);
 
-  /**
-   * Função para buscar todas as ONGs do backend
-   */
-  const fetchNGOs = async () => {
-    try {
-      setIsLoadingNGOs(true);
-      setError("");
-      
-      const response = await ngoService.getUnapproved();
-      
-      // Mapear os dados para garantir que tenham o campo 'id'
-      const mappedNgos = response.data.map((ngo: any) => ({
-        ...ngo,
-        id: ngo._id || ngo.id,
-      }));
-      
-      setNgos(mappedNgos);
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao carregar ONGs.');
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
-    } finally {
-      setIsLoadingNGOs(false);
-    }
-  };
 
   /**
    * Função para aprovar ONG
@@ -332,13 +296,6 @@ const ApproveNGO = () => {
         <Overlay>
           <CloseButton onClick={() => setshowNGOsFilter(false)}>x</CloseButton>
           <NGOsFilter
-            ngos={ngos.map(ngo => ngo.name)}
-            selectedState={selectedState}
-            setSelectedState={setSelectedState}
-            city={city}
-            setCity={setCity}
-            name={name}
-            setName={setName}
             hasBorder={false}
           />
         </Overlay>
@@ -423,7 +380,6 @@ const ApproveNGO = () => {
 
       <PaginationButtons
         currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
         itemsLength={ngos.length}
         itemsPerPage={ngosPerPage}
         buttonHeight="30px"

@@ -21,38 +21,29 @@ import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
 import { IManageAnimals, ModalAction } from "./types";
 import { Pet } from "../../types/pets";
-import { useAuth } from "../../hooks/useAuth";
 import ConfirmModal from "../../components/ConfirmModal";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useFetcher, useLoaderData, useNavigate } from "react-router-dom";
 import { set } from "react-hook-form";
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
+  const fetcher = useFetcher();
+
 
   // Estados dos pets
-  // Inicialização "Lazy" com LocalStorage
-  // Isso roda antes do primeiro render visual, garantindo que se tiver cache, ele já aparece.
+  const {data: petsData, meta} = useLoaderData() as { data: Pet[]; meta: any };
 
-  const petsData = useLoaderData() as Pet[];
+  const currentPage = meta?.page || 1;
+  const petsPerPage = meta?.limit || 12;
+  const totalPets = meta?.total || 0;
 
+  console.log("Loader Data Pets:", petsData);
+  console.log("Loader Data Meta:", meta);
 
-  console.log("Pets data from loader:", petsData);
-  const [pets, setPets] = useState<Pet[]>(() => {
-    return petsData || [];
-  });
+  const pets = petsData || [];
 
-  const [isLoadingPets, setIsLoadingPets] = useState<boolean>(false);
+  console.log("Estado Pets:", pets);
+
   const [error, setError] = useState<string>("");
-
-  // Estados dos filtros
-  const [selectedSpecie, setSelectedSpecie] = useState<number>(-1);
-  const [selectedState, setSelectedState] = useState<string>("");
-  const [selectedAge, setSelectedAge] = useState<string>("");
-  const [selectedSize, setSelectedSize] = useState<string>("");
-  const [selectedSituation, setSelectedSituation] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [breed, setBreed] = useState<string>("");
-  const [selectedSex, setSelectedSex] = useState<string>("");
 
   const { showToast } = useToast(); 
 
@@ -78,113 +69,53 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const handleConfirm = () => {
     if (!modalAction) return;
     
-    deletePet(modalAction.petId)
-      .then(
-        () => {        
-        showToast({ 
-            success: true,
-            message: "Pet excluído com sucesso!",
-            description: "O pet foi removido do sistema."
-        });
-      },
-       (errorMessage) => {
-        showToast({ 
-            success: false,
-            message: "Erro ao excluir pet.",
-            description: errorMessage || "Ocorreu um erro ao tentar excluir o pet."
-        });
-       });
-
-    setModalAction(null);
+    // Enviamos o intent e o ID para a action
+    fetcher.submit(
+      { intent: 'delete', petId: modalAction.petId }, 
+      { method: 'post' }
+    );
+    
+    // Note: Não fechamos o modal aqui e nem mostramos o Toast ainda.
+    // Esperamos a confirmação da action.
   };
+
+
+  useEffect(() => {
+    // Verificamos se o fetcher terminou de rodar (idle) e se tem dados
+    if (fetcher.state === 'idle' && fetcher.data) {
+      
+      // Acessando o retorno da Action
+      if (fetcher.data.success) {
+        showToast({ 
+          success: true,
+          message: "Pet excluído com sucesso!",
+          description: "O pet foi removido do sistema."
+        });
+        setModalAction(null); // Agora sim fechamos o modal
+      }  
+      
+      else if (fetcher.data.error) {
+        console.log("Erro ao excluir pet:", fetcher.data.error);
+        showToast({ 
+          success: false,
+          message: "Erro ao excluir pet.",
+          description: fetcher.data.error
+        });
+
+        setModalAction(null); // Fechamos o modal mesmo em caso de erro
+      }
+    }
+  }, [fetcher.state, fetcher.data]);
+
 
   // Layout e paginação
   const [hideAnimalFilter, setHideAnimalFilter] = useState(window.innerWidth < 1240);
   const [showAnimalFilterOnSide, setShowAnimalFilterOnSide] = useState(false);
 
-  /**
-   * Função para buscar pets com filtros
-   */
-  const fetchPets = async () => {
-    try {
-      if (pets.length === 0) setIsLoadingPets(true);
-      setError("");
-      
-      const filters = createPetFiltersFromState({
-        selectedSpecie,
-        name,
-        selectedState,
-        city,
-        breed,
-        selectedSex,
-        selectedAge,
-        selectedSize,
-        selectedSituation
-      });
-            
-      const response = await petService.getAll(filters);
-      
-
-      const mappedPets = response.data.map((pet: any) => ({
-        ...pet,
-        id: pet._id || pet.id,
-      }));
-
-      setPets(mappedPets);
-            
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data?.message || 'Erro ao carregar pets.');
-      } else {
-        setError('Erro de conexão. Tente novamente mais tarde.');
-      }
-    } finally {
-      setIsLoadingPets(false);
-    }
-  };
-
-  const handleClearFilters = () => {
-    setSelectedSpecie(-1);
-    setSelectedState("");
-    setSelectedAge("");
-    setSelectedSize("");
-    setSelectedSituation("");
-    setCity("");
-    setName("");
-    setBreed("");
-    setSelectedSex("");
-    
-    setTimeout(() => {
-      fetchPets();
-      setCurrentPage(1);
-    }, 100);
-  };
-
-  const deletePet = async (petId: string) => {
-    try {
-      await petService.delete(petId);
-      
-      setPets(prevPets => prevPets.filter(pet => (pet.id || pet._id) !== petId));
-      
-      const updatedPets = pets.filter(pet => (pet.id || pet._id) !== petId);
-      if (petsPerPage * currentPage > updatedPets.length && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-      
-    } catch (err) {
-      let errorMessage = 'Erro de conexão. Tente novamente mais tarde.';
-      if (err instanceof AxiosError && err.response) {
-        errorMessage = err.response.data?.message || 'Erro ao deletar pet.';
-      } 
-
-      setError(errorMessage);
-
-      throw errorMessage;
-    }
-  };
 
   const handleDeleteClick = (pet: Pet) => {
-    abrirModal("success", pet.id as string);
+    console.log("Clicou para deletar pet:", pet);
+    abrirModal("success", pet._id as string);
   };
 
   const handleEditClick = (pet: Pet) => {
@@ -198,43 +129,12 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     return pet.id || pet._id || `pet-${index}`;
   };
 
-  function getPetsPerPage(): number {
-    if (window.innerWidth < 600) return 3;
-    if (window.innerWidth < 900) return 4;
-    if (window.innerWidth < 1612) return 6;
-    return 9;
-  }
-
-  const [petsPerPage, setPetsPerPage] = useState<number>(getPetsPerPage());
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const startIndexShowedPets = petsPerPage * (currentPage - 1);
-  const showedPets = pets.slice(startIndexShowedPets, startIndexShowedPets + petsPerPage);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const isWindowSmall = window.innerWidth < 1240;
-      const newPetsPerPage = getPetsPerPage();
-
-      setPetsPerPage(newPetsPerPage);
-      setHideAnimalFilter(isWindowSmall);
-
-      if (pets.length > 0 && newPetsPerPage * currentPage > pets.length) {
-        setCurrentPage(Math.ceil(pets.length / newPetsPerPage));
-      }
-
-      if (!isWindowSmall && showAnimalFilterOnSide) {
-        setShowAnimalFilterOnSide(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [showAnimalFilterOnSide, pets.length, currentPage]);
 
   useEffect(() => {
     document.body.style.overflow = showAnimalFilterOnSide ? "hidden" : "";
   }, [showAnimalFilterOnSide]);
+
+
 
 
   return (
@@ -287,27 +187,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
           <CloseButton onClick={() => setShowAnimalFilterOnSide(false)}>x</CloseButton>
 
           <AnimalFilter
-            selectedSpecie={selectedSpecie}
-            setSelectedSpecie={setSelectedSpecie}
-            selectedState={selectedState}
-            setSelectedState={setSelectedState}
-            selectedAge={selectedAge}
-            setSelectedAge={setSelectedAge}
-            selectedSize={selectedSize}
-            setSelectedSize={setSelectedSize}
-            selectedSituation={selectedSituation}
-            setSelectedSituation={setSelectedSituation}
-            city={city}
-            setCity={setCity}
-            name={name}
-            setName={setName}
-            breed={breed}
-            setBreed={setBreed}
-            selectedSex={selectedSex}
-            setSelectedSex={setSelectedSex}
             hasBorder={false}
-            onSearch={fetchPets}
-            onClearFilters={handleClearFilters}
+
           />
         </Overlay>
       )}
@@ -315,39 +196,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
       <ContentContainer>
         {!hideAnimalFilter && (
           <AnimalFilter
-            selectedSpecie={selectedSpecie}
-            setSelectedSpecie={setSelectedSpecie}
-            selectedState={selectedState}
-            setSelectedState={setSelectedState}
-            selectedAge={selectedAge}
-            setSelectedAge={setSelectedAge}
-            selectedSize={selectedSize}
-            setSelectedSize={setSelectedSize}
-            selectedSituation={selectedSituation}
-            setSelectedSituation={setSelectedSituation}
-            city={city}
-            setCity={setCity}
-            name={name}
-            setName={setName}
-            breed={breed}
-            setBreed={setBreed}
-            selectedSex={selectedSex}
-            setSelectedSex={setSelectedSex}
-            onSearch={fetchPets}
-            onClearFilters={handleClearFilters}
           />
         )}
 
         <SectionAndDogCardsContainer hideAnimalFilter={hideAnimalFilter}>
-
-
-        {/* Se for o PRIMEIRO carregamento (sem dados antigos), mostra Skeleton ou Loading */}
-          {isLoadingPets && pets.length === 0 && (
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-                <p>Carregando dados...</p> 
-                {/* O ideal aqui seria usar aquele Skeleton que conversamos antes */}
-            </div>
-          )}
 
         {/* Se tiver erro */}
           {error && (
@@ -359,7 +211,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
           {pets.length > 0 && !error && 
             <DogCardsContainer>
-              {showedPets.map((pet, index) => (
+              {pets.map((pet, index) => (
                 <PetCardWrapper key={getPetId(pet, index)}>
                   <DogCard
                     imageUrl={pet.photos && pet.photos.length > 0 ? pet.photos[0] : DogForCard}
@@ -379,7 +231,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             </DogCardsContainer>
           }
 
-        {!isLoadingPets && pets.length === 0 && !error &&
+        {pets.length === 0 && !error &&
 
         <SectionWithEmptyStateContainer>
           <SectionWithEmptyState 
@@ -388,7 +240,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             emptyMessage="Nenhum Pet Encontrado"
             expandContainer={hideAnimalFilter}
             // Só mostra vazio se: NÃO está carregando E NÃO deu erro E lista está vazia
-            emptyState={!isLoadingPets && !error && pets.length === 0}
+            emptyState={!error && pets.length === 0}
             buttonText= {allowEdit? "+ Cadastrar Pet" : undefined}
             onButtonClick={() => {
                handleNavigation("/createAnimal"); 
@@ -407,8 +259,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
       <PaginationButtons
         currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        itemsLength={pets.length}
+        itemsLength={totalPets}
         itemsPerPage={petsPerPage}
         buttonHeight="35px"
         buttonWidth="35px"

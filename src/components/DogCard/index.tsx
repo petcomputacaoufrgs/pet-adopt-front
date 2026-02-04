@@ -101,7 +101,7 @@ const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id, on
         <ActionsBox>
           
           <PrimarySecondaryButton
-            width={"120px"}
+            width={"48%"}
             buttonType={"Primário"}
             isDisabled={false}
             content={"Editar"}
@@ -112,7 +112,7 @@ const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id, on
           />
 
           <PrimarySecondaryButton
-            width={"120px"}
+            width={"48%"}
             buttonType={"Secundário"}
             isDisabled={false}
             content={"Excluir"}

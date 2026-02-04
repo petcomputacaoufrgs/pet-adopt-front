@@ -10,6 +10,7 @@ export const ContentContainer = styled.div`
 
 export const DogCardsContainer = styled.div`
     display: grid;
+    gap: 21px;
     grid-template-columns: repeat(3, 1fr); 
 
     @media (max-width: 1612px) {

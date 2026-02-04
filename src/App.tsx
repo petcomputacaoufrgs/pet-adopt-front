@@ -22,6 +22,9 @@ import { ngoService, petService, userService } from "./services";
 import Header from "./components/Header";
 import logo from "./assets/HorizontalLogo.png"
 import { petProfileLoader } from "./views/PetProfile/petProfileLoader";
+import { petsAction, petsLoader } from "./views/ManageAnimals/petsLoader";
+import { membersAction, membersLoader } from "./views/ManageNGOMembers/ngoMembersLoader";
+import { ngosAction, ngosLoader } from "./views/ManageNgo/ngosLoader";
 
 const RootLayout = () => {
   return (
@@ -47,10 +50,8 @@ const router = createBrowserRouter([
       // ROTAS PÚBLICAS
       { path: PUBLIC_PATHS.HOME, element: <HomeView /> },
       { path: PUBLIC_PATHS.SEARCH_ANIMALS, element: <ManageAnimals allowEdit={false} />,
-        loader: async ({ params } ) => {
-          const response = await petService.getAll();
-          return response.data;
-        }
+        loader: petsLoader,
+        action: petsAction
     },
       { path: PUBLIC_PATHS.PET_PROFILE, element: <PetProfile />, loader: petProfileLoader },
 
@@ -72,10 +73,8 @@ const router = createBrowserRouter([
        },
       
       { path: PUBLIC_PATHS.LIST_NGOS, element: <ManageNgo />,
-        loader: async ({ params } ) => {
-          const response = await ngoService.getApproved();
-          return response.data;
-       }
+        loader: ngosLoader,
+        action: ngosAction
       },
 
       { path: PUBLIC_PATHS.LOGIN, element: <PublicRoute><LoginView /></PublicRoute> },
@@ -106,14 +105,8 @@ const router = createBrowserRouter([
             <ManageNGOMembers />
           </ProtectedRoute>
         ),
-        loader: async ({ params } ) => {
-          const user = localStorage.getItem('user');
-          if(!user) return [];
-          const userData = JSON.parse(user);
-          const ngoId = userData.ngoId;
-          const response = await userService.getApprovedMembers(ngoId, {});
-          return {members: response.data, user: userData };
-        }
+        loader: membersLoader,
+        action: membersAction
       },
 
       {
@@ -142,10 +135,8 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
 
-        loader: async ({ params } ) => {
-          const response = await petService.getAll();
-          return response.data;
-        }
+        loader: petsLoader,
+        action: petsAction
       },
 
       {
