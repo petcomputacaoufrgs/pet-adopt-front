@@ -12,11 +12,11 @@ export const Container = styled.form`
 export const ContentContainer = styled.div`
   background-color: rgba(255, 246, 232, 1);
   border-radius: 12px;
-  border-top: 30px solid rgba(255, 246, 232, 1);
   border-left: 30px solid rgba(255, 246, 232, 1);
   border-right: 15px solid rgba(255, 246, 232, 1);
   border-bottom: 15px solid rgba(255, 246, 232, 1);
   padding: 2%;
+  padding-top: 0;
   width: 100%;
   color: #553525;
   display: flex;
@@ -53,6 +53,14 @@ export const UpdateButton = styled.div`
 export const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
+
+  padding-top: 2%;
+  border-top: 15px solid rgba(255, 246, 232, 1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: rgba(255, 246, 232, 1);
+  border-bottom: 1px solid #eedfdfcc;
 `;
 
 

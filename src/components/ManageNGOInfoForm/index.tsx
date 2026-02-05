@@ -1,127 +1,140 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { AxiosError } from "axios";
-import { ngoService, authService } from "../../services";
+import { ngoService } from "../../services";
 import BasicInput from "../BasicInput";
-import PasswordInput from "../PasswordInput";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
-import SuccessToast from "../Toast";
 import LargeInputField from "../LargeInput";
 import { Container, ContentContainer, UpdateButton, TopBar, InputsContainer, ButtonGroup, ButtonWrapper } from "./styles";
-import { useAuth } from "../../hooks/useAuth";
 import CloseButton from "../CloseButton";
 import SearchBar from "../SearchBar";
+import { useAuth } from "../../hooks/useAuth";
+import ConfirmModal from "../ConfirmModal";
+import { useToast } from "../../contexts/ToastContext";
 
+// Importação da biblioteca de validação (igual ao SignUp)
+import { isCPF, isCNPJ } from "validation-br";
 
-type Props = { ngoId: string; onClose?: () => void };
+export interface NGOData {
+  _id: string;
+  name: string;
+  email: string;
+  description?: string;
+  phone?: string;
+  city?: string;
+  state?: string;
+  website?: string;
+  instagram?: string;
+  facebook?: string;
+  doc?: string;
+  adoptionForm?: string;
+  sponsorshipForm?: string;
+  temporaryHomeForm?: string;
+  claimForm?: string;
+}
 
-const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [description, setDescription] = useState('');
-  const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [website, setWebsite] = useState('');
-  const [instagram, setInstagram] = useState('');
-  const [facebook, setFacebook] = useState('');
-  const [doc, setDoc] = useState('');
-  const [adoptionForm, setAdoptionForm] = useState('');
-  const [sponsorshipForm, setSponsorshipForm] = useState('');
-  const [temporaryHomeForm, setTemporaryHomeForm] = useState('');
-  const [claimForm, setClaimForm] = useState('');
+type Props = { 
+  initialData: NGOData;
+  onClose?: () => void 
+};
+
+const ManageNGOInfoForm: React.FC<Props> = ({ initialData, onClose }) => {
+  const { logout } = useAuth();
+  const { showToast } = useToast();
+  
+  const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
+
+  // DADOS DO FORMULÁRIO
+  const [name, setName] = useState(initialData.name || '');
+  const [email, setEmail] = useState(initialData.email || '');
+  const [description, setDescription] = useState(initialData.description || '');
+  const [phone, setPhone] = useState(initialData.phone || '');
+  const [city, setCity] = useState(initialData.city || '');
+  const [state, setState] = useState(initialData.state || '');
+  const [website, setWebsite] = useState(initialData.website || '');
+  const [instagram, setInstagram] = useState(initialData.instagram || '');
+  const [facebook, setFacebook] = useState(initialData.facebook || '');
+  const [doc, setDoc] = useState(initialData.doc || '');
+  
+  const [adoptionForm, setAdoptionForm] = useState(initialData.adoptionForm || '');
+  const [sponsorshipForm, setSponsorshipForm] = useState(initialData.sponsorshipForm || '');
+  const [temporaryHomeForm, setTemporaryHomeForm] = useState(initialData.temporaryHomeForm || '');
+  const [claimForm, setClaimForm] = useState(initialData.claimForm || '');
+
+  // ESTADOS DE ERRO
+  const [errorMessage, setErrorMessage] = useState(''); // Erro geral do form
+
+  // Validação Inline
+  const [nameError, setNameError] = useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
 
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showToast, setShowToast] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { user, isLoggedIn } = useAuth();
+  const [docError, setDocError] = useState(false);
+  const [docErrorMessage, setDocErrorMessage] = useState('');
 
-  // Buscar dados da ONG ao abrir o modal
-  useEffect(() => {
-    const fetchNgoData = async () => {
-      try {
-        const response = await ngoService.getById(ngoId);
-        setName(response.data.name || '');
-        setEmail(response.data.email || '');
-        setDescription(response.data.description || '');
-        setPhone(response.data.phone || '');
-        setCity(response.data.city || '');
-        setState(response.data.state || '');
-        setWebsite(response.data.website || '');
-        setInstagram(response.data.instagram || '');
-        setFacebook(response.data.facebook || '');
-        setDoc(response.data.document || '');
-        setAdoptionForm(response.data.adoptionForm || '');
-        setSponsorshipForm(response.data.sponsorshipForm || '');
-        setTemporaryHomeForm(response.data.temporaryHomeForm || '');
-        setClaimForm(response.data.claimForm || '');
-      } catch (err) {
-        setErrorMessage('Erro ao carregar dados da ONG');
-      }
-    };
+  const [stateError, setStateError] = useState(false);
 
-    fetchNgoData();
-  }, [ngoId]);
+  const [adoptionFormError, setAdoptionFormError] = useState(false);
+  const [adoptionFormErrorMessage, setAdoptionFormErrorMessage] = useState('');
 
-  const resetToast = () => {
-    setToastVisible(false);
-    if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-    if (fullCloseTimeoutRef.current) clearTimeout(fullCloseTimeoutRef.current);
-    setShowToast(false);
-  };
+  // Erro de grupo (pelo menos um contato)
+  const [contactError, setContactError] = useState(false);
 
-  const handleUpdate = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setErrorMessage("");
 
-    if (!name || !email || !instagram || !adoptionForm) {
-      setErrorMessage('Preencha todos campos obrigatórios');
-      return;
+  // LÓGICA DE VALIDAÇÃO (Replicada do SignUp)
+  const validateForm = () => {
+    let isValid = true;
+
+    // Nome
+    if (!name.trim()) {
+      setNameError(true);
+      setNameErrorMessage('Nome é obrigatório');
+      isValid = false;
     }
 
-    if (emailError) {
-      setErrorMessage('Verifique os campos preenchidos');
-      return;
+    // Email (apenas checa se está vazio ou se verifyEmail já pegou erro)
+    if (!email.trim()) {
+      setEmailError(true);
+      setEmailErrorMessage('E-mail é obrigatório');
+      isValid = false;
+    } else if (emailError) {
+      isValid = false;
     }
 
-    try {
-      await ngoService.update(ngoId, {
-        name,
-        email,
-        description,
-        phone,
-        city,
-        state,
-        website,
-        instagram,
-        facebook,
-        document: doc,
-        adoptionForm,
-        sponsorshipForm,
-        temporaryHomeForm,
-        claimForm,
-      });
-
-      resetToast();
-      setShowToast(true);
-      showTimeoutRef.current = setTimeout(() => setToastVisible(true), 50);
-      hideTimeoutRef.current = setTimeout(() => setToastVisible(false), 3000);
-      fullCloseTimeoutRef.current = setTimeout(() => {
-        setShowToast(false);
-      }, 3500);
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setErrorMessage(err.response.data.message || 'Erro ao atualizar. Tente novamente.');
-      } else {
-        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
-      }
+    // Documento (CPF ou CNPJ)
+    if (!doc.trim()) {
+      setDocError(true);
+      setDocErrorMessage('CPF ou CNPJ é obrigatório');
+      isValid = false;
+    } else if (!isCNPJ(doc) && !isCPF(doc)) {
+      setDocError(true);
+      setDocErrorMessage('Documento inválido');
+      isValid = false;
     }
+
+    // Estado
+    if (!state.trim()) {
+      setStateError(true);
+      isValid = false;
+    }
+
+    // Formulário de Adoção (Obrigatório)
+    if (!adoptionForm.trim()) {
+      setAdoptionFormError(true);
+      setAdoptionFormErrorMessage('Link do formulário de adoção é obrigatório');
+      isValid = false;
+    }
+
+    // Grupo de Contato (Pelo menos um)
+    if (!phone.trim() && !instagram.trim() && !facebook.trim()) {
+      setContactError(true);
+      isValid = false;
+    } else {
+      setContactError(false);
+    }
+
+    return isValid;
   };
 
   const verifyEmail = (em: string) => {
@@ -140,27 +153,93 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
     setEmailErrorMessage('');
   };
 
+  // HANDLERS
+
+  const handleChangePassword = async () => {
+    logout(false);
+    window.location.href = '/forgotPassword';
+  };
+
+  const handleUpdate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setErrorMessage("");
+
+    const isValid = validateForm();
+
+    if (!isValid) {
+      setErrorMessage('Verifique os campos destacados e tente novamente.');
+      showToast({
+        success: false,
+        message: "Erro de Validação",
+        description: "Preencha os campos obrigatórios corretamente."
+      });
+      return;
+    }
+
+    try {
+      await ngoService.update(initialData._id, {
+        name,
+        email: initialData.email,
+        description,
+        phone,
+        city,
+        state,
+        website,
+        instagram,
+        facebook,
+        doc,
+        adoptionForm,
+        sponsorshipForm,
+        temporaryHomeForm,
+        claimForm,
+      });
+
+      showToast({
+        success: true,
+        message: "Dados atualizados!",
+        description: "Informações da ONG atualizadas com sucesso."
+      });
+
+      if(onClose)
+        onClose();
+
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        setErrorMessage(err.response.data.message || 'Erro ao atualizar.');
+        showToast({
+          success: false,
+          message: "Erro ao atualizar ONG",
+          description: err.response.data.message || 'Tente novamente mais tarde.'
+        });
+
+      } else {
+        setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
+        showToast({
+          success: false,
+          message: "Erro de conexão",
+          description: "Tente novamente mais tarde."
+        });
+      }
+    }
+  };
 
   return (
+    <>
     <Container>
-      {showToast && (
-        <SuccessToast
-          message="Dados atualizados!"
-          description="Informações da ONG atualizadas com sucesso."
-          onClose={() => { setToastVisible(false); setTimeout(() => setShowToast(false), 300); }}
-          isVisible={toastVisible}
-        />
-      )}
       <ContentContainer>
         <TopBar>
           <h1>Editar Informações da ONG</h1>
-          <CloseButton themeMode="dark" onClick={onClose} />
+          <div style={{ transform: "scale(1.5)", display: "flex" }}>
+             <CloseButton themeMode="dark" onClick={onClose} />
+          </div>
         </TopBar>
 
-        {errorMessage && <div style={{ color: "red", marginBottom: "16px" }}>{errorMessage}</div>}
+        {errorMessage && <div style={{ color: "red", marginBottom: "16px", fontWeight: "bold" }}>{errorMessage}</div>}
           
+        {/* INFORMAÇÕES GERAIS */}
         <InputsContainer>
           <h2>Informações da ONG</h2>
+          
           <BasicInput
             title="Nome da ONG"
             required={true}
@@ -168,7 +247,12 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             value={name}
             $fontSize="16px"
             $width="100%"
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+               setName(e.target.value);
+               if(nameError) { setNameError(false); setNameErrorMessage(''); }
+            }}
+            error={nameError}
+            errorMessage={nameErrorMessage}
           />
 
           <BasicInput
@@ -184,14 +268,32 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             disabled={true}
           />
 
+          <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "15px" }}>
+            <PrimarySecondaryButton
+                buttonType="Secundário"
+                content="Trocar Senha"
+                paddingV="8px"
+                paddingH="25px"
+                onClick={(e : React.MouseEvent<HTMLButtonElement>) => {
+                  e.preventDefault();
+                  setOpenChangePasswordModal(true)}
+                } 
+            />
+          </div>
+
           <BasicInput
             title="CPF/CNPJ"
-            required={false}
+            required={true}
             placeholder="Insira o CPF/CNPJ"
             value={doc}
             $fontSize="16px"
             $width="100%"
-            onChange={(e) => setDoc(e.target.value)}
+            onChange={(e) => {
+                setDoc(e.target.value);
+                if(docError) { setDocError(false); setDocErrorMessage(''); }
+            }}
+            error={docError}
+            errorMessage={docErrorMessage}
           />
 
           <LargeInputField
@@ -210,8 +312,18 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
           />
         </InputsContainer>
 
-          <h2>Contato</h2>
-          <InputsContainer>
+        {/* CONTATO */}
+        <InputsContainer>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+             <h2>Contato <span style={{color: "#F17D6E"}}>*</span></h2>
+             {/* Mensagem de erro do grupo de contato */}
+             {contactError && (
+                <span style={{ color: '#FF3B30', fontSize: '0.9rem' }}>
+                   Preencha ao menos um dos campos abaixo
+                </span>
+             )}
+          </div>
+
           <BasicInput
             title="Número para Contato (Opcional)"
             required={false}
@@ -219,7 +331,30 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             value={phone}
             $fontSize="16px"
             $width="100%"
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => { setPhone(e.target.value); setContactError(false); }}
+            error={contactError}
+          />
+
+          <BasicInput
+            title="Link do Instagram"
+            required={false}
+            placeholder="Insira o link aqui"
+            value={instagram}
+            $fontSize="16px"
+            $width="100%"
+            onChange={(e) => { setInstagram(e.target.value); setContactError(false); }}
+            error={contactError}
+          />
+
+          <BasicInput
+            title="Link do Facebook (Opcional)"
+            required={false}
+            placeholder="Insira o link aqui"
+            value={facebook}
+            $fontSize="16px"
+            $width="100%"
+            onChange={(e) => { setFacebook(e.target.value); setContactError(false); }}
+            error={contactError}
           />
 
           <BasicInput
@@ -232,16 +367,21 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             onChange={(e) => setCity(e.target.value)}
           />
 
-          <SearchBar
-            title="Estado"
-            required={true}
-            placeholder="Selecione o estado"
-            query={state}
-            setQuery={(selectedState: string) => setState(selectedState)}
-            fontSize="16px"
-            width="100%"
-            options={["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]}
-          />
+            <SearchBar
+                title="Estado"
+                required={true}
+                placeholder="Selecione o estado"
+                query={state}
+                setQuery={(selectedState: string) => {
+                    setState(selectedState);
+                    if(selectedState) setStateError(false);
+                }}
+                fontSize="16px"
+                width="100%"
+                error={stateError}
+                errorMessage="Estado é obrigatório"
+                options={["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]}
+            />
 
           <BasicInput
             title="Link do WebSite (Opcional)"
@@ -252,28 +392,9 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             $width="100%"
             onChange={(e) => setWebsite(e.target.value)}
           />
-
-          <BasicInput
-            title="Link do Instagram"
-            required={true}
-            placeholder="Insira o link aqui"
-            value={instagram}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => setInstagram(e.target.value)}
-          />
-
-          <BasicInput
-            title="Link do Facebook (Opcional)"
-            required={false}
-            placeholder="Insira o link aqui"
-            value={facebook}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => setFacebook(e.target.value)}
-          />
         </InputsContainer>
 
+        {/* FORMULÁRIOS */}
         <InputsContainer>
           <h2>Formulários</h2>
           <BasicInput
@@ -283,7 +404,12 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             value={adoptionForm}
             $fontSize="16px"
             $width="100%"
-            onChange={(e) => setAdoptionForm(e.target.value)}
+            onChange={(e) => {
+                setAdoptionForm(e.target.value);
+                if(adoptionFormError) { setAdoptionFormError(false); setAdoptionFormErrorMessage(''); }
+            }}
+            error={adoptionFormError}
+            errorMessage={adoptionFormErrorMessage}
           />
 
           <BasicInput
@@ -316,15 +442,15 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
             onChange={(e) => setClaimForm(e.target.value)}
           />
         </InputsContainer>
-
-        <div style={{ height: '1px', width: '100%', backgroundColor: 'rgba(188, 175, 169, 1)', margin: '1.5em 0' }} />
+        
         <ButtonGroup>
           <ButtonWrapper>
             <PrimarySecondaryButton
               buttonType="Secundário"
                 content="Cancelar"
                 onClick={onClose}
-                width="100px"
+                paddingV="8px"
+                paddingH="25px"
               /> 
             
             <UpdateButton>
@@ -332,13 +458,23 @@ const ManageNGOInfoForm: React.FC<Props> = ({ ngoId, onClose }) => {
               buttonType="Primário"
                 content="Salvar Informações"
                 onClick={handleUpdate}
-                width="180px"
+                paddingV="8px"
+                paddingH="25px"
               /> 
             </UpdateButton>
           </ButtonWrapper>
         </ButtonGroup>
+
       </ContentContainer>
     </Container>
+
+    <ConfirmModal 
+        isOpen={openChangePasswordModal} 
+        title={"Tem certeza que deseja trocar sua senha?"} 
+        message={"Você será deslogado e redirecionado para a página de troca de senha."} 
+        onConfirm={handleChangePassword} onClose={() => setOpenChangePasswordModal(false)} />
+
+    </>
   );
 };
 

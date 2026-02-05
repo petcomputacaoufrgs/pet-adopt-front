@@ -102,6 +102,7 @@ const ForgotPassword1: React.FC = () => {
 
     const { isLoading, user, isLoggedIn} = useAuth();
 
+
   if(isLoading)
     return null;
   

@@ -54,8 +54,7 @@ const router = createBrowserRouter([
           filterKeys: ["name", "species", "age", "size", "color", "city", "state", "sex"],
   
           fetchData: (filters, user) => {
-            // Não precisamos do 'user' aqui pois é busca pública
-            return petService.getPage(filters); // Certifique-se que o service suporta paginação
+            return petService.getPage(filters);
           }}),
 
         action: createCrudAction({
@@ -76,7 +75,11 @@ const router = createBrowserRouter([
           if(!isApprovedResponse.data.approved) throw new Response("ONG Not Approved", { status: 403 });
 
           const ngoResponse = await ngoService.getById(ngoId);
+
+          console.log("NGO Response:", ngoResponse);
           const ngo = ngoResponse.data;
+
+          console.log("Loaded NGO Data:", ngo);
           if(!ngo) throw new Response("ONG Not Found", { status: 404 });
           return { ngo: ngo, isApproved: isApprovedResponse.data.approved};
         }

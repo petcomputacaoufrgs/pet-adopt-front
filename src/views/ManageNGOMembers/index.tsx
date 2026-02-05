@@ -22,6 +22,7 @@ import {
 } from "./styles";
 import { User } from "../../types/user";
 import { useToast } from "../../contexts/ToastContext";
+import { m } from "framer-motion";
 
 
 
@@ -32,7 +33,6 @@ const ManageNGOMembers: React.FC = () => {
   const { items: membersData, user: userData, meta } = useLoaderData() as { items: User[]; user: User | null; meta: any };
 
   // HOOKS DO ROUTER
-  const [searchParams, setSearchParams] = useSearchParams();
   const fetcher = useFetcher(); 
   const navigation = useNavigation();
   
@@ -44,14 +44,14 @@ const ManageNGOMembers: React.FC = () => {
   const currentPage = meta.page;
 
   // State local apenas para controlar layout UI
-  const [hideMembersFilter, setHideMembersFilter] = useState(window.innerWidth < 1240);
+  const [hideMembersFilter, setHideMembersFilter] = useState(window.innerWidth < 1240 || membersData.length === 0 );
   const [showMembersFilterOnSide, setShowMembersFilterOnSide] = useState(false);
 
   // lISTTENER DE RESIZE PARA O FILTRO
   useEffect(() => {
     const handleResize = () => {
       const isWindowSmall = window.innerWidth < 1240;
-      setHideMembersFilter(isWindowSmall);
+      setHideMembersFilter(isWindowSmall || membersData.length === 0);
       
       if (!isWindowSmall && showMembersFilterOnSide) {
         setShowMembersFilterOnSide(false);
@@ -101,14 +101,14 @@ const ManageNGOMembers: React.FC = () => {
     if (!memberToDelete) return;
     // Dispara o POST para a action
 
-    console.log("Confirmando deleção do administrador:", memberToDelete);
-
     fetcher.submit(
       { intent: "delete", id: memberToDelete._id }, 
       { method: "post" }
     );
   };
 
+
+  
 
   return (
     <div>
@@ -126,7 +126,7 @@ const ManageNGOMembers: React.FC = () => {
 
       <TopBarContainer id="top-bar">
         <TopBarContent>
-          {hideMembersFilter && (
+          {hideMembersFilter && membersData.length > 0 && (
             <PrimarySecondaryButton 
               onClick={() => setShowMembersFilterOnSide(true)} 
               content="Filtros"  
@@ -148,7 +148,7 @@ const ManageNGOMembers: React.FC = () => {
 
       <ContentContainer>
         {/* Filtro Desktop */}
-        {!hideMembersFilter && (
+        {!hideMembersFilter &&  (
           <MembersFilter hasBorder={true} />
         )}
 
@@ -162,7 +162,6 @@ const ManageNGOMembers: React.FC = () => {
               title="Administradores"
               subtitle="Veja quem está como administrador no momento"
               emptyMessage="Nenhum Administrador Encontrado"
-              expandContainer={hideMembersFilter}
               emptyState={membersData.length === 0 && !isLoadingPage}
            />
            
@@ -180,10 +179,8 @@ const ManageNGOMembers: React.FC = () => {
         </div>
       </ContentContainer>
 
-      {/* PAGINAÇÃO CONECTADA AO TOTAL ITEMS DO BACKEND */}
-      {meta.total > 0 && (
         <PaginationButtons
-            currentPage={currentPage}
+            currentPage={meta.page}
             itemsLength={meta.total}
             itemsPerPage={meta.limit}
             buttonHeight="30px"
@@ -191,7 +188,6 @@ const ManageNGOMembers: React.FC = () => {
             containerHeight="160px"
             scrollTo="top-bar"
         />
-      )}
 
       <Footer />
 

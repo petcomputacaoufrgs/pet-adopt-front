@@ -37,6 +37,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             buttonType="Secundário"
             content={cancelLabel}
             onClick={onClose}
+            paddingV='8px'
             $flex
             />
         </ButtonWrapper>
@@ -45,6 +46,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             buttonType="Primário"
             content={confirmLabel}
             onClick={onConfirm}
+            paddingV='8px'
             $flex
             />
         </ButtonWrapper>

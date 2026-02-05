@@ -67,8 +67,6 @@ const PetProfile: React.FC = () => {
 
     const {pet, ngo, finalImages} = useLoaderData() as {pet: Pet, ngo: any, finalImages: string[]};
 
-    console.log(ngo);
-
     const { showToast } = useToast();
 
      const breadcrumbItems = [
@@ -103,7 +101,6 @@ const PetProfile: React.FC = () => {
 
         petService.delete(modalAction.petId as string).then(
             () => {
-            console.log("Pet excluído com sucesso");
 
             showToast({ 
                 success: true,
@@ -165,11 +162,6 @@ const PetProfile: React.FC = () => {
         "G": "Grande"
     }
     
-    console.log(pet);
-    console.log(ngo);
-
-
-    console.log(((user?.role === "NGO_MEMBER" || user?.role === "NGO_ADMIN") && user.ngoId == pet?.ngoId) || user?.role === "ADMIN");
     return (
         <Container>
 

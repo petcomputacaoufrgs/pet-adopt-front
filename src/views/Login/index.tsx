@@ -68,7 +68,7 @@ const Login: React.FC = () => {
       // Redirecionar para a página apropriada após login
       setTimeout(() => {
         window.location.href = '/';
-      }, 1500);
+      }, 300);
       
     } catch (err: any) {
       console.error(err);

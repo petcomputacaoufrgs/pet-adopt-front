@@ -16,7 +16,7 @@ interface AuthState {
 
 export const useAuth = (): AuthState & {
   hasRole: (requiredRoles: string[]) => boolean;
-  logout: () => void;
+  logout: (redirect?: boolean) => void;
 } => {
   // 1. ESTADO LOCAL
   const [user, setUser] = useState<User | null>(null);        // Dados do usuário
@@ -57,11 +57,13 @@ export const useAuth = (): AuthState & {
   };
 
   // 4. LOGOUT
-  const logout = () => {
+  const logout = (redirect: boolean = true) => {
     localStorage.removeItem('user');
     localStorage.removeItem('authToken');
     setUser(null);                          // Limpa dados locais
-    window.location.href = '/login';        // Redireciona
+
+    if (redirect)
+      window.location.href = '/login';        // Redireciona
   };
 
   // 5. RETORNA INTERFACE COMPLETA
@@ -73,3 +75,4 @@ export const useAuth = (): AuthState & {
     logout                      // Função: sair
   };
 };
+

@@ -22,7 +22,6 @@ const BaseButton = styled.button<{$width?: string; $height?: string;  $flex?: bo
   ${(props) => props.$flex && "flex: 1;"};
 
   height: ${(props) => props.$height || 'auto'};
-  min-height: 34px;
 
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 

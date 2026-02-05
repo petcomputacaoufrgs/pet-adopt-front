@@ -26,7 +26,6 @@ import Toast from "../../components/Toast";
 import ConfirmModal from "../../components/ConfirmModal";
 import ManageInfoForm from "../../components/ManageNGOInfoForm";
 
-import logo from "../../assets/HorizontalLogo.png";
 
 // social icons
 import FacebookIcon from "../../assets/OrangeFacebookPin.png"; 
@@ -38,15 +37,28 @@ import TiktokBrownIcon from "../../assets/BrownTiktokPin.png";
 import XIcon from "../../assets/XIcon.png"
 import XBrownIcon from "../../assets/XBrownIcon.png"
 
+
+interface ExpandedNGO extends NGO {
+    temporaryHomeForm?: string;
+    sponsorshipForm?: string;
+    claimForm?: string;
+    facebook?: string;
+    instagram?: string;
+    website?: string;
+    phone?: string;
+    city?: string;
+    description?: string;  
+}
+
 // component
 const NgoProfile = () => {
     const { id } = useParams<{ id: string }>();
-    const {ngo: ngoData, isApproved}= useLoaderData() as { ngo: NGO | null, isApproved: boolean | null };
+    const {ngo: ngoData, isApproved}= useLoaderData() as { ngo: ExpandedNGO | null, isApproved: boolean | null };
 
 
     const {showToast} = useToast();
 
-    const [ngo, setNgo] = useState<NGO | null>(ngoData);
+    const [ngo, setNgo] = useState<ExpandedNGO | null>(ngoData);
     const navigate = useNavigate();
     const [error, setError] = useState<string>("");
     const {isLoading, user, isLoggedIn, logout} = useAuth();
@@ -57,9 +69,7 @@ const NgoProfile = () => {
         try {
             const response = await ngoService.getById(id);
             setNgo(response.data);
-            console.log(response.data);
 
-            const approvedResponse = await ngoService.isApproved(id);
         } catch (error) {
             console.error("Erro ao buscar ngo:", error);
         }
@@ -201,7 +211,6 @@ const NgoProfile = () => {
     };
     
 
-    console.log(user);
     if(isLoading)
         return null;
     
@@ -339,7 +348,7 @@ const NgoProfile = () => {
                                                 Adoção
                                                 <PrimarySecondaryButton
                                                     width="100%"
-                                                    height="24px"
+                                                    height="34px"
                                                     paddingV="0px"
                                                     paddingH="0px"
                                                     buttonType="Secundário"
@@ -354,7 +363,7 @@ const NgoProfile = () => {
                                                 Lar Temporário
                                                 <PrimarySecondaryButton
                                                     width="100%"
-                                                    height="24px"
+                                                    height="34px"
                                                     paddingV="0px"
                                                     paddingH="0px"
                                                     buttonType="Secundário"
@@ -410,7 +419,6 @@ const NgoProfile = () => {
                     buttonText="Voltar para a página inicial"
                     onButtonClick={() => {
                         navigate("/")
-                    console.log("Navegando para criar pet");
                     }}
                 />
             </SectionWithEmptyStateContainer>
@@ -432,12 +440,12 @@ const NgoProfile = () => {
                 />
             )}
 
-            {isEditModalOpen && id && (
+            {isEditModalOpen && ngo && (
                 
                     <Backdrop>
                     <Wrapper>
                         <EditModalContainer>
-                            <ManageInfoForm ngoId={id} onClose={handleEdit} />
+                           { <ManageInfoForm initialData={ngo} onClose={handleEdit} />}
                         </EditModalContainer>
                     </Wrapper>
                     </Backdrop>

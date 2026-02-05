@@ -7,7 +7,6 @@ interface SectionWithEmptyStateProps {
   title: string;
   subtitle: string;
   emptyMessage: string;
-  expandContainer?: boolean;
   allowEdit?: boolean;
   buttonText?: string;
   onButtonClick?: () => void;
@@ -18,7 +17,6 @@ const SectionWithEmptyState: React.FC<SectionWithEmptyStateProps> = ({
   title,
   subtitle,
   emptyMessage,
-  expandContainer = false,
   buttonText,
   onButtonClick,
   emptyState
@@ -45,7 +43,7 @@ const SectionWithEmptyState: React.FC<SectionWithEmptyStateProps> = ({
 
       {emptyState && 
         <EmptyState>
-          <EmptyText $expandContainer={expandContainer}>{emptyMessage}</EmptyText>
+          <EmptyText>{emptyMessage}</EmptyText>
           <img src={frustratedDog} alt="Nada encontrado" />
         </EmptyState>
     
@@ -96,9 +94,9 @@ const EmptyState = styled.div`
   align-items: center;
 `;
 
-const EmptyText = styled.p<{ $expandContainer: boolean }>`
+const EmptyText = styled.p`
   font-family: "Nunito Sans", sans-serif;
-  font-size: ${(p) => (p.$expandContainer ? "48px" : "64px")};
+  font-size: 48px;
   font-weight: 500;
   color: #553525;
   text-align: center;

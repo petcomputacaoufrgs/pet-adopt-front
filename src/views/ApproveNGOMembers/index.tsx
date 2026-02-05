@@ -58,8 +58,6 @@ const ApproveNGOMembers = () => {
   
   const { showToast } = useToast();
   
-  console.log(modalAction);
-
   /**
    * Abrir modal (e fechar toast se estiver aberto)
    */
@@ -136,10 +134,6 @@ const ApproveNGOMembers = () => {
     document.body.style.overflow = showMembersFilter ? "hidden" : "";
   }, [showMembersFilter]);
 
-
-  console.log("Renderizando ApproveNGOMembers");
-  console.log(userData);
-
   return (
     <>
       <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Gerencie sua equipe dos sonhos!" subTitle="Veja, organize e acompanhe sua equipe de um jeito simples e prático."   imageUrl={ManageMembersHamster}/>
@@ -179,7 +173,6 @@ const ApproveNGOMembers = () => {
                 title="Administradores"
                 subtitle="Escolha os administradores que farão parte da sua ONG"
                 emptyMessage="Nenhum Administrador Encontrado"
-                expandContainer={hideMemberFilter}
                 emptyState={members.length == 0}
                 
             />

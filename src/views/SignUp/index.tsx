@@ -171,7 +171,6 @@ const SignUp: React.FC = () => {
     if (role === 'membro') {
       const ngoId = ngoOptionsMap.get(ngoSearchText) || '';
       if (ngoId === '') {
-        console.log('Erro de ONG');
         setNgoError(true);
         setNgoErrorMessage('Selecione uma ONG da lista');
         isValid = false;
@@ -248,7 +247,6 @@ const SignUp: React.FC = () => {
 
   }, new Map<string, string>());
 
-  console.log(ngoOptionsMap);
 
   const fetchNgoOptions = async () => {
     try {

@@ -36,12 +36,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const petsPerPage = meta?.limit || 12;
   const totalPets = meta?.total || 0;
 
-  console.log("Loader Data Pets:", petsData);
-  console.log("Loader Data Meta:", meta);
 
   const pets = petsData || [];
-
-  console.log("Estado Pets:", pets);
 
   const [error, setError] = useState<string>("");
 
@@ -95,7 +91,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
       }  
       
       else if (fetcher.data.error) {
-        console.log("Erro ao excluir pet:", fetcher.data.error);
         showToast({ 
           success: false,
           message: "Erro ao excluir pet.",
@@ -114,7 +109,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
 
   const handleDeleteClick = (pet: Pet) => {
-    console.log("Clicou para deletar pet:", pet);
     abrirModal("success", pet._id as string);
   };
 
@@ -238,7 +232,6 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             title="Pets Disponíveis"
             subtitle={allowEdit? "Visualize e gerencie os pets disponíveis" : "Visualize os pets disponíveis"}
             emptyMessage="Nenhum Pet Encontrado"
-            expandContainer={hideAnimalFilter}
             // Só mostra vazio se: NÃO está carregando E NÃO deu erro E lista está vazia
             emptyState={!error && pets.length === 0}
             buttonText= {allowEdit? "+ Cadastrar Pet" : undefined}

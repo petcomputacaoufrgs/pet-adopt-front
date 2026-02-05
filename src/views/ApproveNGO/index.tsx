@@ -187,7 +187,6 @@ const ApproveNGO = () => {
             title="ONGs"
             subtitle="Escolha as ONGs que farão parte do projeto"
             emptyMessage="Nenhuma ONG Encontrada"
-            expandContainer={hideNGOFilter}
             emptyState={ngos.length === 0 && !error}
           />
           

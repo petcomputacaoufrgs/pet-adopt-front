@@ -1,5 +1,5 @@
 export interface NGO {
-  _id?: string; // Campo alternativo para compatibilidade com MongoDB
+  _id: string; // Campo alternativo para compatibilidade com MongoDB
   name: string;
   description?: string;
   email: string;

@@ -54,7 +54,7 @@ const ResetPassword: React.FC = () => {
   // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
   const [windowSize, setWindowSize] = useState(window.innerWidth);
 
-  const { isLoading, user, isLoggedIn} = useAuth();
+  const { isLoading, user, isLoggedIn} = useAuth();  
 
   // Verificar se há mensagem de erro de autenticação ao carregar
   useEffect(() => {

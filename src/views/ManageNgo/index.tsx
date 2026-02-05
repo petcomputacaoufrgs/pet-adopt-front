@@ -52,25 +52,17 @@ const ManageNgo = () => {
   // Estado para armazenar as ONGs
 
   const {items: ngos, user, meta, error} = useLoaderData() as {items: NGO[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }, error: string | null;};
-
-  const [searchParams, setSearchParams] = useSearchParams();
   
   const fetcher = useFetcher();
-  const navigation = useNavigation();
-  
-  
 
   // Controla a exibição do filtro
-  const [hideNGOFilter, sethideNGOFilter] = useState(window.innerWidth < 1240);
+  const [hideNGOFilter, sethideNGOFilter] = useState(window.innerWidth < 1240 || ngos.length === 0);
   const [showNGOsFilter, setshowNGOsFilter] = useState(false);
 
   const[showDeleteButton, setShowDeleteButton] = useState<boolean>(false)
 
   const { showToast } = useToast();
 
-
-  const currentPage = Number(searchParams.get("page") || "1");
-  const currentLimit = Number(searchParams.get("limit") || "6");
 
 
   useEffect(() => {
@@ -220,7 +212,6 @@ const ManageNgo = () => {
             title="ONGs"
             subtitle="Visualize as ONGs em atividade no momento"
             emptyMessage="Nenhuma ONG Encontrada"
-            expandContainer={hideNGOFilter}
             emptyState={ngos.length === 0 && !error}
           />
           
@@ -241,9 +232,9 @@ const ManageNgo = () => {
       </ContentContainer>
 
       <PaginationButtons
-        currentPage={currentPage}
-        itemsLength={ngos.length}
-        itemsPerPage={currentLimit}
+        currentPage={meta.page}
+        itemsLength={meta.total}
+        itemsPerPage={meta.limit}
         buttonHeight="30px"
         buttonWidth="30px"
         containerHeight="160px"
