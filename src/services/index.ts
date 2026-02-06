@@ -114,6 +114,11 @@ export const userService = {
   getByRole: (role: string) => 
     api.get(`/users/role/${role}`),
 
+
+  getById: (userId: string) => {
+    return api.get(`/users/${userId}`);
+  },
+
   
   getApprovedMembers: (ngoId: string, filters?: UserFilters) => {
     const url = buildUserUrl('/users/approvedMembers/', ngoId, filters);

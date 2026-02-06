@@ -52,7 +52,10 @@ export const BannerTextContainer = styled.div `
   }
 `
 
-
+export const BannerContainerImage = styled.div`
+  height: 298px;
+  width: 355px;
+`
 
 export const BannerImage = styled.img`
 

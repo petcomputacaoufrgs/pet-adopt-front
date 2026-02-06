@@ -15,7 +15,7 @@ import {
     UpdateButton
 } from "./styles"
 import { useAuth } from "../../hooks/useAuth";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useRouteLoaderData } from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
 import { useToast } from "../../contexts/ToastContext";
 
@@ -23,8 +23,7 @@ import { useToast } from "../../contexts/ToastContext";
 
 const ManageInfo: React.FC = () => {
   
-
-  const { user } = useLoaderData() as { user: any };
+  const { user } = useRouteLoaderData("root") as { user: any };
 
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
@@ -64,15 +63,16 @@ const ManageInfo: React.FC = () => {
       return;
     }
 
+    const userId = user._id || user.id; // Tenta ambos os formatos de ID
+
     try {
-      await userService.update(user?._id, {
+      const newUser = await userService.update(userId, {
         name,
         email,
         role,
       });
-      user.name = name;
-      user.email = email;
-      
+
+
       setSuccessMessage('Informações atualizadas com sucesso!');
 
       showToast({
@@ -80,6 +80,8 @@ const ManageInfo: React.FC = () => {
         message: "Dados atualizados!",
         description: "Informações atualizadas com sucesso."
       })
+
+      window.location.reload();
 
     } catch (err) {
       console.error(err);

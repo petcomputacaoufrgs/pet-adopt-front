@@ -7,9 +7,9 @@ import { useTransition } from "react";
 
 
 
-export const useHeaderOptions = () => {
-  const { user, isLoggedIn, logout } = useAuth();
+export const useHeaderOptions = (user?: User | null) => {
 
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const [isPending, startTransition] = useTransition();
@@ -63,8 +63,9 @@ export const useHeaderOptions = () => {
   };
 
 
-    const getOptionsOfUser = (isLoggedIn: boolean, user?: User) => {
+    const getOptionsOfUser = (isLoggedIn: boolean, user?: User | null) => {
     if (!isLoggedIn) return optionsByRole.REGULAR;
+    if (!user) return optionsByRole.REGULAR; // Caso user seja null ou undefined, retorna opções de REGULAR
     return optionsByRole[user!.role as Role] || optionsByRole.REGULAR;
     };
 
@@ -90,7 +91,7 @@ export const useHeaderOptions = () => {
         "Fale Conosco": () => handleNavigation("#contact")
     };
 
-    const userHeaderOptions = getOptionsOfUser(isLoggedIn, user as User);
+    const userHeaderOptions = getOptionsOfUser(!!user, user);
 
     const handleUserAction = (selected: string) => {
         return actions[selected] ? actions[selected]() : null;

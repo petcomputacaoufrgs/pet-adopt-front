@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { BannerContainer, BannerImage, BannerTextContainer, ContentContainer } from "./styles";
+import { BannerContainer, BannerContainerImage, BannerImage, BannerTextContainer, ContentContainer } from "./styles";
 import { IBanner } from "./types";
 
 const BannerComponent = ({ color, imageUrl, title, subTitle, limitWidthForImage }: IBanner) => {
@@ -29,7 +29,13 @@ const BannerComponent = ({ color, imageUrl, title, subTitle, limitWidthForImage 
           <h2>{subTitle}</h2>
         </BannerTextContainer>
 
-        {showImage && <BannerImage src={imageUrl} />}
+    
+        {showImage && 
+          <BannerContainerImage>
+              <BannerImage src={imageUrl} />
+          </BannerContainerImage>
+        }
+        
       </ContentContainer>
     </BannerContainer>
   );

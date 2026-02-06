@@ -83,6 +83,31 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    id: "root",
+    loader: async () => {
+      const userData = localStorage.getItem("user");
+
+      const user = userData ? JSON.parse(userData) : null;
+
+
+      if (!user) {
+        return { user: null}; // Usuário não logado, não precisa carregar nada
+      }
+
+      try {
+        const newUser = await userService.getById(user.id);
+
+        if (!newUser || !newUser.data) {
+          localStorage.removeItem("user");
+          throw new Response("Unauthorized", { status: 401 });
+        }
+        return { user: newUser.data };
+      } catch (err) {
+        localStorage.removeItem("user");
+        throw new Response("Unauthorized", { status: 401 });
+      }
+    },
+
     children: [
 
       // ROTAS PÚBLICAS
@@ -248,19 +273,6 @@ const router = createBrowserRouter([
             <ManageInfo />
           </ProtectedRoute>
         ),
-
-        loader: async ({ request }) => {
-          const userData = localStorage.getItem("user");
-          const user = userData ? JSON.parse(userData) : null; 
-
-          if (!user) {
-            throw new Response("Unauthorized", { status: 401 });
-          }
-
-          return { user };
-
-
-        }
       },
 
       // ROTAS DE EDIÇÃO

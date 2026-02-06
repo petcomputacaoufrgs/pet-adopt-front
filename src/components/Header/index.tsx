@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useTransition } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useRouteLoaderData } from "react-router-dom";
 
 import {
   ButtonsContainer,
@@ -39,10 +39,10 @@ import { start } from "repl";
 
 const Header = ({ color, Logo }: IHeader) => {
 
-  const {user, isLoggedIn, isLoading} = useAuth();
 
-  const { accountOptions, navigationOptions, handleAction } = useHeaderOptions();
+  const { user } = useRouteLoaderData("root") as { user: User | null };
 
+  const { accountOptions, navigationOptions, handleAction } = useHeaderOptions(user || undefined);
 
   const socialMediaLinks = [
     {
@@ -86,7 +86,7 @@ const Header = ({ color, Logo }: IHeader) => {
   type ResponsiveMode = "full" | "partial" | "compact";
 
   const getResponsiveMode = (): ResponsiveMode => {
-    if(!isLoggedIn){
+    if(!user){
       if (windowWidth >= 1560) return "full";
       if (windowWidth >= 980) return "partial";
       return "compact";
@@ -143,7 +143,7 @@ const Header = ({ color, Logo }: IHeader) => {
   const renderCompactMenu = () => (
     <>
       {/* Se o usuário estiver logado, mostra as opções de navegação e conta */}
-      {isLoggedIn ? (
+      {user ? (
         <CompactUserOptionsContainer>
 
           {navigationOptions.concat(accountOptions).map((option) => (
@@ -199,7 +199,6 @@ const Header = ({ color, Logo }: IHeader) => {
 
   const renderMenuButtons = () => {
 
-    if (isLoading) return null;
     // Se estiver no modo "full" 
     if (responsiveMode === "full") {
 
@@ -269,7 +268,7 @@ const Header = ({ color, Logo }: IHeader) => {
           options={accountOptions}
           paddingH="20px"
           dropDownWidth="250px"
-          indicator={isLoggedIn ? (isOpen: boolean) => isOpen ? (
+          indicator={user ? (isOpen: boolean) => isOpen ? (
             <ChevronDown size={30} color="#553525"/>
           ) : (
             <ChevronUp size={30} color="#553525" />
