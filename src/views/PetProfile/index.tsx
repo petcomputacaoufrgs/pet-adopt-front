@@ -435,8 +435,8 @@ const PetProfile: React.FC = () => {
                         
 
                         <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet._id as string)} isDisabled={false}/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => handleNavigation(`/editAnimal/${pet._id}`)} isDisabled={false}/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet._id as string)} isDisabled={false} paddingV="8px"/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => handleNavigation(`/editAnimal/${pet._id}`)} isDisabled={false} paddingV="8px"/>
                         </Buttons>
                         }
 

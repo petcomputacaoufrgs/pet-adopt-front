@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useBlocker, useNavigate } from 'react-router-dom'; // Importe useBlocker
+import { useBlocker, useLoaderData, useNavigate } from 'react-router-dom'; // Importe useBlocker
 import { useAnimalForm } from '../../hooks/useAnimalForm';
 import Header from "../../components/Header";
 import Footer from "../HomePage/6Footer";
@@ -9,8 +9,8 @@ import logo from "../../assets/HorizontalLogo.png"
 import { IAnimalForm } from "./types";
 import { useAuth } from "../../hooks/useAuth";
 
-export default function EditAnimal({animalData}: IAnimalForm) {
-  const { isLoading, user, isLoggedIn } = useAuth();
+export default function EditAnimal({animalData, user}: IAnimalForm) {
+
   
   const { methods } = useAnimalForm(animalData);
   
@@ -48,7 +48,6 @@ export default function EditAnimal({animalData}: IAnimalForm) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   
-  if(isLoading) return null;
 
   return (
     <div style={{display: "flex", flexDirection: "column"}}>

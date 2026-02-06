@@ -1,4 +1,4 @@
-import { BrowserRouter, createBrowserRouter, Outlet, Route, RouterProvider, Routes } from "react-router-dom";
+import { BrowserRouter, createBrowserRouter, Outlet, Route, RouterProvider, Routes, useNavigation } from "react-router-dom";
 import { PUBLIC_PATHS } from "./constants/routes";
 import HomeView from "./views/HomePage";
 import LoginView from "./views/Login";
@@ -23,16 +23,57 @@ import Header from "./components/Header";
 import logo from "./assets/HorizontalLogo.png"
 import { petProfileLoader } from "./views/PetProfile/petProfileLoader";
 import { createCrudAction, createPaginatedLoader } from "./services/helpers/loaderCreator";
+import { useAuth } from "./hooks/useAuth";
+import { keyframes, styled } from "styled-components";
+import { editAnimalLoader } from "./views/EditAnimal/editAnimalLoader";
+import ScrollToTop from "./components/ScrollToTop";
+
+
+// Barra de progresso global
+const loadAnim = keyframes`
+  0% { width: 0; left: 0; }
+  50% { width: 50%; left: 0; }
+  100% { width: 100%; left: 100%; }
+`;
+
+const GlobalProgressBar = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: #FF6B00;
+  z-index: 9999;
+  width: 100%;
+  animation: ${loadAnim} 1.5s infinite linear;
+`;
+
+
 
 const RootLayout = () => {
+
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
   return (
     <div className="App">
+
+      {/* Para toda a aplicação ter acesso ao contexto de Toasts */}
       <ToastProvider>
-              <Header
-        color="#FFF6E8"
-        Logo={logo}
-      />
+
+        {/* Componente para rolar para o topo em mudanças de rota */}
+        <ScrollToTop /> 
+
+        {/* Mostra a barra só quando o router estiver navegando */}
+        {isLoading && <GlobalProgressBar />}
+
+        <Header
+          color="#FFF6E8"
+          Logo={logo}
+        />
+
+        {/* Aqui é onde o conteúdo das rotas é renderizado */}
         <Outlet /> 
+
       </ToastProvider>
     </div>
   );
@@ -42,7 +83,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    // errorElement: <ErrorPage />, // (Opcional) Uma página de erro genérica
     children: [
 
       // ROTAS PÚBLICAS
@@ -207,7 +247,20 @@ const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={['ALL']}>
             <ManageInfo />
           </ProtectedRoute>
-        )
+        ),
+
+        loader: async ({ request }) => {
+          const userData = localStorage.getItem("user");
+          const user = userData ? JSON.parse(userData) : null; 
+
+          if (!user) {
+            throw new Response("Unauthorized", { status: 401 });
+          }
+
+          return { user };
+
+
+        }
       },
 
       // ROTAS DE EDIÇÃO
@@ -215,9 +268,11 @@ const router = createBrowserRouter([
         path: "/createAnimal",
         element: (
           <ProtectedRoute allowedRoles={['ALL']}>
-            <EditAnimal />
+            <EditAnimalWrapper />
           </ProtectedRoute>
-        )
+        ),
+
+        loader: editAnimalLoader
       },
 
       {
@@ -226,7 +281,9 @@ const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={['ALL']}>
             <EditAnimalWrapper />
           </ProtectedRoute>
-        )
+        ),
+
+        loader: editAnimalLoader
       }
     ]
   }

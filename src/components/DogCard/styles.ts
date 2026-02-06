@@ -17,12 +17,6 @@ export const CardContainer = styled.div<CardContainerProps>`
     max-width: 362px;
     width: 100%;
 
-
-
-
-
-
-    
     transition: all 0.3s ease;
     transform: ${({ $isHovered }) => $isHovered ? 'translateY(-4px)' : 'translateY(0)'};
 
@@ -46,6 +40,24 @@ export const ClickableArea = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+`;
+
+
+export const ImageContainer = styled.div`
+    width: 100%;
+    min-width: 362px;
+    height: 240px;
+
+
+    @media (max-width: 1615px) {
+        min-width: 320px; /* Encolhe um pouco em telas médias */
+    }
+
+    @media (max-width: 768px) {
+        min-width: 100%; /* Ocupa largura disponível em tablets/mobile */
+    }
+
+
 `;
 
 export const Image = styled.img<CardContainerProps>`

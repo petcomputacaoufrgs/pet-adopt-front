@@ -9,7 +9,7 @@ import {
 import { IPaginationButtonsProps } from "./types";
 import LeftArrowIcon from "../../assets/LeftArrow.svg";
 import RightArrowIcon from "../../assets/RightArrow.svg";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const PaginationButtons = ({
   buttonWidth,
@@ -23,6 +23,7 @@ const PaginationButtons = ({
   // Garante pelo menos 1 página
   const totalPages = itemsLength === 0 ? 1 : Math.ceil(itemsLength / itemsPerPage);
 
+  const previousPage = useRef(currentPage);
 
   const getVisiblePages = (
     currentPageParam: number,
@@ -60,7 +61,15 @@ const PaginationButtons = ({
 
   // TO DO: Verificar correção do scroll. Ele corrige mesmo ao dar refresh na página?
   useEffect(() => {
+
+    if (previousPage.current === currentPage) {
+      return;
+    }
+
+    previousPage.current = currentPage;
+
     if (scrollTo) {
+
       const element = document.getElementById(scrollTo);
       if (element) {
         const y = element.getBoundingClientRect().top + window.scrollY;

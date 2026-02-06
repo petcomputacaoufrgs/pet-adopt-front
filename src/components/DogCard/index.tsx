@@ -11,7 +11,8 @@ import {
   CardTagsContainer,
   Image,
   PinText,
-  CardCenteredContainer
+  CardCenteredContainer,
+  ImageContainer
 } from "./styles";
 import { ICard } from "./types";
 import Tag from "../Tags";
@@ -60,11 +61,16 @@ const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id, on
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Image 
-          src={processedImageUrl} 
-          alt={name} 
-          $isHovered={isHovered} 
-        />
+
+        {/* ImageContainer serve só para garantir que durante o carregamento a imagem não cause mudanças bruscas de layout
+            O espaço que a imagem ocupará é reservado */}
+        <ImageContainer>
+          <Image 
+            src={processedImageUrl} 
+            alt={name} 
+            $isHovered={isHovered} 
+          />
+        </ImageContainer>
 
         <InfoBox $hasActions={showActions} $isHovered={isHovered}>
           <CardCenteredContainer>

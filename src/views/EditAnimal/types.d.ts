@@ -12,13 +12,13 @@ export interface Animal {
   sizeIndex: number;
   situationIndex: number;
   characteristics: string;
-  photos: string[]; // URLs das imagens
+  photos: string[];
   
   species: string; // "DOG", "CAT", "OTHER"
   sex: string; // "M", "F"
   size: string; // "P", "M", "G"
   status: string; // "Available", "TempHome", "Adopted"
-  otherSpecies?: string; // Para quando species === "OTHER"
+  otherSpecies?: string; // Para quando species === "OTHER", apesar da gente ainda não estar implementando isso no back
   
   createdAt?: string;
   updatedAt?: string;
@@ -28,5 +28,6 @@ export interface Animal {
 }
 
 export interface IAnimalForm {
-  animalData?: Animal; // Se presente, é edição; se undefined, é criação
+  animalData?: Animal;
+  user?: any;
 }
