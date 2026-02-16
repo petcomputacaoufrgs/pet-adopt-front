@@ -65,14 +65,18 @@ const Login: React.FC = () => {
       
       setSuccessMessage("Login realizado com sucesso!");
       
-      // Redirecionar para a página apropriada após login
+      // Redirecionar para a home após login bem-sucedido
       setTimeout(() => {
         window.location.href = '/';
       }, 300);
       
     } catch (err: any) {
-      console.error(err);
-      setErrorMessage(getErrorMessage(err, "Login falhou. Verifique suas credenciais."));
+      if (err.response?.status === 401) {
+        setErrorMessage('Email ou senha incorretos');
+    } else if (err.response?.status === 403) {
+        // Mensagem específica do backend
+        setErrorMessage(err.response.data.message);
+    }
     }
   };
 

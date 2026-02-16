@@ -119,7 +119,9 @@ api.interceptors.response.use(
       case 403:
         if (window.location.pathname !== '/') {
           localStorage.setItem('authorizationError', 'A sua conta não tem autorização para acessar esta funcionalidade.');
-          window.location.href = '/';
+          if (!isPublicApiEndpoint(originalRequest.url)){
+            window.location.href = '/';
+          }
         }
         break;
 
