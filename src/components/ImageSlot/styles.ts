@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export const ImageSlotContainer = styled.div<{$image: null | string; $isCover: boolean}>`
     width: 103.8px;

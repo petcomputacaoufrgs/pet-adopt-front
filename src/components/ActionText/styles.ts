@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const TextWithAction = styled.button<{ $width: string, $fontSize: string, $textColor: string, $underlineOnHover: boolean }>`
+export const TextWithAction = styled.span<{ $width: string, $fontSize: string, $textColor: string, $underlineOnHover: boolean }>`
   width: ${(props) => `${props.$width}`};
   font-family: 'Nunito Sans', sans-serif;
   font-style: normal;

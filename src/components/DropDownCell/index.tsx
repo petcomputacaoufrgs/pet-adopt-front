@@ -1,5 +1,5 @@
 import { DropDownContainer } from "./styles";
-import { IDropDown } from "./types";
+import type { IDropDown } from "./types";
 
 const DropDownCell = ({
   options,

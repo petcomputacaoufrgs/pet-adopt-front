@@ -1,21 +1,17 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { userService } from "../../services";
 import { AxiosError } from "axios";
-import HorizontalLogo from "../../assets/HorizontalLogo.png"
 
-import Header from "../../components/Header";
 import Footer from "../HomePage/6Footer";
 import BasicInput from "../../components/BasicInput";
-import PasswordInput from "../../components/PasswordInput";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import SuccessToast from "../../components/Toast";
 import {
     Container,
     ContentContainer,
     UpdateButton
 } from "./styles"
 import { useAuth } from "../../hooks/useAuth";
-import { useLoaderData, useRouteLoaderData } from "react-router-dom";
+import { useRouteLoaderData } from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
 import { useToast } from "../../contexts/ToastContext";
 
@@ -63,15 +59,8 @@ const ManageInfo: React.FC = () => {
       return;
     }
 
-    const userId = user._id || user.id; // Tenta ambos os formatos de ID
 
     try {
-      const newUser = await userService.update(userId, {
-        name,
-        email,
-        role,
-      });
-
 
       setSuccessMessage('Informações atualizadas com sucesso!');
 

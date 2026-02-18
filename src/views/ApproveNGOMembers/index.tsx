@@ -1,6 +1,4 @@
-import { useEffect, useState, useRef } from "react";
-import { userService } from "../../services";
-import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
 import {
   CloseButton,
   ContentContainer,
@@ -15,7 +13,6 @@ import Breadcrumb from "../../components/BreadCrumb";
 import MembersFilter from "../../components/MembersFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import Toast from "../../components/Toast";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MemberInfoCard from "../../components/MemberInfoCard";
 
@@ -25,22 +22,16 @@ import ConfirmModal from "../../components/ConfirmModal";
 import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
 import { useFetcher, useLoaderData } from "react-router-dom";
 import { useToast } from "../../contexts/ToastContext";
+import type { Member } from "../../types/member";
 
 
 type ModalAction = { tipo: "aprovar" | "recusar"; membroId: string } | null;
 
-// Interface para definir a estrutura do membro
-interface MEMBER {
-  _id: string;
-  name: string;
-  email: string;
-  ngoId?: string;
-}
 
 const ApproveNGOMembers = () => {
 
 
-  const { items: members, user: userData, meta } = useLoaderData() as { items: MEMBER[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }; error?: string };
+  const { items: members, meta } = useLoaderData() as { items: Member[]; user: any; meta: { total: number; lastPage: number; page: number; limit: number }; error?: string };
 
 
 

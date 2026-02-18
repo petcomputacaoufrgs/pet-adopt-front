@@ -10,7 +10,7 @@ import {
   Cabecalho,
   MemberTextGroup,
 } from "./styles";
-import { MemberInfoCardProps } from "./types";
+import type { MemberInfoCardProps } from "./types";
 import Phone from "../../assets/phone.svg";
 import Email from "../../assets/email.svg";
 

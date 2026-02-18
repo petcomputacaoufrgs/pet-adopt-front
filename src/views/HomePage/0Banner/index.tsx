@@ -1,8 +1,6 @@
 import { BannerContainer, ImageContainer } from "./styles";
 import Info from "../../../components/Info";
 
-import React from "react";
-
 const Banner = () => {
   return (
     <BannerContainer id="banner">

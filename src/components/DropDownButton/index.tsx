@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Container, ContentWrapper, DropdownWrapper } from "./styles";
-import { IDropdownButtonProps } from "./types";
+import type { IDropdownButtonProps } from "./types";
 
 import DropDownCell from "../DropDownCell";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";

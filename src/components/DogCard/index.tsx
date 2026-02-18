@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import {
   AgeLocationContainer,
   AnimalName,
@@ -7,14 +7,13 @@ import {
   ClickableArea, // Wrapper para Imagem + Info
   InfoBox,       // Parte de cima da caixa branca
   ActionsBox,    // Parte de baixo da caixa branca
-  Divider,
   CardTagsContainer,
   Image,
   PinText,
   CardCenteredContainer,
   ImageContainer
 } from "./styles";
-import { ICard } from "./types";
+import type { ICard } from "./types";
 import Tag from "../Tags";
 import DogForCard from "../../assets/HomePageCardDog.png";
 import LocationPin from "../../assets/LocationPin.png"; 

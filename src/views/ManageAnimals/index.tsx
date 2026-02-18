@@ -1,13 +1,9 @@
 import AnimalFilter from "../../components/AnimalFilter";
-import Header from "../../components/Header";
 import BannerComponent from "../../components/BannerComponent";
 
 import dog from "../../assets/ManageAnimalsDog.png";
-import logo from "../../assets/HorizontalLogo.png";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { petService, createPetFiltersFromState } from "../../services";
+import { useEffect, useState, useTransition } from "react";
 import { formatAge, formatSize, formatString, formatSpecies } from "../../services";
-import { AxiosError } from "axios";
 import Footer from "../HomePage/6Footer";
 import { CloseButton, ContentContainer, DogCardsContainer, Overlay, PetCardWrapper, SectionAndDogCardsContainer, SectionWithEmptyStateContainer, TopBarContainer, TopBarContent } from "./styles";
 import { useToast } from "../../contexts/ToastContext";
@@ -19,11 +15,11 @@ import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Breadcrumb from "../../components/BreadCrumb";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 
-import { IManageAnimals, ModalAction } from "./types";
-import { Pet } from "../../types/pets";
+import type { IManageAnimals, ModalAction } from "./types";
+import type { Pet } from "../../types/pets";
 import ConfirmModal from "../../components/ConfirmModal";
 import { useFetcher, useLoaderData, useNavigate } from "react-router-dom";
-import { set } from "react-hook-form";
+
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   const fetcher = useFetcher();
@@ -128,6 +124,22 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     document.body.style.overflow = showAnimalFilterOnSide ? "hidden" : "";
   }, [showAnimalFilterOnSide]);
 
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isWindowSmall = window.innerWidth < 1240;
+
+      setHideAnimalFilter(isWindowSmall);
+
+      // Fecha o filtro no lado da tela se a janela for redimensionada para modo desktop
+      if (!isWindowSmall && showAnimalFilterOnSide) {
+        setShowAnimalFilterOnSide(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [showAnimalFilterOnSide]);
 
 
 

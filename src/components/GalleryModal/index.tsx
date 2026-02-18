@@ -1,8 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
-import { GalleryModalProps } from './types.d';
+import type { GalleryModalProps } from './types';
 import { GalleryContainer, NavigatorContainer, ModalWrapper, Backdrop, TopBar, Image, BottomBar, CloseButtonStyled, NavigatorButton } from './styles';
 import CarouselIndicator from '../CarouseIndicator';
-import { ReactComponent as Close } from '../../assets/close.svg';
+import Close from '../../assets/close.svg?react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const GalleryModal: React.FC<GalleryModalProps> = ({

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Animal } from '../views/EditAnimal/types';
+import type { Animal } from '../views/EditAnimal/types';
 
 export interface AnimalFormSchema {
   name: string;

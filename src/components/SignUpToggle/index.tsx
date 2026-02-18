@@ -1,8 +1,5 @@
-// SignUpToggle.js
-import React from 'react';
-
 import { ToggleContainer, ToggleButton } from './styles';
-import { ISignUpToggle } from './types';
+import type { ISignUpToggle } from './types';
 
 
 const SignUpToggle = ({ selected, onSelect }:ISignUpToggle) => {

@@ -1,6 +1,6 @@
 import React, { useTransition } from "react";
-import { useEffect, useState, useRef } from "react";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 import {
     Container,
@@ -38,14 +38,11 @@ import { Mail } from 'lucide-react';
 import { Phone } from 'lucide-react';
 
 
-import Header from "../../components/Header";
 import Footer from "../HomePage/6Footer";
 import Tag from "../../components/Tags";
 import ConfirmModal from "../../components/ConfirmModal";
 import GalleryModal from "../../components/GalleryModal";
 
-import loginPageLogo from "../../assets/HorizontalLogo.png";
-import DogForCard from "../../assets/HomePageCardDog.png";
 import Insta from "../../assets/OrangeInstagramPin.png";
 import Facebook from "../../assets/OrangeFacebookPin.png";
 import InstaB from "../../assets/BrownInstagramPin.png";
@@ -53,11 +50,9 @@ import FacebookB from "../../assets/BrownFacebookPin.png";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
 import { useAuth } from "../../hooks/useAuth";
-import { Pet } from "../../types/pets";
+import type { Pet } from "../../types/pets";
 import { petService } from "../../services";
-import { ngoService } from "../../services";
 import { useToast } from "../../contexts/ToastContext";
-import { imageHelper } from '../../services/helpers/imageHelper';
 import Breadcrumb from "../../components/BreadCrumb";
 
 type ModalAction = { tipo: "excluir"; petId: string } | null;
@@ -133,7 +128,7 @@ const PetProfile: React.FC = () => {
         setGalleryModalAction({isOpen, imageIndex})
     };
 
-    const {isLoading, user, isLoggedIn} = useAuth();
+    const {isLoading, user} = useAuth();
 
    
 

@@ -1,7 +1,7 @@
 import { useTransition } from "react";
 
 import { InfoContainer, InfoContent } from "./styles";
-import { IInfo } from "./types";
+import type { IInfo } from "./types";
 
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
 import { useNavigate } from "react-router-dom";

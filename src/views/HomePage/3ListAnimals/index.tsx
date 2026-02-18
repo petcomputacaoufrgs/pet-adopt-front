@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 
 import {  ListContainer, 
           TextContainer, 
@@ -15,7 +15,7 @@ import PrimarySecondaryButton from "../../../components/PrimarySecondaryButton";
 import { useNavigate } from "react-router-dom";
 import { petService } from "../../../services";
 import { useCallback } from "react";
-import { Pet } from "../../../types/pets"
+import type { Pet } from "../../../types/pets"
 
 const ListAnimals = () => {
   const [pets, setPets] = useState<Pet[]>([]);

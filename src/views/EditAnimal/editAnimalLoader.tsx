@@ -1,6 +1,5 @@
 import { petService, ngoService } from "../../services";
-import { Animal } from "./types";
-import { redirect } from "react-router-dom";
+import type { Animal } from "./types";
 
 // Interface do retorno
 interface AnimalLoaderData {

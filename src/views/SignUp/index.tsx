@@ -1,6 +1,5 @@
 import { useEffect, useState, useTransition } from "react";
 import { ngoService, authService } from "../../services";
-import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../../services/helpers/errorHandlers";
 import { createPasswordValidators } from "../../services/helpers/passwordValidation";
@@ -17,7 +16,6 @@ import {
   ModalContent
 } from "./styles";
 
-import Header from "../../components/Header";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import BasicInput from "../../components/BasicInput";
 import PasswordInput from "../../components/PasswordInput";
@@ -26,7 +24,6 @@ import SearchBar from "../../components/SearchBar";
 import SignUpToggle from "../../components/SignUpToggle";
 import LargeInputField from "../../components/LargeInput";
 
-import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 import { useAuth } from "../../hooks/useAuth";
 

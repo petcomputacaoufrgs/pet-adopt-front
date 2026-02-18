@@ -1,8 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { User } from "../../types/user";
-import { Role } from "./types";
-import { get } from "http";
+import type { User } from "../../types/user";
+import type { Role } from "./types";
 import { useTransition } from "react";
 
 

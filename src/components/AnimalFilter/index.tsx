@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, useSearchParams, Link, useNavigation, useSubmit } from "react-router-dom"; // Importações novas
+import { useSearchParams, useNavigation, useSubmit } from "react-router-dom"; // Importações novas
 
 import {
   ButtonsContainer,
@@ -23,7 +23,6 @@ import catImage from "../../assets/Cat.svg";
 import catEffectImage from "../../assets/catEffects.svg";
 import dogImage from "../../assets/dog.svg";
 import dogEffectImage from "../../assets/dogEffects.svg";
-import { createPetFiltersFromState } from "../../services";
 import { mapBackendToAge, mapBackendToSex, mapBackendToSize, mapSpeciesStringToIndex } from "../../services/filters/petFilters";
 
 export default function AnimalFilter({ hasBorder = true }) {

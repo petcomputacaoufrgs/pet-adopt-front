@@ -1,6 +1,6 @@
 import { PrimaryButton, SecondaryButton } from "./styles";
 
-import {IButton} from "./types"
+import type {IButton} from "./types"
 
 const PrimarySecondaryButton = ({ width, buttonType = "Primário", isDisabled = false, highlighted = false, content, onClick, height, $flex=false, paddingV, paddingH, fontSize}: IButton) => {
     return ( 

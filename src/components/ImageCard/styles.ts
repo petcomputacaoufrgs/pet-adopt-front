@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 
 
 
-export const CardContainer = styled.button<{ $backgroundColor: string, $backgroundImage: string}>`
+export const CardContainer = styled.div<{ $backgroundColor: string, $backgroundImage: string}>`
   font-family: 'Nunito Sans', sans-serif;
   display: flex;
   align-items: flex-end;
+
+  padding: 0;
 
   width: 100%;
   height: 100%;
@@ -20,7 +22,6 @@ export const CardContainer = styled.button<{ $backgroundColor: string, $backgrou
   background-position: center;
   background-repeat: no-repeat; 
 
-  padding: 1vw;
   border: none;
 
   transition: transform 0.2s ease;
@@ -42,7 +43,7 @@ export const CardInfo = styled.div<{$textColor: string}>`
   text-align: left;
   gap: 8px;
   width: 100%;
-  padding: 1em; 
+  padding: 1.5em; 
 
   p {
     margin: 0;
@@ -59,12 +60,12 @@ export const CardInfo = styled.div<{$textColor: string}>`
     margin: 0;
     width: 50%;
     font-weight: 800;
-    font-size: 2vw;
+    font-size: clamp(16px, 1.5vw, 32px);
     line-height: 1.5;
     color: ${(props) => `${props.$textColor}`}
   }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
@@ -89,7 +90,7 @@ export const StyledLink = styled(Link)<{ $width: string, $heightDesktop: string,
   justify-content: center;
 
 
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     width: 100%;
     height: ${(props) => `${props.$heightMobile}`};
   }

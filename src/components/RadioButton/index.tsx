@@ -1,7 +1,7 @@
 // RadioButton/index.tsx
 import { useState } from 'react';
 import { StyledInput, StyledRadioButton } from './styles';
-import { RadioOption } from './types';
+import type { RadioOption } from './types';
 
 function RadioButton({
   label,

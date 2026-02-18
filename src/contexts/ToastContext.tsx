@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useRef, ReactNode } from 'react';
+import { createContext, useContext, useState, useRef } from 'react';
+import type { ReactNode } from 'react';
 import Toast from '../components/Toast'; 
 
 interface ToastOptions {
@@ -23,9 +24,9 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [description, setDescription] = useState('');
 
   // Refs para gerenciar os timeouts
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const fullCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const showTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fullCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Limpa qualquer toast pendente antes de abrir um novo
   const resetToastTimers = () => {

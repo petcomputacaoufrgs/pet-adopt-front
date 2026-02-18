@@ -1,7 +1,14 @@
 import api from './api';
-import { NGOFilters, buildNGOUrl } from './filters/ngoFilters';
-import { PetFilters, buildPetUrl, normalizeFiltersForApi } from './filters/petFilters';
-import { UserFilters, buildUserUrl } from './filters/userFilters';
+
+import { buildNGOUrl } from './filters/ngoFilters';
+import type { NGOFilters } from './filters/ngoFilters';
+
+import { buildUserUrl } from './filters/userFilters';
+import type { UserFilters } from './filters/userFilters';
+
+import { buildPetUrl, normalizeFiltersForApi } from './filters/petFilters';
+import type { PetFilters } from './filters/petFilters';
+
 
 // Serviços relacionados à autenticação
 export const authService = {

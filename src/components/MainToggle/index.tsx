@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
 import { ToggleContainer, ToggleButton } from "./styles";
-import { ToggleButtonProps } from "./types";
+import type { ToggleButtonProps } from "./types";
 
 const MainToggle: React.FC<ToggleButtonProps> = ({
   selected,
-  fontSize,
   disabledButton = false,
 }) => {
   const [selectedType, setSelectedType] = useState<"ngo" | "member">(selected);

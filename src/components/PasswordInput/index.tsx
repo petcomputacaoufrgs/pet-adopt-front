@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { PasswordContainer, StyledInput } from './styles';
-import { PasswordInputProps } from './types';
+import type { PasswordInputProps } from './types';
 
 import { Eye, EyeOff, CircleAlert } from 'lucide-react';
 

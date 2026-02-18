@@ -6,10 +6,10 @@ import {
   Ellipsis,
 } from "./styles";
 
-import { IPaginationButtonsProps } from "./types";
+import type { IPaginationButtonsProps } from "./types";
 import LeftArrowIcon from "../../assets/LeftArrow.svg";
 import RightArrowIcon from "../../assets/RightArrow.svg";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const PaginationButtons = ({
   buttonWidth,

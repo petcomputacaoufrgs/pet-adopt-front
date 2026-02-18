@@ -5,9 +5,6 @@ import ContactCard from "../../../components/ContactCard";
 import Gatinhos from "../../../assets/HomePageCat.png"
 import Lines from "../../../assets/HomePageLinesContact.png"
 
-import {forwardRef} from "react";
-
-
 const Contact = () => {
     
     return (

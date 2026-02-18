@@ -3,16 +3,8 @@ const getFullImageUrl = (imagePath: string): string => {
     return imagePath;
   }
   
-  let baseURL = process.env.REACT_APP_ASSETS_URL ?? '';
-
-
-
-  const path = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-
-  console.log(`${baseURL}${path}`);
-
-  console.log(`${baseURL}${path}`);
-  return `${baseURL}${path}`;
+  const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3002/api/v1';
+  return `${baseURL}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
 };
 
 export const imageHelper = {

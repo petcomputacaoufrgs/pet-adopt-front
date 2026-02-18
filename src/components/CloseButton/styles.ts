@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { StyledCloseButtonProps } from './types';
+import type { StyledCloseButtonProps } from './types';
+
 export const CloseButtonStyled = styled.button<StyledCloseButtonProps>`
   width: 24px;
   height: 24px;

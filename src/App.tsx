@@ -1,11 +1,10 @@
-import { BrowserRouter, createBrowserRouter, Outlet, Route, RouterProvider, Routes, useNavigation } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider, useNavigation } from "react-router-dom";
 import { PUBLIC_PATHS } from "./constants/routes";
 import HomeView from "./views/HomePage";
 import LoginView from "./views/Login";
 import SignupView from "./views/SignUp"
 import ManageAnimals from "./views/ManageAnimals";
 import ManageNgo from "./views/ManageNgo";
-import EditAnimal from "./views/EditAnimal";
 import ApproveNGO from "./views/ApproveNGO";
 import ManageInfo from "./views/ManageInfo";
 import PetProfile from "./views/PetProfile";
@@ -23,7 +22,6 @@ import Header from "./components/Header";
 import logo from "./assets/HorizontalLogo.png"
 import { petProfileLoader } from "./views/PetProfile/petProfileLoader";
 import { createCrudAction, createPaginatedLoader } from "./services/helpers/loaderCreator";
-import { useAuth } from "./hooks/useAuth";
 import { keyframes, styled } from "styled-components";
 import { editAnimalLoader } from "./views/EditAnimal/editAnimalLoader";
 import ScrollToTop from "./components/ScrollToTop";
@@ -46,7 +44,6 @@ const GlobalProgressBar = styled.div`
   width: 100%;
   animation: ${loadAnim} 1.5s infinite linear;
 `;
-
 
 
 const RootLayout = () => {
@@ -118,7 +115,7 @@ const router = createBrowserRouter([
           // Lista todos os filtros que a URL suporta
           filterKeys: ["name", "species", "age", "size", "color", "city", "state", "sex"],
   
-          fetchData: (filters, user) => {
+          fetchData: (filters) => {
             return petService.getPage(filters);
           }}),
 
@@ -153,7 +150,7 @@ const router = createBrowserRouter([
       { path: PUBLIC_PATHS.LIST_NGOS, element: <ManageNgo />,
         loader: createPaginatedLoader({
           isPublic: true,
-          fetchData: (filters, user) => {
+          fetchData: (filters) => {
             return ngoService.getApprovedPage(filters);
           }
         }),
@@ -179,7 +176,7 @@ const router = createBrowserRouter([
 
         loader: createPaginatedLoader({
           isPublic: true,
-          fetchData: (filters, user) => {
+          fetchData: (filters) => {
             return ngoService.getUnapprovedPage(filters);
           }
         }),
@@ -256,7 +253,7 @@ const router = createBrowserRouter([
           // Lista todos os filtros que a URL suporta
           filterKeys: ["name", "species", "age", "size", "color", "city", "state", "sex"],
   
-          fetchData: (filters, user) => {
+          fetchData: (filters) => {
             // Não precisamos do 'user' aqui pois é busca pública
             return petService.getPage(filters); // Certifique-se que o service suporta paginação
           }}),

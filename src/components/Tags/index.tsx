@@ -1,6 +1,6 @@
 import {TagContainer} from "./styles";
 
-import {TagProps } from "./types";
+import type { TagProps } from "./types";
 
 import Check from "../../assets/CheckTags.png";
 

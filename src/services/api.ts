@@ -1,9 +1,9 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { isPublicApiEndpoint } from '../constants/routes';
 
 // Configuração base da API
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3002/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3002/api/v1',
   withCredentials: true, // Permite o envio de cookies com as requisições
   timeout: 10000,
   headers: {

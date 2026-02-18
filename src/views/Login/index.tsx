@@ -13,15 +13,12 @@ import {
   TextContainer,
 } from "./styles"; 
 
-import Header from "../../components/Header"; 
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
-import loginPageLogo from "../../assets/HorizontalLogo.png";
 import LoginDog from "../../assets/LoginDog.png";
 import BasicInput from "../../components/BasicInput";
 import PasswordInputField from "../../components/PasswordInput";
 import ActionText from "../../components/ActionText";
-import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
@@ -114,12 +111,6 @@ const Login: React.FC = () => {
 
     return scrollbarWidth;
   }
-
-
-    const { isLoading, user, isLoggedIn} = useAuth();
-
-  if(isLoading)
-    return null;
   
 // ========================================================================================================
   return (

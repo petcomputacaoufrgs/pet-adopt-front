@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useBlocker, useLoaderData, useNavigate } from 'react-router-dom'; // Importe useBlocker
+import { useBlocker } from 'react-router-dom'; // Importe useBlocker
 import { useAnimalForm } from '../../hooks/useAnimalForm';
-import Header from "../../components/Header";
 import Footer from "../HomePage/6Footer";
 import AnimalFormSection from "../../components/AnimalFormSection";
 import ConfirmModal from "../../components/ConfirmModal"; // Seu modal existente
-import logo from "../../assets/HorizontalLogo.png"
-import { IAnimalForm } from "./types";
-import { useAuth } from "../../hooks/useAuth";
+import type { IAnimalForm } from "./types";
 
 export default function EditAnimal({animalData, user}: IAnimalForm) {
 

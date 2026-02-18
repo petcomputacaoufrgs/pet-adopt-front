@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useLoaderData, useSearchParams, useFetcher, useNavigation } from "react-router-dom";
+import { useLoaderData, useFetcher, useNavigation } from "react-router-dom";
 
 // Componentes
-import Header from "../../components/Header";
 import BannerComponent from "../../components/BannerComponent";
 import Breadcrumb from "../../components/BreadCrumb";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import Toast from "../../components/Toast";
 import MemberInfoCard from '../../components/MemberInfoCard';
 import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -20,9 +18,8 @@ import {
   CloseButton, ContentContainer, NGOCardsContainer, Overlay,
   TopBarContainer, TopBarContent, Msg
 } from "./styles";
-import { User } from "../../types/user";
+import type { User } from "../../types/user";
 import { useToast } from "../../contexts/ToastContext";
-import { m } from "framer-motion";
 
 
 
@@ -30,7 +27,7 @@ import { m } from "framer-motion";
 const ManageNGOMembers: React.FC = () => {
 
   // DADOS: Vêm do Loader
-  const { items: membersData, user: userData, meta } = useLoaderData() as { items: User[]; user: User | null; meta: any };
+  const { items: membersData, meta } = useLoaderData() as { items: User[]; user: User | null; meta: any };
 
   // HOOKS DO ROUTER
   const fetcher = useFetcher(); 
@@ -39,9 +36,6 @@ const ManageNGOMembers: React.FC = () => {
   // Loading global (ao navegar/filtrar) ou local (ao deletar)
   const isLoadingPage = navigation.state === "loading";
   const isDeleting = fetcher.state !== "idle";
-
-  // LÓGICA DE PAGINAÇÃO & RESPONSIVIDADE
-  const currentPage = meta.page;
 
   // State local apenas para controlar layout UI
   const [hideMembersFilter, setHideMembersFilter] = useState(window.innerWidth < 1240 || membersData.length === 0 );

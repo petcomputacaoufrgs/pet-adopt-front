@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-
 import {
   EditButtonContainer,
   StyledDeleteButton,
 
 } from "./styles";
 
-import { IDeleteButtonProps } from "./types";
+import type { IDeleteButtonProps } from "./types";
 import DeleteIcon from "../../assets/DeleteIcon.svg";
 
 const DeleteButton = ({ width, height, onClick }: IDeleteButtonProps) => {

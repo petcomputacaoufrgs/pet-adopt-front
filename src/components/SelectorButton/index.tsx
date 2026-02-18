@@ -1,6 +1,6 @@
 import { StyledButton, StyledText } from './styles';
 
-import { SelectorButtonProps } from './types';
+import type { SelectorButtonProps } from './types';
 
 function SelectorButton({
   label,

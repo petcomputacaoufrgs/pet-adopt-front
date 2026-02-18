@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { BannerContainer, BannerContainerImage, BannerImage, BannerTextContainer, ContentContainer } from "./styles";
-import { IBanner } from "./types";
+import type { IBanner } from "./types";
 
 const BannerComponent = ({ color, imageUrl, title, subTitle, limitWidthForImage }: IBanner) => {
   const [showImage, setShowImage] = useState(

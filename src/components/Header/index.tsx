@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, useTransition } from "react";
-import { useNavigate, useRouteLoaderData } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useRouteLoaderData } from "react-router-dom";
 
 import {
   ButtonsContainer,
@@ -17,7 +17,7 @@ import {
   TextButton,
   TextContainer,
 } from "./styles";
-import { IHeader } from "./types";
+import type { IHeader } from "./types";
 
 import DropdownButton from "../DropDownButton";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
@@ -30,11 +30,9 @@ import OrangeFacebookPin from "../../assets/OrangeFacebookPin.png";
 import OrangeInstagramPin from "../../assets/OrangeInstagramPin.png";
 import OrangeTiktokPin from "../../assets/OrangeTiktokPin.png";
 import OrangeYoutubePin from "../../assets/OrangeYoutubePin.png";
-import { useAuth } from "../../hooks/useAuth";
-import { User } from "../../types/user";
+import type { User } from "../../types/user";
 import { useHeaderOptions } from "./useHeaderOptions";
 import { ChevronDown, ChevronUp} from "lucide-react";
-import { start } from "repl";
 
 
 const Header = ({ color, Logo }: IHeader) => {

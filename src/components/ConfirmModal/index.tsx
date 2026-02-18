@@ -8,7 +8,7 @@ import {
   ButtonWrapper,
   TopBar
 } from './styles';
-import { ConfirmModalProps } from './types';
+import type { ConfirmModalProps } from './types';
 import CloseButton from '../CloseButton';
 import PrimarySecondaryButton from '../PrimarySecondaryButton';
 const ConfirmModal: React.FC<ConfirmModalProps> = ({

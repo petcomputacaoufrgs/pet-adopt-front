@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TagProps } from "./types";
+import type { TagProps } from "./types";
 
 
 export const TagContainer = styled.div<TagProps>`

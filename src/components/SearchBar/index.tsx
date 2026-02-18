@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import { Container, ToggleButton, DropDownWrapper } from './styles';
-import { ISearchBar } from './types'; // Lembre de adicionar disabled e maxHeight na interface
+import type { ISearchBar } from './types';
 import DropDownCell from '../DropDownCell';
 import BasicInput from '../BasicInput';
 

@@ -1,6 +1,4 @@
-import { useEffect, useState, useRef } from "react";
-import { ngoService } from "../../services";
-import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
 import {
   CloseButton,
   ContentContainer,
@@ -12,39 +10,21 @@ import {
 
 import BannerComponent from "../../components/BannerComponent";
 import Breadcrumb from "../../components/BreadCrumb";
-import Header from "../../components/Header";
 import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
-import Toast from "../../components/Toast";
 import OngInfoCard from "../../components/OngInfoCard";
 
 import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
-import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ApproveNGOsDog from "../../assets/ApproveNGOsDog.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
-import { useAuth } from "../../hooks/useAuth";
-import { useLoaderData, useNavigation } from "react-router";
-import { useFetcher, useSearchParams } from "react-router-dom";
+import { useLoaderData } from "react-router";
+import { useFetcher } from "react-router-dom";
 import { useToast } from "../../contexts/ToastContext";
+import type { NGO } from "../../types/ngos";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
-
-// Interface para definir a estrutura da ONG
-interface NGO {
-  _id: string;
-  name: string;
-  city: string;
-  email: string;
-  phone: string;
-  cnpj: string;
-  instagram?: string;
-  facebook?: string;
-  x?: string;
-  tiktok?: string;
-  state?: string;
-}
 
 const ApproveNGO = () => {
 
@@ -64,9 +44,7 @@ const ApproveNGO = () => {
   const [modalAction, setModalAction] = useState<ModalAction>(null);
 
 
-  const [searchParams, setSearchParams] = useSearchParams();
   const fetcher = useFetcher();
-  const navigation = useNavigation();
 
   const { showToast } = useToast();
 

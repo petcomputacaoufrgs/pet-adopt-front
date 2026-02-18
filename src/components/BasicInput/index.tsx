@@ -6,7 +6,7 @@ import {
   StyledInput,
 } from "./styles";
 
-import { BasicInputProps } from "./types";
+import type { BasicInputProps } from "./types";
 
 function BasicInput({
   name,

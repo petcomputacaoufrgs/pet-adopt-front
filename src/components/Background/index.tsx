@@ -1,5 +1,5 @@
 import { Image1, Img1Container } from "./styles";
-import { IBack } from "./types";
+import type { IBack } from "./types";
 
 const Background = ({ imageUrl1, imageUrl2, imageUrl3 }: IBack) => {
   return (

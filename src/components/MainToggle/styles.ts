@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ToggleButtonProps } from "./types";
+import type { ToggleButtonProps } from "./types";
 
 
 

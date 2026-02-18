@@ -1,6 +1,6 @@
 import { CloseButtonStyled } from './styles';
-import { CloseButtonProps } from './types';
-import { ReactComponent as Close } from '../../assets/close.svg';
+import type { CloseButtonProps } from './types';
+import Close from '../../assets/close.svg?react';
 
 export default function CloseButton({ themeMode, disabled, onClick }: CloseButtonProps) {
   return (

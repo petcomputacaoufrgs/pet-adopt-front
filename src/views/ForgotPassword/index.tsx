@@ -13,16 +13,11 @@ import {
   TextContainer,
 } from "./styles"; 
 
-import Header from "../../components/Header"; 
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
-import ForgotPasswordPageLogo from "../../assets/HorizontalLogo.png";
 import ForgotPasswordDog from "../../assets/LoginDog.png";
 import BasicInput from "../../components/BasicInput";
-import PasswordInputField from "../../components/PasswordInput";
-import { useAuth } from "../../hooks/useAuth";
-import { Navigate, useNavigate } from "react-router-dom";
-import { Weight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import ActionText from "../../components/ActionText";
 
 const ForgotPassword1: React.FC = () => {
@@ -99,12 +94,6 @@ const ForgotPassword1: React.FC = () => {
     return scrollbarWidth;
   }
 
-
-    const { isLoading, user, isLoggedIn} = useAuth();
-
-
-  if(isLoading)
-    return null;
   
 // ========================================================================================================
   return (

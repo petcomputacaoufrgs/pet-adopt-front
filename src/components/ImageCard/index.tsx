@@ -1,5 +1,5 @@
 import { CardContainer, CardInfo, StyledLink } from "./styles";
-import { ICard } from "./types";
+import type { ICard } from "./types";
 
 import ActionText from "../ActionText";
 
@@ -28,7 +28,7 @@ const ImageCard = ({
             <ActionText
               onClick={() => {}}
               hasArrowSvg={true}
-              fontSize="calc(10px + 1vw)"
+              fontSize="clamp(16px, 1.5vw, 32px)"
               textColor={textColor}
             >
               Ver mais

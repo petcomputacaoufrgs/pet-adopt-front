@@ -1,6 +1,6 @@
 import { TextWithAction } from "./styles";
 
-import { ILink } from "./types";
+import type { ILink } from "./types";
 
 const ActionText = ({
   children,
@@ -11,6 +11,7 @@ const ActionText = ({
   fontSize,
   textColor,
 }: ILink) => {
+
   return (
     <TextWithAction
       onClick={onClick}

@@ -1,5 +1,5 @@
 import { Container } from './styles';
-import { SelectorRadioGroupProps } from './types'; 
+import type { SelectorRadioGroupProps } from './types'; 
 
 import SelectorButton from '../SelectorButton';
 

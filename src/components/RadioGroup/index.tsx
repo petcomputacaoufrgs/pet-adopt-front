@@ -2,7 +2,7 @@
 import RadioButton from '../RadioButton';
 
 import { Container, Label, Required } from './styles';
-import { RadioGroupProps } from './types';
+import type { RadioGroupProps } from './types';
 
 // A interface Option pode ser removida se já estiver definida em types.ts
 // interface Option {

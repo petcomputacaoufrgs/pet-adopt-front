@@ -20,7 +20,7 @@ const ImageSlot = memo(({ source, onClick, onRemove, isCover }: ImageSlotProps) 
       if (source.startsWith('http://') || source.startsWith('https://')) {
         return source;
       } else {
-        const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+        const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3002/api/v1';
         return `${baseURL}${source.startsWith('/') ? '' : '/'}${source}`;
       }
     } else {

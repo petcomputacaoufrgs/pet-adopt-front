@@ -21,8 +21,9 @@ export const TextContainer = styled.div`
   text-align: center;
 `;
 
-export const TextTitle2 = styled.text`
+export const TextTitle2 = styled.p`
   font-family: 'Source Serif 4', serif;
+  margin: 0;
 
   @media (min-width: 768px) {
     font-size: 32px;
@@ -33,7 +34,10 @@ export const TextTitle2 = styled.text`
   } 
 `;
 
-export const TextTitle = styled.text`
+export const TextTitle = styled.p`
+
+  margin: 0;
+
   @media (min-width: 768px) {
     font-size: 48px;
   }

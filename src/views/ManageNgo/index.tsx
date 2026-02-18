@@ -1,6 +1,4 @@
-import { useEffect, useState, useRef } from "react";
-import { ngoService, NGOFilters } from "../../services";
-import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
 
 import {
   CloseButton,
@@ -13,39 +11,22 @@ import {
 
 import BannerComponent from "../../components/BannerComponent";
 import Breadcrumb from "../../components/BreadCrumb";
-import Header from "../../components/Header";
 import NGOsFilter from "../../components/NGOsFilter";
 import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import OngInfoCard from "../../components/OngInfoCard";
 import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
-import Toast from "../../components/Toast";
 
-import HorizontalLogo from "../../assets/HorizontalLogo.png";
 import ManageNGOsCat from "../../assets/ManageNGOsCat.png";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
-import { useAuth } from "../../hooks/useAuth";
-import { useFetcher, useLoaderData, useNavigation, useSearchParams } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
 
 import { useToast } from "../../contexts/ToastContext";
-import { set } from "react-hook-form";
 
 
-// Interface para definir a estrutura da ONG
-interface NGO {
-  _id: string;
-  name: string;
-  city: string;
-  email: string;
-  phone: string;
-  cnpj: string;
-  instagram?: string;
-  facebook?: string;
-  youtube?: string;
-  tiktok?: string;
-  state?: string;
-}
+import type { NGO } from "../../types/ngos";
+
 
 const ManageNgo = () => {
 

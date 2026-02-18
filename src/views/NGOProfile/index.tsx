@@ -1,9 +1,9 @@
 // imports
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { NGO } from "../../types/ngos";
-import { ngoService, userService } from "../../services";
+import type { NGO } from "../../types/ngos";
+import { ngoService } from "../../services";
 import { AxiosError } from "axios";
 
  
@@ -18,11 +18,9 @@ import {
     Backdrop, Wrapper
 } from "./styles";
 
-import Header from "../../components/Header";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import Footer from "../HomePage/6Footer";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
-import Toast from "../../components/Toast";
 import ConfirmModal from "../../components/ConfirmModal";
 import ManageInfoForm from "../../components/ManageNGOInfoForm";
 

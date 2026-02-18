@@ -19,7 +19,7 @@ import AnimalFormPhoto from "../../assets/AnimalFormPhoto.png";
 
 import { petService, ngoService } from "../../services/index";
 import { useToast } from "../../contexts/ToastContext";
-import { AnimalFormSchema } from "../../hooks/useAnimalForm";
+import type { AnimalFormSchema } from "../../hooks/useAnimalForm";
 
 const MemoizedImageSlotsGroup = memo(ImageSlotsGroup);
 

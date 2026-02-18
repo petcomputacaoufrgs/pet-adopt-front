@@ -1,5 +1,5 @@
 import React from 'react';
-import { CarouselIndicatorProps } from './types.d';
+import type { CarouselIndicatorProps } from './types';
 import { IndicatorContainer, IndicatorBar } from './styles';
 
 const CarouselIndicator: React.FC<CarouselIndicatorProps> = ({

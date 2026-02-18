@@ -1,5 +1,3 @@
-import api from "../api";
-
 export interface PetFilters {
   species?: string;
   name?: string;

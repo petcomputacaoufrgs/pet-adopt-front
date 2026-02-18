@@ -14,35 +14,25 @@ import {
   TextContainer,
 } from "./styles"; 
 
-import Header from "../../components/Header"; 
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 
-import ForgotPasswordPageLogo from "../../assets/HorizontalLogo.png";
 import ForgotPasswordDog from "../../assets/LoginDog.png";
-import BasicInput from "../../components/BasicInput";
-import PasswordInputField from "../../components/PasswordInput";
 import PasswordInput from "../../components/PasswordInput";
 import { useAuth } from "../../hooks/useAuth";
-import { Navigate, useNavigate, useLocation, useSearchParams} from "react-router-dom";
-import { Weight } from "lucide-react";
+import { useNavigate, useSearchParams} from "react-router-dom";
 import ActionText from "../../components/ActionText";
-import { wait } from "@testing-library/user-event/dist/utils";
 
 const ResetPassword: React.FC = () => {
 
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
-  const location = useLocation();
 
   const [searchParams] = useSearchParams();
   const [newPassword, setNewPassword] = useState("");
   const token = searchParams.get("token");
 
-  const [isWaiting, setIsWaiting] = useState(false);
-  const [countdown, setCountdown] = useState(60);
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -54,7 +44,7 @@ const ResetPassword: React.FC = () => {
   // CONTROLE DO COMPRIMENTO DA JANELA PARA RESPONSIVIDADE ============================================
   const [windowSize, setWindowSize] = useState(window.innerWidth);
 
-  const { isLoading, user, isLoggedIn} = useAuth();  
+  const { isLoading} = useAuth();  
 
   // Verificar se há mensagem de erro de autenticação ao carregar
   useEffect(() => {

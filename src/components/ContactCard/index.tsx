@@ -1,7 +1,5 @@
-import React from "react";
-
 import { CardContainer, CardDiv } from "./styles";
-import { ICard } from "./types";
+import type { ICard } from "./types";
 
 import InfoComponent from "../Info";
 

@@ -108,12 +108,6 @@ export const ActionsBox = styled.div`
   
 `;
 
-export const Divider = styled.div`
-  height: 1px;
-  width: 100%;
-  background-color: #E0E0E0;
-  margin-bottom: 8px;
-`;
 
 export const CardCenteredContainer = styled.div`
    display: flex;

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CardContainer, CardInfo, Image, StyledLink } from "./styles";
-import { ICard } from "./types";
+import type { ICard } from "./types";
 
 const ColoredCard = ({
   title,

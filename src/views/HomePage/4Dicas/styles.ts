@@ -12,7 +12,7 @@ export const CardsContainer = styled.div`
     min-height: 500px;
     gap: 1vw;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       height: auto;
       flex-direction: column;
       flex-wrap: nowrap;
@@ -34,7 +34,7 @@ export const HintsContainer = styled.div`
     justify-content: center;
     background-color: #FFF6E8;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       padding-top: 20px;
       padding-bottom: 20px;
     }
@@ -81,7 +81,7 @@ export const InfoDiv = styled.div`
         font-size: 18px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
@@ -106,7 +106,7 @@ export const Image = styled.img<{$width: Number}>`
   width: ${(props) => `${props.$width}%`};;
   height: auto; 
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
     display: none;
     }
 `;

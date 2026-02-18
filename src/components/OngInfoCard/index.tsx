@@ -13,7 +13,7 @@ import {
   Cabecalho,
   OngTextGroup,
 } from "./styles";
-import { OngInfoCardProps } from "./types";
+import type { OngInfoCardProps } from "./types";
 
 // Assets Gerais
 import Location from "../../assets/location.svg";
@@ -91,7 +91,7 @@ const OngInfoCard: React.FC<OngInfoCardProps> = ({
     { icon: Location, text: ngo?.city ? `${ngo?.city}, ${ngo?.state}` : ngo?.state, link: null },
     { icon: Email, text: ngo?.email, link: null },
     contactItem, // Insere o item de contato decidido acima
-    { icon: Id, text: ngo?.cnpj, link: null }
+    { icon: Id, text: ngo?.document, link: null }
   ].filter(item => item && item.text); // Remove itens nulos ou sem texto
 
   // Determina se exibe a barra de ações

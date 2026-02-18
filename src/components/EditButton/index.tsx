@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   EditButtonContainer,
@@ -8,7 +8,7 @@ import {
   StyledOptionButton,
 } from "./styles";
 
-import { IEditButtonProps } from "./types";
+import type { IEditButtonProps } from "./types";
 
 import editIcon from "../../assets/SystemIcon.svg"; 
 

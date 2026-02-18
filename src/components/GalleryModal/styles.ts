@@ -1,5 +1,5 @@
-import styled, {css} from 'styled-components';
-import { StyledCloseButtonProps } from '../CloseButton/types';
+import styled from 'styled-components';
+import type { StyledCloseButtonProps } from '../CloseButton/types';
 
 export const GalleryContainer = styled.div `
     width: 49.1666667vw; // 944px em vw utilizando 1920px como base
