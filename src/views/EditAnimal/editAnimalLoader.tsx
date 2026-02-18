@@ -8,7 +8,7 @@ interface AnimalLoaderData {
   user: any;
 }
 
-export const editAnimalLoader = async ({ params }: { params: any }): Promise<AnimalLoaderData> => {
+export const editAnimalLoader = async ({ params }: { params: any }): Promise<AnimalLoaderData | Response> => {
   const { id } = params;
   
   const userData = localStorage.getItem("user");
@@ -32,15 +32,16 @@ export const editAnimalLoader = async ({ params }: { params: any }): Promise<Ani
     const petResponse = await petService.getById(id);
     const pet = petResponse.data;
 
+    // VALIDAÇÃO LOCAL: Verifica se o pet pertence à ONG do usuário.
+    if (pet.ngoId !== user.ngoId) {
+      localStorage.setItem('authorizationError', 
+        'Você não tem permissão para editar este pet. Ele pertence a outra ONG.');
+      return redirect('/manageAnimals');
+    }
+
     // Busca a ONG
     const ngoResponse = await ngoService.getById(pet.ngoId);
     const ngo = ngoResponse.data;
-
-    // Validação de Permissão
-    // Admin pode tudo, ou o usuário deve ser o dono da ONG do pet
-    if (user.role !== "ADMIN" && user.ngoId !== pet.ngoId) {
-      throw new Error("Acesso negado. Você não tem permissão para editar este animal.");
-    }
 
     // Monta o objeto final
     const animalData = {
@@ -53,8 +54,22 @@ export const editAnimalLoader = async ({ params }: { params: any }): Promise<Ani
       user, 
     };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro no loader:", error);
+    
+    // Tratamento específico para erro 403 (Forbidden) - Sem permissão
+    if (error.response?.status === 403) {
+      localStorage.setItem('authorizationError', 
+        error.response?.data?.message || 'Você não tem permissão para editar este pet.');
+      return redirect('/manageAnimals');
+    }
+    
+    // Tratamento específico para erro 404 (Not Found)
+    if (error.response?.status === 404) {
+      localStorage.setItem('authorizationError', 'Pet não encontrado.');
+      return redirect('/manageAnimals');
+    }
+    
     throw new Error("Falha ao carregar dados do animal.");
   }
 };

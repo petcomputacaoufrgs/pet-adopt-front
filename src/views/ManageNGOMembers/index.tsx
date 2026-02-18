@@ -13,6 +13,7 @@ import Footer from "../HomePage/6Footer";
 import ConfirmModal from "../../components/ConfirmModal";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MembersFilter from "../../components/MembersFilter"; // Seu novo filtro refatorado
+import AuthorizationToast from "../../components/AuthorizationToast";
 
 // Assets e Estilos
 import ManageMembersHamster from "../../assets/ManageMembersHamster.png";
@@ -112,6 +113,8 @@ const ManageNGOMembers: React.FC = () => {
 
   return (
     <div>
+      <AuthorizationToast />
+      
       <BannerComponent 
         limitWidthForImage="850px" 
         color="rgba(178, 243, 255, 1)"  

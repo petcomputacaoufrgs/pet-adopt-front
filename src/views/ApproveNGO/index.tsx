@@ -28,6 +28,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useLoaderData, useNavigation } from "react-router";
 import { useFetcher, useSearchParams } from "react-router-dom";
 import { useToast } from "../../contexts/ToastContext";
+import AuthorizationToast from "../../components/AuthorizationToast";
 
 type ModalAction = { tipo: "aprovar" | "recusar"; ngoId: string } | null;
 
@@ -149,7 +150,8 @@ const ApproveNGO = () => {
 
   return (
     <>
-
+      <AuthorizationToast />
+      
       <BannerComponent 
         limitWidthForImage="850px" 
         color="rgba(178, 243, 255, 1)"  

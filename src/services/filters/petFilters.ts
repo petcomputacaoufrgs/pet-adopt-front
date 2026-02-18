@@ -211,6 +211,11 @@ export const normalizeFiltersForApi = (frontFilters: any) => {
   if (frontFilters.city) apiFilters.city = frontFilters.city;
   if (frontFilters.breed) apiFilters.breed = frontFilters.breed;
   
+  // Passa o ngoId se presente (para filtrar pets por ONG)
+  if (frontFilters.ngoId) {
+    apiFilters.ngoId = frontFilters.ngoId;
+  }
+  
   // Aplica os mappers
   if (frontFilters.state) apiFilters.state = toBackendState(frontFilters.state);
   if (frontFilters.age) apiFilters.age = toBackendAge(frontFilters.age);

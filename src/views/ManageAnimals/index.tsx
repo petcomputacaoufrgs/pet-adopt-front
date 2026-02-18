@@ -24,6 +24,8 @@ import { Pet } from "../../types/pets";
 import ConfirmModal from "../../components/ConfirmModal";
 import { useFetcher, useLoaderData, useNavigate } from "react-router-dom";
 import { set } from "react-hook-form";
+import AuthorizationToast from "../../components/AuthorizationToast";
+
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   const fetcher = useFetcher();
@@ -133,6 +135,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   return (
     <>
+      <AuthorizationToast />
+      
       <ConfirmModal
           isOpen={modalAction !== null}
           title= "Tem certeza que deseja excluir este pet?"
