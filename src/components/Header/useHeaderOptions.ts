@@ -22,10 +22,6 @@ export const useHeaderOptions = (user?: User | null) => {
       accountOptions: ["Gerenciar Conta", "Sair"],
       navigationOptions: ["Ver Animais", "Ver ONGs", "Gerenciar Animais", "Cadastrar Pet", "Gerenciar Membros", "Validar Membros"],
     },
-    NGO_ADMIN_PENDING: {
-      accountOptions: ["Sair"],
-      navigationOptions: ["Sobre Nós", "Ver Animais", "Ver ONGs", "Dicas", "Fale Conosco"],
-    },
     REGULAR: {
       accountOptions: ["Fazer Login", "Cadastrar ONG ou Membro"],
       navigationOptions: ["Ver Animais", "Ver ONGs", "Dicas", "Fale Conosco"],

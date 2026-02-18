@@ -134,7 +134,14 @@ const router = createBrowserRouter([
           console.log("Loader NGO Profile for ID:", ngoId);
           const isApprovedResponse = await ngoService.isApproved(ngoId);
 
-          if(!isApprovedResponse.data.approved) throw new Response("ONG Not Approved", { status: 403 });
+          // Se não foi aprovado e user não é admin, bloqueia acesso
+           if(!isApprovedResponse.data.approved) {
+             const userStr = localStorage.getItem("user");
+             const user = userStr ? JSON.parse(userStr) : null;
+             if (!user || user.role !== "ADMIN") {
+               throw new Response("ONG not found", { status: 403 });
+             }
+          }
 
           const ngoResponse = await ngoService.getById(ngoId);
 
@@ -258,6 +265,10 @@ const router = createBrowserRouter([
           isPublic: false,
           // Lista todos os filtros que a URL suporta
           filterKeys: ["name", "species", "age", "size", "color", "city", "state", "sex"],
+          // Adiciona automaticamente o ngoId do usuário aos filtros
+          filterByNgo: true,
+          // Redireciona para a home em caso de acesso proibido
+          forbiddenRedirect: '/',
   
           fetchData: (filters) => {
             // Não precisamos do 'user' aqui pois é busca pública

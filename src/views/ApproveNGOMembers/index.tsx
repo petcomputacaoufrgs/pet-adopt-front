@@ -15,6 +15,7 @@ import PaginationButtons from "../../components/PaginationButtons";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import SectionWithEmptyState from "../../components/SectionWithEmptyState";
 import MemberInfoCard from "../../components/MemberInfoCard";
+import AuthorizationToast from "../../components/AuthorizationToast";
 
 
 import Footer from "../HomePage/6Footer";
@@ -127,6 +128,8 @@ const ApproveNGOMembers = () => {
 
   return (
     <>
+      <AuthorizationToast />
+      
       <BannerComponent limitWidthForImage="850px" color="rgba(178, 243, 255, 1)"  title="Gerencie sua equipe dos sonhos!" subTitle="Veja, organize e acompanhe sua equipe de um jeito simples e prático."   imageUrl={ManageMembersHamster}/>
            
       <TopBarContainer>

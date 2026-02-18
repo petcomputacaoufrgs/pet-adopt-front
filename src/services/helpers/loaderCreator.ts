@@ -22,7 +22,13 @@ interface LoaderConfig<T> {
   filterKeys?: string[];
   
   // Se true, redireciona/erro se não tiver user. Se false, permite acesso (ex: Pets)
-  isPublic?: boolean; 
+  isPublic?: boolean;
+  
+  // Se true, adiciona automaticamente o ngoId do usuário aos filtros
+  filterByNgo?: boolean;
+  
+  // Para onde redirecionar em caso de erro 403 (default: '/')
+  forbiddenRedirect?: string;
 }
 
 // --- LOADER FACTORY ---
@@ -48,10 +54,15 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
       return { items: [], user: null, meta: { total: 0 }, error: "Acesso negado" };
     }
 
+    // 3. Adiciona filtro automático por ngoId se configurado
+    if (config.filterByNgo && user?.ngoId) {
+      filters.ngoId = user.ngoId;
+    }
+
     console.log("Loader Filters:", filters, "User:", user);
 
     try {
-      // 3. Chama o Service (passando o user para lógica específica)
+      // 4. Chama o Service (passando o user para lógica específica)
       const response = await config.fetchData(filters, user);
       
       const result = response.data;
@@ -67,7 +78,7 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
         _id: item._id || item.id, 
       }));
 
-      // 4. Redirecionamentos de Segurança (Página vazia)
+      // 5. Redirecionamentos de Segurança (Página vazia)
       if (page > 1 && page > meta.lastPage && meta.total > 0) {
         url.searchParams.set("page", String(meta.lastPage));
         return redirect(url.toString());
@@ -79,8 +90,17 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
 
       return { items, user, meta };
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("Loader Error:", error);
+      
+      // Tratamento específico para erro 403 (Forbidden)
+      if (error.response?.status === 403) {
+        const redirectPath = config.forbiddenRedirect || '/';
+        localStorage.setItem('authorizationError', 
+          error.response?.data?.message || 'Você não tem permissão para acessar este recurso.');
+        return redirect(redirectPath);
+      }
+      
       return { items: [], user, meta: { total: 0, page, limit }, error: "Erro ao carregar dados" };
     }
 };
@@ -90,6 +110,8 @@ interface ActionConfig {
   // Recebe o ID e executa a lógica
   deleteFn?: (id: string) => Promise<any>;
   approveFn?: (id: string) => Promise<any>; // Para validações
+  // Para onde redirecionar em caso de erro 403 (opcional, se não definido apenas retorna erro)
+  forbiddenRedirect?: string;
 }
 
 export const createCrudAction = (config: ActionConfig) => 
@@ -114,8 +136,20 @@ export const createCrudAction = (config: ActionConfig) =>
         console.log(`Ação ${intent} executada com sucesso para ID:`, id);
         return { success: true, type: intent }; // Retorna o tipo para mostrar msg correta no toast
       }
-    } catch (err) {
-      const message = err instanceof AxiosError 
+    } catch (err) {      // Tratamento específico para erro 403
+      if (err instanceof AxiosError && err.response?.status === 403) {
+        const message = err.response?.data?.message || 'Você não tem permissão para realizar esta ação.';
+        
+        // Se configurado para redirecionar em caso de 403
+        if (config.forbiddenRedirect) {
+          localStorage.setItem('authorizationError', message);
+          return redirect(config.forbiddenRedirect);
+        }
+        
+        // Caso contrário, apenas retorna o erro
+        return { error: message };
+      }
+            const message = err instanceof AxiosError 
         ? err.response?.data?.message 
         : 'Erro na operação.';
       return { error: message };

@@ -19,6 +19,7 @@ import type { IManageAnimals, ModalAction } from "./types";
 import type { Pet } from "../../types/pets";
 import ConfirmModal from "../../components/ConfirmModal";
 import { useFetcher, useLoaderData, useNavigate } from "react-router-dom";
+import AuthorizationToast from "../../components/AuthorizationToast";
 
 const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
@@ -136,6 +137,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   return (
     <>
+      <AuthorizationToast />
+      
       <ConfirmModal
           isOpen={modalAction !== null}
           title= "Tem certeza que deseja excluir este pet?"
