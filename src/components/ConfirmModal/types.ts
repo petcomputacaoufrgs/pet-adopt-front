@@ -6,4 +6,5 @@ export interface ConfirmModalProps {
   cancelLabel?: string;
   onConfirm: () => void;
   onClose: () => void;
+  disabled?: boolean;
 }

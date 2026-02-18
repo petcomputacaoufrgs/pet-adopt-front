@@ -18,7 +18,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   confirmLabel = 'Confirmar',
   cancelLabel = 'Cancelar',
   onConfirm,
-  onClose
+  onClose,
+  disabled = false
 }) => {
   if (!isOpen) return null;
 
@@ -39,6 +40,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             onClick={onClose}
             paddingV='8px'
             $flex
+            isDisabled={disabled}
             />
         </ButtonWrapper>
         <ButtonWrapper>
@@ -48,6 +50,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             onClick={onConfirm}
             paddingV='8px'
             $flex
+            isDisabled={disabled}
             />
         </ButtonWrapper>
         </ButtonGroup>

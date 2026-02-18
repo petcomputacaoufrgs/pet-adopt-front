@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import {
   AgeLocationContainer,
   AnimalName,
@@ -25,14 +25,6 @@ import PrimarySecondaryButton from "../PrimarySecondaryButton";
 const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id, onEdit, onDelete }: ICard) => {
 
   const navigate = useNavigate();
-
-  const [isPending, startTransition] = useTransition();
-  const handleNavigation = (to: string) => {
-      startTransition(() => {
-      navigate(to);
-      });
-  }
-
       
   const [isHovered, setIsHovered] = useState(false);
   
@@ -56,7 +48,7 @@ const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id, on
           Controla o estado de hover e a navegação.
       */}
       <ClickableArea 
-        onClick={() => handleNavigation(`/petProfile/${id}`)}
+        onClick={() => navigate(`/petProfile/${id}`)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

@@ -1,4 +1,4 @@
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { authService, getAuthError } from "../../services";
 import { getErrorMessage } from "../../services/helpers/errorHandlers";
 
@@ -53,13 +53,6 @@ const ForgotPassword1: React.FC = () => {
   const [windowSize, setWindowSize] = useState(window.innerWidth);
 
   const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
-
-  const handleNavigation = (to: string, options?: { state?: any }) => {
-    startTransition(() => {
-      navigate(to, options);
-    });
-  };
     
   useEffect(() => {
         const handleResize = () => {
@@ -162,7 +155,7 @@ const ForgotPassword1: React.FC = () => {
                 textColor="#553525"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavigation("/login")
+                  navigate("/login")
                 }}
               >
               <h3>Fazer Login</h3>
@@ -182,7 +175,7 @@ const ForgotPassword1: React.FC = () => {
                 textColor="#553525"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavigation("/signup")
+                  navigate("/signup")
                 }}
               >
               <h3>Criar Conta</h3>

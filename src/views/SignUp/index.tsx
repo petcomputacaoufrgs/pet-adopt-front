@@ -1,4 +1,4 @@
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { ngoService, authService } from "../../services";
 import { useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../../services/helpers/errorHandlers";
@@ -25,7 +25,6 @@ import SignUpToggle from "../../components/SignUpToggle";
 import LargeInputField from "../../components/LargeInput";
 
 import LoginDog from "../../assets/LoginDog.png";
-import { useAuth } from "../../hooks/useAuth";
 
 import { isCPF, isCNPJ } from "validation-br";
 
@@ -86,7 +85,6 @@ const SignUp: React.FC = () => {
   // Outros Dados
   const [ngoOptions, setNgoOptions] = useState<NGO_ID[]>([]);
   const [ngoSearchText, setNgoSearchText] = useState('');
-  const [ngo, setNgo] = useState<NGO_ID | null>(null); 
 
   // Dados ONG
   const [doc, setDoc] = useState('');
@@ -103,7 +101,6 @@ const SignUp: React.FC = () => {
   const [state, setState] = useState('');
 
   const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
 
   // === FUNÇÕES DE HELPERS E MODAL ===========================
 
@@ -117,15 +114,9 @@ const SignUp: React.FC = () => {
   const closeModal = () => {
     setShowModal(false);
     if (modalType === 'success') {
-       handleNavigation('/');
+       navigate('/');
     }
   };
-
-  const handleNavigation = (to: string) => {
-    startTransition(() => {
-      navigate(to);
-    });
-  }
 
   // === VALIDAÇÕES LÓGICAS (VALIDATE FORM) ===========================
 
@@ -351,9 +342,6 @@ const SignUp: React.FC = () => {
 
   // RENDERIZAÇÃO ============================================================
   
-  const {isLoading, user, isLoggedIn} = useAuth();
-  if(isLoading) return null;
-      
 return (
     <Container style={{ paddingRight: getScrollbarWidth() }}>
       
@@ -522,6 +510,8 @@ return (
                     width="100%"
                     fontSize="16px"
                     listMaxHeight="200px"
+                    error={stateError}
+                    errorMessage={stateErrorMessage}
                   />
 
                   <BasicInput
@@ -550,6 +540,8 @@ return (
                   fontSize="16px"
                   readOnly={false}
                   listMaxHeight="200px"
+                  error={ngoError}
+                  errorMessage={ngoErrorMessage}
                 />
               )}
 
@@ -666,7 +658,7 @@ return (
                 textColor="#553525"
                 onClick={(e) => {
                    e.preventDefault();
-                   startTransition(() => navigate("/login"));
+                   navigate("/login");
                 }}
               >
                 <h3 style={{ marginBottom: '69px' }}>Fazer Login</h3>

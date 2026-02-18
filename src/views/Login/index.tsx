@@ -1,4 +1,4 @@
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { authService, getAuthError } from "../../services";
 import { getErrorMessage } from "../../services/helpers/errorHandlers";
 
@@ -27,15 +27,6 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
-  
-  const [isPending, startTransition] = useTransition();
-  const handleNavigation = (to: string) => {
-    startTransition(() => {
-      navigate(to);
-    });
-  }
-
-
 
   // Verificar se há mensagem de erro de autenticação ao carregar
   useEffect(() => {
@@ -193,7 +184,7 @@ const Login: React.FC = () => {
                 textColor="#553525"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavigation("/forgotPassword");
+                  navigate("/forgotPassword");
                 }}
               >
               <h3>Esqueci minha senha</h3>
@@ -213,7 +204,7 @@ const Login: React.FC = () => {
                 textColor="#553525"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavigation("/signUp");
+                  navigate("/signUp");
                 }}
               >
               <h3>Criar conta</h3>

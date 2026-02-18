@@ -144,7 +144,13 @@ const router = createBrowserRouter([
           console.log("Loaded NGO Data:", ngo);
           if(!ngo) throw new Response("ONG Not Found", { status: 404 });
           return { ngo: ngo, isApproved: isApprovedResponse.data.approved};
-        }
+        },
+
+        action: createCrudAction({
+          deleteFn: (id) => ngoService.delete(id),
+          approveFn: (id) => ngoService.approve(id)
+        })
+
        },
       
       { path: PUBLIC_PATHS.LIST_NGOS, element: <ManageNgo />,

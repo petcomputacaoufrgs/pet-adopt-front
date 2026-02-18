@@ -1,4 +1,4 @@
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect } from "react";
 
 import {  ListContainer, 
           TextContainer, 
@@ -71,13 +71,6 @@ const ListAnimals = () => {
   }, [pets]);
 
   const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
-
-  const handleNavigation = (to: string, options?: { state?: any }) => {
-    startTransition(() => {
-      navigate(to, options);
-    });
-  };
   
 
   return (
@@ -108,7 +101,7 @@ const ListAnimals = () => {
       </DogContainter>
       
       <ButtonContainer>
-        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => handleNavigation("/searchAnimals")} paddingH="20px" paddingV="10px"></PrimarySecondaryButton>
+        <PrimarySecondaryButton content="Ver todos os Animais Disponíveis" onClick={() => navigate("/searchAnimals")} paddingH="20px" paddingV="10px"></PrimarySecondaryButton>
       </ButtonContainer>
 
     </ListContainer>

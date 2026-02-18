@@ -1,11 +1,7 @@
 // imports
 import { useEffect, useState } from "react";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useFetcher, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import type { NGO } from "../../types/ngos";
-import { ngoService } from "../../services";
-import { AxiosError } from "axios";
-
  
 import { useToast } from "../../contexts/ToastContext";
 
@@ -35,184 +31,149 @@ import TiktokBrownIcon from "../../assets/BrownTiktokPin.png";
 import XIcon from "../../assets/XIcon.png"
 import XBrownIcon from "../../assets/XBrownIcon.png"
 
+import type { NGO } from "../../types/ngos";
 
-interface ExpandedNGO extends NGO {
-    temporaryHomeForm?: string;
-    sponsorshipForm?: string;
-    claimForm?: string;
-    facebook?: string;
-    instagram?: string;
-    website?: string;
-    phone?: string;
-    city?: string;
-    description?: string;  
-}
+import { useRevalidator } from "react-router-dom";
+
+
+type ModalTypes = "excluir" | "recusar" | "aprovar";
 
 // component
 const NgoProfile = () => {
     const { id } = useParams<{ id: string }>();
-    const {ngo: ngoData, isApproved}= useLoaderData() as { ngo: ExpandedNGO | null, isApproved: boolean | null };
+    const {ngo, isApproved}= useLoaderData() as { ngo: NGO | null, isApproved: boolean | null };
+
+    const fetcher = useFetcher();
 
 
     const {showToast} = useToast();
 
-    const [ngo, setNgo] = useState<ExpandedNGO | null>(ngoData);
     const navigate = useNavigate();
-    const [error, setError] = useState<string>("");
-    const {isLoading, user, isLoggedIn, logout} = useAuth();
-    const [ModalType, setModalType] =  useState<"excluir" | "recusar" | "aprovar" | null>(null);
+    const {user, logout} = useAuth();
+    const [modalType, setModalType] =  useState<ModalTypes | null>(null);
     const [isEditModalOpen, setIsEditModalOpen]=useState(false);
 
-    const fetchNgoById = async (id: string) => {
-        try {
-            const response = await ngoService.getById(id);
-            setNgo(response.data);
 
-        } catch (error) {
-            console.error("Erro ao buscar ngo:", error);
-        }
-    };
+    // Isso aqui serve para revalidar os dados da ONG após a edição.
+    // Isso só é necessário porque nosso componente ManageInfoForm é isolado e lida com a requisição de update por conta própria
+    // (faz a requisição diretamente, sem passar pela Action do React Router).
+    // Se quiséssemos evitar isso, teríamos que mover a lógica de update para uma Action
+    const revalidator = useRevalidator();
 
-    const handleApprove = async (id:string) =>{
-        setModalType("aprovar");
-    }
-    const approveNGO = async (ngoId: string) => {
-        try {
-            const response = await ngoService.approve(ngoId);
+    const isSubmitting = fetcher.state !== "idle";
 
-        } catch (err) {
-            if (err instanceof AxiosError && err.response) {
-                setError(err.response.data?.message || 'Erro ao aprovar ONG.');
-        } else {
-            setError('Erro de conexão. Tente novamente mais tarde.');
-        }
-        throw err; //Propagar o erro
-        }
-    };
-    const handleApproveConfirm = async () => {
-        if (!id) return;
-        await approveNGO(id);
-        setModalType(null);
-    };
-
-
-
-
-    const handleReject= async (id:string) =>{
-        setModalType("recusar");
-    }
-    const rejectNGO = async (ngoId: string) => {
-        try {
-            await ngoService.delete(ngoId);
-            setNgo(null);
-        // Atualiza a lista de ONGs removendo a ONG rejeitada
-        } catch (err) {
-            if (err instanceof AxiosError && err.response) {
-                setError(err.response.data?.message || 'Erro ao rejeitar ONG.');
-        } else {
-            setError('Erro de conexão. Tente novamente mais tarde.');
-        }
-            throw err; // Propagar o erro
-        }
-    };
-    const handleRejectConfirm = async () => {
-        if (!id) return;
-        await rejectNGO(id);
-        setModalType(null);
-    };
-
-
-    const handleDelete = () => {
-        setModalType("excluir");
-    };
-    const deleteNGO = async (ngoId: string) => {
-        try {  
-          if(user!=null&&id==user.ngoId){
+// Escuta a resposta da Action Factory (createCrudAction)
+    useEffect(() => {
+        if (fetcher.state === 'idle' && fetcher.data) {
             
-            const id_user = user._id;
-            await ngoService.delete(ngoId);
-            logout()
-          }else{
-            await ngoService.delete(ngoId);
-          }
-          
-          showToast({
-            success: true,
-            message: "ONG excluída com sucesso!",
-            description: "A ONG foi removida do sistema.",
-          })
-          
-          
-        } catch (err) {
-          if (err instanceof AxiosError && err.response) {
-            setError(err.response.data?.message || 'Erro ao deletar ONG.');
-            showToast({
-                success: false,
-                message: "Erro ao excluir ONG",
-                description: err.response.data?.message || 'Erro ao deletar ONG.',
-              })
+            // Tratamento de Erro vindo da Action
+            if (fetcher.data.error) {
+                showToast({
+                    success: false,
+                    message: "Erro na operação",
+                    description: fetcher.data.error
+                });
+                setModalType(null); // Fecha o modal mesmo com erro
+                return;
+            }
 
-          } else {
-            setError('Erro de conexão. Tente novamente mais tarde.');
-            showToast({
-                success: false,
-                message: "Erro ao excluir ONG",
-                description: 'Erro de conexão. Tente novamente mais tarde.',
-              })
-          }
+            // Tratamento de Sucesso
+            if (fetcher.data.success) {
+                setModalType(null); // Fecha o modal
+
+                switch (fetcher.data.type) {
+                    case 'aprovar':
+                        showToast({
+                            success: true,
+                            message: "ONG aprovada!",
+                            description: "A ONG agora está ativa no sistema."
+                        });
+                        break;
+
+                    case 'recusar':
+                        showToast({
+                            success: true,
+                            message: "ONG recusada.",
+                            description: "A solicitação foi removida."
+                        });
+                        navigate('/approveNgo'); // Redireciona após recusar
+                        break;
+
+                    case 'delete': // "delete" é o intent que sua factory retorna
+                        showToast({
+                            success: true,
+                            message: "ONG excluída.",
+                            description: "Registro removido com sucesso."
+                        });
+                        
+                        // Lógica especial de Logout se o usuário deletou a própria ONG
+                        if (user && id === user.ngoId) {
+                            logout();
+                        } else {
+                            navigate('/listNGOs'); // Ou para onde quiser voltar
+                        }
+                        break;
+                }
+            }
+        }
+    }, [fetcher.state, fetcher.data, navigate, showToast, user, id, logout]);
+
+    // 5. HANDLER ÚNICO
+    // Mapeia o tipo do modal para o "intent" que sua Factory espera
+    const handleConfirm = () => {
+        if (!modalType || !id) return;
+
+        const intentMap: Record<ModalTypes, string> = {
+            aprovar: "aprovar",
+            recusar: "recusar",
+            excluir: "delete" // Sua factory espera "delete" para exclusão
+        };
+
+        fetcher.submit(
+            { intent: intentMap[modalType], id: id },
+            { method: "post" }
+        );
+    };
+
+    // Configuração dos textos do Modal (Mantive a sua lógica, só organizada)
+    const getModalConfig = () => {
+        switch (modalType) {
+            case "excluir":
+                return {
+                    title: "Só confirmando, deseja mesmo excluir esta ONG?",
+                    message: "Tem certeza? Ao excluir, ela será removida permanentemente.",
+                    confirmLabel: isSubmitting ? "Excluindo..." : "Sim, excluir",
+                    cancelLabel: "Cancelar"
+                };
+            case "aprovar":
+                return {
+                    title: "Que bom que gostou! Deseja aprovar esta ONG?",
+                    message: "Tem certeza? Ela ficará visível publicamente.",
+                    confirmLabel: isSubmitting ? "Aprovando..." : "Sim, aprovar",
+                    cancelLabel: "Cancelar"
+                };
+            case "recusar":
+                return {
+                    title: "Poxa, tem certeza que deseja recusar essa ONG?",
+                    message: "Após essa ação, não será mais possível visualizá-la.",
+                    confirmLabel: isSubmitting ? "Recusando..." : "Sim, recusar",
+                    cancelLabel: "Cancelar"
+                };
+            default:
+                return null;
         }
     };
-    const handleDeleteConfirm = async () => {
-        if (!id) return;
-        await deleteNGO(id);
-        setModalType(null);
-        setNgo(null);
-       
-    };
+
+    const modalConfig = getModalConfig();
+
 
     const handleEdit =() =>{
         setIsEditModalOpen(false);
         if(!id) return;
-        fetchNgoById(id);
+        revalidator.revalidate();
     }
     
-  
     
-    useEffect(() => {
-    document.body.style.overflow = isEditModalOpen ? "hidden" : "";
-    }, [isEditModalOpen]);
-    const modalMessages = {
-        excluir: {
-            title: "Só confirmando, deseja mesmo excluir esse administrador?",
-            message: "Tem certeza? Ao excluir, o administrador será removido do sistema permanentemente.",
-            confirmLabel: "Sim, excluir",
-            onConfirm: handleDeleteConfirm,
-        },
-        aprovar: {
-            title: "Que bom que gostou! Deseja aprovar esta ONG?",
-            message: "Tem certeza de que deseja aprovar esta ONG? Caso mude de ideia, você poderá removê-la depois na área de gerenciamento de ONGs.",
-            confirmLabel: "Sim, aprovar",
-            onConfirm: handleApproveConfirm,
-        },
-        recusar: {
-            title: "Poxa, tem certeza que deseja recusar essa ONG?",
-            message: "Tem certeza que quer recusar esta ONG? Após essa ação, não será mais possível visualizá-la.",
-            confirmLabel: "Sim, recusar",
-            onConfirm: handleRejectConfirm,
-        },
-        null: {
-            title:"",
-            message: "",
-            confirmLabel:""
-        }
-
-    };
-    
-
-    if(isLoading)
-        return null;
-    
-
     // Configurar links das redes sociais baseado nos dados da ONG
     const socialMediaLinks = [
         {
@@ -249,7 +210,7 @@ const NgoProfile = () => {
     return (
         <Container>
             <MiddleContainer>
-            {!isLoading && ngo && (
+            {ngo && (
                     <div>
                         <ProfileContainer>
                             <NgoCardContainer>
@@ -270,7 +231,7 @@ const NgoProfile = () => {
                                                     paddingH="25px"
                                                     buttonType="Secundário"
                                                     content="Excluir ONG"
-                                                    onClick={handleDelete}
+                                                    onClick={() => {setModalType("excluir")}}
                                                 />
                                             )}
                                             {user !== null && user.role === "NGO_ADMIN" && user.ngoId===ngo._id && isApproved && (
@@ -293,7 +254,7 @@ const NgoProfile = () => {
                                                     paddingH="25px"
                                                     buttonType="Secundário"
                                                     content="Aceitar ONG"
-                                                    onClick={handleApprove}
+                                                    onClick={() => setModalType("aprovar")}
                                                 />
                                             
                                                 <PrimarySecondaryButton
@@ -302,7 +263,7 @@ const NgoProfile = () => {
                                                     paddingH="25px"
                                                     buttonType="Primário"
                                                     content="Recusar ONG"
-                                                    onClick={handleReject}
+                                                    onClick={() => setModalType("recusar")}
                                                 />
                                             
                                         </ButtonsContainer>
@@ -406,7 +367,7 @@ const NgoProfile = () => {
 
                 </div>
         )}
-        { !isLoading && !ngo &&(
+        { !ngo &&(
             <div>
             <SectionWithEmptyStateContainer>
                 <SectionWithEmptyState 
@@ -426,15 +387,16 @@ const NgoProfile = () => {
         </MiddleContainer>
 
             <Footer />
-            {ModalType && (
+            {modalConfig && modalType && (
                 <ConfirmModal
                     isOpen={true}
-                    title={modalMessages[ModalType].title}
-                    message={modalMessages[ModalType].message}
-                    confirmLabel={modalMessages[ModalType].confirmLabel}
-                    cancelLabel="Cancelar"
-                    onConfirm={modalMessages[ModalType].onConfirm}
+                    title={modalConfig.title}
+                    message={modalConfig.message}
+                    confirmLabel={modalConfig.confirmLabel}
+                    cancelLabel={modalConfig.cancelLabel}
+                    onConfirm={handleConfirm}
                     onClose={() => setModalType(null)}
+                    disabled={isSubmitting}
                 />
             )}
 

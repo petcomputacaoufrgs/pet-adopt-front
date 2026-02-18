@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { userService } from "../../services";
 import { AxiosError } from "axios";
 
 import Footer from "../HomePage/6Footer";
@@ -23,12 +22,10 @@ const ManageInfo: React.FC = () => {
 
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [role, setRole] = useState(user?.role || '');
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [error, setError] = useState(false);
   /*const [nameError, setNameError] = useState(false);*/
 
 
@@ -47,14 +44,12 @@ const ManageInfo: React.FC = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (role ==='NGO_MEMBER' && (!name || !email)) {
-      setError(true);
+    if (user.role ==='NGO_MEMBER' && (!name || !email)) {
       setErrorMessage('Preencha todos campos obrigatórios');
       return;
     }
 
     if (emailError) {
-      setError(true);
       setErrorMessage('Verifique os campos preenchidos');
       return;
     }
@@ -122,13 +117,9 @@ const ManageInfo: React.FC = () => {
     window.location.href = '/forgotPassword';
   };
 
-
-
-
   function Divider() {
     return <div style={{ height: '1px', width: '100%', backgroundColor: 'rgba(188, 175, 169, 1)', margin: '1em 0' }} />;
   }
-
 
   return (
     <>   

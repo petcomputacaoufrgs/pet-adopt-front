@@ -1,4 +1,4 @@
-import { useEffect, useState, useTransition, memo } from "react";
+import { useEffect, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Controller } from "react-hook-form";
 import { AxiosError } from "axios";
@@ -44,13 +44,6 @@ export default function AnimalFormSection({
   const [ngoOptions, setNgoOptions] = useState<any[]>([]);
   const { showToast } = useToast();
   const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
-
-  const handleNavigation = (path: string) => {
-    startTransition(() => {
-      navigate(path);
-    });
-  };
 
   // Observar valores
   const currentCity = watch("city");
@@ -160,11 +153,11 @@ export default function AnimalFormSection({
          const petId = animalData.id || animalData._id;
          await petService.update(petId, formData);
          showToast({ success: true, message: "Pet atualizado!", description: "As alterações foram salvas com sucesso." });
-         handleNavigation(`/petProfile/${petId}`);
+         navigate(`/petProfile/${petId}`);
       } else {
          const res = await petService.create(formData);
          showToast({ success: true, message: "Pet criado!", description: "O novo pet foi adicionado ao sistema." });
-         if (res.data?.id || res.data?._id) handleNavigation(`/petProfile/${res.data.id || res.data._id}`);
+         if (res.data?.id || res.data?._id) navigate(`/petProfile/${res.data.id || res.data._id}`);
       }
 
     } catch (err) {

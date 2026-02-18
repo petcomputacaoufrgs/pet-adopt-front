@@ -1,4 +1,4 @@
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { authService, getAuthError } from "../../services";
 import { getErrorMessage } from "../../services/helpers/errorHandlers";
 import { createPasswordValidators } from "../../services/helpers/passwordValidation";
@@ -25,7 +25,6 @@ import ActionText from "../../components/ActionText";
 const ResetPassword: React.FC = () => {
 
   const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
 
   const [searchParams] = useSearchParams();
   const [newPassword, setNewPassword] = useState("");
@@ -63,12 +62,7 @@ const ResetPassword: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Functions
-  const handleNavigation = (to: string, options?: { state?: any }) => {
-    startTransition(() => {
-      navigate(to, options);
-    });
-  };
+
 
   // Funções de verificação de senha forte (usando helper reutilizável)
   const { verifyPassword, verifyConfirmPassword: verifyConfirmPasswordHelper } = createPasswordValidators(
@@ -287,7 +281,7 @@ const ResetPassword: React.FC = () => {
                 textColor="#553525"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavigation("/login")
+                  navigate("/login")
                 }}
               >
               <h3>Fazer Login</h3>
@@ -307,7 +301,7 @@ const ResetPassword: React.FC = () => {
                 textColor="#553525"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavigation("/signUp")
+                  navigate("/signUp")
                 }}
               >
               <h3>Criar Conta</h3>

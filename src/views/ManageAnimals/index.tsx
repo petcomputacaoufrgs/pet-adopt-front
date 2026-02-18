@@ -2,7 +2,7 @@ import AnimalFilter from "../../components/AnimalFilter";
 import BannerComponent from "../../components/BannerComponent";
 
 import dog from "../../assets/ManageAnimalsDog.png";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { formatAge, formatSize, formatString, formatSpecies } from "../../services";
 import Footer from "../HomePage/6Footer";
 import { CloseButton, ContentContainer, DogCardsContainer, Overlay, PetCardWrapper, SectionAndDogCardsContainer, SectionWithEmptyStateContainer, TopBarContainer, TopBarContent } from "./styles";
@@ -35,19 +35,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
   const pets = petsData || [];
 
-  const [error, setError] = useState<string>("");
-
   const { showToast } = useToast(); 
 
   const navigate = useNavigate();
-  const [isPending, startTransition] = useTransition();
-  
 
-  const handleNavigation = (to: string) => {
-    startTransition(() => {
-      navigate(to);
-    });
-  }
     
   // Modais e toasts
   const [modalAction, setModalAction] = useState<ModalAction>(null);
@@ -112,7 +103,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     const petId = pet.id || pet._id;
     if (!petId) return;
     
-    handleNavigation(`/editAnimal/${petId}`);
+    navigate(`/editAnimal/${petId}`);
   };
 
   const getPetId = (pet: Pet, index: number): string => {
@@ -207,15 +198,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
 
         <SectionAndDogCardsContainer hideAnimalFilter={hideAnimalFilter}>
 
-        {/* Se tiver erro */}
-          {error && (
-            <div style={{ padding: '20px', textAlign: 'center', width: '100%' }}>
-                <p style={{ color: 'red' }}>Erro: {error}</p>
-            </div>
-        )}
-
-
-          {pets.length > 0 && !error && 
+          {pets.length > 0  && 
             <DogCardsContainer>
               {pets.map((pet, index) => (
                 <PetCardWrapper key={getPetId(pet, index)}>
@@ -237,7 +220,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             </DogCardsContainer>
           }
 
-        {pets.length === 0 && !error &&
+        {pets.length === 0 &&
 
         <SectionWithEmptyStateContainer>
           <SectionWithEmptyState 
@@ -245,10 +228,10 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
             subtitle={allowEdit? "Visualize e gerencie os pets disponíveis" : "Visualize os pets disponíveis"}
             emptyMessage="Nenhum Pet Encontrado"
             // Só mostra vazio se: NÃO está carregando E NÃO deu erro E lista está vazia
-            emptyState={!error && pets.length === 0}
+            emptyState={pets.length === 0}
             buttonText= {allowEdit? "+ Cadastrar Pet" : undefined}
             onButtonClick={() => {
-               handleNavigation("/createAnimal"); 
+               navigate("/createAnimal"); 
             }}
           />
         </SectionWithEmptyStateContainer>

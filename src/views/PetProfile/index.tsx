@@ -1,4 +1,4 @@
-import React, { useTransition } from "react";
+import React from "react";
 import { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
@@ -74,13 +74,6 @@ const PetProfile: React.FC = () => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
 
     const navigate = useNavigate();
-    const [isPending, startTransition] = useTransition();
-    const handleNavigation = (to: string) => {
-        startTransition(() => {
-        navigate(to);
-        });
-    }
-
 
     const [modalAction, setModalAction] = useState<ModalAction>(null);
 
@@ -104,7 +97,7 @@ const PetProfile: React.FC = () => {
             }
             );
 
-            handleNavigation("/manageAnimals");
+            navigate("/manageAnimals");
             },
             (error) => {
             console.error("Erro ao excluir pet:", error);
@@ -431,7 +424,7 @@ const PetProfile: React.FC = () => {
 
                         <Buttons /*Utilizar o role pra renderizar ou nao os botões*/>
                             <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Excluir" onClick={() => abrirModal("excluir", pet._id as string)} isDisabled={false} paddingV="8px"/>
-                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => handleNavigation(`/editAnimal/${pet._id}`)} isDisabled={false} paddingV="8px"/>
+                            <PrimarySecondaryButton width="100%" buttonType="Secundario" content="Editar" onClick={() => navigate(`/editAnimal/${pet._id}`)} isDisabled={false} paddingV="8px"/>
                         </Buttons>
                         }
 
