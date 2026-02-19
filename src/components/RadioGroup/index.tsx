@@ -19,7 +19,9 @@ function RadioGroup({
   onChange,
   userFillOptionLabel,
   toggleIndex,
-  onSelectToggle
+  onSelectToggle,
+  customInputValue,
+  setCustomInputValue
 }: RadioGroupProps) {
   return (
     <Container>
@@ -43,6 +45,8 @@ function RadioGroup({
           fontSize={fontSize}
           required={required}
           userFillOption={userFillOptionLabel === label}
+          customInputValue={customInputValue}
+          setCustomInputValue={setCustomInputValue}
         />
       ))}
     </Container>

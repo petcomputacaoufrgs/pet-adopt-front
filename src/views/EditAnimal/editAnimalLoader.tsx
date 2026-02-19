@@ -42,7 +42,6 @@ export const editAnimalLoader = async ({ params }: { params: any }): Promise<Ani
     // Busca a ONG
     const ngoResponse = await ngoService.getById(pet.ngoId);
 
-    console.log(ngoResponse.data);
     const ngo = ngoResponse.data;
 
     // Monta o objeto final

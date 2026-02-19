@@ -297,7 +297,28 @@ const router = createBrowserRouter([
             <ManageInfo />
           </ProtectedRoute>
         ),
-      },
+
+        action: async ({ request }) => {
+
+          const data = await request.json();
+          const intent = data.intent;
+
+          try{
+              if (intent === "update") {
+                await userService.update(data.id, { name: data.name });
+                
+                console.log("Dados atualizados com sucesso!");
+                
+                return { success: true, message: "Dados atualizados com sucesso!" };
+              }
+          }
+
+            catch(err: any) {
+              const errorMessage = err.response?.data?.message || "Erro ao atualizar dados";
+              return { success: false, error: errorMessage };
+            }   
+      }
+    },
 
       // ROTAS DE EDIÇÃO
       {

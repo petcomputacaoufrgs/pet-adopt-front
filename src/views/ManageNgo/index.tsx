@@ -102,6 +102,7 @@ const ManageNgo = () => {
         // Fecha modal e limpa estado
         setModalType(null);
         setNgoToDeleteId(null);
+        fetcher.reset();
 
       } else if (fetcher.data.error) {
 
@@ -113,6 +114,8 @@ const ManageNgo = () => {
 
         setModalType(null);
         setNgoToDeleteId(null);
+        fetcher.reset();
+        
       }
     }
   }, [fetcher.state, fetcher.data]);

@@ -10,8 +10,6 @@ export default function EditAnimal({animalData, user}: IAnimalForm) {
 
   
   const { methods } = useAnimalForm(animalData);
-
-  console.log(animalData);
   
   
   // Extraímos isDirty (se o form foi mexido) e isSubmitting (se está salvando)

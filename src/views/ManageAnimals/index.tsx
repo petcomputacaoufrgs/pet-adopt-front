@@ -76,6 +76,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
           description: "O pet foi removido do sistema."
         });
         setModalAction(null); // Agora sim fechamos o modal
+
+        fetcher.reset();
       }  
       
       else if (fetcher.data.error) {
@@ -86,6 +88,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
         });
 
         setModalAction(null); // Fechamos o modal mesmo em caso de erro
+
+        fetcher.reset();
       }
     }
   }, [fetcher.state, fetcher.data]);
@@ -103,9 +107,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
   const handleEditClick = (pet: Pet) => {
     const petId = pet.id || pet._id;
     if (!petId) return;
-    
-    console.log("Navegando para edição do pet com ID:", petId);
-    
+        
     navigate(`/editAnimal/${petId}`);
   };
 

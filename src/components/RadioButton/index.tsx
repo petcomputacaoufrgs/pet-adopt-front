@@ -1,5 +1,3 @@
-// RadioButton/index.tsx
-import { useState } from 'react';
 import { StyledInput, StyledRadioButton } from './styles';
 import type { RadioOption } from './types';
 
@@ -9,6 +7,8 @@ function RadioButton({
   groupName,
   checked,
   onChange,
+  customInputValue,
+  setCustomInputValue,
   onSelectToggle,
   fontSize,
   required = true,
@@ -17,7 +17,6 @@ function RadioButton({
   userFillInputWidth = "100%"
 }: RadioOption) {
 
-  const [customValue, setCustomValue] = useState('');
 
   // Implementa um toggle para desmarcar se 'required' for falso
   const handleToggleSelection = () => {
@@ -28,13 +27,13 @@ function RadioButton({
     } else {
       if (onChange) onChange(value); // Seleciona o radio button
       onSelectToggle(index);
-      setCustomValue('');
+      if (setCustomInputValue) setCustomInputValue('');
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setCustomValue(newValue);
+    if (setCustomInputValue) setCustomInputValue(newValue);
     if (onChange) onChange(newValue);
   };
 
@@ -72,7 +71,7 @@ function RadioButton({
           $fontSize={fontSize}
           type="text"
           placeholder="Informe aqui"
-          value={customValue}
+          value={customInputValue || ''}
           onChange={handleInputChange}
         />
       )}

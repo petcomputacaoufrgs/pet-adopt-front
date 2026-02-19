@@ -10,4 +10,6 @@ export interface RadioOption {
   userFillOption?: boolean;
   index: number;
   userFillInputWidth?: string;
+  customInputValue?: string;
+  setCustomInputValue?: (value: string) => void;
 }

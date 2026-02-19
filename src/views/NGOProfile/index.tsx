@@ -91,6 +91,8 @@ const NgoProfile = () => {
                             message: "ONG aprovada!",
                             description: "A ONG agora está ativa no sistema."
                         });
+
+                        fetcher.reset();
                         break;
 
                     case 'recusar':
@@ -99,6 +101,8 @@ const NgoProfile = () => {
                             message: "ONG recusada.",
                             description: "A solicitação foi removida."
                         });
+
+                        fetcher.reset();
                         navigate('/approveNgo'); // Redireciona após recusar
                         break;
 
@@ -108,6 +112,8 @@ const NgoProfile = () => {
                             message: "ONG excluída.",
                             description: "Registro removido com sucesso."
                         });
+                        
+                        fetcher.reset();
                         
                         // Lógica especial de Logout se o usuário deletou a própria ONG
                         if (user && id === user.ngoId) {

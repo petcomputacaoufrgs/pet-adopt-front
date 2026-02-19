@@ -20,15 +20,11 @@ import AnimalFormPhoto from "../../assets/AnimalFormPhoto.png";
 import { petService, ngoService } from "../../services/index";
 import { useToast } from "../../contexts/ToastContext";
 import type { AnimalFormSchema } from "../../hooks/useAnimalForm";
+import { buildAnimalFormData } from "../../services/formatters/petFormatters";
 
 const MemoizedImageSlotsGroup = memo(ImageSlotsGroup);
 
-// Mapas auxiliares para envio (Submit)
-const ageMapBackend: Record<string, string> = {
-  "Abaixo de 3 meses": "newborn",
-  "3 a 11 meses": "baby",
-  "1 ano": "1y", "2 anos": "2y", "3 anos": "3y", "4 anos": "4y", "5 anos": "5y", "6 anos e acima": "6y+"
-};
+
 
 export default function AnimalFormSection({
   methods,
@@ -91,69 +87,7 @@ export default function AnimalFormSection({
       setIsCreatingPET(true);
       setSubmitError(""); // Limpa erro anterior
 
-      const formData = new FormData();
-
-      // 1. Campos Simples
-      formData.append("name", data.name);
-      formData.append("age", ageMapBackend[data.age] || data.age);
-      formData.append("breed", data.breed || "");
-      formData.append("characteristics", data.characteristics);
-      formData.append("city", data.city);
-      formData.append("state", data.state);
-      formData.append("observations", ""); 
-
-      console.log("CHEGA AQUI!!");
-
-      // 2. Resolver ONG ID
-      const selectedNgo = ngoOptions.find(n => `${n.name} - ${n.email}` === data.ngoStrId);
-
-      console.log("ONG selecionada:", selectedNgo);
-
-
-      if (!selectedNgo) throw new Error("ONG inválida selecionada");
-
-      formData.append("ngoId", selectedNgo.id);
-
-      // 3. Mapeamentos de Índices
-      formData.append("sex", data.animalSexIndex === 0 ? "M" : "F");
-      
-      let speciesValue = "";
-      if (data.specieIndex === 0) speciesValue = "dog";
-      else if (data.specieIndex === 1) speciesValue = "cat";
-      else {
-          speciesValue = "other";
-          formData.append("otherSpecies", data.specieOther || data.specieIndex.toString());
-      }
-      formData.append("species", speciesValue);
-
-      if (speciesValue === "dog") {
-         const sizes = ["P", "M", "G"];
-         formData.append("size", sizes[data.sizeIndex] || "P");
-      }
-
-      // 4. Status
-      const statusOptions = [
-          { val: "Available", adopt: true, temp: true },
-          { val: "TempHome", adopt: true, temp: false },
-          { val: "Adopted", adopt: false, temp: false }
-      ];
-      const statusData = statusOptions[data.situationIndex];
-      formData.append("status", statusData?.val || "Available");
-      formData.append("forAdoption", statusData?.adopt.toString() || "true");
-      formData.append("forTempHome", statusData?.temp.toString() || "true");
-
-      // 5. Imagens e Ordem
-      const validImages = data.images.filter(img => img !== null);
-      const photoOrder = validImages.map(img => {
-        if (typeof img === 'string') return img;
-        if (img instanceof File) return "NEW_FILE_MARKER";
-        return null;
-      });
-      formData.append('photoOrder', JSON.stringify(photoOrder));
-
-      validImages.forEach((img) => {
-        if (img instanceof File) formData.append('photos', img);
-      });
+      const formData = buildAnimalFormData(data, ngoOptions);
 
       // 6. Chamada API
       if (animalData) {
@@ -175,7 +109,6 @@ export default function AnimalFormSection({
       // Primeiro checa se é erro do Axios (Backend)
       if (err instanceof AxiosError) {
         msg = err.response?.data?.message || err.message;
-        console.log(msg);
       } 
       // Depois checa se é um erro genérico do JS
       else if (err instanceof Error) {
@@ -229,7 +162,7 @@ export default function AnimalFormSection({
           </InfoContent>
 
           <InputsContainer>
-            {/* --- COLUNA ESQUERDA --- */}
+            {/* COLUNA ESQUERDA */}
             <HalfColumn $windowSize={windowSize}>
               <VerticalColumn>
                 
@@ -339,24 +272,50 @@ export default function AnimalFormSection({
               </VerticalColumn>
 
               <Row>
-                <Controller
-                  name="specieIndex"
-                  control={control}
-                  rules={{ validate: (v) => v >= 0 || "Selecione a espécie" }}
-                  render={({ field }) => (
-                    <RadioGroup
-                       title="Espécie"
-                       required
-                       options={[{ label: "Cachorro", value: "dog" }, { label: "Gato", value: "cat" }, { label: "Outro", value: "other" }]}
-                       toggleIndex={field.value}
-                       onSelectToggle={(idx) => field.onChange(idx)}
-                       onChange={() => {}} 
-                       name="specie"
-                       userFillOptionLabel="Outro"
-                       fontSize="16px"
-                    />
-                  )}
-                />
+
+
+<Controller
+  name="specieIndex"
+  control={control}
+  rules={{ validate: (v) => v >= 0 || "Selecione a espécie" }}
+  render={({ field: fieldIndex }) => (
+    
+    <Controller
+      name="otherSpecies"
+      control={control}
+      rules={{ 
+        validate: (v) => fieldIndex.value !== 2 || !!v || "Informe a espécie" 
+      }}
+      render={({ field: fieldOther }) => (
+        
+        <RadioGroup
+           title="Espécie"
+           required
+           options={[
+             { label: "Cachorro", value: "dog" }, 
+             { label: "Gato", value: "cat" }, 
+             { label: "Outro", value: "other" }
+           ]}
+           
+           // Controle da bolinha (Radio)
+           toggleIndex={fieldIndex.value}
+           onSelectToggle={(idx) => fieldIndex.onChange(idx)}
+           
+           // Controle do texto digitado
+           customInputValue={fieldOther.value || ""}
+           setCustomInputValue={fieldOther.onChange}
+           
+           // Suas outras props originais
+           onChange={() => {}} 
+           name="specie"
+           userFillOptionLabel="Outro"
+           fontSize="16px"
+        />
+        
+      )}
+    />
+  )}
+/>
 
                 <Controller
                     name="animalSexIndex"

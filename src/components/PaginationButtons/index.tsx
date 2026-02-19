@@ -10,6 +10,7 @@ import type { IPaginationButtonsProps } from "./types";
 import LeftArrowIcon from "../../assets/LeftArrow.svg";
 import RightArrowIcon from "../../assets/RightArrow.svg";
 import { useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const PaginationButtons = ({
   buttonWidth,
@@ -23,6 +24,9 @@ const PaginationButtons = ({
   // Garante pelo menos 1 página
   const totalPages = itemsLength === 0 ? 1 : Math.ceil(itemsLength / itemsPerPage);
 
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const previousPage = useRef(currentPage);
 
   const getVisiblePages = (
@@ -57,6 +61,15 @@ const PaginationButtons = ({
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
+
+    const newParams = new URLSearchParams(searchParams);
+    
+    // Atualiza apenas a página
+    newParams.set("page", newPage.toString());
+    
+    // Dispara a navegação mudando a URL
+    setSearchParams(newParams);
+    
   };
 
   // TO DO: Verificar correção do scroll. Ele corrige mesmo ao dar refresh na página?

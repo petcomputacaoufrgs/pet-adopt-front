@@ -83,6 +83,7 @@ const ApproveNGO = () => {
           });
              
           setModalAction(null); // Fecha modal
+          fetcher.reset();
   
         } else if (fetcher.data.error) {
           showToast({
@@ -92,6 +93,7 @@ const ApproveNGO = () => {
           });
 
           setModalAction(null); // Fecha modal
+          fetcher.reset();
         }
       }
     }, [fetcher.state, fetcher.data]);

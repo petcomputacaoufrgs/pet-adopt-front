@@ -15,7 +15,7 @@ export interface AnimalFormSchema {
   sizeIndex: number;
   situationIndex: number;
   images: (File | string | null)[];
-  specieOther: string; 
+  otherSpecies: string; 
 }
 
 export const useAnimalForm = (animalData?: Animal) => {
@@ -34,7 +34,7 @@ export const useAnimalForm = (animalData?: Animal) => {
     sizeIndex: -1,
     situationIndex: -1,
     images: Array(10).fill(null),
-    specieOther: ""
+    otherSpecies: ""
   };
 
   // Calculamos os valores iniciais (usando useMemo para performance)
@@ -69,7 +69,7 @@ export const useAnimalForm = (animalData?: Animal) => {
       sizeIndex: sizeMap[animalData.size] ?? -1,
       situationIndex: statusMap[animalData.status] ?? -1,
       
-      specieOther: animalData.species === "other" ? animalData.otherSpecies : "",
+      otherSpecies: animalData.species === "other" ? animalData.otherSpecies : "",
       images: loadedImages
     };
   }, [animalData]);

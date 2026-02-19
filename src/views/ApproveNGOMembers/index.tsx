@@ -83,6 +83,7 @@ const ApproveNGOMembers = () => {
                 : "O Administrador foi removido da sua lista de validação."
           });
           setModalAction(null); // Fecha modal
+          fetcher.reset();
 
         }
 
@@ -93,6 +94,7 @@ const ApproveNGOMembers = () => {
              description: fetcher.data.error
           });
           setModalAction(null); // Fecha modal
+          fetcher.reset();
 
         }
       }

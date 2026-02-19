@@ -132,10 +132,13 @@ const PetProfile: React.FC = () => {
 
 
 
-    const specieLookUpTable : Record<string, string> = {
-        "dog": "Cachorro",
-        "cat": "Gato",
-        "other": "Outro"
+    const specieMap = (specie: string) => {
+        switch(specie) {
+            case "dog": return "Cachorro";
+            case "cat": return "Gato";
+            case "other": return "Outro";
+            default: return specie;
+        }
     }
 
     const sexLookUpTable : Record<string, string> = {
@@ -290,7 +293,7 @@ const PetProfile: React.FC = () => {
 
                                         <TagsContainer>
 
-                                            <Tag $text={specieLookUpTable[pet.species]} type={"light"} fontSize={"14px"} />
+                                            <Tag $text={specieMap(pet.species)} type={"light"} fontSize={"14px"} />
 
                                             <Tag $text={sexLookUpTable[pet.sex]} type={"light"} fontSize={"14px"} />
 

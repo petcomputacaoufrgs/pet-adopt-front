@@ -80,6 +80,8 @@ const ManageNGOMembers: React.FC = () => {
         });
 
         setMemberToDelete(null); // Fecha o modal
+        fetcher.reset();
+        
       } else if (fetcher.data.error) {
         showToast({
           success: false,
@@ -88,6 +90,7 @@ const ManageNGOMembers: React.FC = () => {
         });
 
         setMemberToDelete(null); // Fecha o modal
+        fetcher.reset();
       }
     }
   }, [fetcher.state, fetcher.data]);

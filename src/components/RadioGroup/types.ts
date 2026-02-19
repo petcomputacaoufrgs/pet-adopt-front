@@ -10,5 +10,7 @@ export interface RadioGroupProps {
   toggleIndex: number;
   onSelectToggle: (index: number) => void;
   userFillOptionLabel?: string;
+  customInputValue?: string;
+  setCustomInputValue?: (value: string) => void;
 
 }
