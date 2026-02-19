@@ -25,6 +25,7 @@ import { createCrudAction, createPaginatedLoader } from "./services/helpers/load
 import { keyframes, styled } from "styled-components";
 import { editAnimalLoader } from "./views/EditAnimal/editAnimalLoader";
 import ScrollToTop from "./components/ScrollToTop";
+import Spinner from "./components/Spinner";
 
 
 // Barra de progresso global
@@ -80,6 +81,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    hydrateFallbackElement: <Spinner fullScreen={true} />, // Mostra um spinner enquanto o layout é carregado
     id: "root",
     loader: async () => {
       const userData = localStorage.getItem("user");
@@ -93,6 +95,8 @@ const router = createBrowserRouter([
 
       try {
         const newUser = await userService.getById(user.id);
+
+        console.log("Novo usuário carregado no root loader:", newUser);
 
         if (!newUser || !newUser.data) {
           localStorage.removeItem("user");
@@ -127,23 +131,29 @@ const router = createBrowserRouter([
       { path: PUBLIC_PATHS.PET_PROFILE, element: <PetProfile />, loader: petProfileLoader },
 
       { path: PUBLIC_PATHS.NGO_PROFILE, element: <NgoProfile />, 
-        loader: async ({ params} ) => {
+        loader: async ({ params } ) => {
           const ngoId = params.id;
           if(!ngoId) throw new Error("ID da ONG não fornecido");
 
           console.log("Loader NGO Profile for ID:", ngoId);
           const isApprovedResponse = await ngoService.isApproved(ngoId);
+      
+          const userStr = localStorage.getItem("user");
+          const user = userStr ? JSON.parse(userStr) : null;
 
           // Se não foi aprovado e user não é admin, bloqueia acesso
            if(!isApprovedResponse.data.approved) {
-             const userStr = localStorage.getItem("user");
-             const user = userStr ? JSON.parse(userStr) : null;
              if (!user || user.role !== "ADMIN") {
                throw new Response("ONG not found", { status: 403 });
              }
           }
 
-          const ngoResponse = await ngoService.getById(ngoId);
+          let ngoResponse;
+
+          if(user.role === "ADMIN" || user.ngoId === ngoId)
+            ngoResponse = await ngoService.getByIdWithDetails(ngoId);
+          else
+            ngoResponse = await ngoService.getById(ngoId);
 
           console.log("NGO Response:", ngoResponse);
           const ngo = ngoResponse.data;

@@ -3,6 +3,7 @@ import { getAuthorizationError } from '../../services';
 import Toast from '../Toast';
 
 const AuthorizationToast: React.FC = () => {
+  
   const [authError, setAuthError] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);

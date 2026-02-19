@@ -143,6 +143,7 @@ export const createCrudAction = (config: ActionConfig) =>
         // Se configurado para redirecionar em caso de 403
         if (config.forbiddenRedirect) {
           localStorage.setItem('authorizationError', message);
+          
           return redirect(config.forbiddenRedirect);
         }
         

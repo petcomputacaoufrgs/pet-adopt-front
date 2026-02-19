@@ -23,12 +23,12 @@ export const DogCardsContainer = styled.div`
 
 
 `
-export const SectionAndDogCardsContainer = styled.div<{hideAnimalFilter: boolean}>`
+export const SectionAndDogCardsContainer = styled.div<{$hideAnimalFilter: boolean}>`
     display: flex;
     flex-direction: column;
     gap: 36px;
-    width: ${props => props.hideAnimalFilter ? '80%' : 'auto'};
-    min-width: ${props => props.hideAnimalFilter ? '60%' : '50%'};
+    width: ${props => props.$hideAnimalFilter ? '80%' : 'auto'};
+    min-width: ${props => props.$hideAnimalFilter ? '60%' : '50%'};
     align-items: center;
     
     @media (max-width: 1239px) {

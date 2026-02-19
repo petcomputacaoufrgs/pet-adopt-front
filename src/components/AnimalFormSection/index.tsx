@@ -102,9 +102,16 @@ export default function AnimalFormSection({
       formData.append("state", data.state);
       formData.append("observations", ""); 
 
+      console.log("CHEGA AQUI!!");
+
       // 2. Resolver ONG ID
       const selectedNgo = ngoOptions.find(n => `${n.name} - ${n.email}` === data.ngoStrId);
+
+      console.log("ONG selecionada:", selectedNgo);
+
+
       if (!selectedNgo) throw new Error("ONG inválida selecionada");
+
       formData.append("ngoId", selectedNgo.id);
 
       // 3. Mapeamentos de Índices
@@ -161,8 +168,23 @@ export default function AnimalFormSection({
       }
 
     } catch (err) {
-      const msg = err instanceof AxiosError ? err.response?.data?.message : "Erro desconhecido";
+
+
+      let msg = "Erro desconhecido. Tente novamente.";
+
+      // Primeiro checa se é erro do Axios (Backend)
+      if (err instanceof AxiosError) {
+        msg = err.response?.data?.message || err.message;
+        console.log(msg);
+      } 
+      // Depois checa se é um erro genérico do JS
+      else if (err instanceof Error) {
+        msg = err.message;
+      }
+
+    // Se não for nenhum dos dois, mantém a mensagem genérica
       setSubmitError(msg); // Define a mensagem na caixa vermelha
+  
       showToast({ success: false, message: "Erro", description: msg });
     } finally {
       setIsCreatingPET(false);
@@ -462,6 +484,7 @@ export default function AnimalFormSection({
               textAlign: 'center'
             }}>
               
+              {submitError && <div>{submitError}</div>}
               {Object.values(errors).map((error: any, index) => (
                 <div key={index}>{error.message}</div>
               ))}

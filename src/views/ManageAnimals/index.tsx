@@ -104,6 +104,8 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
     const petId = pet.id || pet._id;
     if (!petId) return;
     
+    console.log("Navegando para edição do pet com ID:", petId);
+    
     navigate(`/editAnimal/${petId}`);
   };
 
@@ -199,7 +201,7 @@ const ManageAnimals = ({ allowEdit }: IManageAnimals) => {
           />
         )}
 
-        <SectionAndDogCardsContainer hideAnimalFilter={hideAnimalFilter}>
+        <SectionAndDogCardsContainer $hideAnimalFilter={hideAnimalFilter}>
 
           {pets.length > 0  && 
             <DogCardsContainer>

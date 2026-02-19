@@ -65,6 +65,9 @@ export const ngoService = {
   getById: (ngoId: string) => 
     api.get(`/ngos/${ngoId}`),
 
+  getByIdWithDetails: (ngoId: string) => 
+    api.get(`/ngos/${ngoId}/details`),
+
   isApproved:(id: string) => 
     api.get(`/ngos/${id}/is-approved`),
 

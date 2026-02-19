@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import { useEffect, useMemo, memo } from "react";
 import { CoverBadge, DeleteButton, ImageSlotContainer } from "./styles";
 import imagePlus from "../../assets/ImagePlus.svg";
+import { imageHelper } from "../../services/helpers/imageHelper";
 
 type ImageSlotProps = {
   source: File | string | null; 
@@ -17,12 +18,10 @@ const ImageSlot = memo(({ source, onClick, onRemove, isCover }: ImageSlotProps) 
     if (!source) return null;
 
     if (typeof source === 'string') {
-      if (source.startsWith('http://') || source.startsWith('https://')) {
-        return source;
-      } else {
-        const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3002/api/v1';
-        return `${baseURL}${source.startsWith('/') ? '' : '/'}${source}`;
-      }
+
+      const fullUrl = imageHelper.getFullImageUrl(source);
+      console.log("URL completa da imagem:", fullUrl);
+      return imageHelper.getFullImageUrl(source);
     } else {
       return URL.createObjectURL(source);
     }

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { authService, getAuthError } from "../../services";
-import { getErrorMessage } from "../../services/helpers/errorHandlers";
 
 import {
   Container,

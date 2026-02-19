@@ -1,6 +1,6 @@
 // imports
 import { useEffect, useState } from "react";
-import { useFetcher, useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useFetcher, useLoaderData, useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
  
 import { useToast } from "../../contexts/ToastContext";
@@ -34,6 +34,7 @@ import XBrownIcon from "../../assets/XBrownIcon.png"
 import type { NGO } from "../../types/ngos";
 
 import { useRevalidator } from "react-router-dom";
+import type { User } from "../../types/user";
 
 
 type ModalTypes = "excluir" | "recusar" | "aprovar";
@@ -42,14 +43,16 @@ type ModalTypes = "excluir" | "recusar" | "aprovar";
 const NgoProfile = () => {
     const { id } = useParams<{ id: string }>();
     const {ngo, isApproved}= useLoaderData() as { ngo: NGO | null, isApproved: boolean | null };
+    const { user } = useRouteLoaderData("root") as { user: User | null }; 
 
+    
     const fetcher = useFetcher();
 
 
     const {showToast} = useToast();
 
     const navigate = useNavigate();
-    const {user, logout} = useAuth();
+    const {logout} = useAuth();
     const [modalType, setModalType] =  useState<ModalTypes | null>(null);
     const [isEditModalOpen, setIsEditModalOpen]=useState(false);
 
@@ -400,12 +403,12 @@ const NgoProfile = () => {
                 />
             )}
 
-            {isEditModalOpen && ngo && (
+            {isEditModalOpen && ngo && user && (
                 
                     <Backdrop>
                     <Wrapper>
                         <EditModalContainer>
-                           { <ManageInfoForm initialData={ngo} onClose={handleEdit} />}
+                           {<ManageInfoForm initialData={ngo} user={user} onClose={handleEdit}  />}
                         </EditModalContainer>
                     </Wrapper>
                     </Backdrop>

@@ -1,5 +1,6 @@
 import { petService, ngoService } from "../../services";
 import type { Animal } from "./types";
+import { redirect } from "react-router-dom";
 
 // Interface do retorno
 interface AnimalLoaderData {
@@ -32,7 +33,7 @@ export const editAnimalLoader = async ({ params }: { params: any }): Promise<Ani
     const pet = petResponse.data;
 
     // VALIDAÇÃO LOCAL: Verifica se o pet pertence à ONG do usuário.
-    if (pet.ngoId !== user.ngoId) {
+    if (user.role !== "ADMIN" && pet.ngoId !== user.ngoId) {
       localStorage.setItem('authorizationError', 
         'Você não tem permissão para editar este pet. Ele pertence a outra ONG.');
       return redirect('/manageAnimals');
@@ -40,6 +41,8 @@ export const editAnimalLoader = async ({ params }: { params: any }): Promise<Ani
 
     // Busca a ONG
     const ngoResponse = await ngoService.getById(pet.ngoId);
+
+    console.log(ngoResponse.data);
     const ngo = ngoResponse.data;
 
     // Monta o objeto final

@@ -119,6 +119,12 @@ const Header = ({ color, Logo }: IHeader) => {
     setShowCompactMenu((prev) => !prev);
   };
 
+  const handleActionOnCompactMenu = (option: string) => {
+    handleAction(option);
+    setShowCompactMenu(false);
+  }
+
+
   const MenuIcon = (
     <svg
       width="17"
@@ -145,7 +151,7 @@ const Header = ({ color, Logo }: IHeader) => {
         <CompactUserOptionsContainer>
 
           {navigationOptions.concat(accountOptions).map((option) => (
-            <TextButton key={option} onClick={() => handleAction(option)}>
+            <TextButton key={option} onClick={() => handleActionOnCompactMenu(option)}>
               {option}
             </TextButton>
           ))}
@@ -163,7 +169,7 @@ const Header = ({ color, Logo }: IHeader) => {
               buttonType="Primário"
               isDisabled={false}
               content={option}
-              onClick={() => handleAction(option)}
+              onClick={() => handleActionOnCompactMenu(option)}
               paddingH="5px"
               paddingV="10px"
             />
@@ -173,7 +179,7 @@ const Header = ({ color, Logo }: IHeader) => {
 
       <CompactGeneralOptionsContainer>
         {navigationOptions.map((option) => (
-          <TextButton key={option} onClick={() => handleAction(option)}>
+          <TextButton key={option} onClick={() => handleActionOnCompactMenu(option)}>
             {option}
           </TextButton>
         ))}

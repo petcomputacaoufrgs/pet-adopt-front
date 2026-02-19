@@ -15,7 +15,7 @@ export default function Toast({
   type = 'success' 
 }: ToastProps) {
   return (
-    <ToastContainer isVisible={isVisible} toastType={type}>
+    <ToastContainer $isVisible={isVisible} $toastType={type}>
       <TitleRow>
         <Title>{message}</Title>
         <CloseButton themeMode="dark" onClick={onClose} />

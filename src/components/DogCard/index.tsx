@@ -28,10 +28,13 @@ const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id, on
       
   const [isHovered, setIsHovered] = useState(false);
   
+
   const { imageUrl: processedImageUrl } = useImage({
     imagePath: imageUrl,
     fallbackImage: DogForCard
   });
+
+
 
   const sexText = sex === "F" ? "Fêmea" : sex === "M"? "Macho" : sex;
   const sizeText = size === "P" ? "Pequeno" : size === "M" ? "Médio" : size === "G" ? "Grande" : size;
@@ -56,11 +59,14 @@ const DogCard = ({ imageUrl, sex, size, name, breed, race, age, location, id, on
         {/* ImageContainer serve só para garantir que durante o carregamento a imagem não cause mudanças bruscas de layout
             O espaço que a imagem ocupará é reservado */}
         <ImageContainer>
+
+          { processedImageUrl &&
           <Image 
             src={processedImageUrl} 
             alt={name} 
             $isHovered={isHovered} 
           />
+          }
         </ImageContainer>
 
         <InfoBox $hasActions={showActions} $isHovered={isHovered}>

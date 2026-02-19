@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AxiosError } from "axios";
-import { ngoService } from "../../services";
+import { ngoService, userService } from "../../services";
 import BasicInput from "../BasicInput";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
 import LargeInputField from "../LargeInput";
@@ -13,6 +13,7 @@ import { useToast } from "../../contexts/ToastContext";
 
 // Importação da biblioteca de validação (igual ao SignUp)
 import { isCPF, isCNPJ } from "validation-br";
+import type { User } from "../../types/user";
 
 export interface NGOData {
   _id: string;
@@ -34,10 +35,11 @@ export interface NGOData {
 
 type Props = { 
   initialData: NGOData;
+  user: User;
   onClose?: () => void 
 };
 
-const ManageNGOInfoForm: React.FC<Props> = ({ initialData, onClose }) => {
+const ManageNGOInfoForm: React.FC<Props> = ({ initialData, user, onClose }) => {
   const { logout } = useAuth();
   const { showToast } = useToast();
   
@@ -193,6 +195,12 @@ const ManageNGOInfoForm: React.FC<Props> = ({ initialData, onClose }) => {
         temporaryHomeForm,
         claimForm,
       });
+    
+      console.log("Tentando atualizar user: ", user?._id);
+      await userService.update(user._id, {
+        name,
+        email: initialData.email,
+      });
 
       showToast({
         success: true,
@@ -204,6 +212,8 @@ const ManageNGOInfoForm: React.FC<Props> = ({ initialData, onClose }) => {
         onClose();
 
     } catch (err) {
+
+
       if (err instanceof AxiosError && err.response) {
         setErrorMessage(err.response.data.message || 'Erro ao atualizar.');
         showToast({
