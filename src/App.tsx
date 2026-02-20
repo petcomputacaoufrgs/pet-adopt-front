@@ -325,7 +325,7 @@ const router = createBrowserRouter([
       {
         path: "/createAnimal",
         element: (
-          <ProtectedRoute allowedRoles={['ALL']}>
+          <ProtectedRoute allowedRoles={['ALL']} key={"createAnimal"}>
             <EditAnimalWrapper />
           </ProtectedRoute>
         ),
@@ -336,7 +336,7 @@ const router = createBrowserRouter([
       {
         path: "/editAnimal/:id",
         element: (
-          <ProtectedRoute allowedRoles={['ALL']}>
+          <ProtectedRoute allowedRoles={['ALL']} key={window.location.pathname}>
             <EditAnimalWrapper />
           </ProtectedRoute>
         ),
