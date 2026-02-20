@@ -150,7 +150,8 @@ const router = createBrowserRouter([
 
           let ngoResponse;
 
-          if(user.role === "ADMIN" || user.ngoId === ngoId)
+
+          if(user && (user.role === "ADMIN" || user.ngoId === ngoId))
             ngoResponse = await ngoService.getByIdWithDetails(ngoId);
           else
             ngoResponse = await ngoService.getById(ngoId);
