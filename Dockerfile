@@ -1,37 +1,37 @@
-# Build
-FROM node:20-alpine AS builder
+# Estágio 1: Build
+FROM node:20 AS builder
 WORKDIR /app
 
 # Copia os arquivos de dependência
 COPY package*.json ./
-RUN npm ci
+
+# Instala as dependências ignorando scripts pós-instalação para maior segurança e evitar quebras
+RUN npm ci --ignore-scripts
 
 # Copia o código fonte
 COPY . .
 
-# No React puro (CRA), as variáveis precisam existir NA HORA DO BUILD.
-# Elas devem começar com REACT_APP_
-ARG REACT_APP_API_URL
-ARG REACT_APP_ASSETS_URL
-ENV REACT_APP_API_URL=$REACT_APP_API_URL
-ENV REACT_APP_ASSETS_URL=$REACT_APP_ASSETS_URL
+# VITE: As variáveis precisam começar com VITE_ para irem para o navegador
+ARG VITE_API_URL
+ARG VITE_ASSETS_URL
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_ASSETS_URL=$VITE_ASSETS_URL
 
-# Roda o build
+# Roda o build (O Vite gera a pasta 'dist' por padrão)
 RUN npm run build
 
 
-# Serve
-FROM node:20-alpine
+#Estágio 2: Serve
+FROM node:20-slim
 WORKDIR /app
 
-# Instala um servidor HTTP
+# Instala um servidor HTTP leve
 RUN npm install -g serve
 
-# Copia apenas a pasta 'build' gerada no estágio anterior
-COPY --from=builder /app/build ./build
+# Copia a pasta 'dist' gerada no estágio anterior
+COPY --from=builder /app/dist ./dist
 
-# Expõe a porta 3000
-EXPOSE 3000
+# Expõe a porta 5173 (Padrão do Vite)
+EXPOSE 5173
 
-# Comando para servir a pasta build na porta 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["serve", "-s", "dist", "-l", "5173"]
