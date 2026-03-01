@@ -12,6 +12,7 @@ import {
     ContentContainer,
     UpdateButton
 } from "./styles"
+import { set } from "react-hook-form";
 
 const ManageInfo: React.FC = () => {
   const { user } = useRouteLoaderData("root") as { user: any };
@@ -25,6 +26,9 @@ const ManageInfo: React.FC = () => {
   const [email, setEmail] = useState(user?.email || '');
   const [emailError, setEmailError] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
+
+  const [apiError, setApiError] = useState<string | null>(null);
+
   
   const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
 
@@ -75,7 +79,9 @@ const ManageInfo: React.FC = () => {
       email: user.email 
     };
 
+    setApiError(null); // Limpa erros anteriores ao tentar atualizar
     fetcher.submit(payload, { method: "post", encType: "application/json" });
+
 
   };
 
@@ -104,20 +110,31 @@ const ManageInfo: React.FC = () => {
     return <div style={{ height: '1px', width: '100%', backgroundColor: 'rgba(188, 175, 169, 1)', margin: '1em 0' }} />;
   }
 
+
+  useEffect(() => {
+    if (fetcher.data?.error) {
+      setApiError(fetcher.data.error);
+    }
+  }, [fetcher.data]);
+
   return (
     <>   
       <Container as="form" onSubmit={handleUpdate}>
         <ContentContainer>
           
-          {/* Mostra erro local se a Action retornar falha */}
-          {fetcher.data?.error && (
-            <div style={{ color: "red", fontWeight: "bold", marginBottom: "1rem" }}>
-              {fetcher.data.error}
-            </div>
-          )}
+
 
           <h1>Gerencie suas informações pessoais</h1>
           
+
+          {/* Mostra erro local se a Action retornar falha */}
+          {apiError && (
+            <div style={{ color: "red", fontWeight: "bold", marginBottom: "1rem" }}>
+              {apiError}
+            </div>
+          )}
+
+
           <BasicInput
             title= "Nome"
             required={true} 

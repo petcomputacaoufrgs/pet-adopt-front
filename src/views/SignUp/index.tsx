@@ -535,13 +535,14 @@ return (
                   query={ngoSearchText}
                   setQuery={handleNgoSelection}
                   options={ngoOptions.map(ngo => `${ngo.name} - ${ngo.email}`)}
-                  resetOption={"Qualquer"}
+                  resetOption={"Limpar Seleção"}
                   width="100%"
                   fontSize="16px"
                   readOnly={false}
                   listMaxHeight="200px"
                   error={ngoError}
                   errorMessage={ngoErrorMessage}
+                  autoCompleteOnEmpty={false}
                 />
               )}
 

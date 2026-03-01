@@ -59,7 +59,6 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
       filters.ngoId = user.ngoId;
     }
 
-    console.log("Loader Filters:", filters, "User:", user);
 
     try {
       // 4. Chama o Service (passando o user para lógica específica)
@@ -68,9 +67,6 @@ export const createPaginatedLoader = <T>(config: LoaderConfig<T>) =>
       const result = response.data;
       const rawItems = result.data || [];
       const meta = result.meta;
-
-      console.log("Loader response: ", result);
-      console.log("Loader fetched items:", rawItems);
 
       // Normaliza ID
       const items = rawItems.map((item: any) => ({
@@ -131,9 +127,7 @@ export const createCrudAction = (config: ActionConfig) =>
 
       // Fluxo de Deleção / Recusa
       if ((intent === "delete" || intent === "recusar") && config.deleteFn) {
-        console.log(`Executando ação ${intent} para ID:`, id);
         await config.deleteFn(id);
-        console.log(`Ação ${intent} executada com sucesso para ID:`, id);
         return { success: true, type: intent }; // Retorna o tipo para mostrar msg correta no toast
       }
     } catch (err) {      // Tratamento específico para erro 403

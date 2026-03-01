@@ -18,4 +18,5 @@ export interface ISearchBar{
     gapFromTitle?: string; // Espaçamento entre o título e o input
     listMaxHeight?: string; // Altura máxima do dropdown antes de ativar o scroll (ex: "200px")
     disabled?: boolean; // Se o componente está desabilitado (não abre dropdown, não digita)
+    autoCompleteOnEmpty?: boolean; // Se true, o autoComplete é ativado mesmo quando o input está vazio, mostrando todas as opções
 }

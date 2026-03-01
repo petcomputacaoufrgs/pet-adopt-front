@@ -30,6 +30,7 @@ export default function SearchBar({
   verticalPadding = '8px',
   gapFromTitle = '8px',
   listMaxHeight, // Nova prop para controlar o scroll
+  autoCompleteOnEmpty = true, // Se true, mostra todas as opções mesmo com input vazio
 }: ISearchBar) {
   
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
@@ -156,7 +157,7 @@ export default function SearchBar({
 
   }, []);
 
-  const shouldShowDropdown = !disabled && showOptions && (filteredOptions.length > 0 || hasReset);
+  const shouldShowDropdown = !disabled && showOptions && (filteredOptions.length > 0 || hasReset) && (query !== '' || autoCompleteOnEmpty);
 
   return (
     <Container ref={containerRef} width={width}>

@@ -10,21 +10,6 @@ export interface PetFilters {
   situation?: string;
 }
 
-/**
- * Mapeia estados do frontend para códigos do backend
- */
-const mapStateToBackend = (state: string): string | null => {
-  switch (state) {
-    case "Rio Grande do Sul": 
-      return 'RS';
-    case "Santa Catarina": 
-      return 'SC';
-    case "Paraná": 
-      return 'PR';
-    default:
-      return state !== 'Qualquer' ? state : null;
-  }
-};
 
 /**
  * Mapeia idades do frontend para códigos do backend
@@ -182,7 +167,7 @@ const toBackendSpecies = (specieLabel: string) => {
         "Gato": "cat",
         "Outros": "other"
     };
-    return map[specieLabel] || null;
+    return map[specieLabel] || specieLabel;
 }
 
 const toBackendSituation = (situation: string) => {
@@ -221,9 +206,7 @@ export const normalizeFiltersForApi = (frontFilters: any) => {
   if (frontFilters.sex) apiFilters.sex = toBackendSex(frontFilters.sex);
   if (frontFilters.situation) apiFilters.status = toBackendSituation(frontFilters.situation); // Se for igual
   
-  console.log("Mapeando situação:", frontFilters.situation, "->", apiFilters.status);
-
-  if (frontFilters.specie) apiFilters.species = toBackendSpecies(frontFilters.specie);
+  if (frontFilters.species) apiFilters.species = toBackendSpecies(frontFilters.species);
 
   return apiFilters;
 };
@@ -251,7 +234,7 @@ export const buildPetQueryParams = (filters?: PetFilters): string => {
   
   // Estado
   if (filters.state) {
-    const mappedState = mapStateToBackend(filters.state);
+    const mappedState = filters.state;
     if (mappedState) {
       params.append('state', mappedState);
     }
@@ -297,7 +280,6 @@ export const buildPetUrl = (baseUrl: string, filters?: PetFilters): string => {
   const queryString = buildPetQueryParams(filters);
   const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
   
-  console.log('📡 URL gerada para pets:', url);
   return url;
 };
 

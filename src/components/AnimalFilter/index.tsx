@@ -49,6 +49,8 @@ export default function AnimalFilter({ hasBorder = true }) {
   const initialSpecieIndex = mapSpeciesStringToIndex(searchParams.get("specie") || "");
   const [selectedSpecie, setSelectedSpecie] = useState(initialSpecieIndex);
 
+  
+  
   // SINCRONIA URL -> STATE (Para botão Voltar/Refresh)
   useEffect(() => {
     setName(searchParams.get("name") || "");
@@ -62,7 +64,8 @@ export default function AnimalFilter({ hasBorder = true }) {
     setSelectedSex(mapBackendToSex(searchParams.get("sex") || ""));
     setSelectedSituation(searchParams.get("situation") || "");
     
-    const specieParam = searchParams.get("specie");
+    const specieParam = searchParams.get("species");
+
     setSelectedSpecie(mapSpeciesStringToIndex(specieParam || ""));
   }, [searchParams]);
 
@@ -80,11 +83,12 @@ export default function AnimalFilter({ hasBorder = true }) {
       situation: selectedSituation,
       sex: selectedSex,
       // Convertemos o índice numérico do radio de volta para string ("dog")
-      specie: selectedSpecie !== -1 ? specieOptions[selectedSpecie].label : "",
+      species: selectedSpecie !== -1 ? specieOptions[selectedSpecie].value : "",
       // Resetar paginação
       page: "1" 
     };
 
+    
     // Filtra chaves vazias para não ficar ?name=&city= na URL
     const cleanData = Object.fromEntries(
       Object.entries(formData).filter(([_, v]) => v != null && v !== "")

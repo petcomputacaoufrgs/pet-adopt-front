@@ -146,6 +146,7 @@ export default function AnimalFormSection({
             fontSize="16px"
             verticalPadding="4px"
             placeholder="Insira a ONG responsável aqui"
+            autoCompleteOnEmpty={false}
         />
         )}
     />
