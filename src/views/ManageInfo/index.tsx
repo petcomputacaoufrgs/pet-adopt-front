@@ -12,7 +12,6 @@ import {
     ContentContainer,
     UpdateButton
 } from "./styles"
-import { set } from "react-hook-form";
 
 const ManageInfo: React.FC = () => {
   const { user } = useRouteLoaderData("root") as { user: any };
