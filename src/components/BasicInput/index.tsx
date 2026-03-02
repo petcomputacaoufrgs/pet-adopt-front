@@ -28,6 +28,7 @@ function BasicInput({
   errorMessage,
   disabled = false,
   children,
+  maxLength
 }: BasicInputProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: $gapFromTitle, width: $width }}>
@@ -58,7 +59,7 @@ function BasicInput({
           $error={error}
           disabled={disabled} // Passa para o HTML input
           $disabled={disabled} // Passa para o styled-component
-
+          maxLength={maxLength}
         />
 
         {children}

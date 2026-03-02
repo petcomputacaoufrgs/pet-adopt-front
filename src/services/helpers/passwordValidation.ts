@@ -30,7 +30,7 @@ export const validatePassword = (password: string): PasswordValidationResult => 
     return { isValid: false, errorMessage: 'Mínimo 1 número' };
   }
 
-  if (!/[!@#$%^&*]/.test(password)) {
+  if (!/[!?@#$%^&*]/.test(password)) {
     return { isValid: false, errorMessage: 'Mínimo 1 caractere especial' };
   }
 

@@ -1,21 +1,10 @@
-import { useEffect, useState } from "react";
-import { ngoService, authService } from "../../services";
-import { useNavigate } from "react-router-dom";
-import { getErrorMessage } from "../../services/helpers/errorHandlers";
-import { createPasswordValidators } from "../../services/helpers/passwordValidation";
+import { useState, useEffect } from "react";
+import { useLoaderData, useNavigate, useFetcher } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { isCPF, isCNPJ } from "validation-br";
 
-import { 
-  Container,
-  SignUpContainer,
-  SignUpFormContainer, 
-  SignUpForm, 
-  SignUpFormTextContainer,
-  SignUpFormInputsContainer,
-  SignUpFormLinksContainer,
-  ModalOverlay,
-  ModalContent
-} from "./styles";
-
+// Componentes Visuais
+import { Container, SignUpContainer, SignUpFormContainer, SignUpForm, SignUpFormTextContainer, SignUpFormInputsContainer, SignUpFormLinksContainer, ModalOverlay, ModalContent } from "./styles";
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
 import BasicInput from "../../components/BasicInput";
 import PasswordInput from "../../components/PasswordInput";
@@ -23,328 +12,107 @@ import ActionText from "../../components/ActionText";
 import SearchBar from "../../components/SearchBar";
 import SignUpToggle from "../../components/SignUpToggle";
 import LargeInputField from "../../components/LargeInput";
-
 import LoginDog from "../../assets/LoginDog.png";
 
-import { isCPF, isCNPJ } from "validation-br";
-
+// Limites e Helpers
+import { MAX_EMAIL_LENGTH, MAX_FORM_LINK_LENGTH, MAX_MEMBER_NAME_LENGTH, MAX_NGO_NAME_LENGTH, MAX_PASSWORD_LENGTH, MAX_PHONE_LENGTH, MAX_SOCIAL_LINK_LENGTH } from "../../constants/formsFieldsLimits";
+import { getTextRules, getEmailRules } from "../../services/helpers/validationRules";
+import { validatePassword } from "../../services/helpers/passwordValidation";
 
 const SignUp: React.FC = () => {
-
-// === ESTADOS =================================================
-
-  interface NGO_ID {
-    id: string;
-    name: string;
-    email: string;
-  }
-
-  // Estados de Dados
-  const [role, setRole] = useState('membro');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // 1. DADOS DO LOADER
+  const ngoOptions = useLoaderData() as { id: string; label: string }[];
   
-  // Estados de Erro (VALIDAÇÃO INLINE)
-  const [nameError, setNameError] = useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = useState('');
+  const navigate = useNavigate();
+  const fetcher = useFetcher();
+  const isSubmitting = fetcher.state !== "idle";
 
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  // 2. CONFIGURAÇÃO DO REACT-HOOK-FORM
+  const { control, handleSubmit, watch, setError, formState: { errors } } = useForm({
+    defaultValues: { role: 'membro', name: '', email: '', password: '', confirmPassword: '', ngoSearchText: '', doc: '', description: '', phone: '', city: '', state: '', website: '', instagram: '', facebook: '', adoptionForm: '', sponsorshipForm: '', temporaryHomeForm: '', claimForm: '' }
+  });
 
-  const [passwordError, setPasswordError] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const role = watch("role"); // Observa se é membro ou ong
+  const password = watch("password"); // Necessário para comparar a confirmação da senha
 
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState('');
-
-  // Erros específicos de Membro
-  const [ngoError, setNgoError] = useState(false); // Para o SearchBar
-  const [ngoErrorMessage, setNgoErrorMessage] = useState('');
-
-  // Erros específicos de ONG
-  const [docError, setDocError] = useState(false);
-  const [docErrorMessage, setDocErrorMessage] = useState('');
-
-  const [adoptionFormError, setAdoptionFormError] = useState(false);
-  const [adoptionFormErrorMessage, setAdoptionFormErrorMessage] = useState('');
-
-  const [stateError, setStateError] = useState(false);
-  const [stateErrorMessage, setStateErrorMessage] = useState('');
-
-  // Erro do grupo de contatos (se nenhum for preenchido)
-  const [contactError, setContactError] = useState(false); 
-
-  // Estados do Modal
+  // 3. ESTADOS DO MODAL (Mantivemos pois é de UI)
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'success' | 'error'>('success');
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
 
-  // Outros Dados
-  const [ngoOptions, setNgoOptions] = useState<NGO_ID[]>([]);
-  const [ngoSearchText, setNgoSearchText] = useState('');
-
-  // Dados ONG
-  const [doc, setDoc] = useState('');
-  const [description, setDescription] = useState('');
-  const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('');
-  const [website, setWebsite] = useState('');
-  const [instagram, setInstagram] = useState('');
-  const [facebook, setFacebook] = useState('');
-  const [adoptionForm, setAdoptionForm] = useState('');
-  const [sponsorshipForm, setSponsorshipForm] = useState('');
-  const [temporaryHomeForm, setTemporaryHomeForm] = useState('');
-  const [claimForm, setClaimForm] = useState('');
-  const [state, setState] = useState('');
-
-  const navigate = useNavigate();
-
-  // === FUNÇÕES DE HELPERS E MODAL ===========================
-
   const openModal = (type: 'success' | 'error', title: string, message: string) => {
-    setModalType(type);
-    setModalTitle(title);
-    setModalMessage(message);
-    setShowModal(true);
+    setModalType(type); setModalTitle(title); setModalMessage(message); setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    if (modalType === 'success') {
-       navigate('/');
-    }
+    if (modalType === 'success') navigate('/');
   };
 
-  // === VALIDAÇÕES LÓGICAS (VALIDATE FORM) ===========================
-
-  // Verifica campos básicos e retorna TRUE se estiver tudo certo
-  const validateForm = () => {
-    let isValid = true;
-
-    // Validar Nome
-    if (!name.trim()) {
-      setNameError(true);
-      setNameErrorMessage('Nome é obrigatório');
-      isValid = false;
-    }
-
-    // Validar Email (Vazio ou Formato)
-    if (!email.trim()) {
-      setEmailError(true);
-      setEmailErrorMessage('E-mail é obrigatório');
-      isValid = false;
-    } else {
-      // Se verifyEmail já rodou no onChange e setou erro, isValid deve ser false
-      if (emailError) isValid = false;
-    }
-
-    // Validar Senhas
-    if (!password) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Senha é obrigatória');
-      isValid = false;
-    } else if (passwordError) isValid = false;
-
-    if (!confirmPassword) {
-      setConfirmPasswordError(true);
-      setConfirmPasswordErrorMessage('Confirmação é obrigatória');
-      isValid = false;
-    } else if (confirmPasswordError) isValid = false;
-
-
-    // Validações Específicas de ROLE
-    if (role === 'membro') {
-      const ngoId = ngoOptionsMap.get(ngoSearchText) || '';
-      if (ngoId === '') {
-        setNgoError(true);
-        setNgoErrorMessage('Selecione uma ONG da lista');
-        isValid = false;
-      }
-    }
-
-    if (role === 'ong') {
-      // Documento
-      if (!doc.trim()) {
-        setDocError(true);
-        setDocErrorMessage('CPF ou CNPJ é obrigatório');
-        isValid = false;
-      } else if (!isCNPJ(doc) && !isCPF(doc)) {
-        setDocError(true);
-        setDocErrorMessage('Documento inválido');
-        isValid = false;
-      }
-
-      // Estado
-      if (!state.trim()) {
-        setStateError(true);
-        setStateErrorMessage('Estado é obrigatório');
-        isValid = false;
-      }
-
-      // Formulário de Adoção
-      if (!adoptionForm.trim()) {
-        setAdoptionFormError(true);
-        setAdoptionFormErrorMessage('Link do formulário é obrigatório');
-        isValid = false;
-      }
-
-      // Grupo de Contato (Pelo menos um)
-      if (!phone.trim() && !instagram.trim() && !facebook.trim()) {
-        setContactError(true);
-        isValid = false;
-      } else {
-        setContactError(false);
-      }
-    }
-
-    return isValid;
-  };
-
-  // Funções de verificação "on typing" (usando helper reutilizável)
-  const { verifyPassword, verifyConfirmPassword: verifyConfirmPasswordHelper } = createPasswordValidators(
-    setPasswordError,
-    setPasswordErrorMessage,
-    setConfirmPasswordError,
-    setConfirmPasswordErrorMessage
-  );
-
-  const verifyConfirmPassword = (cPass: string) => {
-    verifyConfirmPasswordHelper(password, cPass);
-  };
-
-  const verifyConfirmPasswordFromStandard = (pass: string) => {
-    verifyConfirmPasswordHelper(pass, confirmPassword);
-  }
-
-  const verifyEmail = (mail: string) => {
-    if(mail.trim() === '') { setEmailError(false); setEmailErrorMessage(''); return; }
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    if(!emailRegex.test(mail)){ setEmailError(true); setEmailErrorMessage('E-mail inválido'); return; }
-    setEmailError(false); setEmailErrorMessage('');
-  }
-
-  // === HANDLERS DE SUBMIT ===========================
-
-
-  const ngoOptionsMap : Map<string, string> = ngoOptions.reduce((acc, ngo) => {
-    acc.set(`${ngo.name} - ${ngo.email}`, ngo.id);
-    return acc;
-
-  }, new Map<string, string>());
-
-
-  const fetchNgoOptions = async () => {
-    try {
-      const response = await ngoService.getApproved();
-      const mappedNgoOptions = response.data.map((ngo: any) => ({
-        id: ngo._id || ngo.id,
-        name: ngo.name,
-        email: ngo.email
-      }));
-      setNgoOptions(mappedNgoOptions);
-    } catch (error) {
-      console.error('Error fetching NGO options:', error);
-    }
-  };
-
+  // 4. EFEITO DO FETCHER (Escuta a resposta do backend)
   useEffect(() => {
-    fetchNgoOptions();
-  }, []);
+    if (fetcher.state === 'idle' && fetcher.data) {
+      if (fetcher.data.success) {
+        console.log("Sucesso recebido do backend:", fetcher.data.message);
+        openModal('success', role === 'membro' ? 'Cadastro Realizado!' : 'Solicitação Enviada!', fetcher.data.message);
+      } else if (fetcher.data.error) {
+        console.log("Erro recebido do backend:", fetcher.data.error);
+        openModal('error', 'Algo deu errado', fetcher.data.error);
+      }
+    }
+  }, [fetcher.state, fetcher.data, role]);
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // 5. SUBMIT
+  const onSubmit = (data: any) => {
 
-    // Executa a validação completa
-    const isFormValid = validateForm();
-
-    
-    if (!isFormValid) {
-      // Se falhar, abre o modal avisando para verificar os campos
-      openModal('error', 'Atenção', 'Verifique os erros nos campos destacados e tente novamente.');
+    // Validação Manual do Grupo de Contato (se for ONG)
+    if (role === 'ong' && !data.phone && !data.instagram && !data.facebook) {
+      setError("phone", { type: "manual", message: "Preencha ao menos um contato (Telefone, Instagram ou Facebook)" });
+      setError("instagram", { type: "manual", message: "Preencha ao menos um contato (Telefone, Instagram ou Facebook)" });
+      setError("facebook", { type: "manual", message: "Preencha ao menos um contato (Telefone, Instagram ou Facebook)" });
+      openModal('error', 'Atenção', 'Preencha ao menos um contato (Telefone, Instagram ou Facebook)');
       return;
     }
 
-    // Se passou, prossegue para o envio
-    if (role === 'membro') {
-      await handleMemberSignUp();
-    } else if (role === 'ong') {
-      await handleOngSignUp();
+    // Pega o ID da ONG pelo texto do SearchBar
+    const selectedNgo = ngoOptions.find(ngo => ngo.label === data.ngoSearchText);
+    if (role === 'membro' && !selectedNgo) {
+      setError("ngoSearchText", { type: "manual", message: "Selecione uma ONG válida da lista" });
+      openModal('error', 'Atenção', 'Selecione uma ONG válida da lista');
+      return;
     }
-  }
 
-  const handleMemberSignUp = async () => {
-    try {
-      const ngoId = ngoOptionsMap.get(ngoSearchText) || '';
-      await authService.signupNgoMember({
-        name, email, password, confirmPassword, ngoId: ngoId
-      });
-      openModal('success', 'Cadastro Realizado!', 'Seu pedido foi enviado para aprovação.');
-    } catch (err) {
-      handleApiError(err);
-    }
+    // Dispara para a Action
+    const payload = { intent: role === "membro" ? "signup_member" : "signup_ngo", ngoId: selectedNgo?.id, ...data };
+    fetcher.submit(payload, { method: "post", encType: "application/json", action: "/signup" });
   };
 
-  const handleOngSignUp = async () => {
-    try {
-      await authService.signupNgo({
-        user: { name, email, password, confirmPassword },
-        ngo: {
-          name, email, doc, description, phone, city, state, website,
-          instagram, facebook, adoptionForm, sponsorshipForm,
-          temporaryHomeForm, claimForm,
-        }
-      });
-      openModal('success', 'Solicitação Enviada!', 'O cadastro da sua ONG foi enviado para análise.');
-    } catch (err) {
-      handleApiError(err);
-    }
+
+  const onInvalidSubmit = (errors: any) => {
+    console.log("Erros pegos pelo react-hook-form:", errors); // Útil para você debugar!
+    openModal('error', 'Atenção', 'Verifique os erros nos campos destacados e tente novamente.');
   };
 
-  const handleApiError = (err: any) => {
-    console.error(err);
-    const msg = getErrorMessage(err, 'Erro de conexão. Tente novamente mais tarde.');
-    openModal('error', 'Algo deu errado', msg);
-  }
 
-  // === OUTROS HANDLERS =======================
 
-  const handleNgoSelection = (searchText: string) => {
-    setNgoSearchText(searchText);
-    if(ngoError) { setNgoError(false); setNgoErrorMessage(''); } // Limpa erro ao digitar
-  };
 
-  const [windowSize, setWindowSize] = useState(window.innerWidth);
+    const [windowSize, setWindowSize] = useState(window.innerWidth);
   useEffect(() => {
       const handleResize = () => setWindowSize(window.innerWidth);
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  
 
-  // OUTROS ============================================
 
-  const currentUserOptions = ["Fazer Login"];
+  const validStates = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
 
-  function getScrollbarWidth() {
-    const outer = document.createElement('div');
-    outer.style.visibility = 'hidden'; outer.style.overflow = 'scroll';
-    document.body.appendChild(outer);
-    const inner = document.createElement('div');
-    outer.appendChild(inner);
-    const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
-    if (outer.parentNode) outer.parentNode.removeChild(outer);
-    return scrollbarWidth;
-  }
 
-  // RENDERIZAÇÃO ============================================================
-  
-return (
-    <Container style={{ paddingRight: getScrollbarWidth() }}>
-      
+
+  return (
+    <Container>
+
       {/* MODAL */}
       {showModal && (
         <ModalOverlay onClick={closeModal}>
@@ -365,184 +133,246 @@ return (
 
 
       <SignUpContainer>
+
+        {/* IMAGEM DO CACHORRO NO LADO ESQUERDO DA TELA */}
         {windowSize >= 1200 &&
           <div style={{maxWidth: "732.95px", backgroundImage: `url(${LoginDog})`, width: "43%", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover"}}></div>
         } 
 
+        {/* FORMULÁRIO DE CADASTRO */}
         <SignUpFormContainer role={role}>
-          <SignUpForm onSubmit={handleSignUp} role={role}>
+          <SignUpForm onSubmit={handleSubmit(onSubmit)} role={role}>
             
-            <SignUpToggle selected={role} onSelect={setRole}/>
+            <Controller name="role" control={control} render={({ field }) => (
+                <SignUpToggle selected={field.value} onSelect={field.onChange} />
+            )} />
 
             <SignUpFormTextContainer>
               <h1>Cadastro de {role === 'membro' ? 'Membro' : 'ONG'} </h1>
             </SignUpFormTextContainer>
             
             <SignUpFormInputsContainer>
-              
-              {role==='ong' && <h2>Informações da ONG </h2>}
+              {role === 'ong' && <h2>Informações da ONG</h2>}
 
-              {/* === INPUT NOME === */}
-              <BasicInput
-                title= {role === 'ong' ? 'Nome da ONG' : 'Nome'}
-                required = {true} 
-                placeholder="Insira seu nome aqui"
-                value={name}
-                $fontSize="1rem"
-                $width="100%"
-                onChange={(e) => {
-                   setName(e.target.value);
-                   // Limpa erro ao digitar
-                   if(nameError) { setNameError(false); setNameErrorMessage(''); }
-                }}
-                error={nameError}
-                errorMessage={nameErrorMessage}
-              />
-              
-              {/* === INPUT EMAIL === */}
-              <BasicInput
-                title="E-mail"
-                required = {true} 
-                placeholder="Insira seu email aqui"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  verifyEmail(e.target.value);
-                }}
-                $fontSize="1rem"
-                $width="100%"
-                error={emailError}
-                errorMessage={emailErrorMessage} 
+              <Controller
+                name="name"
+                control={control}
+                rules={getTextRules(role === 'ong' ? 'Nome da ONG' : 'Nome', role === 'ong' ? MAX_NGO_NAME_LENGTH : MAX_MEMBER_NAME_LENGTH)}
+                render={({ field, fieldState }) => (
+                  <BasicInput 
+                    {...field} 
+                    title={role === 'ong' ? 'Nome da ONG' : 'Nome'} 
+                    required 
+                    placeholder="Insira seu nome aqui" 
+                    $width="100%" error={!!fieldState.error} 
+                    errorMessage={fieldState.error?.message} 
+                    $fontSize="1rem"/>
+                )}
               />
 
-              {/* === INPUT CPF/CNPJ (ONG) === */}
+              <Controller
+                name="email"
+                control={control}
+                rules={getEmailRules(MAX_EMAIL_LENGTH)}
+                render={({ field, fieldState }) => (
+                  <BasicInput 
+                    {...field} 
+                    title="E-mail" 
+                    required 
+                    placeholder="Insira seu email" 
+                    $width="100%" 
+                    error={!!fieldState.error} 
+                    errorMessage={fieldState.error?.message}
+                    $fontSize="1rem"/>
+                )}
+              />
+
               {role === 'ong' && (
-                  <BasicInput
-                    title="CPF/CNPJ"
-                    required = {true}
-                    placeholder="Insira seu CPF/CNPJ aqui"
-                    value={doc}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => {
-                        setDoc(e.target.value);
-                        if(docError) { setDocError(false); setDocErrorMessage(''); }
-                    }}
-                    error={docError}
-                    errorMessage={docErrorMessage}
-                  />
+                <Controller
+                  name="doc"
+                  control={control}
+                  rules={{ 
+                    required: "CPF/CNPJ é obrigatório",
+                    validate: (value) => isCPF(value) || isCNPJ(value) || "Documento inválido"
+                  }}
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                    {...field} 
+                    title="CPF/CNPJ" 
+                    required 
+                    placeholder="Insira seu documento" 
+                    $width="100%" 
+                    error={!!fieldState.error} 
+                    errorMessage={fieldState.error?.message}
+                    $fontSize="1rem"/>
+                  )}
+                />
               )}
 
-              {/* === SENHAS === */}
-              <PasswordInput
-                  title="Senha"
-                  required={true}
-                  isDisabled={false}
+              <Controller
+                name="password"
+                control={control}
+                rules={{ 
+                  required: "Senha é obrigatória",
+                  maxLength: { value: MAX_PASSWORD_LENGTH, message: `A senha deve ter no máximo ${MAX_PASSWORD_LENGTH} caracteres` },
+                  validate: (value) => {
+                    const result = validatePassword(value);
+                    return result.isValid || result.errorMessage;
+                  }
+                }}
+                render={({ field, fieldState }) => (
+                  <PasswordInput 
+                  {...field} 
+                  title="Senha" 
+                  required 
+                  placeholder="Sua senha" 
+                  $width="100%" 
+                  error={!!fieldState.error} 
+                  errorMessage={fieldState.error?.message} 
+                  visible={false} 
                   $fontSize="1rem" 
-                  placeholder="Insira sua senha aqui"
-                  $width="100%"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    verifyPassword(e.target.value);
-                    verifyConfirmPasswordFromStandard(e.target.value);
-                  }}
-                  error={passwordError}
-                  errorMessage={passwordErrorMessage} 
-                  visible={false}
+                  isDisabled = {isSubmitting}/>
+                )}
               />
 
-              <PasswordInput
-                  title="Confirmar Senha"
-                  required={true}
-                  isDisabled={false}
-                  $fontSize="1rem" 
-                  placeholder="Confirme sua senha aqui"
-                  $width="100%"
-                  value={confirmPassword}
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value);
-                    verifyConfirmPassword(e.target.value);
-                  }}
-                  error={confirmPasswordError}
-                  errorMessage={confirmPasswordErrorMessage} 
+              <Controller
+                name="confirmPassword"
+                control={control}
+                rules={{ 
+                  required: "Confirmação obrigatória",
+                  validate: (value) => value === password || "As senhas não conferem"
+                }}
+                render={({ field, fieldState }) => (
+                  <PasswordInput 
+                  {...field} 
+                  title="Confirmar Senha" 
+                  required 
+                  placeholder="Confirme sua senha" 
+                  $width="100%" 
+                  error={!!fieldState.error} 
+                  errorMessage={fieldState.error?.message} 
                   visible={false}
+                  $fontSize="1rem" 
+                  isDisabled = {isSubmitting}/>
+                )}
               />
+
 
               {role === 'ong' && (
                 <>
-                  <LargeInputField
-                    title="Descrição (Opcional)"
-                    required={false}
-                    $fontSize="1rem"
-                    placeholder="Escreva uma breve descrição aqui"
-                    $width="100%"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    error={false}
-                    visible={false}
-                    isDisabled={false}
-                    $inputType="Primário"
-                    maxLength={1000}
-                  />
-                  <BasicInput
-                    title="Cidade (Opcional)"
-                    required={false}
-                    placeholder="Insira a cidade da sua ONG aqui"
-                    value={city}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => setCity(e.target.value)}
-                  />
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={getTextRules("Descrição", 1000, false)}
+                  render={({ field, fieldState }) => (
+                    <LargeInputField
+                        {...field}
+                        title="Descrição (Opcional)"
+                        required={false}
+                        $fontSize="1rem"
+                        placeholder="Escreva uma breve descrição aqui"
+                        $width="100%"
+                        visible={false}
+                        isDisabled={false}
+                        $inputType="Primário"
+                        maxLength={1000}
+                        error = {!!fieldState.error}
+                        errorMessage={fieldState.error?.message}
+                    />
+                    )}
+                />
 
-                  <SearchBar
-                    title="Estado"
-                    required
-                    placeholder="Insira o estado sede da ONG aqui"
-                    query={state}
-                    setQuery={setState}
-                    options={[
-                      "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT",
-                      "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO",
-                      "RR", "SC", "SP", "SE", "TO",
-                    ]}
-                    resetOption="Qualquer"
-                    width="100%"
-                    fontSize="16px"
-                    listMaxHeight="200px"
-                    error={stateError}
-                    errorMessage={stateErrorMessage}
-                  />
+                
+                <Controller
+                  name="city"
+                  control={control}
+                  rules={getTextRules("Cidade", 100, false)}
+                  render={({ field, fieldState }) => (
+                    <BasicInput
+                      {...field}
+                      title="Cidade (Opcional)"
+                      required={false}
+                      placeholder="Insira a cidade da sua ONG aqui"
+                      value={field.value}
+                      error={!!fieldState.error}
+                      errorMessage={fieldState.error?.message}
+                      $fontSize="1rem"
+                      $width="100%"
+                    />
+                  )}
+                />
 
-                  <BasicInput
-                    title="Link do WebSite (Opcional)"
-                    required={false}
-                    placeholder="Insira o link aqui"
-                    value={website}
+
+                <Controller 
+                    name="state"
+                    control={control}
+                    rules={{ 
+                      validate: (value) => {
+                        if (!value) return true; // Campo opcional
+                        return validStates.includes(value) || "Estado inválido";
+                      }
+                    }}
+                    render={({ field, fieldState }) => (
+                        <SearchBar
+                        title="Estado"
+                        required
+                        placeholder="Insira o estado sede da ONG aqui"
+                        query={field.value}
+                        setQuery={field.onChange}
+                        options={validStates}
+                        resetOption="Qualquer"
+                        width="100%"
+                        fontSize="16px"
+                        listMaxHeight="200px"
+                        error={!!fieldState.error}
+                        errorMessage={fieldState.error?.message}
+                        />
+                    )}
+                />
+
+
+                <Controller
+                  name="website"
+                  control={control}
+                  rules={getTextRules("Link do Website", 255, false)}
+                  render={({ field }) => (
+                    <BasicInput
+                      {...field }
+                      title="Link do WebSite (Opcional)"
+                      required={false}
+                      placeholder="Insira o link aqui"
                     $fontSize="1rem"
                     $width="100%"
-                    onChange={(e) => setWebsite(e.target.value)}
                   />
+                    )}
+                />
                 </>
               )}
 
-             {/* === SELEÇÃO DE ONG (MEMBRO) === */}
-             {role === 'membro' && (
-                <SearchBar
-                  title="Selecione sua ONG"
-                  required
-                  placeholder="Encontre e selecione sua ONG aqui"
-                  query={ngoSearchText}
-                  setQuery={handleNgoSelection}
-                  options={ngoOptions.map(ngo => `${ngo.name} - ${ngo.email}`)}
-                  resetOption={"Limpar Seleção"}
-                  width="100%"
-                  fontSize="16px"
-                  readOnly={false}
-                  listMaxHeight="200px"
-                  error={ngoError}
-                  errorMessage={ngoErrorMessage}
-                  autoCompleteOnEmpty={false}
+
+
+              {role === 'membro' && (
+                <Controller
+                  name="ngoSearchText"
+                  control={control}
+                  rules={{ required: "Selecione uma ONG" }}
+                  render={({ field, fieldState }) => (
+                    <SearchBar 
+                      {...field} 
+                      query={field.value} 
+                      setQuery={field.onChange} 
+                      options={ngoOptions.map(n => n.label)} 
+                      title="Selecione sua ONG" 
+                      required 
+                      resetOption="Limpar Seleção" 
+                      width="100%" 
+                      listMaxHeight="200px" 
+                      error={!!fieldState.error} 
+                      errorMessage={fieldState.error?.message} 
+                      placeholder="Encontre e selecione sua ONG aqui" 
+                      fontSize="1rem"
+                    />
+                  )}
                 />
               )}
 
@@ -553,43 +383,69 @@ return (
                 <div>
                   <h2>Contato <span style={{color: "#F17D6E"}}>*</span></h2>
                   <p style={{ 
-                      color: contactError ? '#FF3B30' : 'inherit', 
-                      fontWeight: contactError ? 'bold' : 'normal' 
+                      // Verifica se o erro manual do grupo de contatos foi disparado
+                      color: (errors.phone?.type === 'manual' && errors.instagram?.type === 'manual' && errors.facebook?.type === 'manual') ? '#FF3B30' : 'inherit', 
+                      fontWeight: errors.phone?.type === 'manual' ? 'bold' : 'normal' 
                   }}>
-                    {contactError ? "ERRO: Preencha ao menos um campo abaixo" : "Preencha ao menos um dos campos abaixo"}
+                    {(errors.phone?.type === 'manual' && errors.instagram?.type === 'manual' && errors.facebook?.type === 'manual') 
+                      ? "ERRO: Preencha ao menos um campo abaixo" 
+                      : "Preencha ao menos um dos campos abaixo"}
                   </p>
                 </div>
 
-                {/* Se contactError for true, destacamos todos os inputs do grupo para alertar */}
-                <BasicInput
-                    title="Número para Contato"
-                    required = {false}
-                    placeholder="Insira o contato aqui"
-                    value={phone}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => { setPhone(e.target.value); setContactError(false); }}
-                    error={contactError} 
+                <Controller
+                  name="phone"
+                  control={control}
+                  rules={getTextRules("Telefone", MAX_PHONE_LENGTH, false)}
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                      {...field} 
+                      title="Número para Contato" 
+                      required={false} 
+                      placeholder="Insira o contato aqui" 
+                      $width="100%" 
+                      $fontSize="1rem" 
+                      error={(!!fieldState.error && fieldState.error?.type !== 'manual') || (errors.phone?.type === 'manual' && errors.instagram?.type === 'manual' && errors.facebook?.type === 'manual')} // Fica vermelho se der erro na validação ou na regra de grupo
+                      errorMessage={fieldState.error?.type !== 'manual' ? fieldState.error?.message : undefined}
+                    />
+                  )}
                 />
-                <BasicInput
-                    title="Link do Instagram"
-                    required = {false}
-                    placeholder="Insira o link aqui"
-                    value={instagram}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => { setInstagram(e.target.value); setContactError(false); }}
-                    error={contactError}
+
+                <Controller
+                  name="instagram"
+                  control={control}
+                  rules={getTextRules("Instagram", MAX_SOCIAL_LINK_LENGTH, false)}
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                      {...field} 
+                      title="Link do Instagram" 
+                      required={false} 
+                      placeholder="Insira o link aqui" 
+                      $width="100%" 
+                      $fontSize="1rem" 
+                      error={(!!fieldState.error && fieldState.error?.type !== 'manual') || (errors.instagram?.type === 'manual' && errors.phone?.type === 'manual' && errors.facebook?.type === 'manual')} // Fica vermelho se der erro na validação ou se for o erro manual do grupo e o telefone não tiver sido o campo que causou o erro
+                      errorMessage={fieldState.error?.type !== 'manual' ? fieldState.error?.message : undefined}
+
+                    />
+                  )}
                 />
-                <BasicInput
-                    title="Link do Facebook"
-                    required = {false}
-                    placeholder="Insira o link aqui"
-                    value={facebook}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => { setFacebook(e.target.value); setContactError(false); }}
-                    error={contactError}
+
+                <Controller
+                  name="facebook"
+                  control={control}
+                  rules={getTextRules("Facebook", MAX_SOCIAL_LINK_LENGTH, false)}
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                      {...field} 
+                      title="Link do Facebook" 
+                      required={false} 
+                      placeholder="Insira o link aqui" 
+                      $width="100%" 
+                      $fontSize="1rem" 
+                      error={(!!fieldState.error && fieldState.error?.type !== 'manual') || (errors.facebook?.type === 'manual' && errors.phone?.type === 'manual' && errors.instagram?.type === 'manual')} // Fica vermelho se der erro na validação ou se for o erro manual do grupo e o telefone não tiver sido o campo que causou o erro
+                      errorMessage={fieldState.error?.type !== 'manual' ? fieldState.error?.message : undefined}
+                    />
+                  )}
                 />
               </SignUpFormInputsContainer>
             )}
@@ -598,74 +454,91 @@ return (
               <SignUpFormInputsContainer>
                 <h2>Formulários</h2>
                 
-                {/* === FORM ADOÇÃO === */}
-                <BasicInput
-                    title="Formulario de Adoção"
-                    required = {true}
-                    placeholder="Insira o link aqui"
-                    value={adoptionForm}
-                    $fontSize="1rem"
-                    $width="100%"
-                    onChange={(e) => {
-                        setAdoptionForm(e.target.value);
-                        if(adoptionFormError) { setAdoptionFormError(false); setAdoptionFormErrorMessage(''); }
-                    }}
-                    error={adoptionFormError}
-                    errorMessage={adoptionFormErrorMessage}
+                <Controller
+                  name="adoptionForm"
+                  control={control}
+                  rules={getTextRules("Formulário de Adoção", MAX_FORM_LINK_LENGTH, true)} // True = Obrigatório!
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                      {...field} 
+                      title="Formulario de Adoção" 
+                      required={true} 
+                      placeholder="Insira o link aqui" 
+                      $width="100%" 
+                      $fontSize="1rem" 
+                      error={!!fieldState.error} 
+                      errorMessage={fieldState.error?.message} 
+                    />
+                  )}
                 />
-                {/* Outros forms opcionais... */}
-                <BasicInput
-                    title="Formulario de Apadrinhamento (Opcional)"
-                    required={false}
-                    placeholder="Insira o link aqui"
-                    value={sponsorshipForm}
-                    $fontSize="1rem" $width="100%"
-                    onChange={(e) => setSponsorshipForm(e.target.value)}
+
+                <Controller
+                  name="sponsorshipForm"
+                  control={control}
+                  rules={getTextRules("Formulário de Apadrinhamento", MAX_FORM_LINK_LENGTH, false)}
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                      {...field} 
+                      title="Formulario de Apadrinhamento (Opcional)" 
+                      required={false} 
+                      placeholder="Insira o link aqui" 
+                      $width="100%" 
+                      $fontSize="1rem" 
+                      error={!!fieldState.error} 
+                      errorMessage={fieldState.error?.message} 
+                    />
+                  )}
                 />
-                <BasicInput
-                    title="Formulario de Lar Temporário (Opcional)"
-                    required={false}
-                    placeholder="Insira o link aqui"
-                    value={temporaryHomeForm}
-                    $fontSize="1rem" $width="100%"
-                    onChange={(e) => setTemporaryHomeForm(e.target.value)}
+
+                <Controller
+                  name="temporaryHomeForm"
+                  control={control}
+                  rules={getTextRules("Formulário de Lar Temporário", MAX_FORM_LINK_LENGTH, false)}
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                      {...field} 
+                      title="Formulario de Lar Temporário (Opcional)" 
+                      required={false} 
+                      placeholder="Insira o link aqui" 
+                      $width="100%" 
+                      $fontSize="1rem" 
+                      error={!!fieldState.error} 
+                      errorMessage={fieldState.error?.message} 
+                    />
+                  )}
                 />
-                <BasicInput
-                    title="Formulario de Reivindicação (Opcional)"
-                    required={false}
-                    placeholder="Insira o link aqui"
-                    value={claimForm}
-                    $fontSize="1rem" $width="100%"
-                    onChange={(e) => setClaimForm(e.target.value)}
+
+                <Controller
+                  name="claimForm"
+                  control={control}
+                  rules={getTextRules("Formulário de Reivindicação", MAX_FORM_LINK_LENGTH, false)}
+                  render={({ field, fieldState }) => (
+                    <BasicInput 
+                      {...field} 
+                      title="Formulario de Reivindicação (Opcional)" 
+                      required={false} 
+                      placeholder="Insira o link aqui" 
+                      $width="100%" 
+                      $fontSize="1rem" 
+                      error={!!fieldState.error} 
+                      errorMessage={fieldState.error?.message} 
+                    />
+                  )}
                 />
               </SignUpFormInputsContainer>
             )}
-                        
+
+
+            
             <SignUpFormLinksContainer>
               <PrimarySecondaryButton 
-                  width="100%" 
-                  buttonType="Primário" 
-                  content="Criar Conta" 
-                  onClick={handleSignUp} 
-                  isDisabled={false} 
-                  paddingH="5px" 
-                  paddingV="10px"
+                  width="100%" buttonType="Primário" content={isSubmitting ? "Enviando..." : "Criar Conta"} onClick={handleSubmit(onSubmit, onInvalidSubmit)} isDisabled={isSubmitting} paddingH="5px" paddingV="10px"
               />
-
-              <ActionText
-                key={currentUserOptions[0]}
-                width="100%"
-                fontSize="1rem"
-                textColor="#553525"
-                onClick={(e) => {
-                   e.preventDefault();
-                   navigate("/login");
-                }}
-              >
+              <ActionText width="100%" fontSize="1rem" textColor="#553525" onClick={(e) => { e.preventDefault(); navigate("/login"); }}>
                 <h3 style={{ marginBottom: '69px' }}>Fazer Login</h3>
               </ActionText>
-          
             </SignUpFormLinksContainer>
+
           </SignUpForm>
         </SignUpFormContainer>
       </SignUpContainer>

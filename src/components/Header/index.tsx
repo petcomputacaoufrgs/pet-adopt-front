@@ -85,8 +85,8 @@ const Header = ({ color, Logo }: IHeader) => {
 
   const getResponsiveMode = (): ResponsiveMode => {
     if(!user){
-      if (windowWidth >= 1560) return "full";
-      if (windowWidth >= 980) return "partial";
+      if (windowWidth >= 1360) return "full";
+      if (windowWidth >= 982) return "partial";
       return "compact";
     }
 
@@ -98,7 +98,7 @@ const Header = ({ color, Logo }: IHeader) => {
         return windowWidth >= 1200 ? "full" : "compact";
       }
       if(user.role === "ADMIN"){
-        return windowWidth >= 1280 ? "full" : windowWidth >= 680 ? "partial" : "compact";
+        return windowWidth >= 1548 ? "full" : windowWidth >= 680 ? "partial" : "compact";
       }
     }
 
@@ -212,7 +212,7 @@ const Header = ({ color, Logo }: IHeader) => {
         <DropdownButton
           buttonType="Secundário"
           fontSize={"clamp(16px, 1.2vw, 18px)"}
-          content={`Olá, ${user.name}`}
+          content={`Olá, ${user.name.length > 20 ? user.name.substring(0, 20) + '...' : user.name}`}
           options={accountOptions}
           paddingH="20px"
           onClick={handleAction}
@@ -250,7 +250,7 @@ const Header = ({ color, Logo }: IHeader) => {
           <DropdownButton
           buttonType="Secundário"
           fontSize={"clamp(16px, 1.2vw, 18px)"}
-          content={`Olá, ${user.name}`}
+          content={`Olá, ${user.name.length > 20 ? user.name.substring(0, 20) + '...' : user.name}`}
           options={navigationOptions.concat(accountOptions)}
           paddingH="20px"
           onClick={handleAction}
@@ -267,7 +267,7 @@ const Header = ({ color, Logo }: IHeader) => {
         <DropdownButton
           buttonType={user ? "Secundário" : "Primário"}
           fontSize={"clamp(16px, 1.2vw, 18px)"}
-          content={user ? `Olá, ${user.name}` : MenuIcon}
+          content={user ? `Olá, ${user.name.length > 20 ? user.name.substring(0, 20) + '...' : user.name}` : MenuIcon}
           onClick={handleAction}
           options={accountOptions}
           paddingH="20px"

@@ -41,6 +41,8 @@ const ManageInfo: React.FC = () => {
           description: "Informações atualizadas com sucesso."
         });
 
+       setApiError(null); // Limpa erros anteriores
+
        fetcher.reset();
 
       } else if (fetcher.data.error) {
@@ -78,7 +80,6 @@ const ManageInfo: React.FC = () => {
       email: user.email 
     };
 
-    setApiError(null); // Limpa erros anteriores ao tentar atualizar
     fetcher.submit(payload, { method: "post", encType: "application/json" });
 
 
@@ -121,11 +122,8 @@ const ManageInfo: React.FC = () => {
       <Container as="form" onSubmit={handleUpdate}>
         <ContentContainer>
           
-
-
           <h1>Gerencie suas informações pessoais</h1>
           
-
           {/* Mostra erro local se a Action retornar falha */}
           {apiError && (
             <div style={{ color: "red", fontWeight: "bold", marginBottom: "1rem" }}>

@@ -14,9 +14,10 @@ export interface BasicInputProps {
   $paddingRight?: string;
   $paddingVertical?: string;
   $readOnly?: boolean;
-  $inputType?: "Primário" | "Secundário" | string; // Adjusted to reflect the actual usage
+  $inputType?: "Primário" | "Secundário" | string;
   error?: boolean;
   errorMessage?: string;
   children?: React.ReactNode;
   disabled?: boolean;
+  maxLength?: number;
 }

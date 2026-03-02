@@ -2,7 +2,7 @@ import { createBrowserRouter, Outlet, RouterProvider, useNavigation } from "reac
 import { PUBLIC_PATHS } from "./constants/routes";
 import HomeView from "./views/HomePage";
 import LoginView from "./views/Login";
-import SignupView from "./views/SignUp"
+import SignUp from "./views/SignUp";
 import ManageAnimals from "./views/ManageAnimals";
 import ManageNgo from "./views/ManageNgo";
 import ApproveNGO from "./views/ApproveNGO";
@@ -26,6 +26,7 @@ import { keyframes, styled } from "styled-components";
 import { editAnimalLoader } from "./views/EditAnimal/editAnimalLoader";
 import ScrollToTop from "./components/ScrollToTop";
 import Spinner from "./components/Spinner";
+import { signUpAction } from "./views/SignUp/action";
 
 
 // Barra de progresso global
@@ -184,7 +185,25 @@ const router = createBrowserRouter([
       },
 
       { path: PUBLIC_PATHS.LOGIN, element: <PublicRoute><LoginView /></PublicRoute> },
-      { path: PUBLIC_PATHS.SIGNUP, element: <PublicRoute><SignupView /></PublicRoute> },
+      { path: PUBLIC_PATHS.SIGNUP, element: <PublicRoute><SignUp /></PublicRoute>,
+
+        loader: async () => {
+            try {
+              const response = await ngoService.getApproved();
+              // Já entregamos o array mapeado e limpo pro componente
+              return response.data.map((ngo: any) => ({
+                id: ngo._id || ngo.id,
+                label: `${ngo.name} - ${ngo.email}`
+              }));
+            } catch (error) {
+              console.error('Erro ao buscar ONGs:', error);
+              return []; // Retorna vazio em caso de erro para não quebrar a tela
+            }
+          },
+
+          action: signUpAction
+
+       },
       { path: PUBLIC_PATHS.FORGOT_PASSWORD, element: <PublicRoute><ForgotPassword/></PublicRoute> },
       { path: PUBLIC_PATHS.RESET_PASSWORD, element: <PublicRoute><ResetPassword/></PublicRoute> },
 

@@ -22,6 +22,17 @@ import { useToast } from "../../contexts/ToastContext";
 import type { AnimalFormSchema } from "../../hooks/useAnimalForm";
 import { buildAnimalFormData } from "../../services/formatters/petFormatters";
 
+
+import { 
+  MAX_PET_NAME_LENGTH, 
+  MAX_BREED_LENGTH, 
+  MAX_CITY_LENGTH, 
+  MAX_CHARACTERISTICS_LENGTH 
+} from "../../constants/formsFieldsLimits";
+import { getTextRules } from "../../services/helpers/validationRules";
+
+
+
 const MemoizedImageSlotsGroup = memo(ImageSlotsGroup);
 
 
@@ -163,6 +174,7 @@ export default function AnimalFormSection({
           </InfoContent>
 
           <InputsContainer>
+
             {/* COLUNA ESQUERDA */}
             <HalfColumn $windowSize={windowSize}>
               <VerticalColumn>
@@ -170,17 +182,19 @@ export default function AnimalFormSection({
                 <Controller
                   name="name"
                   control={control}
-                  rules={{ required: "Nome é obrigatório" }}
-                  render={({ field }) => (
+                  rules={getTextRules("Nome", MAX_PET_NAME_LENGTH, true)}
+                  render={({ field, fieldState }) => (
                     <BasicInput
                       {...field}
-                      onChange={(e) => field.onChange(e.target.value)}
                       title="Nome"
                       required
                       placeholder="Insira o nome do pet aqui"
                       $width="100%"
                       $fontSize="16px"
                       $paddingVertical="4px"
+                      error={!!fieldState.error}
+                      errorMessage={fieldState.error?.message}
+                      maxLength={MAX_PET_NAME_LENGTH} // Trava a digitação nativamente
                     />
                   )}
                 />
@@ -211,16 +225,19 @@ export default function AnimalFormSection({
                    <Controller
                       name="breed"
                       control={control}
-                      render={({ field }) => (
+                      rules={getTextRules("Raça", MAX_BREED_LENGTH, false)}
+                      render={({ field, fieldState }) => (
                          <BasicInput 
                             {...field} 
-                            onChange={(e) => field.onChange(e.target.value)}
                             title="Raça (Opcional)" 
                             $width="100%" 
                             placeholder="Insira a raça do pet aqui" 
                             $fontSize="16px" 
                             $paddingVertical="4px"
                             required={false}
+                            error={!!fieldState.error}
+                            errorMessage={fieldState.error?.message}
+                            maxLength={MAX_BREED_LENGTH}
                          />
                       )}
                    />
@@ -230,17 +247,19 @@ export default function AnimalFormSection({
                     <Controller
                       name="city"
                       control={control}
-                      rules={{ required: "Cidade obrigatória" }}
-                      render={({ field }) => (
+                      rules={getTextRules("Cidade", MAX_CITY_LENGTH, true)}
+                      render={({ field, fieldState }) => (
                         <BasicInput 
-                            value={field.value} 
-                            onChange={(e) => field.onChange(e.target.value)} 
+                            {...field} 
                             title="Cidade" 
                             required 
                             $width={windowSize > 1180 ? "50%" : "100%"}
                             placeholder="Cidade do pet"
                             $fontSize="16px"
                             $paddingVertical="4px" 
+                            error={!!fieldState.error}
+                            errorMessage={fieldState.error?.message}
+                            maxLength={MAX_CITY_LENGTH}
                         />
                       )}
                     />
@@ -273,50 +292,41 @@ export default function AnimalFormSection({
               </VerticalColumn>
 
               <Row>
-
-
-<Controller
-  name="specieIndex"
-  control={control}
-  rules={{ validate: (v) => v >= 0 || "Selecione a espécie" }}
-  render={({ field: fieldIndex }) => (
-    
-    <Controller
-      name="otherSpecies"
-      control={control}
-      rules={{ 
-        validate: (v) => fieldIndex.value !== 2 || !!v || "Informe a espécie" 
-      }}
-      render={({ field: fieldOther }) => (
-        
-        <RadioGroup
-           title="Espécie"
-           required
-           options={[
-             { label: "Cachorro", value: "dog" }, 
-             { label: "Gato", value: "cat" }, 
-             { label: "Outro", value: "other" }
-           ]}
-           
-           // Controle da bolinha (Radio)
-           toggleIndex={fieldIndex.value}
-           onSelectToggle={(idx) => fieldIndex.onChange(idx)}
-           
-           // Controle do texto digitado
-           customInputValue={fieldOther.value || ""}
-           setCustomInputValue={fieldOther.onChange}
-           
-           // Suas outras props originais
-           onChange={() => {}} 
-           name="specie"
-           userFillOptionLabel="Outro"
-           fontSize="16px"
-        />
-        
-      )}
-    />
-  )}
-/>
+                <Controller
+                  name="specieIndex"
+                  control={control}
+                  rules={{ validate: (v) => v >= 0 || "Selecione a espécie" }}
+                  render={({ field: fieldIndex }) => (
+                    
+                    <Controller
+                      name="otherSpecies"
+                      control={control}
+                      rules={{ 
+                        validate: (v) => fieldIndex.value !== 2 || !!v || "Informe a espécie",
+                        maxLength: { value: 50, message: "Máximo de 50 caracteres" } // Proteção extra pro campo "Outros"
+                      }}
+                      render={({ field: fieldOther }) => (
+                        <RadioGroup
+                           title="Espécie"
+                           required
+                           options={[
+                             { label: "Cachorro", value: "dog" }, 
+                             { label: "Gato", value: "cat" }, 
+                             { label: "Outro", value: "other" }
+                           ]}
+                           toggleIndex={fieldIndex.value}
+                           onSelectToggle={(idx) => fieldIndex.onChange(idx)}
+                           customInputValue={fieldOther.value || ""}
+                           setCustomInputValue={fieldOther.onChange}
+                           onChange={() => {}} 
+                           name="specie"
+                           userFillOptionLabel="Outro"
+                           fontSize="16px"
+                        />
+                      )}
+                    />
+                  )}
+                />
 
                 <Controller
                     name="animalSexIndex"
@@ -374,17 +384,16 @@ export default function AnimalFormSection({
               </Row>
             </HalfColumn>
 
-            {/* --- COLUNA DIREITA --- */}
+            {/* COLUNA DIREITA */}
             <HalfColumn $windowSize={windowSize}>
                <VerticalColumn>
                   <Controller
                      name="characteristics"
                      control={control}
-                     rules={{ required: "Características e Observações são obrigatórias" }}
-                     render={({ field }) => (
+                     rules={getTextRules("Características e Observações", MAX_CHARACTERISTICS_LENGTH, true)}
+                     render={({ field, fieldState }) => (
                         <LargeInputField
-                           value={field.value}
-                           onChange={(e: any) => field.onChange(e.target.value)}
+                           {...field}
                            title="Características e Observações"
                            required
                            $width="100%"
@@ -392,15 +401,19 @@ export default function AnimalFormSection({
                            $inputType="Primário"
                            placeholder="Escreva uma breve descrição aqui"
                            $fontSize="16px"
-                           error={false}
-                           visible={false}
+                           error={!!fieldState.error}
+                           errorMessage={fieldState.error?.message}
                            isDisabled={false}
+                           maxLength={MAX_CHARACTERISTICS_LENGTH}
+                           visible={false}
+
                         />
                      )}
                   />
 
                   {/* ONG NA DIREITA (Desktop Grande ou Mobile) */}
                   {(windowSize > 1280 || windowSize < 1180) && renderNgoSearchBar()}
+
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                      <Label $fontSize={"16px"}>Fotos do Pet <RequiredAsterisk>*</RequiredAsterisk></Label>
