@@ -97,8 +97,6 @@ const router = createBrowserRouter([
       try {
         const newUser = await userService.getById(user.id);
 
-        console.log("Novo usuário carregado no root loader:", newUser);
-
         if (!newUser || !newUser.data) {
           localStorage.removeItem("user");
           throw new Response("Unauthorized", { status: 401 });
@@ -117,7 +115,6 @@ const router = createBrowserRouter([
       { path: PUBLIC_PATHS.SEARCH_ANIMALS, element: <ManageAnimals allowEdit={false} />,
         loader: createPaginatedLoader({
           isPublic: true,
-          // Lista todos os filtros que a URL suporta
           filterKeys: ["name", "species", "age", "size", "color", "city", "state", "sex"],
   
           fetchData: (filters) => {
@@ -136,7 +133,6 @@ const router = createBrowserRouter([
           const ngoId = params.id;
           if(!ngoId) throw new Error("ID da ONG não fornecido");
 
-          console.log("Loader NGO Profile for ID:", ngoId);
           const isApprovedResponse = await ngoService.isApproved(ngoId);
       
           const userStr = localStorage.getItem("user");
@@ -157,10 +153,8 @@ const router = createBrowserRouter([
           else
             ngoResponse = await ngoService.getById(ngoId);
 
-          console.log("NGO Response:", ngoResponse);
           const ngo = ngoResponse.data;
 
-          console.log("Loaded NGO Data:", ngo);
           if(!ngo) throw new Response("ONG Not Found", { status: 404 });
           return { ngo: ngo, isApproved: isApprovedResponse.data.approved};
         },
@@ -175,7 +169,9 @@ const router = createBrowserRouter([
       { path: PUBLIC_PATHS.LIST_NGOS, element: <ManageNgo />,
         loader: createPaginatedLoader({
           isPublic: true,
+          filterKeys: ["name", "city", "state"],
           fetchData: (filters) => {
+
             return ngoService.getApprovedPage(filters);
           }
         }),
@@ -219,6 +215,8 @@ const router = createBrowserRouter([
 
         loader: createPaginatedLoader({
           isPublic: true,
+          filterKeys: ["name", "city", "state"],
+          forbiddenRedirect: '/',
           fetchData: (filters) => {
             return ngoService.getUnapprovedPage(filters);
           }
@@ -241,6 +239,7 @@ const router = createBrowserRouter([
           isPublic: false,
           // Lista todos os filtros que a URL suporta
           filterKeys: ["name"],
+          forbiddenRedirect: '/',
   
           fetchData: (filters, user) => {
 
@@ -268,6 +267,7 @@ const router = createBrowserRouter([
           isPublic: false,
           // Lista todos os filtros que a URL suporta
           filterKeys: ["name"],
+          forbiddenRedirect: "/",
   
           fetchData: (filters, user) => {
 
@@ -325,10 +325,7 @@ const router = createBrowserRouter([
 
           try{
               if (intent === "update") {
-                await userService.update(data.id, { name: data.name });
-                
-                console.log("Dados atualizados com sucesso!");
-                
+                await userService.update(data.id, { name: data.name });                
                 return { success: true, message: "Dados atualizados com sucesso!" };
               }
           }

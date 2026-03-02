@@ -13,11 +13,19 @@ export const DogCardsContainer = styled.div`
     gap: 21px;
     grid-template-columns: repeat(3, 1fr); 
 
-    @media (max-width: 1612px) {
+    @media (max-width: 1400px) {
         grid-template-columns: repeat(2, 1fr); 
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 1240px){
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 900px) {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+
+    @media (max-width: 600px) {
       grid-template-columns: repeat(1, 1fr); 
     }
 

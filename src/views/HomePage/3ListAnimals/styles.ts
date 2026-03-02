@@ -53,6 +53,7 @@ export const DogContainter = styled.div`
 export const DogCardsContainer = styled.div`
   display: grid;
   margin-bottom: 28px;
+  min-width: 220px;
 
   gap: 21px;
   
@@ -66,15 +67,20 @@ export const DogCardsContainer = styled.div`
     grid-template-columns: repeat(3, 1fr); 
   }
 
-  @media (max-width: 1260px) {
+  @media (max-width: 900px) {
     grid-template-rows: repeat(2, auto); 
     grid-template-columns: repeat(2, 1fr); 
   }
 
-   @media (max-width: 788px) {
+   @media (max-width: 600px) {
     grid-template-rows: repeat(1, auto); 
     grid-template-columns: repeat(1, 1fr); 
   }
+
+  @media (max-width: 400px) {
+      width: 80%;
+  }
+      
 `;
 
 export const ButtonContainer = styled.div`

@@ -11,7 +11,8 @@ import {
     NgoInformationsContainer, InformationsContainer, SocialIconsDiv, Icon,
     NgoDescriptionContainer, NgoTextsContainer, FormsContainer, NgoFormsContainer,
     SectionWithEmptyStateContainer,EditModalContainer,
-    Backdrop, Wrapper
+    Backdrop, Wrapper,
+    ButtonLink
 } from "./styles";
 
 import PrimarySecondaryButton from "../../components/PrimarySecondaryButton";
@@ -309,64 +310,73 @@ const NgoProfile = () => {
                                     </NgoTextsContainer>
                                 )}
                                 <NgoFormsContainer>
-                                    <h3>Formulário da ONG</h3>
+                                    <h3>Formulários da ONG</h3>
                                     <FormsContainer>
-                                        {ngo.adoptionForm &&(
+{ngo.adoptionForm &&(
                                             <div>
                                                 Adoção
-                                                <PrimarySecondaryButton
-                                                    width="100%"
-                                                    height="34px"
-                                                    paddingV="0px"
-                                                    paddingH="0px"
-                                                    buttonType="Secundário"
-                                                    content="Ver Formulário"
-                                                    onClick={() => {}}
-                                                />
+                                                <ButtonLink href={ngo.adoptionForm} target="_blank" rel="noopener noreferrer">
+                                                    <PrimarySecondaryButton
+                                                        width="100%"
+                                                        height="34px"
+                                                        paddingV="0px"
+                                                        paddingH="0px"
+                                                        buttonType="Secundário"
+                                                        content="Ver Formulário"
+                                                        onClick={() => {}}
+                                                    />
+                                                </ButtonLink>
                                             </div>
                                         )}
 
                                         {ngo.temporaryHomeForm &&(
                                             <div>
                                                 Lar Temporário
-                                                <PrimarySecondaryButton
-                                                    width="100%"
-                                                    height="34px"
-                                                    paddingV="0px"
-                                                    paddingH="0px"
-                                                    buttonType="Secundário"
-                                                    content="Ver Formulário"
-                                                    onClick={() => {}}
-                                                />
+                                                <ButtonLink href={ngo.temporaryHomeForm} target="_blank" rel="noopener noreferrer">
+                                                    <PrimarySecondaryButton
+                                                        width="100%"
+                                                        height="34px"
+                                                        paddingV="0px"
+                                                        paddingH="0px"
+                                                        buttonType="Secundário"
+                                                        content="Ver Formulário"
+                                                        onClick={() => {}}
+                                                    />
+                                                </ButtonLink>
                                             </div>
                                         )}
 
                                         {ngo.sponsorshipForm &&(
                                             <div>
                                                 Apadrinhamento
-                                                <PrimarySecondaryButton
-                                                    width="100%"
-                                                    height="24px"
-                                                    paddingV="0px"
-                                                    paddingH="0px"
-                                                    buttonType="Secundário"
-                                                    content="Ver Formulário"
-                                                    onClick={() => {}}
-                                                />
+                                                <ButtonLink href={ngo.sponsorshipForm} target="_blank" rel="noopener noreferrer">
+                                                    <PrimarySecondaryButton
+                                                        width="100%"
+                                                        height="34px"
+                                                        paddingV="0px"
+                                                        paddingH="0px"
+                                                        buttonType="Secundário"
+                                                        content="Ver Formulário"
+                                                        onClick={() => {}}
+                                                    />
+                                                </ButtonLink>
                                             </div>
                                         )}
+                                        
                                         {ngo.claimForm &&(
                                             <div>
                                                 Reivindicação
-                                                <PrimarySecondaryButton
-                                                    width="100%"
-                                                    height="24px"
-                                                    paddingV="0px"
-                                                    paddingH="0px"
-                                                    buttonType="Secundário"
-                                                    content="Ver Formulário"
-                                                    onClick={() => {}}
-                                                />
+                                                <ButtonLink href={ngo.claimForm} target="_blank" rel="noopener noreferrer">
+                                                    <PrimarySecondaryButton
+                                                        width="100%"
+                                                        height="34px"
+                                                        paddingV="0px"
+                                                        paddingH="0px"
+                                                        buttonType="Secundário"
+                                                        content="Ver Formulário"
+                                                        onClick={() => {}}
+                                                    />
+                                                </ButtonLink>
                                             </div>
                                         )}
                                     </FormsContainer>

@@ -13,7 +13,7 @@ import DogCard from "../../../components/DogCard";
 import DogForCard from "../../../assets/HomePageCardDog.png";
 import PrimarySecondaryButton from "../../../components/PrimarySecondaryButton";
 import { useNavigate } from "react-router-dom";
-import { petService } from "../../../services";
+import { formatAge, formatSpecies, formatString, petService } from "../../../services";
 import { useCallback } from "react";
 import type { Pet } from "../../../types/pets"
 
@@ -87,12 +87,13 @@ const ListAnimals = () => {
             <DogCard
               key={pet.id || index}
               imageUrl={pet.photos && pet.photos.length > 0 ? pet.photos[0] : DogForCard}
-              sex={pet.sex}
-              size={pet.size || ''}
-              name={pet.name }
-              race={pet.breed || ''}
-              age={pet.age}
-              location={pet.city}
+              sex={formatString(pet.sex)}
+              size={formatString(pet.size)}
+              name={formatString(pet.name)}
+              race={formatSpecies(pet.species)}
+              breed={formatString(pet.breed)}
+              age={formatAge(pet.age)}
+              location={formatString(pet.city) + ", " + pet.state}
               id={pet.id || pet._id || ''}
 
             />

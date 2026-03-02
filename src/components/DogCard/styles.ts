@@ -22,12 +22,40 @@ export const CardContainer = styled.div<CardContainerProps>`
 
 
         @media (max-width: 1615px) {
-        max-width: 320px; /* Encolhe um pouco em telas médias */
+        max-width: 340px; /* Encolhe um pouco em telas médias */
     }
 
-    @media (max-width: 768px) {
-        max-width: 100%; /* Ocupa largura disponível em tablets/mobile */
-        margin: 0 0 24px 0; /* Remove margem lateral se o pai já tiver padding */
+    @media (max-width: 1500px) {
+        max-width: 320px; /* Encolhe um pouco mais em telas menores */
+    }
+
+    @media (max-width: 1450px){
+        max-width: calc(30vw - 120px); /* Ocupa largura disponível em tablets/mobile */
+        min-width: 300px;
+    }
+
+
+
+    @media (max-width: 990px) {
+        max-width: 30vw;
+        min-width: 30vw;
+    }
+
+    @media (max-width: 900px) {
+        max-width: 40vw;
+        min-width: 40vw;
+    }
+
+
+    @media (max-width: 800px) {
+        max-width: 45vw;
+        min-width: 45vw;
+    }
+
+    @media (max-width: 600px) {
+        width: 100%;
+        min-width: 100%;
+        max-width: 362px;
     }
 
     
@@ -45,32 +73,21 @@ export const ClickableArea = styled.div`
 
 export const ImageContainer = styled.div`
     width: 100%;
-    min-width: 362px;
-    height: 240px;
-
-
-    @media (max-width: 1615px) {
-        min-width: 320px; /* Encolhe um pouco em telas médias */
-    }
-
-    @media (max-width: 768px) {
-        min-width: 100%; /* Ocupa largura disponível em tablets/mobile */
-    }
-
-
+    
+    /* A MÁGICA AQUI: Baseado no seu tamanho original de 362x240 */
+    aspect-ratio: 362 / 240; 
+    
+    /* Movemos o border-radius para o container e escondemos o que sobrar */
+    border-radius: 20px 20px 0 0;
+    overflow: hidden; 
 `;
 
 export const Image = styled.img<CardContainerProps>`
-  width: 100%;
-  max-width: 362px;
-  height: 240px; 
-  object-fit: cover;
-  border-radius: 20px 20px 0 0; 
-
-  @media (max-width: 1200px) {
-      height: 220px;
-  }
-  
+    width: 100%;
+    height: 100%; /* Agora ela obedece a altura ditada pelo aspect-ratio do pai */
+    object-fit: cover; /* Garante o preenchimento sem esticar */
+    
+    /* Você não precisa mais de border-radius aqui, nem de media queries de altura! */
 `;
 
 // A parte SUPERIOR da caixa branca (Clicável)

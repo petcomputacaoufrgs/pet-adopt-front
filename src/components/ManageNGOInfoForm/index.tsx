@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { AxiosError } from "axios";
+import { useForm, Controller } from "react-hook-form";
+import { isCPF, isCNPJ } from "validation-br";
+
 import { ngoService, userService } from "../../services";
 import BasicInput from "../BasicInput";
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
@@ -11,11 +14,13 @@ import { useAuth } from "../../hooks/useAuth";
 import ConfirmModal from "../ConfirmModal";
 import { useToast } from "../../contexts/ToastContext";
 
-// Importação da biblioteca de validação (igual ao SignUp)
-import { isCPF, isCNPJ } from "validation-br";
+// Limites e Helpers de Validação
+import { MAX_NGO_NAME_LENGTH, MAX_NGO_DESCRIPTION_LENGTH, MAX_PHONE_LENGTH, MAX_CITY_LENGTH, MAX_SOCIAL_LINK_LENGTH, MAX_FORM_LINK_LENGTH, MAX_EMAIL_LENGTH } from "../../constants/formsFieldsLimits";
+import { getEmailRules, getTextRules } from "../../services/helpers/validationRules";
+
 import type { User } from "../../types/user";
 
-export interface NGOData {
+interface NGOInitialData {
   _id: string;
   name: string;
   email: string;
@@ -33,8 +38,12 @@ export interface NGOData {
   claimForm?: string;
 }
 
+// NGOData é o tipo que a gente usa no formulário
+// A única diferença aqui é que todos os campos são obrigatórios para o react-hook-form
+type NGOData = Required<NGOInitialData>;
+
 type Props = { 
-  initialData: NGOData;
+  initialData: NGOInitialData;
   user: User;
   onClose?: () => void 
 };
@@ -42,196 +51,86 @@ type Props = {
 const ManageNGOInfoForm: React.FC<Props> = ({ initialData, user, onClose }) => {
   const { logout } = useAuth();
   const { showToast } = useToast();
-  
   const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // DADOS DO FORMULÁRIO
-  const [name, setName] = useState(initialData.name || '');
-  const [email, setEmail] = useState(initialData.email || '');
-  const [description, setDescription] = useState(initialData.description || '');
-  const [phone, setPhone] = useState(initialData.phone || '');
-  const [city, setCity] = useState(initialData.city || '');
-  const [state, setState] = useState(initialData.state || '');
-  const [website, setWebsite] = useState(initialData.website || '');
-  const [instagram, setInstagram] = useState(initialData.instagram || '');
-  const [facebook, setFacebook] = useState(initialData.facebook || '');
-  const [doc, setDoc] = useState(initialData.doc || '');
-  
-  const [adoptionForm, setAdoptionForm] = useState(initialData.adoptionForm || '');
-  const [sponsorshipForm, setSponsorshipForm] = useState(initialData.sponsorshipForm || '');
-  const [temporaryHomeForm, setTemporaryHomeForm] = useState(initialData.temporaryHomeForm || '');
-  const [claimForm, setClaimForm] = useState(initialData.claimForm || '');
-
-  // ESTADOS DE ERRO
-  const [errorMessage, setErrorMessage] = useState(''); // Erro geral do form
-
-  // Validação Inline
-  const [nameError, setNameError] = useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = useState('');
-
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-
-  const [docError, setDocError] = useState(false);
-  const [docErrorMessage, setDocErrorMessage] = useState('');
-
-  const [stateError, setStateError] = useState(false);
-
-  const [adoptionFormError, setAdoptionFormError] = useState(false);
-  const [adoptionFormErrorMessage, setAdoptionFormErrorMessage] = useState('');
-
-  // Erro de grupo (pelo menos um contato)
-  const [contactError, setContactError] = useState(false);
-
-
-  // LÓGICA DE VALIDAÇÃO (Replicada do SignUp)
-  const validateForm = () => {
-    let isValid = true;
-
-    // Nome
-    if (!name.trim()) {
-      setNameError(true);
-      setNameErrorMessage('Nome é obrigatório');
-      isValid = false;
+  // 1. CONFIGURAÇÃO DO REACT-HOOK-FORM
+  const { control, handleSubmit, setError, formState: { errors } } = useForm<NGOData>({
+    defaultValues: {
+      _id: initialData._id,
+      name: initialData.name || '',
+      email: initialData.email || '', // E-mail é apenas para leitura aqui
+      description: initialData.description || '',
+      phone: initialData.phone || '',
+      city: initialData.city || '',
+      state: initialData.state || '',
+      website: initialData.website || '',
+      instagram: initialData.instagram || '',
+      facebook: initialData.facebook || '',
+      doc: initialData.doc || '',
+      adoptionForm: initialData.adoptionForm || '',
+      sponsorshipForm: initialData.sponsorshipForm || '',
+      temporaryHomeForm: initialData.temporaryHomeForm || '',
+      claimForm: initialData.claimForm || '',
     }
-
-    // Email (apenas checa se está vazio ou se verifyEmail já pegou erro)
-    if (!email.trim()) {
-      setEmailError(true);
-      setEmailErrorMessage('E-mail é obrigatório');
-      isValid = false;
-    } else if (emailError) {
-      isValid = false;
-    }
-
-    // Documento (CPF ou CNPJ)
-    if (!doc.trim()) {
-      setDocError(true);
-      setDocErrorMessage('CPF ou CNPJ é obrigatório');
-      isValid = false;
-    } else if (!isCNPJ(doc) && !isCPF(doc)) {
-      setDocError(true);
-      setDocErrorMessage('Documento inválido');
-      isValid = false;
-    }
-
-    // Estado
-    if (!state.trim()) {
-      setStateError(true);
-      isValid = false;
-    }
-
-    // Formulário de Adoção (Obrigatório)
-    if (!adoptionForm.trim()) {
-      setAdoptionFormError(true);
-      setAdoptionFormErrorMessage('Link do formulário de adoção é obrigatório');
-      isValid = false;
-    }
-
-    // Grupo de Contato (Pelo menos um)
-    if (!phone.trim() && !instagram.trim() && !facebook.trim()) {
-      setContactError(true);
-      isValid = false;
-    } else {
-      setContactError(false);
-    }
-
-    return isValid;
-  };
-
-  const verifyEmail = (em: string) => {
-    if (em.trim() === '') {
-      setEmailError(false);
-      setEmailErrorMessage('');
-      return;
-    }
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    if (!emailRegex.test(em)) {
-      setEmailError(true);
-      setEmailErrorMessage('Digite um endereço de e-mail válido');
-      return;
-    }
-    setEmailError(false);
-    setEmailErrorMessage('');
-  };
+  });
 
   // HANDLERS
-
   const handleChangePassword = async () => {
     logout(false);
     window.location.href = '/forgotPassword';
   };
 
-  const handleUpdate = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  const onSubmit = async (data: NGOData) => {
     setErrorMessage("");
 
-    const isValid = validateForm();
-
-    if (!isValid) {
+    // Validação Manual do Grupo de Contato
+    if (!data.phone && !data.instagram && !data.facebook) {
+      setError("phone", { type: "manual", message: "Preencha ao menos um contato (Telefone, Instagram ou Facebook)" });
       setErrorMessage('Verifique os campos destacados e tente novamente.');
-      showToast({
-        success: false,
-        message: "Erro de Validação",
-        description: "Preencha os campos obrigatórios corretamente."
-      });
+      showToast({ success: false, message: "Erro de Validação", description: "Preencha os contatos obrigatórios." });
       return;
     }
 
     try {
-      await ngoService.update(initialData._id, {
-        name,
-        email: initialData.email,
-        description,
-        phone,
-        city,
-        state,
-        website,
-        instagram,
-        facebook,
-        doc,
-        adoptionForm,
-        sponsorshipForm,
-        temporaryHomeForm,
-        claimForm,
-      });
+      setIsSubmitting(true);
+
+      data.state = data.state?.toUpperCase(); // Garante que o estado seja salvo em maiúsculo
+      
+      // Salva os dados da ONG
+      await ngoService.update(initialData._id, data);
     
-      console.log("Tentando atualizar user: ", user?._id);
+      // Atualiza os dados refletidos no User vinculado (Nome)
       await userService.update(user._id, {
-        name,
-        email: initialData.email,
+        name: data.name,
+        email: initialData.email, // Email não muda
       });
 
-      showToast({
-        success: true,
-        message: "Dados atualizados!",
-        description: "Informações da ONG atualizadas com sucesso."
-      });
-
-      if(onClose)
-        onClose();
+      showToast({ success: true, message: "Dados atualizados!", description: "Informações da ONG atualizadas com sucesso." });
+      if(onClose) onClose();
 
     } catch (err) {
-
-
       if (err instanceof AxiosError && err.response) {
         setErrorMessage(err.response.data.message || 'Erro ao atualizar.');
-        showToast({
-          success: false,
-          message: "Erro ao atualizar ONG",
-          description: err.response.data.message || 'Tente novamente mais tarde.'
-        });
-
+        showToast({ success: false, message: "Erro ao atualizar ONG", description: err.response.data.message || 'Tente novamente mais tarde.' });
       } else {
         setErrorMessage('Erro de conexão. Tente novamente mais tarde.');
-        showToast({
-          success: false,
-          message: "Erro de conexão",
-          description: "Tente novamente mais tarde."
-        });
+        showToast({ success: false, message: "Erro de conexão", description: "Tente novamente mais tarde." });
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  // Handler caso o hook-form barre o submit antes mesmo de chegar na função onSubmit
+  const onInvalidSubmit = () => {
+    setErrorMessage('Verifique os campos destacados e tente novamente.');
+    showToast({ success: false, message: "Erro de Validação", description: "Preencha os campos obrigatórios corretamente." });
+  };
+
+
+  const validStates = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
 
   return (
     <>
@@ -246,235 +145,211 @@ const ManageNGOInfoForm: React.FC<Props> = ({ initialData, user, onClose }) => {
 
         {errorMessage && <div style={{ color: "red", marginBottom: "16px", fontWeight: "bold" }}>{errorMessage}</div>}
           
-        {/* INFORMAÇÕES GERAIS */}
-        <InputsContainer>
-          <h2>Informações da ONG</h2>
+        {/* Usamos a tag form para envolver tudo e o handleSubmit processar */}
+        <form onSubmit={handleSubmit(onSubmit, onInvalidSubmit)}>
           
-          <BasicInput
-            title="Nome da ONG"
-            required={true}
-            placeholder="Insira o nome da ONG"
-            value={name}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => {
-               setName(e.target.value);
-               if(nameError) { setNameError(false); setNameErrorMessage(''); }
-            }}
-            error={nameError}
-            errorMessage={nameErrorMessage}
-          />
-
-          <BasicInput
-            title="E-mail"
-            required={true}
-            placeholder="Insira o email"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); verifyEmail(e.target.value); }}
-            $fontSize="16px"
-            $width="100%"
-            error={emailError}
-            errorMessage={emailErrorMessage}
-            disabled={true}
-          />
-
-          <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "15px" }}>
-            <PrimarySecondaryButton
-                buttonType="Secundário"
-                content="Trocar Senha"
-                paddingV="8px"
-                paddingH="25px"
-                onClick={(e : React.MouseEvent<HTMLButtonElement>) => {
-                  e.preventDefault();
-                  setOpenChangePasswordModal(true)}
-                } 
-            />
-          </div>
-
-          <BasicInput
-            title="CPF/CNPJ"
-            required={true}
-            placeholder="Insira o CPF/CNPJ"
-            value={doc}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => {
-                setDoc(e.target.value);
-                if(docError) { setDocError(false); setDocErrorMessage(''); }
-            }}
-            error={docError}
-            errorMessage={docErrorMessage}
-          />
-
-          <LargeInputField
-            title="Descrição (Opcional)"
-            required={false}
-            $fontSize="16px"
-            placeholder="Escreva uma breve descrição aqui"
-            $width="100%"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            error={false}
-            visible={false}
-            isDisabled={false}
-            $inputType="Primário"
-            maxLength={1000}
-          />
-        </InputsContainer>
-
-        {/* CONTATO */}
-        <InputsContainer>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-             <h2>Contato <span style={{color: "#F17D6E"}}>*</span></h2>
-             {/* Mensagem de erro do grupo de contato */}
-             {contactError && (
-                <span style={{ color: '#FF3B30', fontSize: '0.9rem' }}>
-                   Preencha ao menos um dos campos abaixo
-                </span>
-             )}
-          </div>
-
-          <BasicInput
-            title="Número para Contato (Opcional)"
-            required={false}
-            placeholder="Insira o contato da ONG"
-            value={phone}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => { setPhone(e.target.value); setContactError(false); }}
-            error={contactError}
-          />
-
-          <BasicInput
-            title="Link do Instagram"
-            required={false}
-            placeholder="Insira o link aqui"
-            value={instagram}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => { setInstagram(e.target.value); setContactError(false); }}
-            error={contactError}
-          />
-
-          <BasicInput
-            title="Link do Facebook (Opcional)"
-            required={false}
-            placeholder="Insira o link aqui"
-            value={facebook}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => { setFacebook(e.target.value); setContactError(false); }}
-            error={contactError}
-          />
-
-          <BasicInput
-            title="Cidade (Opcional)"
-            required={false}
-            placeholder="Insira a cidade"
-            value={city}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => setCity(e.target.value)}
-          />
-
-            <SearchBar
-                title="Estado"
-                required={true}
-                placeholder="Selecione o estado"
-                query={state}
-                setQuery={(selectedState: string) => {
-                    setState(selectedState);
-                    if(selectedState) setStateError(false);
-                }}
-                fontSize="16px"
-                width="100%"
-                error={stateError}
-                errorMessage="Estado é obrigatório"
-                options={["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]}
-            />
-
-          <BasicInput
-            title="Link do WebSite (Opcional)"
-            required={false}
-            placeholder="Insira o link aqui"
-            value={website}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => setWebsite(e.target.value)}
-          />
-        </InputsContainer>
-
-        {/* FORMULÁRIOS */}
-        <InputsContainer>
-          <h2>Formulários</h2>
-          <BasicInput
-            title="Formulário de Adoção"
-            required={true}
-            placeholder="Insira o link aqui"
-            value={adoptionForm}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => {
-                setAdoptionForm(e.target.value);
-                if(adoptionFormError) { setAdoptionFormError(false); setAdoptionFormErrorMessage(''); }
-            }}
-            error={adoptionFormError}
-            errorMessage={adoptionFormErrorMessage}
-          />
-
-          <BasicInput
-            title="Formulário de Apadrinhamento (Opcional)"
-            required={false}
-            placeholder="Insira o link aqui"
-            value={sponsorshipForm}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => setSponsorshipForm(e.target.value)}
-          />
-
-          <BasicInput
-            title="Formulário de Lar Temporário (Opcional)"
-            required={false}
-            placeholder="Insira o link aqui"
-            value={temporaryHomeForm}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => setTemporaryHomeForm(e.target.value)}
-          />
-
-          <BasicInput
-            title="Formulário de Reivindicação (Opcional)"
-            required={false}
-            placeholder="Insira o link aqui"
-            value={claimForm}
-            $fontSize="16px"
-            $width="100%"
-            onChange={(e) => setClaimForm(e.target.value)}
-          />
-        </InputsContainer>
-        
-        <ButtonGroup>
-          <ButtonWrapper>
-            <PrimarySecondaryButton
-              buttonType="Secundário"
-                content="Cancelar"
-                onClick={onClose}
-                paddingV="8px"
-                paddingH="25px"
-              /> 
+          {/* INFORMAÇÕES GERAIS */}
+          <InputsContainer>
+            <h2>Informações da ONG</h2>
             
-            <UpdateButton>
-              <PrimarySecondaryButton
-              buttonType="Primário"
-                content="Salvar Informações"
-                onClick={handleUpdate}
-                paddingV="8px"
-                paddingH="25px"
-              /> 
-            </UpdateButton>
-          </ButtonWrapper>
-        </ButtonGroup>
+            <Controller
+              name="name"
+              control={control}
+              rules={getTextRules("Nome da ONG", MAX_NGO_NAME_LENGTH, true)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Nome da ONG" required placeholder="Insira o nome da ONG" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} maxLength={MAX_NGO_NAME_LENGTH} />
+              )}
+            />
 
+            <Controller
+              name="email"
+              control={control}
+              rules = { getEmailRules(MAX_EMAIL_LENGTH) }
+              render={({ field }) => (
+                <BasicInput {...field} title="E-mail" required placeholder="Insira o email" $width="100%" $fontSize="16px" disabled={true} />
+              )}
+            />
+
+            <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "15px" }}>
+              <PrimarySecondaryButton
+                  buttonType="Secundário"
+                  content="Trocar Senha"
+                  paddingV="8px"
+                  paddingH="25px"
+                  onClick={(e : React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); setOpenChangePasswordModal(true); }} 
+              />
+            </div>
+
+            <Controller
+              name="doc"
+              control={control}
+              rules={{ 
+                required: "CPF/CNPJ é obrigatório",
+                validate: (value) => isCPF(value || '') || isCNPJ(value || '') || "Documento inválido"
+              }}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="CPF/CNPJ" required placeholder="Insira o CPF/CNPJ" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} />
+              )}
+            />
+
+            <Controller
+              name="description"
+              control={control}
+              rules={getTextRules("Descrição", MAX_NGO_DESCRIPTION_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <LargeInputField {...field} title="Descrição (Opcional)" required={false} placeholder="Escreva uma breve descrição aqui" $width="100%" $fontSize="16px" $inputType="Primário" error={!!fieldState.error} errorMessage={fieldState.error?.message} maxLength={MAX_NGO_DESCRIPTION_LENGTH} visible={false} isDisabled={false}/>
+              )}
+            />
+          </InputsContainer>
+
+          {/* CONTATO */}
+          <InputsContainer>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+               <h2>Contato <span style={{color: "#F17D6E"}}>*</span></h2>
+               {errors.phone?.type === 'manual' && (
+                  <span style={{ color: '#FF3B30', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                     Preencha ao menos um dos campos abaixo
+                  </span>
+               )}
+            </div>
+
+            <Controller
+              name="phone"
+              control={control}
+              rules={getTextRules("Telefone", MAX_PHONE_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Número para Contato (Opcional)" required={false} placeholder="Insira o contato da ONG" $width="100%" $fontSize="16px" error={!!fieldState.error || errors.phone?.type === 'manual'} />
+              )}
+            />
+
+            <Controller
+              name="instagram"
+              control={control}
+              rules={getTextRules("Instagram", MAX_SOCIAL_LINK_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Link do Instagram (Opcional)" required={false} placeholder="Insira o link aqui" $width="100%" $fontSize="16px" error={!!fieldState.error || errors.phone?.type === 'manual'} />
+              )}
+            />
+
+            <Controller
+              name="facebook"
+              control={control}
+              rules={getTextRules("Facebook", MAX_SOCIAL_LINK_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Link do Facebook (Opcional)" required={false} placeholder="Insira o link aqui" $width="100%" $fontSize="16px" error={!!fieldState.error || errors.phone?.type === 'manual'} />
+              )}
+            />
+
+            <Controller
+              name="city"
+              control={control}
+              rules={getTextRules("Cidade", MAX_CITY_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Cidade (Opcional)" required={false} placeholder="Insira a cidade" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} maxLength={MAX_CITY_LENGTH} />
+              )}
+            />
+
+            <Controller
+              name="state"
+              control={control}
+              rules={{ required: "Estado é obrigatório",
+                    validate: (value) => {
+                    return validStates.includes(value) || "Estado inválido";
+                    }        
+               }}
+              render={({ field, fieldState }) => (
+                <SearchBar
+                  query={field.value || ''}
+                  setQuery={field.onChange}
+                  title="Estado"
+                  required={true}
+                  placeholder="Selecione o estado"
+                  fontSize="16px"
+                  width="100%"
+                  error={!!fieldState.error}
+                  errorMessage={fieldState.error?.message}
+                  options={["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]}
+                />
+              )}
+            />
+
+            <Controller
+              name="website"
+              control={control}
+              rules={getTextRules("Link do Website", MAX_FORM_LINK_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Link do WebSite (Opcional)" required={false} placeholder="Insira o link aqui" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} />
+              )}
+            />
+          </InputsContainer>
+
+          {/* FORMULÁRIOS */}
+          <InputsContainer>
+            <h2>Formulários</h2>
+            
+            <Controller
+              name="adoptionForm"
+              control={control}
+              rules={getTextRules("Formulário de Adoção", MAX_FORM_LINK_LENGTH, true)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Formulário de Adoção" required placeholder="Insira o link aqui" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} />
+              )}
+            />
+
+            <Controller
+              name="sponsorshipForm"
+              control={control}
+              rules={getTextRules("Formulário de Apadrinhamento", MAX_FORM_LINK_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Formulário de Apadrinhamento (Opcional)" required={false} placeholder="Insira o link aqui" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} />
+              )}
+            />
+
+            <Controller
+              name="temporaryHomeForm"
+              control={control}
+              rules={getTextRules("Formulário de Lar Temporário", MAX_FORM_LINK_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Formulário de Lar Temporário (Opcional)" required={false} placeholder="Insira o link aqui" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} />
+              )}
+            />
+
+            <Controller
+              name="claimForm"
+              control={control}
+              rules={getTextRules("Formulário de Reivindicação", MAX_FORM_LINK_LENGTH, false)}
+              render={({ field, fieldState }) => (
+                <BasicInput {...field} title="Formulário de Reivindicação (Opcional)" required={false} placeholder="Insira o link aqui" $width="100%" $fontSize="16px" error={!!fieldState.error} errorMessage={fieldState.error?.message} />
+              )}
+            />
+          </InputsContainer>
+          
+          {/* BOTOES */}
+          <ButtonGroup>
+            <ButtonWrapper>
+              <PrimarySecondaryButton
+                  buttonType="Secundário"
+                  content="Cancelar"
+                  onClick={(e : React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); if(onClose) onClose(); }}
+                  paddingV="8px"
+                  paddingH="25px"
+                  isDisabled={isSubmitting}
+                /> 
+              
+              <UpdateButton>
+                <PrimarySecondaryButton
+                  buttonType="Primário"
+                  content={isSubmitting ? "Salvando..." : "Salvar Informações"}
+                  onClick={handleSubmit(onSubmit, onInvalidSubmit)}
+                  paddingV="8px"
+                  paddingH="25px"
+                  isDisabled={isSubmitting}
+                /> 
+              </UpdateButton>
+            </ButtonWrapper>
+          </ButtonGroup>
+
+        </form>
       </ContentContainer>
     </Container>
 
@@ -483,7 +358,6 @@ const ManageNGOInfoForm: React.FC<Props> = ({ initialData, user, onClose }) => {
         title={"Tem certeza que deseja trocar sua senha?"} 
         message={"Você será deslogado e redirecionado para a página de troca de senha."} 
         onConfirm={handleChangePassword} onClose={() => setOpenChangePasswordModal(false)} />
-
     </>
   );
 };
