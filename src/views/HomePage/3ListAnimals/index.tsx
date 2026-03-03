@@ -72,6 +72,9 @@ const ListAnimals = () => {
 
   const navigate = useNavigate();
   
+  if (pets && pets.length === 0) {
+    return null;
+  }
 
   return (
     <ListContainer id="listAnimals">

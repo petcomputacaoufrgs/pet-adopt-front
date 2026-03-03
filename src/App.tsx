@@ -27,6 +27,7 @@ import { editAnimalLoader } from "./views/EditAnimal/editAnimalLoader";
 import ScrollToTop from "./components/ScrollToTop";
 import Spinner from "./components/Spinner";
 import { signUpAction } from "./views/SignUp/action";
+import NotFoundPage from "./views/NotFound";
 
 
 // Barra de progresso global
@@ -358,6 +359,13 @@ const router = createBrowserRouter([
         ),
 
         loader: editAnimalLoader
+      },
+
+      {
+        path: "*",
+        element: (
+          <NotFoundPage />
+        )
       }
     ]
   }

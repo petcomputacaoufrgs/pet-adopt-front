@@ -17,3 +17,9 @@ export const getEmailRules = (maxLength: number) => ({
     message: `O limite é de ${maxLength} caracteres`
   }
 });
+
+
+export const validateState = (value: string) => {
+  const validStates = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
+  return validStates.includes(value) || "Selecione um estado válido";
+}

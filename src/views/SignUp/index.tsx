@@ -29,11 +29,39 @@ const SignUp: React.FC = () => {
 
   // 2. CONFIGURAÇÃO DO REACT-HOOK-FORM
   const { control, handleSubmit, watch, setError, formState: { errors } } = useForm({
-    defaultValues: { role: 'membro', name: '', email: '', password: '', confirmPassword: '', ngoSearchText: '', doc: '', description: '', phone: '', city: '', state: '', website: '', instagram: '', facebook: '', adoptionForm: '', sponsorshipForm: '', temporaryHomeForm: '', claimForm: '' }
+    defaultValues: { role: 'membro', name: '', email: '', password: '', confirmPassword: '', ngoSearchText: '', doc: '', description: '', phone: '', city: '', state: '', website: '', instagram: '', facebook: '', adoptionForm: '', sponsorshipForm: '', temporaryHomeForm: '', claimForm: '' },
+    mode: "onChange"
   });
 
   const role = watch("role"); // Observa se é membro ou ong
   const password = watch("password"); // Necessário para comparar a confirmação da senha
+
+  const phone = watch("phone");
+  const instagram = watch("instagram");
+  const facebook = watch("facebook");
+
+
+
+
+// Função auxiliar para limpar e checar os contatos
+  const validateContacts = () => {
+    if (role === 'ong' && !phone && !instagram && !facebook) {
+      // Seta os erros nos inputs específicos
+      setError("phone", { type: "manual", message: "Preencha ao menos um contato" });
+      setError("instagram", { type: "manual", message: "Preencha ao menos um contato" });
+      setError("facebook", { type: "manual", message: "Preencha ao menos um contato" });
+      return false; // Falhou na validação
+    }
+    
+    // Se passou, limpa possíveis erros manuais anteriores
+    if (phone || instagram || facebook) {
+      if (errors.phone?.type === 'manual') setError("phone", { type: "manual", message: "" });
+      if (errors.instagram?.type === 'manual') setError("instagram", { type: "manual", message: "" });
+      if (errors.facebook?.type === 'manual') setError("facebook", { type: "manual", message: "" });
+    }
+    return true; // Passou na validação
+  };
+
 
   // 3. ESTADOS DO MODAL (Mantivemos pois é de UI)
   const [showModal, setShowModal] = useState(false);
@@ -66,6 +94,13 @@ const SignUp: React.FC = () => {
   // 5. SUBMIT
   const onSubmit = (data: any) => {
 
+    const isContactsValid = validateContacts();
+
+    if (!isContactsValid) {
+      openModal('error', 'Atenção', 'Preencha ao menos um contato (Telefone, Instagram ou Facebook)');
+      return;
+    }
+
     // Validação Manual do Grupo de Contato (se for ONG)
     if (role === 'ong' && !data.phone && !data.instagram && !data.facebook) {
       setError("phone", { type: "manual", message: "Preencha ao menos um contato (Telefone, Instagram ou Facebook)" });
@@ -89,8 +124,8 @@ const SignUp: React.FC = () => {
   };
 
 
-  const onInvalidSubmit = (errors: any) => {
-    console.log("Erros pegos pelo react-hook-form:", errors); // Útil para você debugar!
+  const onInvalidSubmit = () => {
+    validateContacts(); // Garante que a validação de contatos seja disparada mesmo se outros erros existirem
     openModal('error', 'Atenção', 'Verifique os erros nos campos destacados e tente novamente.');
   };
 
@@ -308,7 +343,6 @@ const SignUp: React.FC = () => {
                     control={control}
                     rules={{ 
                       validate: (value) => {
-                        if (!value) return true; // Campo opcional
                         return validStates.includes(value) || "Estado inválido";
                       }
                     }}

@@ -29,7 +29,7 @@ import {
   MAX_CITY_LENGTH, 
   MAX_CHARACTERISTICS_LENGTH 
 } from "../../constants/formsFieldsLimits";
-import { getTextRules } from "../../services/helpers/validationRules";
+import { getTextRules, validateState } from "../../services/helpers/validationRules";
 
 
 
@@ -183,7 +183,7 @@ export default function AnimalFormSection({
                   name="name"
                   control={control}
                   rules={getTextRules("Nome", MAX_PET_NAME_LENGTH, true)}
-                  render={({ field, fieldState }) => (
+                  render={({ field }) => (
                     <BasicInput
                       {...field}
                       title="Nome"
@@ -192,8 +192,6 @@ export default function AnimalFormSection({
                       $width="100%"
                       $fontSize="16px"
                       $paddingVertical="4px"
-                      error={!!fieldState.error}
-                      errorMessage={fieldState.error?.message}
                       maxLength={MAX_PET_NAME_LENGTH} // Trava a digitação nativamente
                     />
                   )}
@@ -226,7 +224,7 @@ export default function AnimalFormSection({
                       name="breed"
                       control={control}
                       rules={getTextRules("Raça", MAX_BREED_LENGTH, false)}
-                      render={({ field, fieldState }) => (
+                      render={({ field }) => (
                          <BasicInput 
                             {...field} 
                             title="Raça (Opcional)" 
@@ -235,8 +233,6 @@ export default function AnimalFormSection({
                             $fontSize="16px" 
                             $paddingVertical="4px"
                             required={false}
-                            error={!!fieldState.error}
-                            errorMessage={fieldState.error?.message}
                             maxLength={MAX_BREED_LENGTH}
                          />
                       )}
@@ -248,7 +244,7 @@ export default function AnimalFormSection({
                       name="city"
                       control={control}
                       rules={getTextRules("Cidade", MAX_CITY_LENGTH, true)}
-                      render={({ field, fieldState }) => (
+                      render={({ field }) => (
                         <BasicInput 
                             {...field} 
                             title="Cidade" 
@@ -257,8 +253,6 @@ export default function AnimalFormSection({
                             placeholder="Cidade do pet"
                             $fontSize="16px"
                             $paddingVertical="4px" 
-                            error={!!fieldState.error}
-                            errorMessage={fieldState.error?.message}
                             maxLength={MAX_CITY_LENGTH}
                         />
                       )}
@@ -267,7 +261,7 @@ export default function AnimalFormSection({
                     <Controller
                       name="state"
                       control={control}
-                      rules={{ required: "Estado obrigatório" }}
+                      rules={{ required: "Estado obrigatório", validate: validateState }}
                       render={({ field }) => (
                         <SearchBar
                           query={field.value}
@@ -280,7 +274,7 @@ export default function AnimalFormSection({
                           fontSize="16px"
                           verticalPadding="4px"
                           placeholder="Estado do pet"
-                          listMaxHeight="200px" 
+                          listMaxHeight="200px"
                         />
                       )}
                     />
@@ -391,7 +385,7 @@ export default function AnimalFormSection({
                      name="characteristics"
                      control={control}
                      rules={getTextRules("Características e Observações", MAX_CHARACTERISTICS_LENGTH, true)}
-                     render={({ field, fieldState }) => (
+                     render={({ field }) => (
                         <LargeInputField
                            {...field}
                            title="Características e Observações"
@@ -401,8 +395,6 @@ export default function AnimalFormSection({
                            $inputType="Primário"
                            placeholder="Escreva uma breve descrição aqui"
                            $fontSize="16px"
-                           error={!!fieldState.error}
-                           errorMessage={fieldState.error?.message}
                            isDisabled={false}
                            maxLength={MAX_CHARACTERISTICS_LENGTH}
                            visible={false}

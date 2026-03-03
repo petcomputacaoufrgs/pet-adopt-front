@@ -80,7 +80,8 @@ export const TextButton = styled.button<{ $fontSize?: string }>`
 
 export const StyledLink = styled.a`
   text-decoration: none;
-  width: 100%;      
+  width: 100%;
+  max-width: 140px;      
   display: block;
   
   &:focus, &:active, &:visited, &:hover {

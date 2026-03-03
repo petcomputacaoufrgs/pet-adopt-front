@@ -4,7 +4,7 @@ export const Container = styled.div`
   font-family: 'Nunito Sans', sans-serif;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 108px); /* Subtraindo a altura o header */
   background-color: #FFF6E8
   `;
 
