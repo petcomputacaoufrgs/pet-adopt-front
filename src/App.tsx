@@ -28,6 +28,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Spinner from "./components/Spinner";
 import { signUpAction } from "./views/SignUp/action";
 import NotFoundPage from "./views/NotFound";
+import GlobalError from "./views/GlobalError";
 
 
 // Barra de progresso global
@@ -84,6 +85,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <RootLayout />,
     hydrateFallbackElement: <Spinner fullScreen={true} />, // Mostra um spinner enquanto o layout é carregado
+    errorElement: <GlobalError />, // Página de erro global para erros não tratados nos loaders ou actions
     id: "root",
     loader: async () => {
       const userData = localStorage.getItem("user");
