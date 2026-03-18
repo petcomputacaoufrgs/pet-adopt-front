@@ -5,22 +5,22 @@ import {
   MemberName,
   MemberType,
   DataItem,
-  EditButtonWrapper,
   MemberApproveButtonWrapper,
   Cabecalho,
   MemberTextGroup,
+  ActionsBox,
+  Area
 } from "./styles";
 import type { MemberInfoCardProps } from "./types";
 import Phone from "../../assets/phone.svg";
 import Email from "../../assets/email.svg";
 
 import PrimarySecondaryButton from "../PrimarySecondaryButton";
-import DeleteButton from "../DeleteButton";
 
 const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
   member,
   showApproveButtons = false,
-  showEditOptions = false,
+  showDeleteOptions = false,
   onApproveClick,
   onRejectClick,
   onDeleteClick,
@@ -28,7 +28,6 @@ const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
 }) => {
   const [hovered, setHovered] = useState(false);
 
-  // Criar array com informações da ONG baseado nos dados recebidos
   const memberInfo = [
     member?.email || "",
   ];
@@ -38,63 +37,69 @@ const MemberInfoCard: React.FC<MemberInfoCardProps> = ({
     Phone,
   ];
 
+  const showActions = showApproveButtons || showDeleteOptions;
+
 
   return (
-    <CardContainer
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      $estado={selected ? "selected" : hovered ? "hover" : "default"}
-      $modo={showApproveButtons ? "approve" : showEditOptions ? "edit" : "none"}
-    >
-      <Cabecalho>
-        <MemberTextGroup>
-          <MemberName>{member?.name || "Nome não informado"}</MemberName>
-          <MemberType>Administrador</MemberType>
-        </MemberTextGroup>
+    
+      <CardContainer
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        $estado={selected ? "selected" : hovered ? "hover" : "default"}
+      >
+      <Area>
+        <Cabecalho>
+          <MemberTextGroup>
+            <MemberName>{member?.name || "Nome não informado"}</MemberName>
+            <MemberType>Administrador</MemberType>
+          </MemberTextGroup>
+        </Cabecalho>
 
-        {member && showEditOptions &&(
-          <EditButtonWrapper>
-            <DeleteButton
-              width="34px"
-              height="34px"
-              onClick={() => onDeleteClick?.(member)}
+        <InfoSection>
+          {memberInfo.map((info, i) => (
+            info != "" && (<DataItem key={i}>
+              <img src={memberIcons[i]} alt="" />
+                <p title={info}>{info}</p>
+            </DataItem>)
+          ))}
+        </InfoSection>
+      </Area>
+      {showActions && (
+        <ActionsBox>
+          {showApproveButtons && member &&(
+            <MemberApproveButtonWrapper>
+              <PrimarySecondaryButton
+                buttonType="Secundário"
+                content="Recusar"
+                onClick={() => onRejectClick?.(member)}
+                height="40px"
+                paddingV=""
+                paddingH=""
+                $flex
+              />
+              <PrimarySecondaryButton
+                buttonType="Primário"
+                content="Aceitar"
+                onClick={() => onApproveClick?.(member)}
+                height="40px"
+                paddingV=""
+                paddingH=""
+                $flex
+              />
+            </MemberApproveButtonWrapper>
+          )}
+
+          {showDeleteOptions && member && (
+            <PrimarySecondaryButton
+                buttonType="Secundário"
+                content="Excluir"
+                onClick={() => onDeleteClick?.(member)}
+                height="40px"
+                width="100%"
             />
-          </EditButtonWrapper>
-        )}
-      </Cabecalho>
-
-      <InfoSection>
-        {memberInfo.map((info, i) => (
-          info != "" && (<DataItem key={i}>
-            <img src={memberIcons[i]} alt="" />
-            <p>{info}</p>
-          </DataItem>)
-        ))}
-      </InfoSection>
-
-       {showApproveButtons && member &&(
-        <MemberApproveButtonWrapper>
-          <PrimarySecondaryButton
-            buttonType="Secundário"
-            content="Recusar"
-            onClick={() => onRejectClick?.(member)}
-            height="40px"
-            paddingV=""
-            paddingH=""
-            $flex
-          />
-          <PrimarySecondaryButton
-            buttonType="Primário"
-            content="Aceitar"
-            onClick={() => onApproveClick?.(member)}
-            height="40px"
-            paddingV=""
-            paddingH=""
-            $flex
-          />
-        </MemberApproveButtonWrapper>
+          )}
+        </ActionsBox>
       )}
-
     </CardContainer>
   );
 };

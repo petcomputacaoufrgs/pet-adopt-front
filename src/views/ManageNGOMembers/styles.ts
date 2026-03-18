@@ -4,19 +4,25 @@ import styled from "styled-components";
 export const ContentContainer = styled.div`
     display: flex;
     padding: 0;
-    margin-left: 10%;
-    margin-right: 10%;
     justify-content: center;
-    gap: 14px;
+    gap: 24px;
 `;
-
 export const NGOCardsContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 14px 0px;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px 20px;
+
+    @media (max-width: 1612px) {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+
+    @media (max-width: 800px) {
+      grid-template-columns: repeat(1, 1fr); 
+    }
 
 
 `
+
 
 
 export const Overlay = styled.div`
@@ -27,6 +33,7 @@ export const Overlay = styled.div`
   overflow: auto;
   height: 100%;
 `;
+
 
 
 export const CloseButton = styled.button`
@@ -52,6 +59,7 @@ export const FixedFilterButton = styled.button`
     left: 0;
     top: 50%;
     z-index: 1000;
+
 `
 
 
@@ -72,9 +80,6 @@ export const TopBarContent = styled.div`
   justify-content: center;
 `;
 
-export const NGOCardWrapper = styled.div`
-  position: relative;
-`;
 
 export const NGOApproveButtonWrapper = styled.div`
   display: flex;

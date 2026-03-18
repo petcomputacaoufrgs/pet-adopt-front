@@ -180,7 +180,6 @@ const ApproveNGOMembers = () => {
                 key={member._id}
                 member={member}
                 showApproveButtons={true}
-                showEditOptions = {false}
                 onApproveClick={() => openModal("aprovar", member._id)}
                 onRejectClick={() => openModal("recusar", member._id)}
               />

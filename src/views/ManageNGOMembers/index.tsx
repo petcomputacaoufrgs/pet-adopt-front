@@ -27,6 +27,7 @@ import { useToast } from "../../contexts/ToastContext";
 
 const ManageNGOMembers: React.FC = () => {
 
+  
   // DADOS: Vêm do Loader
   const { items: membersData, meta } = useLoaderData() as { items: User[]; user: User | null; meta: any };
 
@@ -41,7 +42,7 @@ const ManageNGOMembers: React.FC = () => {
   // State local apenas para controlar layout UI
   const [hideMembersFilter, setHideMembersFilter] = useState(window.innerWidth < 1240 || membersData.length === 0 );
   const [showMembersFilterOnSide, setShowMembersFilterOnSide] = useState(false);
-
+  
   // lISTTENER DE RESIZE PARA O FILTRO
   useEffect(() => {
     const handleResize = () => {
@@ -109,7 +110,7 @@ const ManageNGOMembers: React.FC = () => {
   
 
   return (
-    <div>
+    <>
       <AuthorizationToast />
       
       <BannerComponent 
@@ -152,11 +153,7 @@ const ManageNGOMembers: React.FC = () => {
           <MembersFilter hasBorder={true} />
         )}
 
-        <div style={{
-            minWidth: hideMembersFilter ? "60%" : "50%", 
-            width: hideMembersFilter ? "80%" : "auto", 
-            display: "flex", flexDirection: "column", gap: "36px"
-        }}>
+        <div style={{ minWidth: hideMembersFilter ? "60%" : "50%", width: hideMembersFilter ? "80%" : "auto", display: "flex", flexDirection: "column", gap: "20px"}}>
            
            <SectionWithEmptyState 
               title="Administradores"
@@ -170,7 +167,7 @@ const ManageNGOMembers: React.FC = () => {
                <MemberInfoCard
                  key={member._id}
                  member={member}
-                 showEditOptions={true}
+                 showDeleteOptions={true}
                  onDeleteClick={() => setMemberToDelete(member)}
                />
              ))}
@@ -204,7 +201,7 @@ const ManageNGOMembers: React.FC = () => {
         />
       )}
 
-    </div>
+    </>
   ); 
 };
 

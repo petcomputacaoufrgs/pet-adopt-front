@@ -1,10 +1,16 @@
 import styled from "styled-components";
 
-export const CardContainer = styled.div<{ $estado: "default" | "hover" | "selected", $modo: "edit" | "approve" | "none"}>`
-  width: 90%;
+export const CardContainer = styled.div<{ $estado: "default" | "hover" | "selected"}>`
   background-color: white;
   border-radius: 15px;
-  padding: 20px;
+  width: 100%;
+  max-width: clamp(400px, 1vh, 300px);
+  
+  padding: 0; 
+  
+  display: flex;
+  flex-direction: column;
+  align-self: start;
   box-shadow: ${({ $estado }) =>
     $estado === "hover"
       ? "0 4px 10px rgba(0, 0, 0, 0.1)"
@@ -22,9 +28,6 @@ export const CardContainer = styled.div<{ $estado: "default" | "hover" | "select
   z-index: ${({ $estado }) => ($estado === "hover" ? "2" : "1")};
   transform: ${({ $estado }) => ($estado === "hover" ? "translateY(-3px)" : "translateY(0)")};
   transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
-
-  align-self: start;
-  max-width: 280px;
 `;
 
 export const MemberName = styled.h3`
@@ -51,22 +54,18 @@ export const MemberApproveButtonWrapper = styled.div`
 
 
 export const InfoSection = styled.div`
-    width: 100%;
+
     background: #FFF6E8;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    
     justify-content: center;
-    padding: 20px 24px 20px 24px;
+    flex: 1;
+    padding: 20px 24px;
     box-sizing: border-box;
-
     font-size: clamp(14px, 1vw, 18px);
     color: #755B4D;
-
-    @media (max-width: 1526px) {
-        font-size: 14px;
-    }
+    margin-right: 40px;
 `;
 
 export const DataItem = styled.div`
@@ -87,6 +86,10 @@ export const DataItem = styled.div`
     font-size: 14px;
     color: #755B4D;
     word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
   }
 `;
 
@@ -139,8 +142,26 @@ export const MemberTextGroup = styled.div`
   color: rgba(86, 53, 38, 1);
 `;
 
-export const EditButtonWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
+
+export const ActionsBox = styled.div`
+  background-color: #FFFFFF;
+  border-top: 1px solid #DEDEDE;
+  border-radius: 0 0 15px 15px;
+  
+  padding: 15px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+`;
+
+export const Area = styled.div`
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1; /* Ocupa o espaço disponível */
+  border-radius: 15px 15px 0 0;
+  padding: 20px;
 `;
