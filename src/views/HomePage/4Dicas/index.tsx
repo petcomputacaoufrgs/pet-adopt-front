@@ -18,10 +18,6 @@ const Dicas = () => {
             <h2>Nessas Dicas</h2>
           </div>
           
-          <div id="textDiv">
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Necessitatibus fugiat, magnam cum explicabo maxime dolore aut consequuntur perspiciatis optio autem. 
-            Laborum natus deserunt optio architecto voluptatibus! Perferendis animi quibusdam accusantium!</p>
-          </div>
         </InfoDiv>
 
         <CardsContainer>
