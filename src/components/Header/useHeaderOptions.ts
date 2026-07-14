@@ -58,7 +58,7 @@ export const useHeaderOptions = (user?: User | null) => {
     "Sobre Nós": () => navigate("/"),
     "Animais Recém Adicionados": () => navigate("/#list-animals"),
     "Dicas": () => navigate("/#dicas"),
-    "Fale Conosco": () => navigate("/#contact")
+    "Fale Conosco": () => navigate("/contact")
   };
 
   const userHeaderOptions = getOptionsOfUser(!!user, user);

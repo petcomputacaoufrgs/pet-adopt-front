@@ -11,6 +11,7 @@ export const PUBLIC_PATHS = {
   SIGNUP: '/signup',
   FORGOT_PASSWORD: '/forgotPassword',
   RESET_PASSWORD: '/resetPassword',
+  CONTACT: '/contact',
 } as const;
 
 // Endpoints da API que são públicos (não requerem autenticação)

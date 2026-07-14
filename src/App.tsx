@@ -29,6 +29,7 @@ import Spinner from "./components/Spinner";
 import { signUpAction } from "./views/SignUp/action";
 import NotFoundPage from "./views/NotFound";
 import GlobalError from "./views/GlobalError";
+import ContactPage from "./views/ContactPage";
 
 
 // Barra de progresso global
@@ -205,6 +206,7 @@ const router = createBrowserRouter([
        },
       { path: PUBLIC_PATHS.FORGOT_PASSWORD, element: <PublicRoute><ForgotPassword/></PublicRoute> },
       { path: PUBLIC_PATHS.RESET_PASSWORD, element: <PublicRoute><ResetPassword/></PublicRoute> },
+      { path: PUBLIC_PATHS.CONTACT, element: <ContactPage /> },
 
 
       // ROTAS PROTEGIDAS (ADMIN)

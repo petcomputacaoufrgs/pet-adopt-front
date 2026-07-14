@@ -9,14 +9,21 @@ const Info = ({ subTitle, title, subtitleFontSize = "clamp(1.2rem, 3vw, 32)", ti
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-      navigate(to);
+    if (!to) return;
+
+    if (to.startsWith("http://") || to.startsWith("https://") || to.startsWith("mailto:")) {
+      window.open(to, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    navigate(to);
   };
 
   return (
     <InfoContainer $position={position}>
       <InfoContent $position={position} $subtitleFontSize={subtitleFontSize} $titleFontSize={titleFontSize}>
-          <h1>{subTitle}</h1>
-          <h3>{title}</h3>
+        {subTitle && <h1>{subTitle}</h1>}
+        {title && <h3>{title}</h3>}
         {children}
       </InfoContent>
 

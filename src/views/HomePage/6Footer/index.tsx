@@ -38,7 +38,7 @@ const Footer = () => {
     { label: "Ver Animais", href: "/searchAnimals", isNavigation: true },
     { label: "Ver ONGs", href: "/listNGOs", isNavigation: true },
     { label: "Dicas", href: "hints", isNavigation: false },
-    { label: "Fale Conosco", href: "contact", isNavigation: false },
+    { label: "Fale Conosco", href: "/contact", isNavigation: true },
   ];
 
   // Corrigido para caminhos absolutos (com / na frente)
