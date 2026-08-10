@@ -17,6 +17,7 @@ import ForgotPassword from "./views/ForgotPassword";
 import ResetPassword from "./views/ResetPassword";
 import { ToastProvider } from "./contexts/ToastContext";
 import NgoProfile from "./views/NGOProfile";
+import HintView from "./views/Hint";
 import { ngoService, petService, userService } from "./services";
 import Header from "./components/Header";
 import logo from "./assets/HorizontalLogo.png"
@@ -131,8 +132,9 @@ const router = createBrowserRouter([
      },
     
       { path: PUBLIC_PATHS.PET_PROFILE, element: <PetProfile />, loader: petProfileLoader },
+      { path: PUBLIC_PATHS.HINT, element: <HintView /> },
 
-      { path: PUBLIC_PATHS.NGO_PROFILE, element: <NgoProfile />, 
+      { path: PUBLIC_PATHS.NGO_PROFILE, element: <NgoProfile />,
         loader: async ({ params } ) => {
           const ngoId = params.id;
           if(!ngoId) throw new Error("ID da ONG não fornecido");
