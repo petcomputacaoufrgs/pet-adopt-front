@@ -12,7 +12,10 @@ export const PUBLIC_PATHS = {
   FORGOT_PASSWORD: '/forgotPassword',
   RESET_PASSWORD: '/resetPassword',
   CONTACT: '/contact',
+  HINT: '/hints/:id',
 } as const;
+
+export const getHintPath = (id: string) => `/hints/${id}`;
 
 // Endpoints da API que são públicos (não requerem autenticação)
 export const PUBLIC_API_ENDPOINTS = [
